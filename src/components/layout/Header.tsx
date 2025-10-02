@@ -5,7 +5,18 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarNav } from "./SidebarNav";
 import { useAuth } from "@/contexts/AuthContext";
 
+
+
 export const Header = () => {
+  const { user, hasRole, signOut } = useAuth();
+  const navigate = useNavigate();
+  const isSuperAdmin = user && hasRole("super_admin");
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -33,21 +44,76 @@ export const Header = () => {
               <span className="text-lg font-bold">SANTE<span className="text-primary">.GA</span></span>
             </div>
             <SidebarNav mobile />
+            
+            {/* Actions mobile */}
+            <div className="p-4 border-t space-y-2">
+              {user ? (
+                <>
+                  {isSuperAdmin && (
+                    <Link to="/admin" className="block">
+                      <Button variant="outline" size="lg" className="w-full btn-mobile-xxl">
+                        <Shield className="mr-2 h-5 w-5" />
+                        Panneau Admin
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full btn-mobile-xxl"
+                    onClick={handleSignOut}
+                  >
+                    Se déconnecter
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="block">
+                    <Button variant="ghost" size="lg" className="w-full btn-mobile-xxl">
+                      Se connecter
+                    </Button>
+                  </Link>
+                  <Link to="/register" className="block">
+                    <Button size="lg" className="w-full btn-mobile-xxl">
+                      S'inscrire
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           </SheetContent>
         </Sheet>
 
         {/* Boutons desktop */}
         <div className="hidden lg:flex items-center gap-3">
-          <Link to="/login">
-            <Button variant="ghost" size="lg">
-              Se connecter
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button size="lg">
-              S'inscrire
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              {isSuperAdmin && (
+                <Link to="/admin">
+                  <Button variant="outline" size="lg">
+                    <Shield className="mr-2 h-5 w-5" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
+              <Button variant="ghost" size="lg" onClick={handleSignOut}>
+                Se déconnecter
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="lg">
+                  Se connecter
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button size="lg">
+                  S'inscrire
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
