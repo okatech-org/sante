@@ -13,6 +13,11 @@ const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 async function ensureSuperAdmin() {
   // 1) Block if a super admin already exists (safety)
   const { data: existingSuperAdmins, error: rolesError } = await admin
@@ -62,17 +67,22 @@ async function ensureSuperAdmin() {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const result = await ensureSuperAdmin();
     const status = result.status === "exists" ? 200 : 201;
     return new Response(JSON.stringify(result), {
       status,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message || "Unknown error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   }
 });
