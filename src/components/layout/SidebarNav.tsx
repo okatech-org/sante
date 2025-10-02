@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -35,6 +35,7 @@ const patientNavItems: NavItem[] = [
 
 const superAdminNavItems: NavItem[] = [
   { icon: BarChart3, label: "Tableau de Bord", href: "/admin/dashboard" },
+  { icon: BookOpen, label: "Projet", href: "/admin/project" },
   { icon: Users, label: "Utilisateurs", href: "/admin/users" },
   { icon: Clock, label: "Approbations", href: "/admin/approvals", badge: 43 },
   { icon: Building2, label: "Établissements", href: "/admin/establishments" },

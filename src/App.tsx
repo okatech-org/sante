@@ -20,6 +20,7 @@ import AdminPanel from "./pages/AdminPanel";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDemo from "./pages/AdminDemo";
+import AdminProject from "./pages/AdminProject";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +86,11 @@ const App = () => (
             <Route path="/admin/demo" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminDemo />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/project" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminProject />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
