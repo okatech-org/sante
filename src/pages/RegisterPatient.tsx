@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,12 +15,20 @@ import { Step1PersonalInfo } from "@/components/registration/Step1PersonalInfo";
 import { Step2Address } from "@/components/registration/Step2Address";
 import { Step3Insurance } from "@/components/registration/Step3Insurance";
 import { Step4Security } from "@/components/registration/Step4Security";
+import { useAuth } from "@/hooks/useAuth";
 
 const STEPS = ["Infos", "Adresse", "Assurance", "Sécurité"];
 
 export default function RegisterPatient() {
   const navigate = useNavigate();
+  const { signUp, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const form = useForm<PatientRegistrationData>({
     resolver: zodResolver(patientRegistrationSchema),
@@ -47,13 +55,23 @@ export default function RegisterPatient() {
 
   const onSubmit = async (data: PatientRegistrationData) => {
     try {
-      console.log("Données d'inscription:", data);
-      // TODO: Intégrer avec le backend
+      const { error } = await signUp(data.email || data.phone, data.password, {
+        full_name: data.fullName,
+        phone: data.phone,
+      });
+
+      if (error) {
+        toast.error("Erreur lors de l'inscription", {
+          description: error.message,
+        });
+        return;
+      }
+
       toast.success("Inscription réussie !", {
         description: "Votre compte patient a été créé avec succès.",
       });
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Erreur lors de l'inscription", {
         description: "Une erreur est survenue. Veuillez réessayer.",
       });

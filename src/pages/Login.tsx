@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Mail, Lock, Phone } from "lucide-react";
+import { Heart, Mail, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { loginSchema, LoginData } from "@/lib/validation";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { signIn, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -28,19 +35,24 @@ export default function Login() {
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
     try {
-      // TODO: Intégrer avec le backend
-      console.log("Connexion avec:", data);
+      const { error } = await signIn(data.identifier, data.password);
       
-      // Simulation d'un délai de connexion
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (error) {
+        toast.error("Erreur de connexion", {
+          description: error.message === "Invalid login credentials" 
+            ? "Email ou mot de passe incorrect" 
+            : error.message,
+        });
+        return;
+      }
       
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur SANTE.GA",
       });
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Erreur de connexion", {
-        description: "Email/téléphone ou mot de passe incorrect",
+        description: "Une erreur est survenue",
       });
     } finally {
       setIsLoading(false);
