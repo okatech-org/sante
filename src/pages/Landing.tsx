@@ -255,6 +255,16 @@ export default function Landing() {
             </div>
           </div>
 
+          {/* Bouton Admin subtile */}
+          <div className="border-t pt-6 pb-2 flex justify-center">
+            <Link to="/superadmin">
+              <button className="text-xs text-muted-foreground/40 hover:text-muted-foreground/60 transition-colors duration-200 flex items-center gap-1">
+                <Shield className="h-3 w-3" />
+                <span>•</span>
+              </button>
+            </Link>
+          </div>
+
           <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>© 2025 SANTE.GA - Ministère de la Santé du Gabon</p>
             <div className="flex gap-4">
