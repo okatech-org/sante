@@ -2,10 +2,11 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital } from "lucide-react";
+import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface DemoAccount {
   id: string;
@@ -194,6 +195,43 @@ const demoAccounts: DemoAccount[] = [
 export default function AdminDemo() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isInitializing, setIsInitializing] = useState(false);
+
+  const initializeDemoAccounts = async () => {
+    setIsInitializing(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-demo-accounts`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Comptes démo initialisés",
+          description: "Tous les comptes démo ont été créés avec succès.",
+        });
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error) {
+      console.error('Error initializing demo accounts:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'initialiser les comptes démo.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsInitializing(false);
+    }
+  };
 
   const handleQuickLogin = async (account: DemoAccount) => {
     try {
@@ -243,11 +281,30 @@ export default function AdminDemo() {
   return (
     <MainLayout>
       <div className="container mx-auto p-6 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Comptes Démo</h1>
-          <p className="text-muted-foreground">
-            Accédez rapidement aux différents types de comptes pour tester les fonctionnalités de l'application
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Comptes Démo</h1>
+            <p className="text-muted-foreground">
+              Accédez rapidement aux différents types de comptes pour tester les fonctionnalités de l'application
+            </p>
+          </div>
+          <Button 
+            onClick={initializeDemoAccounts}
+            disabled={isInitializing}
+            variant="outline"
+          >
+            {isInitializing ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                Initialisation...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Initialiser les comptes
+              </>
+            )}
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
