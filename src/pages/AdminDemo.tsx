@@ -200,26 +200,20 @@ export default function AdminDemo() {
   const initializeDemoAccounts = async () => {
     setIsInitializing(true);
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-demo-accounts`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
-          }
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('create-demo-accounts', {
+        body: { init: true },
+      });
 
-      const data = await response.json();
+      if (error) throw error as any;
 
-      if (data.success) {
+      if ((data as any)?.success) {
         toast({
           title: "Comptes démo initialisés",
-          description: "Tous les comptes démo ont été créés avec succès.",
+          description: "Tous les comptes démo ont été créés/mis à jour.",
         });
+        return true;
       } else {
-        throw new Error(data.error);
+        throw new Error((data as any)?.error || 'Initialisation échouée');
       }
     } catch (error) {
       console.error('Error initializing demo accounts:', error);
@@ -228,6 +222,7 @@ export default function AdminDemo() {
         description: "Impossible d'initialiser les comptes démo.",
         variant: "destructive"
       });
+      return false;
     } finally {
       setIsInitializing(false);
     }
@@ -235,16 +230,29 @@ export default function AdminDemo() {
 
   const handleQuickLogin = async (account: DemoAccount) => {
     try {
-      // Connexion avec les identifiants démo (email: account.email, password: "demo123")
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // 1) Tentative de connexion
+      let { data, error } = await supabase.auth.signInWithPassword({
         email: account.email,
         password: "demo123"
       });
 
+      // 2) Si échec pour identifiants invalides, initialiser et réessayer
+      if (error && /invalid login credentials/i.test(error.message)) {
+        const initialized = await initializeDemoAccounts();
+        if (initialized) {
+          const retry = await supabase.auth.signInWithPassword({
+            email: account.email,
+            password: "demo123"
+          });
+          data = retry.data;
+          error = retry.error;
+        }
+      }
+
       if (error) {
         toast({
           title: "Erreur de connexion",
-          description: "Impossible de se connecter au compte démo. Assurez-vous que le compte existe.",
+          description: "Impossible de se connecter au compte démo.",
           variant: "destructive"
         });
         return;
@@ -255,7 +263,6 @@ export default function AdminDemo() {
         description: `Connecté en tant que ${account.name} (${account.type})`,
       });
 
-      // Redirection selon le rôle
       switch (account.role) {
         case 'patient':
           navigate('/dashboard');
