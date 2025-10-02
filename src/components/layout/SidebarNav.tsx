@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,6 +13,14 @@ interface NavItem {
   href: string;
   badge?: number;
 }
+
+const publicNavItems: NavItem[] = [
+  { icon: Home, label: "Accueil", href: "/" },
+  { icon: Info, label: "À Propos", href: "/#about" },
+  { icon: UserSearch, label: "Nos Services", href: "/#services" },
+  { icon: HelpCircle, label: "FAQ", href: "/#faq" },
+  { icon: Phone, label: "Contact", href: "/#contact" },
+];
 
 const patientNavItems: NavItem[] = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
@@ -35,9 +43,17 @@ const superAdminNavItems: NavItem[] = [
 ];
 
 export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
-  const { userRoles } = useAuth();
-  const isSuperAdmin = userRoles.includes('super_admin');
-  const navItems = isSuperAdmin ? superAdminNavItems : patientNavItems;
+  const { user, userRoles } = useAuth();
+  
+  // Détermine le menu à afficher selon l'état de connexion et les rôles
+  let navItems: NavItem[];
+  if (!user) {
+    navItems = publicNavItems;
+  } else if (userRoles.includes('super_admin')) {
+    navItems = superAdminNavItems;
+  } else {
+    navItems = patientNavItems;
+  }
 
   return (
     <nav className={cn("flex flex-col gap-1 p-4", mobile && "pt-6")}>
