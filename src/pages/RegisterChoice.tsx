@@ -18,6 +18,13 @@ const userTypes = [
     href: "/register/pro?type=doctor",
   },
   {
+    type: "medical-staff",
+    emoji: "👩‍⚕️",
+    title: "Autres Corps médicaux",
+    description: "Je suis infirmier(ère), sage-femme, kinésithérapeute, etc.",
+    href: "/register/pro?type=medical-staff",
+  },
+  {
     type: "pharmacy",
     emoji: "💊",
     title: "Pharmacie",
