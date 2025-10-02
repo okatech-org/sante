@@ -1,13 +1,21 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SidebarNavProps {
   mobile?: boolean;
 }
 
-const navItems = [
-  { icon: Home, label: "Accueil", href: "/" },
+interface NavItem {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+  badge?: number;
+}
+
+const patientNavItems: NavItem[] = [
+  { icon: Home, label: "Accueil", href: "/dashboard" },
   { icon: Calendar, label: "Mes Rendez-vous", href: "/appointments" },
   { icon: FileText, label: "Mes Ordonnances", href: "/prescriptions" },
   { icon: TestTube, label: "Mes Résultats", href: "/results" },
@@ -16,7 +24,21 @@ const navItems = [
   { icon: User, label: "Mon Profil", href: "/profile" },
 ];
 
+const superAdminNavItems: NavItem[] = [
+  { icon: BarChart3, label: "Tableau de Bord", href: "/admin/dashboard" },
+  { icon: Users, label: "Utilisateurs", href: "/admin/users" },
+  { icon: Clock, label: "Approbations", href: "/admin/approvals", badge: 43 },
+  { icon: Building2, label: "Établissements", href: "/admin/establishments" },
+  { icon: Activity, label: "Professionnels", href: "/admin/professionals" },
+  { icon: Shield, label: "Logs & Audit", href: "/admin/audit" },
+  { icon: Settings, label: "Paramètres", href: "/admin/settings" },
+];
+
 export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
+  const { userRoles } = useAuth();
+  const isSuperAdmin = userRoles.includes('super_admin');
+  const navItems = isSuperAdmin ? superAdminNavItems : patientNavItems;
+
   return (
     <nav className={cn("flex flex-col gap-1 p-4", mobile && "pt-6")}>
       {navItems.map((item) => (
@@ -34,7 +56,12 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
           }
         >
           <item.icon className="h-5 w-5" />
-          <span>{item.label}</span>
+          <span className="flex-1">{item.label}</span>
+          {item.badge && (
+            <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-destructive text-destructive-foreground rounded-full">
+              {item.badge}
+            </span>
+          )}
         </NavLink>
       ))}
     </nav>
