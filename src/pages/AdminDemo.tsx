@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn } from "lucide-react";
+import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface DemoAccount {
@@ -38,6 +38,16 @@ const demoAccounts: DemoAccount[] = [
     badgeColor: "bg-green-500"
   },
   {
+    id: "specialist-demo",
+    type: "Médecin Spécialiste",
+    name: "Dr. Sylvie NGUEMA",
+    email: "specialiste.demo@sante.ga",
+    role: "specialist",
+    description: "Cardiologue avec consultations spécialisées, examens cardiologiques et suivi de pathologies",
+    icon: HeartPulse,
+    badgeColor: "bg-rose-500"
+  },
+  {
     id: "nurse-demo",
     type: "Infirmier(ère)",
     name: "Sophie MBOUMBA",
@@ -46,6 +56,56 @@ const demoAccounts: DemoAccount[] = [
     description: "Infirmière avec planning de soins, vaccinations et suivi post-opératoire",
     icon: Briefcase,
     badgeColor: "bg-purple-500"
+  },
+  {
+    id: "midwife-demo",
+    type: "Sage-femme",
+    name: "Grace ONDO",
+    email: "sagefemme.demo@sante.ga",
+    role: "midwife",
+    description: "Sage-femme avec suivi de grossesses, accouchements et consultations pré/post-natales",
+    icon: Baby,
+    badgeColor: "bg-pink-500"
+  },
+  {
+    id: "physiotherapist-demo",
+    type: "Kinésithérapeute",
+    name: "Marc MOUNGUENGUI",
+    email: "kine.demo@sante.ga",
+    role: "physiotherapist",
+    description: "Kinésithérapeute avec séances de rééducation, suivi post-traumatique et planning de soins",
+    icon: Activity,
+    badgeColor: "bg-teal-500"
+  },
+  {
+    id: "psychologist-demo",
+    type: "Psychologue",
+    name: "Alice BOULINGUI",
+    email: "psychologue.demo@sante.ga",
+    role: "psychologist",
+    description: "Psychologue clinicien avec consultations, thérapies et suivi psychologique",
+    icon: Brain,
+    badgeColor: "bg-violet-500"
+  },
+  {
+    id: "ophthalmologist-demo",
+    type: "Ophtalmologiste",
+    name: "Dr. Joseph MENGUE",
+    email: "ophtalmo.demo@sante.ga",
+    role: "ophthalmologist",
+    description: "Ophtalmologiste avec examens de la vue, prescriptions de lunettes et chirurgie oculaire",
+    icon: Eye,
+    badgeColor: "bg-amber-500"
+  },
+  {
+    id: "anesthesiologist-demo",
+    type: "Anesthésiste",
+    name: "Dr. François OVONO",
+    email: "anesthesiste.demo@sante.ga",
+    role: "anesthesiologist",
+    description: "Anesthésiste-réanimateur avec consultations pré-opératoires et gestion de la douleur",
+    icon: Syringe,
+    badgeColor: "bg-slate-500"
   },
   {
     id: "pharmacist-demo",
@@ -66,6 +126,16 @@ const demoAccounts: DemoAccount[] = [
     description: "Technicien(ne) de laboratoire avec analyses en cours et résultats à publier",
     icon: FlaskConical,
     badgeColor: "bg-cyan-500"
+  },
+  {
+    id: "radiologist-demo",
+    type: "Radiologue",
+    name: "Dr. Daniel IBINGA",
+    email: "radiologue.demo@sante.ga",
+    role: "radiologist",
+    description: "Radiologue avec imagerie médicale, échographies, scanners et IRM",
+    icon: Sparkles,
+    badgeColor: "bg-sky-500"
   },
   {
     id: "admin-demo",
