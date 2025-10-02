@@ -24,12 +24,13 @@ const publicNavItems: NavItem[] = [
 
 const patientNavItems: NavItem[] = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
-  { icon: Calendar, label: "Mes Rendez-vous", href: "/appointments" },
-  { icon: FileText, label: "Mes Ordonnances", href: "/prescriptions" },
-  { icon: TestTube, label: "Mes Résultats", href: "/results" },
+  { icon: Calendar, label: "Mes Rendez-vous", href: "/appointments", badge: 2 },
+  { icon: FileText, label: "Mes Ordonnances", href: "/prescriptions", badge: 1 },
+  { icon: TestTube, label: "Mes Résultats", href: "/results", badge: 2 },
+  { icon: FileText, label: "Mon Dossier Médical", href: "/medical-record" },
   { icon: UserSearch, label: "Trouver un Prestataire", href: "/providers" },
-  { icon: CreditCard, label: "Remboursements", href: "/reimbursements" },
-  { icon: User, label: "Mon Profil", href: "/profile" },
+  { icon: CreditCard, label: "Remboursements CNAMGS", href: "/reimbursements" },
+  { icon: HelpCircle, label: "Aide & Support", href: "/support" },
 ];
 
 const superAdminNavItems: NavItem[] = [

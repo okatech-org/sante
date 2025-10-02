@@ -5,15 +5,16 @@ import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointment
 import { ActivePrescriptions } from "@/components/dashboard/ActivePrescriptions";
 import { RecentResults } from "@/components/dashboard/RecentResults";
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 lg:pb-0">
       <DashboardHeader />
       
       <MainLayout>
-        <div className="container max-w-7xl mx-auto px-4 py-8 space-y-6">
-          {/* Section Statut Assurance */}
+        <div className="container max-w-7xl mx-auto px-4 py-6 lg:py-8 space-y-6">
+          {/* Section Statut Assurance - Pleine largeur */}
           <InsuranceStatus 
             hasInsurance={true}
             type="CNAMGS"
@@ -22,7 +23,7 @@ export default function Dashboard() {
             remainingBalance={2500000}
           />
 
-          {/* Grille principale */}
+          {/* Grille responsive 2 colonnes */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Colonne gauche */}
             <div className="space-y-6">
@@ -38,6 +39,9 @@ export default function Dashboard() {
           </div>
         </div>
       </MainLayout>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 }
