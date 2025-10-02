@@ -108,14 +108,24 @@ const demoAccounts: DemoAccount[] = [
     badgeColor: "bg-slate-500"
   },
   {
+    id: "pharmacist-demo",
+    type: "Pharmacien(ne)",
+    name: "Jean MOUSSAVOU",
+    email: "pharmacien.demo@sante.ga",
+    role: "pharmacist",
+    description: "Pharmacien diplômé avec ordonnances, conseils pharmaceutiques et suivi médicamenteux",
+    icon: Pill,
+    badgeColor: "bg-orange-500"
+  },
+  {
     id: "pharmacy-demo",
     type: "Pharmacie",
     name: "Pharmacie du Centre",
     email: "pharmacie.demo@sante.ga",
     role: "pharmacy",
-    description: "Établissement pharmaceutique avec gestion d'ordonnances, stock de médicaments et dispensation",
-    icon: Pill,
-    badgeColor: "bg-orange-500"
+    description: "Établissement pharmaceutique avec gestion de stock, personnel et dispensation",
+    icon: Building2,
+    badgeColor: "bg-orange-600"
   },
   {
     id: "lab-demo",
@@ -133,9 +143,19 @@ const demoAccounts: DemoAccount[] = [
     name: "Dr. Daniel IBINGA",
     email: "radiologue.demo@sante.ga",
     role: "radiologist",
-    description: "Radiologue avec imagerie médicale, échographies, scanners et IRM",
+    description: "Radiologue avec interprétation d'imagerie, échographies, scanners et IRM",
     icon: Sparkles,
     badgeColor: "bg-sky-500"
+  },
+  {
+    id: "radiology-center-demo",
+    type: "Centre de Radiologie",
+    name: "Centre d'Imagerie Médicale",
+    email: "radiologie.demo@sante.ga",
+    role: "radiology_center",
+    description: "Centre d'imagerie avec équipements (scanner, IRM, échographie) et personnel technique",
+    icon: Building2,
+    badgeColor: "bg-sky-600"
   },
   {
     id: "admin-demo",
