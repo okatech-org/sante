@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, Phone, Calendar, Info, Navigation, Clock, Shield, Video } from "lucide-react";
 import { Provider } from "@/lib/providers-data";
+import { useState } from "react";
+import { BookingModal } from "@/components/appointments/BookingModal";
+import { useAppointmentStore } from "@/stores/appointmentStore";
 
 interface ProviderCardProps {
   provider: Provider;
@@ -20,6 +23,13 @@ export const ProviderCard = ({
   onBookAppointment,
   onGetDirections
 }: ProviderCardProps) => {
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const { setProvider } = useAppointmentStore();
+
+  const handleBookAppointment = () => {
+    setProvider(provider);
+    setShowBookingModal(true);
+  };
   const renderDoctorCard = () => (
     <Card className="hover:shadow-lg transition-shadow">
       <CardContent className="p-6">
@@ -85,7 +95,7 @@ export const ProviderCard = ({
             Appeler
           </Button>
           {provider.onlineBooking && (
-            <Button size="sm" onClick={() => onBookAppointment?.(provider.id)}>
+            <Button size="sm" onClick={handleBookAppointment}>
               <Calendar className="h-4 w-4 mr-1" />
               Prendre RDV
             </Button>
@@ -212,7 +222,7 @@ export const ProviderCard = ({
             Itinéraire
           </Button>
           {provider.onlineBooking && (
-            <Button size="sm" onClick={() => onBookAppointment?.(provider.id)}>
+            <Button size="sm" onClick={handleBookAppointment}>
               <Calendar className="h-4 w-4 mr-1" />
               Prendre RDV
             </Button>
@@ -282,14 +292,39 @@ export const ProviderCard = ({
 
   switch (provider.type) {
     case 'medecin':
-      return renderDoctorCard();
+      return (
+        <>
+          {renderDoctorCard()}
+          <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
+        </>
+      );
     case 'pharmacie':
-      return renderPharmacyCard();
+      return (
+        <>
+          {renderPharmacyCard()}
+          <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
+        </>
+      );
     case 'hopital':
-      return renderHospitalCard();
+      return (
+        <>
+          {renderHospitalCard()}
+          <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
+        </>
+      );
     case 'laboratoire':
-      return renderLaboratoryCard();
+      return (
+        <>
+          {renderLaboratoryCard()}
+          <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
+        </>
+      );
     default:
-      return renderDoctorCard();
+      return (
+        <>
+          {renderDoctorCard()}
+          <BookingModal open={showBookingModal} onClose={() => setShowBookingModal(false)} />
+        </>
+      );
   }
 };

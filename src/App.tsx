@@ -11,6 +11,7 @@ import RegisterChoice from "./pages/RegisterChoice";
 import RegisterPatient from "./pages/RegisterPatient";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
+import AppointmentConfirmation from "./pages/AppointmentConfirmation";
 import Prescriptions from "./pages/Prescriptions";
 import Results from "./pages/Results";
 import Providers from "./pages/Providers";
@@ -46,6 +47,11 @@ const App = () => (
             <Route path="/appointments" element={
               <ProtectedRoute>
                 <Appointments />
+              </ProtectedRoute>
+            } />
+            <Route path="/appointments/confirmation/:id" element={
+              <ProtectedRoute>
+                <AppointmentConfirmation />
               </ProtectedRoute>
             } />
             <Route path="/prescriptions" element={
