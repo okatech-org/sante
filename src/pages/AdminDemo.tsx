@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe } from "lucide-react";
+import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface DemoAccount {
@@ -108,12 +108,12 @@ const demoAccounts: DemoAccount[] = [
     badgeColor: "bg-slate-500"
   },
   {
-    id: "pharmacist-demo",
-    type: "Pharmacien(ne)",
-    name: "Jean MOUSSAVOU",
-    email: "pharmacien.demo@sante.ga",
-    role: "pharmacist",
-    description: "Pharmacien avec gestion d'ordonnances, stock de médicaments et dispensation",
+    id: "pharmacy-demo",
+    type: "Pharmacie",
+    name: "Pharmacie du Centre",
+    email: "pharmacie.demo@sante.ga",
+    role: "pharmacy",
+    description: "Établissement pharmaceutique avec gestion d'ordonnances, stock de médicaments et dispensation",
     icon: Pill,
     badgeColor: "bg-orange-500"
   },
@@ -153,9 +153,19 @@ const demoAccounts: DemoAccount[] = [
     name: "CHU Owendo",
     email: "hopital.demo@sante.ga",
     role: "hospital_admin",
-    description: "Compte établissement hospitalier avec services, lits et urgences",
+    description: "Établissement hospitalier public avec services, lits, urgences et bloc opératoire",
     icon: Building2,
     badgeColor: "bg-indigo-500"
+  },
+  {
+    id: "clinic-demo",
+    type: "Clinique",
+    name: "Clinique Sainte-Marie",
+    email: "clinique.demo@sante.ga",
+    role: "clinic_admin",
+    description: "Établissement de santé privé avec consultations, hospitalisations et chirurgie",
+    icon: Hospital,
+    badgeColor: "bg-emerald-500"
   }
 ];
 
