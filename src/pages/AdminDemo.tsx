@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DemoAccount {
   id: string;
@@ -191,16 +193,51 @@ const demoAccounts: DemoAccount[] = [
 
 export default function AdminDemo() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleQuickLogin = (account: DemoAccount) => {
-    toast({
-      title: "Connexion démo",
-      description: `Connexion en tant que ${account.name} (${account.type})...`,
-    });
-    
-    // TODO: Implémenter la vraie connexion avec Supabase
-    // Pour l'instant, c'est juste une démonstration
-    console.log("Quick login:", account);
+  const handleQuickLogin = async (account: DemoAccount) => {
+    try {
+      // Connexion avec les identifiants démo (email: account.email, password: "demo123")
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: account.email,
+        password: "demo123"
+      });
+
+      if (error) {
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de se connecter au compte démo. Assurez-vous que le compte existe.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Connexion réussie",
+        description: `Connecté en tant que ${account.name} (${account.type})`,
+      });
+
+      // Redirection selon le rôle
+      switch (account.role) {
+        case 'patient':
+          navigate('/dashboard');
+          break;
+        case 'admin':
+        case 'hospital_admin':
+        case 'clinic_admin':
+          navigate('/admin');
+          break;
+        default:
+          navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error("Error during quick login:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de la connexion",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
