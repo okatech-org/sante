@@ -1,8 +1,9 @@
-import { Heart, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Heart, Menu, Shield } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarNav } from "./SidebarNav";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   return (

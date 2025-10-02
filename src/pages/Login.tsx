@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,19 +9,12 @@ import { Heart, Mail, Lock } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { loginSchema, LoginData } from "@/lib/validation";
+import { authService } from "@/lib/auth";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { signIn, user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -35,24 +28,16 @@ export default function Login() {
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
     try {
-      const { error } = await signIn(data.identifier, data.password);
-      
-      if (error) {
-        toast.error("Erreur de connexion", {
-          description: error.message === "Invalid login credentials" 
-            ? "Email ou mot de passe incorrect" 
-            : error.message,
-        });
-        return;
-      }
+      await authService.signIn(data.identifier, data.password);
       
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur SANTE.GA",
       });
       navigate("/dashboard");
     } catch (error: any) {
+      console.error('Login error:', error);
       toast.error("Erreur de connexion", {
-        description: "Une erreur est survenue",
+        description: error.message || "Email/téléphone ou mot de passe incorrect",
       });
     } finally {
       setIsLoading(false);
