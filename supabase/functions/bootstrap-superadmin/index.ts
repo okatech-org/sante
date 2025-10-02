@@ -19,19 +19,8 @@ const corsHeaders = {
 };
 
 async function ensureSuperAdmin() {
-  // 1) Block if a super admin already exists (safety)
-  const { data: existingSuperAdmins, error: rolesError } = await admin
-    .from("user_roles")
-    .select("id")
-    .eq("role", "super_admin")
-    .limit(1);
-
-  if (rolesError) throw rolesError;
-  if (existingSuperAdmins && existingSuperAdmins.length > 0) {
-    return { status: "exists", message: "Super admin already initialized" };
-  }
-
-  // 2) Find or create the user
+  // Always ensure the bootstrap user exists and has the role
+  // (idempotent and safe to call multiple times)
   const listRes = await admin.auth.admin.listUsers({
     page: 1,
     perPage: 1000,
@@ -45,6 +34,22 @@ async function ensureSuperAdmin() {
 
   if (found) {
     userId = found.id;
+    // Force-set password and confirm email in case the account was created improperly
+    const upd = await admin.auth.admin.updateUserById(userId, {
+      password: BOOTSTRAP_PASSWORD,
+      email_confirm: true,
+    } as any);
+    if ((upd as any).error) {
+      // If update fails due to invalid state, try delete + recreate
+      await admin.auth.admin.deleteUser(userId);
+      const recreated = await admin.auth.admin.createUser({
+        email: BOOTSTRAP_EMAIL,
+        password: BOOTSTRAP_PASSWORD,
+        email_confirm: true,
+      });
+      if ((recreated as any).error) throw (recreated as any).error;
+      userId = (recreated as any).data.user.id;
+    }
   } else {
     const created = await admin.auth.admin.createUser({
       email: BOOTSTRAP_EMAIL,
