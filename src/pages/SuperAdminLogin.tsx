@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Shield, ArrowLeft } from "lucide-react";
 import { authService } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SuperAdminLogin() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,19 @@ export default function SuperAdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Ensure the Super Admin account exists (idempotent)
+    supabase.functions.invoke("bootstrap-superadmin", { body: {} })
+      .then(({ data }: any) => {
+        if (data?.status === "created") {
+          toast({ title: "Compte Super Admin créé", description: "Vous pouvez maintenant vous connecter." });
+        }
+      })
+      .catch(() => {
+        // Silently ignore to avoid leaking implementation details
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
