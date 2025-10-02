@@ -18,6 +18,7 @@ import Reimbursements from "./pages/Reimbursements";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +74,11 @@ const App = () => (
             <Route path="/admin" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminPanel />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
+                <SuperAdminDashboard />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

@@ -42,7 +42,7 @@ export default function SuperAdminLogin() {
         description: "Bienvenue Super Admin",
       });
       
-      navigate("/admin");
+      navigate("/admin/dashboard");
     } catch (error: any) {
       toast({
         variant: "destructive",
