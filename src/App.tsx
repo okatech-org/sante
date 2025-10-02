@@ -17,6 +17,7 @@ import Providers from "./pages/Providers";
 import Reimbursements from "./pages/Reimbursements";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import SuperAdminLogin from "./pages/SuperAdminLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/superadmin" element={<SuperAdminLogin />} />
             <Route path="/register" element={<RegisterChoice />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/dashboard" element={
