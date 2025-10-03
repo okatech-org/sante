@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarNav } from "./SidebarNav";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 
 
@@ -47,6 +48,9 @@ export const Header = () => {
             
             {/* Actions mobile */}
             <div className="p-4 border-t space-y-2">
+              <div className="flex justify-center mb-2">
+                <ThemeToggle />
+              </div>
               {user ? (
                 <>
                   {isSuperAdmin && (
@@ -86,6 +90,7 @@ export const Header = () => {
 
         {/* Boutons desktop */}
         <div className="hidden lg:flex items-center gap-3">
+          <ThemeToggle />
           {user ? (
             <>
               {isSuperAdmin && (
