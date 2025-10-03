@@ -21,6 +21,7 @@ import AdminPanel from "./pages/AdminPanel";
 import AdminUsers from "./pages/AdminUsers";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminEstablishments from "./pages/AdminEstablishments";
+import AdminProfessionals from "./pages/AdminProfessionals";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDemo from "./pages/AdminDemo";
@@ -115,6 +116,11 @@ const App = () => (
             <Route path="/admin/establishments" element={
               <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
                 <AdminEstablishments />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/professionals" element={
+              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
+                <AdminProfessionals />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
