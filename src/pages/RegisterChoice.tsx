@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart } from "lucide-react";
 
@@ -48,6 +49,21 @@ const userTypes = [
 ];
 
 export default function RegisterChoice() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const type = searchParams.get('type');
+    
+    // Redirection automatique si le type est spécifié
+    if (type === 'patient') {
+      navigate('/register/patient', { replace: true });
+    } else if (type === 'pro') {
+      // Pour l'instant, on affiche la page de choix pour les professionnels
+      // Ils peuvent choisir leur type spécifique (médecin, pharmacie, etc.)
+    }
+  }, [searchParams, navigate]);
+  
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-primary/5 to-background">
       <div className="w-full max-w-5xl">

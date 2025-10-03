@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import RegisterChoice from "./pages/RegisterChoice";
 import RegisterPatient from "./pages/RegisterPatient";
+import RegisterProfessional from "./pages/RegisterProfessional";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/superadmin" element={<SuperAdminLogin />} />
             <Route path="/register" element={<RegisterChoice />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
+            <Route path="/register/pro" element={<RegisterProfessional />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
