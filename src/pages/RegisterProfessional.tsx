@@ -38,6 +38,7 @@ export default function RegisterProfessional() {
     defaultValues: {
       professionalType: searchParams.get('type') as any || undefined,
       medicalStaffType: "",
+      doctorSpecialty: "",
       fullName: "",
       establishmentName: "",
       specialty: "",
@@ -97,7 +98,7 @@ export default function RegisterProfessional() {
 
     switch (currentStep) {
       case 1:
-        fieldsToValidate = ["professionalType", "medicalStaffType"];
+        fieldsToValidate = ["professionalType", "medicalStaffType", "doctorSpecialty"];
         break;
       case 2:
         fieldsToValidate = ["fullName", "establishmentName", "specialty", "licenseNumber"];

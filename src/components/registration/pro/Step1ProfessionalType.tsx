@@ -56,6 +56,30 @@ const medicalStaffTypes = [
   { value: "other", label: "Autre" },
 ];
 
+const doctorSpecialties = [
+  { value: "general-medicine", label: "Médecine générale" },
+  { value: "cardiology", label: "Cardiologie" },
+  { value: "dermatology", label: "Dermatologie" },
+  { value: "pediatrics", label: "Pédiatrie" },
+  { value: "gynecology", label: "Gynécologie-Obstétrique" },
+  { value: "surgery", label: "Chirurgie générale" },
+  { value: "orthopedics", label: "Orthopédie" },
+  { value: "ophthalmology", label: "Ophtalmologie" },
+  { value: "ent", label: "ORL (Oto-Rhino-Laryngologie)" },
+  { value: "neurology", label: "Neurologie" },
+  { value: "psychiatry", label: "Psychiatrie" },
+  { value: "radiology", label: "Radiologie" },
+  { value: "anesthesiology", label: "Anesthésie-Réanimation" },
+  { value: "emergency", label: "Médecine d'urgence" },
+  { value: "internal-medicine", label: "Médecine interne" },
+  { value: "dentistry", label: "Chirurgie dentaire" },
+  { value: "pulmonology", label: "Pneumologie" },
+  { value: "gastroenterology", label: "Gastro-entérologie" },
+  { value: "nephrology", label: "Néphrologie" },
+  { value: "endocrinology", label: "Endocrinologie" },
+  { value: "other", label: "Autre spécialité" },
+];
+
 export function Step1ProfessionalType({ form }: Step1ProfessionalTypeProps) {
   const selectedType = form.watch("professionalType");
   return (
@@ -115,6 +139,33 @@ export function Step1ProfessionalType({ form }: Step1ProfessionalTypeProps) {
         )}
       />
 
+      {selectedType === "doctor" && (
+        <FormField
+          control={form.control}
+          name="doctorSpecialty"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Spécifiez votre spécialité médicale *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Sélectionnez votre spécialité" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-popover z-50">
+                  {doctorSpecialties.map((specialty) => (
+                    <SelectItem key={specialty.value} value={specialty.value}>
+                      {specialty.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
       {selectedType === "medical-staff" && (
         <FormField
           control={form.control}
@@ -124,11 +175,11 @@ export function Step1ProfessionalType({ form }: Step1ProfessionalTypeProps) {
               <FormLabel>Spécifiez votre corps médical *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez votre spécialité" />
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Sélectionnez votre fonction" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-popover z-50">
                   {medicalStaffTypes.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}

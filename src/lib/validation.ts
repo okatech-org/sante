@@ -138,6 +138,10 @@ export const professionalRegistrationSchema = z.object({
     .optional()
     .or(z.literal("")),
   
+  doctorSpecialty: z.string()
+    .optional()
+    .or(z.literal("")),
+  
   // Étape 2 : Informations professionnelles
   fullName: z.string()
     .min(3, "Le nom doit contenir au moins 3 caractères")
@@ -205,6 +209,15 @@ export const professionalRegistrationSchema = z.object({
 }, {
   message: "Veuillez spécifier votre corps médical",
   path: ["medicalStaffType"],
+}).refine((data) => {
+  // Validation conditionnelle pour la spécialité médicale
+  if (data.professionalType === "doctor") {
+    return data.doctorSpecialty && data.doctorSpecialty.length > 0;
+  }
+  return true;
+}, {
+  message: "Veuillez spécifier votre spécialité",
+  path: ["doctorSpecialty"],
 });
 
 export type ProfessionalRegistrationData = z.infer<typeof professionalRegistrationSchema>;
