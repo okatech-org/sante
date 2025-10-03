@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Video, Eye, X, Plus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Appointment {
   id: string;
@@ -44,6 +45,7 @@ const mockAppointments: Appointment[] = [
 ];
 
 export function UpcomingAppointments() {
+  const { t } = useLanguage();
   const appointments = mockAppointments;
 
   const getTypeIcon = (type: string) => {
@@ -58,11 +60,11 @@ export function UpcomingAppointments() {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'consultation':
-        return 'Consultation';
+        return t('dashboard.consultation');
       case 'teleconsultation':
-        return 'Téléconsultation';
+        return t('dashboard.teleconsultation');
       case 'exam':
-        return 'Examen';
+        return t('dashboard.exam');
       default:
         return type;
     }
@@ -72,16 +74,16 @@ export function UpcomingAppointments() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Mes Rendez-vous</CardTitle>
+          <CardTitle>{t('dashboard.myAppointments')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <div className="p-4 rounded-full bg-muted mb-4">
             <Calendar className="h-12 w-12 text-muted-foreground" />
           </div>
-          <p className="text-muted-foreground mb-4 text-center">Aucun rendez-vous prévu</p>
+          <p className="text-muted-foreground mb-4 text-center">{t('dashboard.noAppointments')}</p>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
-            Prendre rendez-vous
+            {t('dashboard.makeAppointment')}
           </Button>
         </CardContent>
       </Card>
@@ -93,13 +95,13 @@ export function UpcomingAppointments() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            Mes Rendez-vous
+            {t('dashboard.myAppointments')}
             {appointments.length > 0 && (
               <Badge variant="secondary">{appointments.length}</Badge>
             )}
           </CardTitle>
           <Button variant="link" size="sm" asChild>
-            <a href="/appointments">Voir tous mes RDV</a>
+            <a href="/appointments">{t('dashboard.viewAllAppointments')}</a>
           </Button>
         </div>
       </CardHeader>
@@ -125,11 +127,11 @@ export function UpcomingAppointments() {
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="gap-2 flex-1">
                 <Eye className="h-4 w-4" />
-                Voir détails
+                {t('dashboard.viewDetails')}
               </Button>
               <Button variant="ghost" size="sm" className="gap-2 text-destructive hover:text-destructive">
                 <X className="h-4 w-4" />
-                Annuler
+                {t('dashboard.cancel')}
               </Button>
             </div>
           </div>

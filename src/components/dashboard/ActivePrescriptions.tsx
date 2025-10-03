@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, MapPin } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Prescription {
   id: string;
@@ -32,17 +33,18 @@ const mockPrescriptions: Prescription[] = [
 ];
 
 export function ActivePrescriptions() {
+  const { t } = useLanguage();
   const prescriptions = mockPrescriptions;
   const newCount = prescriptions.filter(p => p.isNew).length;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge className="bg-warning text-warning-foreground">Non dispensée</Badge>;
+        return <Badge className="bg-warning text-warning-foreground">{t('prescriptions.notDispensed')}</Badge>;
       case 'dispensed':
-        return <Badge className="bg-success text-success-foreground">Dispensée</Badge>;
+        return <Badge className="bg-success text-success-foreground">{t('prescriptions.dispensed')}</Badge>;
       case 'expired':
-        return <Badge variant="secondary">Expirée</Badge>;
+        return <Badge variant="secondary">{t('prescriptions.expired')}</Badge>;
       default:
         return null;
     }
@@ -53,13 +55,13 @@ export function ActivePrescriptions() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            Mes Ordonnances
+            {t('prescriptions.title')}
             {newCount > 0 && (
-              <Badge variant="destructive">{newCount} Nouvelle{newCount > 1 ? 's' : ''}</Badge>
+              <Badge variant="destructive">{newCount} {newCount > 1 ? t('prescriptions.news') : t('prescriptions.new')}</Badge>
             )}
           </CardTitle>
           <Button variant="link" size="sm" asChild>
-            <a href="/prescriptions">Toutes mes ordonnances</a>
+            <a href="/prescriptions">{t('prescriptions.viewAll')}</a>
           </Button>
         </div>
       </CardHeader>
@@ -70,24 +72,24 @@ export function ActivePrescriptions() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   {prescription.isNew && (
-                    <Badge className="bg-primary text-primary-foreground">🆕 NOUVELLE</Badge>
+                    <Badge className="bg-primary text-primary-foreground">🆕 {t('prescriptions.new').toUpperCase()}</Badge>
                   )}
                   {getStatusBadge(prescription.status)}
                 </div>
-                <p className="font-medium mb-1">Date : {prescription.date}</p>
-                <p className="text-sm text-muted-foreground mb-1">Prescripteur : {prescription.doctor}</p>
-                <p className="text-sm text-muted-foreground">{prescription.medicationsCount} médicament{prescription.medicationsCount > 1 ? 's' : ''}</p>
+                <p className="font-medium mb-1">{t('prescriptions.date')} : {prescription.date}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('prescriptions.prescriber')} : {prescription.doctor}</p>
+                <p className="text-sm text-muted-foreground">{prescription.medicationsCount} {prescription.medicationsCount > 1 ? t('prescriptions.medications') : t('prescriptions.medication')}</p>
               </div>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="gap-2 flex-1">
                 <FileText className="h-4 w-4" />
-                Voir l'ordonnance
+                {t('prescriptions.viewPrescription')}
               </Button>
               {prescription.status === 'new' && (
                 <Button variant="default" size="sm" className="gap-2">
                   <MapPin className="h-4 w-4" />
-                  Trouver une pharmacie
+                  {t('prescriptions.findPharmacy')}
                 </Button>
               )}
             </div>

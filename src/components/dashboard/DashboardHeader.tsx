@@ -16,25 +16,27 @@ import { useAuth } from "@/contexts/AuthContext";
 import { authService } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function DashboardHeader() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogout = async () => {
     try {
       await authService.signOut();
       toast({
-        title: "Déconnexion réussie",
+        title: t('common.success'),
         description: "À bientôt !",
       });
       navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erreur",
+        title: t('common.error'),
         description: error.message,
       });
     }
@@ -56,7 +58,7 @@ export function DashboardHeader() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Rechercher médecin, pharmacie, hôpital..."
+              placeholder={t('common.search') + '...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4"
@@ -67,7 +69,7 @@ export function DashboardHeader() {
         {/* Actions droite */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative" title={t('common.notifications')}>
             <Bell className="h-5 w-5" />
             <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
               3
@@ -95,25 +97,25 @@ export function DashboardHeader() {
               <DropdownMenuItem asChild>
                 <Link to="/profile" className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
-                  Mon profil
+                  {t('nav.profile')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/profile?tab=insurance" className="cursor-pointer">
                   <CreditCard className="mr-2 h-4 w-4" />
-                  Mes assurances
+                  {t('nav.insurance')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/profile?tab=settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
-                  Paramètres
+                  {t('nav.settings')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
-                Déconnexion
+                {t('nav.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -126,7 +128,7 @@ export function DashboardHeader() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Rechercher..."
+            placeholder={t('common.search') + '...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4"

@@ -2,6 +2,7 @@ import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarCh
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SidebarNavProps {
   mobile?: boolean;
@@ -14,41 +15,42 @@ interface NavItem {
   badge?: number;
 }
 
-const publicNavItems: NavItem[] = [
-  { icon: Home, label: "Accueil", href: "/" },
-  { icon: Info, label: "À Propos", href: "/#about" },
-  { icon: UserSearch, label: "Nos Services", href: "/#services" },
-  { icon: HelpCircle, label: "FAQ", href: "/#faq" },
-  { icon: Phone, label: "Contact", href: "/#contact" },
-];
-
-const patientNavItems: NavItem[] = [
-  { icon: Home, label: "Accueil", href: "/dashboard" },
-  { icon: Calendar, label: "Mes Rendez-vous", href: "/appointments", badge: 2 },
-  { icon: FileText, label: "Mes Ordonnances", href: "/prescriptions", badge: 1 },
-  { icon: TestTube, label: "Mes Résultats", href: "/results", badge: 2 },
-  { icon: FileText, label: "Mon Dossier Médical", href: "/medical-record" },
-  { icon: UserSearch, label: "Trouver un Prestataire", href: "/providers" },
-  { icon: Map, label: "Cartographie Santé", href: "/cartography" },
-  { icon: CreditCard, label: "Remboursements CNAMGS", href: "/reimbursements" },
-  { icon: HelpCircle, label: "Aide & Support", href: "/support" },
-];
-
-const superAdminNavItems: NavItem[] = [
-  { icon: BarChart3, label: "Tableau de Bord", href: "/admin/dashboard" },
-  { icon: BookOpen, label: "Projet", href: "/admin/project" },
-  { icon: Users, label: "Utilisateurs", href: "/admin/users" },
-  { icon: Clock, label: "Approbations", href: "/admin/approvals", badge: 43 },
-  { icon: Building2, label: "Établissements", href: "/admin/establishments" },
-  { icon: Activity, label: "Professionnels", href: "/admin/professionals" },
-  { icon: Map, label: "Cartographie", href: "/cartography" },
-  { icon: Sparkles, label: "Démo", href: "/admin/demo" },
-  { icon: Shield, label: "Logs & Audit", href: "/admin/audit" },
-  { icon: Settings, label: "Paramètres", href: "/admin/settings" },
-];
-
 export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   const { user, userRoles } = useAuth();
+  const { t } = useLanguage();
+  
+  const publicNavItems: NavItem[] = [
+    { icon: Home, label: t('nav.home'), href: "/" },
+    { icon: Info, label: t('nav.about'), href: "/#about" },
+    { icon: UserSearch, label: t('nav.services'), href: "/#services" },
+    { icon: HelpCircle, label: t('nav.faq'), href: "/#faq" },
+    { icon: Phone, label: t('nav.contact'), href: "/#contact" },
+  ];
+
+  const patientNavItems: NavItem[] = [
+    { icon: Home, label: t('nav.home'), href: "/dashboard" },
+    { icon: Calendar, label: t('nav.appointments'), href: "/appointments", badge: 2 },
+    { icon: FileText, label: t('nav.prescriptions'), href: "/prescriptions", badge: 1 },
+    { icon: TestTube, label: t('nav.results'), href: "/results", badge: 2 },
+    { icon: FileText, label: t('nav.medicalRecord'), href: "/medical-record" },
+    { icon: UserSearch, label: t('nav.providers'), href: "/providers" },
+    { icon: Map, label: t('nav.cartography'), href: "/cartography" },
+    { icon: CreditCard, label: t('nav.reimbursements'), href: "/reimbursements" },
+    { icon: HelpCircle, label: t('nav.support'), href: "/support" },
+  ];
+
+  const superAdminNavItems: NavItem[] = [
+    { icon: BarChart3, label: t('nav.adminDashboard'), href: "/admin/dashboard" },
+    { icon: BookOpen, label: t('nav.project'), href: "/admin/project" },
+    { icon: Users, label: t('nav.users'), href: "/admin/users" },
+    { icon: Clock, label: t('nav.approvals'), href: "/admin/approvals", badge: 43 },
+    { icon: Building2, label: t('nav.establishments'), href: "/admin/establishments" },
+    { icon: Activity, label: t('nav.professionals'), href: "/admin/professionals" },
+    { icon: Map, label: t('nav.cartography'), href: "/cartography" },
+    { icon: Sparkles, label: t('nav.demo'), href: "/admin/demo" },
+    { icon: Shield, label: t('nav.audit'), href: "/admin/audit" },
+    { icon: Settings, label: t('nav.settings'), href: "/admin/settings" },
+  ];
   
   // Détermine le menu à afficher selon l'état de connexion et les rôles
   let navItems: NavItem[];

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TestTube, Download } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Result {
   id: string;
@@ -35,15 +36,16 @@ const mockResults: Result[] = [
 ];
 
 export function RecentResults() {
+  const { t } = useLanguage();
   const results = mockResults;
   const newCount = results.filter(r => r.isNew).length;
 
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'biology':
-        return 'Biologie';
+        return t('results.biology');
       case 'imaging':
-        return 'Imagerie';
+        return t('results.imaging');
       default:
         return type;
     }
@@ -54,13 +56,13 @@ export function RecentResults() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            Mes Résultats d'Examens
+            {t('results.title')}
             {newCount > 0 && (
-              <Badge variant="destructive">{newCount} Nouveau{newCount > 1 ? 'x' : ''}</Badge>
+              <Badge variant="destructive">{newCount} {newCount > 1 ? t('results.news') : t('results.new')}</Badge>
             )}
           </CardTitle>
           <Button variant="link" size="sm" asChild>
-            <a href="/results">Tous mes résultats</a>
+            <a href="/results">{t('results.viewAll')}</a>
           </Button>
         </div>
       </CardHeader>
@@ -71,19 +73,19 @@ export function RecentResults() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   {result.isNew && (
-                    <Badge className="bg-primary text-primary-foreground">🆕 NOUVEAU</Badge>
+                    <Badge className="bg-primary text-primary-foreground">🆕 {t('results.new').toUpperCase()}</Badge>
                   )}
                   <Badge variant="outline">{getTypeLabel(result.type)}</Badge>
-                  <Badge className="bg-success text-success-foreground">Disponible</Badge>
+                  <Badge className="bg-success text-success-foreground">{t('results.available')}</Badge>
                 </div>
-                <p className="font-medium mb-1">Date : {result.date}</p>
-                <p className="text-sm text-muted-foreground mb-1">Labo/Centre : {result.lab}</p>
-                <p className="text-sm text-muted-foreground">Prescripteur : {result.prescriber}</p>
+                <p className="font-medium mb-1">{t('prescriptions.date')} : {result.date}</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('results.labCenter')} : {result.lab}</p>
+                <p className="text-sm text-muted-foreground">{t('results.prescriber')} : {result.prescriber}</p>
               </div>
             </div>
             <Button variant="outline" size="sm" className="gap-2 w-full">
               <Download className="h-4 w-4" />
-              Télécharger PDF
+              {t('results.downloadPdf')}
             </Button>
           </div>
         ))}
