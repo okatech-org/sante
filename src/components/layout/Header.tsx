@@ -6,11 +6,13 @@ import { SidebarNav } from "./SidebarNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 
 
 export const Header = () => {
   const { user, hasRole, signOut } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const isSuperAdmin = user && hasRole("super_admin");
 
@@ -35,7 +37,7 @@ export const Header = () => {
           <SheetTrigger asChild className="lg:hidden">
             <Button variant="ghost" size="icon">
               <Menu className="h-6 w-6" />
-              <span className="sr-only">Ouvrir le menu</span>
+              <span className="sr-only">{t('header.openMenu')}</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 p-0">
@@ -59,7 +61,7 @@ export const Header = () => {
                     <Link to="/admin" className="block">
                       <Button variant="outline" size="lg" className="w-full btn-mobile-xxl">
                         <Shield className="mr-2 h-5 w-5" />
-                        Panneau Admin
+                        {t('header.adminPanel')}
                       </Button>
                     </Link>
                   )}
@@ -69,19 +71,19 @@ export const Header = () => {
                     className="w-full btn-mobile-xxl"
                     onClick={handleSignOut}
                   >
-                    Se déconnecter
+                    {t('header.signOut')}
                   </Button>
                 </>
               ) : (
                 <>
                   <Link to="/login" className="block">
                     <Button variant="ghost" size="lg" className="w-full btn-mobile-xxl">
-                      Se connecter
+                      {t('header.signIn')}
                     </Button>
                   </Link>
                   <Link to="/register" className="block">
                     <Button size="lg" className="w-full btn-mobile-xxl">
-                      S'inscrire
+                      {t('header.signUp')}
                     </Button>
                   </Link>
                 </>
@@ -100,24 +102,24 @@ export const Header = () => {
                 <Link to="/admin">
                   <Button variant="outline" size="lg">
                     <Shield className="mr-2 h-5 w-5" />
-                    Admin
+                    {t('header.admin')}
                   </Button>
                 </Link>
               )}
               <Button variant="ghost" size="lg" onClick={handleSignOut}>
-                Se déconnecter
+                {t('header.signOut')}
               </Button>
             </>
           ) : (
             <>
               <Link to="/login">
                 <Button variant="ghost" size="lg">
-                  Se connecter
+                  {t('header.signIn')}
                 </Button>
               </Link>
               <Link to="/register">
                 <Button size="lg">
-                  S'inscrire
+                  {t('header.signUp')}
                 </Button>
               </Link>
             </>

@@ -235,6 +235,14 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.footer.privacy': 'Confidentialité',
     'landing.footer.copyright': 'SANTE.GA - Ministère de la Santé du Gabon',
     
+    // Header
+    'header.openMenu': 'Ouvrir le menu',
+    'header.adminPanel': 'Panneau Admin',
+    'header.admin': 'Admin',
+    'header.signOut': 'Se déconnecter',
+    'header.signIn': 'Se connecter',
+    'header.signUp': 'S\'inscrire',
+    
     // Theme
     'theme.toggle': 'Basculer le thème',
     'theme.light': 'Clair',
@@ -473,6 +481,14 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.footer.privacy': 'Privacy',
     'landing.footer.copyright': 'SANTE.GA - Ministry of Health of Gabon',
     
+    // Header
+    'header.openMenu': 'Open menu',
+    'header.adminPanel': 'Admin Panel',
+    'header.admin': 'Admin',
+    'header.signOut': 'Sign out',
+    'header.signIn': 'Sign in',
+    'header.signUp': 'Sign up',
+    
     // Theme
     'theme.toggle': 'Toggle theme',
     'theme.light': 'Light',
@@ -580,6 +596,14 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.footer.privacy': 'Privacidad',
     'landing.footer.copyright': 'SANTE.GA - Ministerio de Salud de Gabón',
     
+    // Header
+    'header.openMenu': 'Abrir menú',
+    'header.adminPanel': 'Panel de Administración',
+    'header.admin': 'Admin',
+    'header.signOut': 'Cerrar sesión',
+    'header.signIn': 'Iniciar sesión',
+    'header.signUp': 'Registrarse',
+    
     // Language
     'language.toggle': 'Cambiar idioma',
     'language.fr': 'Français',
@@ -681,6 +705,14 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.footer.privacy': 'الخصوصية',
     'landing.footer.copyright': 'SANTE.GA - وزارة الصحة في الغابون',
     
+    // Header
+    'header.openMenu': 'فتح القائمة',
+    'header.adminPanel': 'لوحة الإدارة',
+    'header.admin': 'إدارة',
+    'header.signOut': 'تسجيل الخروج',
+    'header.signIn': 'تسجيل الدخول',
+    'header.signUp': 'التسجيل',
+    
     // Language
     'language.toggle': 'تغيير اللغة',
     'language.fr': 'Français',
@@ -781,6 +813,14 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.footer.cgu': 'Termos de uso',
     'landing.footer.privacy': 'Privacidade',
     'landing.footer.copyright': 'SANTE.GA - Ministério da Saúde do Gabão',
+    
+    // Header
+    'header.openMenu': 'Abrir menu',
+    'header.adminPanel': 'Painel de Administração',
+    'header.admin': 'Admin',
+    'header.signOut': 'Sair',
+    'header.signIn': 'Entrar',
+    'header.signUp': 'Cadastrar',
     
     // Language
     'language.toggle': 'Mudar idioma',
