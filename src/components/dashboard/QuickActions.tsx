@@ -1,35 +1,37 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Pill, Video, Hospital } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const quickActions = [
-  {
-    icon: Search,
-    label: 'Trouver un médecin',
-    href: '/providers?type=medecin',
-    color: 'primary'
-  },
-  {
-    icon: Pill,
-    label: 'Pharmacies de garde',
-    href: '/providers?type=pharmacie&garde=24/7',
-    color: 'secondary'
-  },
-  {
-    icon: Video,
-    label: 'Téléconsultation urgente',
-    href: '/teleconsultation',
-    color: 'accent'
-  },
-  {
-    icon: Hospital,
-    label: 'Hôpitaux proches',
-    href: '/providers?type=hopital',
-    color: 'success'
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function QuickActions() {
+  const { t } = useLanguage();
+  
+  const quickActions = [
+    {
+      icon: Search,
+      label: t('quickActions.findDoctor'),
+      href: '/providers?type=medecin',
+      color: 'primary'
+    },
+    {
+      icon: Pill,
+      label: t('quickActions.pharmacies'),
+      href: '/providers?type=pharmacie&garde=24/7',
+      color: 'secondary'
+    },
+    {
+      icon: Video,
+      label: t('quickActions.teleconsultation'),
+      href: '/teleconsultation',
+      color: 'accent'
+    },
+    {
+      icon: Hospital,
+      label: t('quickActions.hospitals'),
+      href: '/providers?type=hopital',
+      color: 'success'
+    }
+  ];
   return (
     <div className="grid grid-cols-2 gap-4">
       {quickActions.map((action) => {
