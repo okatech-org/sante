@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Données mockées pour la démo
 const mockStats = {
@@ -48,6 +49,7 @@ const mockLogs = [
 
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("dashboard");
 
   if (isLoading) {
@@ -68,8 +70,8 @@ export default function SuperAdminDashboard() {
         {/* En-tête */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Administration SANTE.GA</h1>
-            <p className="text-muted-foreground mt-1">Gestion Complète de l'Écosystème</p>
+            <h1 className="text-3xl font-bold">{t('admin.dashboard')}</h1>
+            <p className="text-muted-foreground mt-1">{t('admin.subtitle')}</p>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="relative">
@@ -84,34 +86,34 @@ export default function SuperAdminDashboard() {
           <TabsList className="w-full justify-start overflow-x-auto">
             <TabsTrigger value="dashboard" className="gap-2">
               <BarChart3 className="h-4 w-4" />
-              Tableau de Bord
+              {t('nav.adminDashboard')}
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
-              Utilisateurs
+              {t('nav.users')}
             </TabsTrigger>
             <TabsTrigger value="approvals" className="gap-2 relative">
               <Clock className="h-4 w-4" />
-              Approbations
+              {t('nav.approvals')}
               {mockStats.pendingApprovals > 0 && (
                 <Badge variant="destructive" className="ml-1 h-5 px-1.5">{mockStats.pendingApprovals}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="establishments" className="gap-2">
               <Building2 className="h-4 w-4" />
-              Établissements
+              {t('nav.establishments')}
             </TabsTrigger>
             <TabsTrigger value="professionals" className="gap-2">
               <Activity className="h-4 w-4" />
-              Professionnels
+              {t('nav.professionals')}
             </TabsTrigger>
             <TabsTrigger value="audit" className="gap-2">
               <Shield className="h-4 w-4" />
-              Logs & Audit
+              {t('nav.audit')}
             </TabsTrigger>
             <TabsTrigger value="settings" className="gap-2">
               <Settings className="h-4 w-4" />
-              Paramètres
+              {t('nav.settings')}
             </TabsTrigger>
           </TabsList>
 

@@ -36,6 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, UserPlus, Trash2, Users, Search, Filter, Download, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type AppRole = Database['public']['Enums']['app_role'];
 
@@ -78,6 +79,7 @@ const roleColors: Record<string, string> = {
 
 export default function AdminUsers() {
   const { user, hasRole } = useAuth();
+  const { t } = useLanguage();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -251,10 +253,10 @@ export default function AdminUsers() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
                 <Shield className="h-6 w-6" />
-                Accès refusé
+                {t('admin.accessDenied')}
               </CardTitle>
               <CardDescription>
-                Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+                {t('admin.noPermission')}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -271,13 +273,13 @@ export default function AdminUsers() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <Users className="h-8 w-8 text-primary" />
-              Gestion des Utilisateurs
+              {t('admin.users')}
             </h1>
-            <p className="text-muted-foreground mt-1">Administrez tous les utilisateurs de la plateforme SANTE.GA</p>
+            <p className="text-muted-foreground mt-1">{t('admin.usersSubtitle')}</p>
           </div>
           <Button onClick={exportUsers} variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Exporter CSV
+            {t('common.export')} CSV
           </Button>
         </div>
 
@@ -285,25 +287,25 @@ export default function AdminUsers() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Total Utilisateurs</CardDescription>
+              <CardDescription>{t('admin.totalUsers')}</CardDescription>
               <CardTitle className="text-3xl">{stats.total}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Administrateurs</CardDescription>
+              <CardDescription>{t('admin.administrators')}</CardDescription>
               <CardTitle className="text-3xl">{stats.admins}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Patients</CardDescription>
+              <CardDescription>{t('admin.patients')}</CardDescription>
               <CardTitle className="text-3xl">{stats.patients}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Professionnels</CardDescription>
+              <CardDescription>{t('admin.professionals')}</CardDescription>
               <CardTitle className="text-3xl">{stats.professionals}</CardTitle>
             </CardHeader>
           </Card>
@@ -311,8 +313,8 @@ export default function AdminUsers() {
 
         <Tabs defaultValue="all" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-auto">
-            <TabsTrigger value="all">Tous les utilisateurs</TabsTrigger>
-            <TabsTrigger value="manage">Gérer les rôles</TabsTrigger>
+            <TabsTrigger value="all">{t('admin.allUsers')}</TabsTrigger>
+            <TabsTrigger value="manage">{t('admin.manageRoles')}</TabsTrigger>
           </TabsList>
 
           {/* Onglet Liste des utilisateurs */}

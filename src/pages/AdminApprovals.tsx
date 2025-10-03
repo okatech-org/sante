@@ -61,6 +61,7 @@ import {
   User
 } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PendingApproval {
   id: string;
@@ -96,6 +97,7 @@ const roleIcons: Record<string, any> = {
 
 export default function AdminApprovals() {
   const { hasRole } = useAuth();
+  const { t } = useLanguage();
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([]);
   const [filteredApprovals, setFilteredApprovals] = useState<PendingApproval[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -294,10 +296,10 @@ export default function AdminApprovals() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
                 <Shield className="h-6 w-6" />
-                Accès refusé
+                {t('admin.accessDenied')}
               </CardTitle>
               <CardDescription>
-                Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+                {t('admin.noPermission')}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -314,14 +316,14 @@ export default function AdminApprovals() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <Clock className="h-8 w-8 text-warning" />
-              Approbations en attente
+              {t('approvals.title')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Validez les inscriptions des professionnels de santé
+              {t('approvals.subtitle')}
             </p>
           </div>
           <Badge variant="outline" className="text-lg px-4 py-2">
-            {stats.total} en attente
+            {stats.total} {t('approvals.pending')}
           </Badge>
         </div>
 
@@ -329,7 +331,7 @@ export default function AdminApprovals() {
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Total</CardDescription>
+              <CardDescription>{t('approvals.total')}</CardDescription>
               <CardTitle className="text-3xl">{stats.total}</CardTitle>
             </CardHeader>
           </Card>
@@ -337,7 +339,7 @@ export default function AdminApprovals() {
             <CardHeader className="pb-3">
               <CardDescription className="flex items-center gap-1">
                 <Stethoscope className="h-4 w-4" />
-                Médecins
+                {t('approvals.doctors')}
               </CardDescription>
               <CardTitle className="text-3xl">{stats.doctors}</CardTitle>
             </CardHeader>
@@ -346,7 +348,7 @@ export default function AdminApprovals() {
             <CardHeader className="pb-3">
               <CardDescription className="flex items-center gap-1">
                 <Pill className="h-4 w-4" />
-                Pharmacies
+                {t('approvals.pharmacies')}
               </CardDescription>
               <CardTitle className="text-3xl">{stats.pharmacies}</CardTitle>
             </CardHeader>
@@ -355,7 +357,7 @@ export default function AdminApprovals() {
             <CardHeader className="pb-3">
               <CardDescription className="flex items-center gap-1">
                 <TestTube className="h-4 w-4" />
-                Laboratoires
+                {t('approvals.laboratories')}
               </CardDescription>
               <CardTitle className="text-3xl">{stats.laboratories}</CardTitle>
             </CardHeader>
@@ -364,7 +366,7 @@ export default function AdminApprovals() {
             <CardHeader className="pb-3">
               <CardDescription className="flex items-center gap-1">
                 <Building2 className="h-4 w-4" />
-                Hôpitaux
+                {t('approvals.hospitals')}
               </CardDescription>
               <CardTitle className="text-3xl">{stats.hospitals}</CardTitle>
             </CardHeader>
