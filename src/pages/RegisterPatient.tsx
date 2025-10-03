@@ -15,7 +15,7 @@ import { Step1PersonalInfo } from "@/components/registration/Step1PersonalInfo";
 import { Step2Address } from "@/components/registration/Step2Address";
 import { Step3Insurance } from "@/components/registration/Step3Insurance";
 import { Step4Security } from "@/components/registration/Step4Security";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const STEPS = ["Infos", "Adresse", "Assurance", "Sécurité"];
 

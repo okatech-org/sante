@@ -11,8 +11,13 @@ interface AuthContextType {
   session: Session | null;
   userRoles: AppRole[];
   isLoading: boolean;
+  loading: boolean;
   hasRole: (role: AppRole) => boolean;
   hasAnyRole: (roles: AppRole[]) => boolean;
+  isSuperAdmin: boolean;
+  isAdmin: boolean;
+  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ data: any; error: any }>;
+  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -77,6 +82,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const hasRole = (role: AppRole) => userRoles.includes(role);
   const hasAnyRole = (roles: AppRole[]) => roles.some(role => userRoles.includes(role));
 
+  const isSuperAdmin = hasRole('super_admin');
+  const isAdmin = hasRole('admin') || isSuperAdmin;
+
+  const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
+    const redirectUrl = `${window.location.origin}/dashboard`;
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: metadata,
+      }
+    });
+    return { data, error };
+  };
+
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { data, error };
+  };
+
   const signOut = async () => {
     await authService.signOut();
     setUser(null);
@@ -89,9 +119,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       user, 
       session, 
       userRoles, 
-      isLoading, 
+      isLoading,
+      loading: isLoading,
       hasRole, 
       hasAnyRole,
+      isSuperAdmin,
+      isAdmin,
+      signUp,
+      signIn,
       signOut 
     }}>
       {children}
