@@ -1,0 +1,460 @@
+[
+  {
+    "id": "CLI_LBV_001",
+    "type": "clinique",
+    "nom": "Polyclinique Dr. Chambrier",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4250,
+      "lng": 9.4520
+    },
+    "adresse_descriptive": "Montagne Sainte, Libreville",
+    "telephones": ["011 76 14 68", "065 04 61 66"],
+    "email": "contact@chambrier.ga",
+    "horaires": "24h/24, 7j/7",
+    "services": [
+      "Consultations spécialisées",
+      "Chirurgie",
+      "Hospitalisation",
+      "Urgences",
+      "Imagerie médicale",
+      "Laboratoire d'analyses"
+    ],
+    "specialites": [
+      "Cardiologie",
+      "Gynécologie",
+      "Radiologie",
+      "Anesthésie-Réanimation"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true,
+      "mutuelles": ["ASCOMA", "SOGAC"]
+    },
+    "secteur": "prive",
+    "equipements_specialises": [
+      "IRM",
+      "Scanner 16 barrettes",
+      "Scanner 120 barrettes",
+      "Mammographie",
+      "Échographie Doppler"
+    ],
+    "niveau_reference": "tertiaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "065 04 61 66",
+    "notes": "⚠️ MONOPOLE : Seul centre avec IRM/Scanner haute résolution au Gabon. Service radiologie 24/7 avec radiologues sur place."
+  },
+  {
+    "id": "PHA_LBV_001",
+    "type": "pharmacie",
+    "nom": "Pharmacie de la Grâce",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4106,
+      "lng": 9.4525
+    },
+    "adresse_descriptive": "Angondjé, Libreville",
+    "telephones": ["062 94 94 24"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Matériel médical"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true,
+      "mutuelles": ["ASCOMA", "SOGAC"]
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Service d'urgence permanent. Mobile Money accepté."
+  },
+  {
+    "id": "CAB_LBV_001",
+    "type": "cabinet_medical",
+    "nom": "Cabinet de Groupe Montagne Sainte",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4260,
+      "lng": 9.4510
+    },
+    "adresse_descriptive": "Montagne Sainte, Libreville",
+    "telephones": ["011 74 31 31", "011 74 32 32"],
+    "horaires": "Lun-Ven 8h-17h, Sam 8h-12h",
+    "services": [
+      "Consultations généralistes",
+      "Consultations spécialisées",
+      "Radiologie",
+      "Laboratoire analyses"
+    ],
+    "specialites": [
+      "Médecine générale",
+      "Cardiologie",
+      "Gynécologie",
+      "Dermatologie",
+      "Néphrologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true,
+      "mutuelles": ["ASCOMA"]
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "Modèle de cabinet pluridisciplinaire. Mutualisation des équipements."
+  },
+  {
+    "id": "HOP_LBV_001",
+    "type": "hopital",
+    "nom": "CHU de Libreville",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3920,
+      "lng": 9.4540
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": ["011 72 32 15", "077 12 34 56"],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Médecine générale",
+      "Chirurgie",
+      "Maternité",
+      "Pédiatrie",
+      "Cardiologie",
+      "Radiologie",
+      "Laboratoire"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "public",
+    "niveau_reference": "tertiaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "077 12 34 56"
+  },
+  {
+    "id": "PHA_LBV_002",
+    "type": "pharmacie",
+    "nom": "Pharmacie du Mont-Bouët",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3950,
+      "lng": 9.4480
+    },
+    "adresse_descriptive": "Mont-Bouët, près du marché",
+    "telephones": ["011 73 45 67"],
+    "horaires": "Lun-Sam 8h-20h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "LAB_LBV_001",
+    "type": "laboratoire",
+    "nom": "Laboratoire Biolab",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4180,
+      "lng": 9.4550
+    },
+    "adresse_descriptive": "Glass, Face Total",
+    "telephones": ["011 76 22 33", "066 11 22 33"],
+    "horaires": "Lun-Ven 7h-18h, Sam 8h-13h",
+    "services": [
+      "Analyses de sang",
+      "Analyses d'urine",
+      "Bactériologie",
+      "Sérologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_PG_001",
+    "type": "clinique",
+    "nom": "Clinique Mandji",
+    "province": "G2",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7193,
+      "lng": 8.7815
+    },
+    "adresse_descriptive": "Centre-ville, Port-Gentil",
+    "telephones": ["011 55 12 34", "065 22 33 44"],
+    "horaires": "24h/24",
+    "services": [
+      "Consultations",
+      "Chirurgie",
+      "Maternité",
+      "Urgences",
+      "Radiologie"
+    ],
+    "specialites": [
+      "Médecine générale",
+      "Gynécologie",
+      "Chirurgie générale"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "065 22 33 44"
+  },
+  {
+    "id": "PHA_PG_001",
+    "type": "pharmacie",
+    "nom": "Pharmacie de l'Océan",
+    "province": "G2",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7210,
+      "lng": 8.7850
+    },
+    "adresse_descriptive": "Boulevard de l'Indépendance, Port-Gentil",
+    "telephones": ["011 55 67 89"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Matériel médical"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LAM_001",
+    "type": "hopital",
+    "nom": "Hôpital Albert Schweitzer",
+    "province": "G3",
+    "ville": "Lambaréné",
+    "coordonnees": {
+      "lat": -0.7097,
+      "lng": 10.2314
+    },
+    "adresse_descriptive": "Lambaréné, Moyen-Ogooué",
+    "telephones": ["011 58 11 96", "077 16 67 40"],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Médecine interne",
+      "Chirurgie",
+      "Maternité",
+      "Pédiatrie",
+      "Radiologie",
+      "Laboratoire",
+      "Pharmacie"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "confessionnel",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "✅ Hôpital de mission reconnu internationalement. Pôle de référence pour le Moyen-Ogooué."
+  },
+  {
+    "id": "HOP_MOU_001",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional de Mouila",
+    "province": "G4",
+    "ville": "Mouila",
+    "coordonnees": {
+      "lat": -1.8633,
+      "lng": 11.0558
+    },
+    "adresse_descriptive": "Centre-ville, Mouila",
+    "telephones": ["011 86 12 32"],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Médecine générale",
+      "Chirurgie générale",
+      "Maternité",
+      "Pédiatrie",
+      "Radiologie conventionnelle",
+      "Analyses médicales"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "public",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "⚠️ CHR avec problèmes d'équipements et maintenance. Pas d'imagerie lourde."
+  },
+  {
+    "id": "HOP_FRA_001",
+    "type": "hopital",
+    "nom": "CHR de Franceville",
+    "province": "G5",
+    "ville": "Franceville",
+    "coordonnees": {
+      "lat": -1.6333,
+      "lng": 13.5833
+    },
+    "adresse_descriptive": "Centre-ville, Franceville",
+    "telephones": ["011 67 12 34"],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Médecine générale",
+      "Chirurgie",
+      "Maternité",
+      "Pédiatrie"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "public",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_002",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Dr. Nzamba",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4150,
+      "lng": 9.4600
+    },
+    "adresse_descriptive": "Quartier Louis, Libreville",
+    "telephones": ["011 74 55 66"],
+    "horaires": "Lun-Ven 9h-17h",
+    "services": ["Consultations généralistes"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": false
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_001",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr. Mbina",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4200,
+      "lng": 9.4530
+    },
+    "adresse_descriptive": "Nombakélé, près du rond-point",
+    "telephones": ["011 76 88 99"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire", "Orthodontie"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "IMG_LBV_001",
+    "type": "imagerie",
+    "nom": "Centre d'Imagerie Médicale",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4230,
+      "lng": 9.4500
+    },
+    "adresse_descriptive": "Akébé, Libreville",
+    "telephones": ["011 77 11 22"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Radiologie", "Échographie", "Mammographie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "equipements_specialises": ["Échographie Doppler", "Mammographie"],
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_003",
+    "type": "pharmacie",
+    "nom": "Pharmacie du Plateau",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3880,
+      "lng": 9.4510
+    },
+    "adresse_descriptive": "Plateau, près de la Présidence",
+    "telephones": ["011 72 44 55"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Matériel médical"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Pharmacie de garde. Mobile Money accepté."
+  },
+  {
+    "id": "CAB_LBV_003",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Dr. Ondo (Cardiologue)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4270,
+      "lng": 9.4490
+    },
+    "adresse_descriptive": "Montagne Sainte, Libreville",
+    "telephones": ["011 75 22 33"],
+    "horaires": "Sur rendez-vous",
+    "services": ["Consultations cardiologiques", "ECG", "Échographie cardiaque"],
+    "specialites": ["Cardiologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  }
+]

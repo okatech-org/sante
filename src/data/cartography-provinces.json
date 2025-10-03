@@ -1,0 +1,156 @@
+{
+  "provinces": [
+    {
+      "id": "G1",
+      "nom": "Estuaire",
+      "chef_lieu": "Libreville",
+      "coordonnees_centre": {
+        "lat": 0.4162,
+        "lng": 9.4673
+      },
+      "population_estimee": 800000,
+      "villes_principales": [
+        {
+          "nom": "Libreville",
+          "coordonnees": { "lat": 0.4162, "lng": 9.4673 }
+        },
+        {
+          "nom": "Owendo",
+          "coordonnees": { "lat": 0.3018, "lng": 9.5007 }
+        },
+        {
+          "nom": "Ntoum",
+          "coordonnees": { "lat": 0.3889, "lng": 9.7667 }
+        }
+      ]
+    },
+    {
+      "id": "G2",
+      "nom": "Ogooué-Maritime",
+      "chef_lieu": "Port-Gentil",
+      "coordonnees_centre": {
+        "lat": -0.7193,
+        "lng": 8.7815
+      },
+      "population_estimee": 150000,
+      "villes_principales": [
+        {
+          "nom": "Port-Gentil",
+          "coordonnees": { "lat": -0.7193, "lng": 8.7815 }
+        }
+      ]
+    },
+    {
+      "id": "G3",
+      "nom": "Moyen-Ogooué",
+      "chef_lieu": "Lambaréné",
+      "coordonnees_centre": {
+        "lat": -0.7097,
+        "lng": 10.2314
+      },
+      "population_estimee": 70000,
+      "villes_principales": [
+        {
+          "nom": "Lambaréné",
+          "coordonnees": { "lat": -0.7097, "lng": 10.2314 }
+        }
+      ]
+    },
+    {
+      "id": "G4",
+      "nom": "Ngounié",
+      "chef_lieu": "Mouila",
+      "coordonnees_centre": {
+        "lat": -1.8633,
+        "lng": 11.0558
+      },
+      "population_estimee": 100000,
+      "villes_principales": [
+        {
+          "nom": "Mouila",
+          "coordonnees": { "lat": -1.8633, "lng": 11.0558 }
+        }
+      ]
+    },
+    {
+      "id": "G5",
+      "nom": "Haut-Ogooué",
+      "chef_lieu": "Franceville",
+      "coordonnees_centre": {
+        "lat": -1.6333,
+        "lng": 13.5833
+      },
+      "population_estimee": 250000,
+      "villes_principales": [
+        {
+          "nom": "Franceville",
+          "coordonnees": { "lat": -1.6333, "lng": 13.5833 }
+        }
+      ]
+    },
+    {
+      "id": "G6",
+      "nom": "Nyanga",
+      "chef_lieu": "Tchibanga",
+      "coordonnees_centre": {
+        "lat": -2.8500,
+        "lng": 11.0167
+      },
+      "population_estimee": 50000,
+      "villes_principales": [
+        {
+          "nom": "Tchibanga",
+          "coordonnees": { "lat": -2.8500, "lng": 11.0167 }
+        }
+      ]
+    },
+    {
+      "id": "G7",
+      "nom": "Ogooué-Lolo",
+      "chef_lieu": "Koulamoutou",
+      "coordonnees_centre": {
+        "lat": -1.1333,
+        "lng": 12.4833
+      },
+      "population_estimee": 65000,
+      "villes_principales": [
+        {
+          "nom": "Koulamoutou",
+          "coordonnees": { "lat": -1.1333, "lng": 12.4833 }
+        }
+      ]
+    },
+    {
+      "id": "G8",
+      "nom": "Ogooué-Ivindo",
+      "chef_lieu": "Makokou",
+      "coordonnees_centre": {
+        "lat": 0.5667,
+        "lng": 12.8667
+      },
+      "population_estimee": 63000,
+      "villes_principales": [
+        {
+          "nom": "Makokou",
+          "coordonnees": { "lat": 0.5667, "lng": 12.8667 }
+        }
+      ]
+    },
+    {
+      "id": "G9",
+      "nom": "Woleu-Ntem",
+      "chef_lieu": "Oyem",
+      "coordonnees_centre": {
+        "lat": 1.5989,
+        "lng": 11.5793
+      },
+      "population_estimee": 150000,
+      "villes_principales": [
+        {
+          "nom": "Oyem",
+          "coordonnees": { "lat": 1.5989, "lng": 11.5793 }
+        }
+      ]
+    }
+  ]
+}

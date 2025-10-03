@@ -29,6 +29,7 @@ import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
+import Cartography from "./pages/Cartography";
 
 const queryClient = new QueryClient();
 
