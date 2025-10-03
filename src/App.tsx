@@ -18,6 +18,7 @@ import Providers from "./pages/Providers";
 import Reimbursements from "./pages/Reimbursements";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import AdminUsers from "./pages/AdminUsers";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDemo from "./pages/AdminDemo";
@@ -97,6 +98,11 @@ const App = () => (
             <Route path="/admin/project" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminProject />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users" element={
+              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
+                <AdminUsers />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
