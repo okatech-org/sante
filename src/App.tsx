@@ -27,8 +27,8 @@ import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDemo from "./pages/AdminDemo";
 import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
-import AdminSettings from "./pages/AdminSettings";
 import NotFound from "./pages/NotFound";
+import AdminSettings from "./pages/AdminSettings";
 
 const queryClient = new QueryClient();
 
