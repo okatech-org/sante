@@ -39,7 +39,8 @@ export default function RegisterProfessional() {
       professionalType: searchParams.get('type') as any || undefined,
       medicalStaffType: "",
       doctorSpecialty: "",
-      fullName: "",
+      lastName: "",
+      firstName: "",
       establishmentName: "",
       specialty: "",
       licenseNumber: "",
@@ -59,7 +60,7 @@ export default function RegisterProfessional() {
   const onSubmit = async (data: ProfessionalRegistrationData) => {
     try {
       const { error } = await signUp(data.professionalEmail, data.password, {
-        full_name: data.fullName,
+        full_name: `${data.firstName} ${data.lastName}`,
         phone: data.professionalPhone,
         professional_type: data.professionalType,
         establishment_name: data.establishmentName,
@@ -101,7 +102,7 @@ export default function RegisterProfessional() {
         fieldsToValidate = ["professionalType", "medicalStaffType", "doctorSpecialty"];
         break;
       case 2:
-        fieldsToValidate = ["fullName", "establishmentName", "specialty", "licenseNumber"];
+        fieldsToValidate = ["lastName", "firstName", "establishmentName", "specialty", "licenseNumber"];
         break;
       case 3:
         fieldsToValidate = ["professionalEmail", "professionalPhone"];

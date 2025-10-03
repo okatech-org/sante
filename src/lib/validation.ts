@@ -143,10 +143,17 @@ export const professionalRegistrationSchema = z.object({
     .or(z.literal("")),
   
   // Étape 2 : Informations professionnelles
-  fullName: z.string()
-    .min(3, "Le nom doit contenir au moins 3 caractères")
-    .max(100, "Le nom ne peut pas dépasser 100 caractères")
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le nom ne peut contenir que des lettres"),
+  lastName: z.string()
+    .min(2, "Le nom doit contenir au moins 2 caractères")
+    .max(50, "Le nom ne peut pas dépasser 50 caractères")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le nom ne peut contenir que des lettres")
+    .transform((val) => val.toUpperCase()),
+  
+  firstName: z.string()
+    .min(2, "Le prénom doit contenir au moins 2 caractères")
+    .max(50, "Le prénom ne peut pas dépasser 50 caractères")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le prénom ne peut contenir que des lettres")
+    .transform((val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase()),
   
   establishmentName: z.string()
     .min(2, "Le nom de l'établissement doit contenir au moins 2 caractères")

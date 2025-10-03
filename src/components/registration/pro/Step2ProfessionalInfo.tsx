@@ -39,17 +39,44 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
 
       <FormField
         control={form.control}
-        name="fullName"
+        name="lastName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nom complet {professionalType === "hospital" ? "du responsable" : ""}</FormLabel>
+            <FormLabel>Nom {professionalType === "hospital" ? "du responsable" : ""}</FormLabel>
             <FormControl>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder={professionalType === "hospital" ? "Dr. Jean Dupont" : "Dr. Jean Dupont"}
+                  placeholder="DUPONT"
+                  className="pl-10 uppercase"
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                />
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="firstName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Prénom {professionalType === "hospital" ? "du responsable" : ""}</FormLabel>
+            <FormControl>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Jean"
                   className="pl-10"
                   {...field}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const formatted = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                    field.onChange(formatted);
+                  }}
                 />
               </div>
             </FormControl>
