@@ -41,57 +41,60 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
       <div className="text-center space-y-2">
         <h3 className="text-lg font-semibold">Informations professionnelles</h3>
         <p className="text-sm text-muted-foreground">
-          Renseignez vos informations d'identification professionnelle
+          Complétez vos informations personnelles et professionnelles
         </p>
       </div>
 
-      <FormField
-        control={form.control}
-        name="lastName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nom {professionalType === "hospital" ? "du responsable" : ""}</FormLabel>
-            <FormControl>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="DUPONT"
-                  className="pl-10 uppercase"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <FormField
-        control={form.control}
-        name="firstName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Prénom {professionalType === "hospital" ? "du responsable" : ""}</FormLabel>
-            <FormControl>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Jean"
-                  className="pl-10"
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const formatted = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-                    field.onChange(formatted);
-                  }}
-                />
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nom {professionalType === "hospital" ? "du responsable" : ""} *</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="DUPONT"
+                    className="pl-10 uppercase"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prénom {professionalType === "hospital" ? "du responsable" : ""} *</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Jean"
+                    className="pl-10"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const formatted = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+                      field.onChange(formatted);
+                    }}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
@@ -103,7 +106,7 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
-                  value={field.value}
+                  value={field.value || ""}
                   className="flex gap-4"
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
@@ -131,7 +134,7 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Titre professionnel *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Sélectionnez" />
@@ -198,7 +201,7 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nationalité *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Sélectionnez" />
