@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,6 +29,7 @@ const patientNavItems: NavItem[] = [
   { icon: TestTube, label: "Mes Résultats", href: "/results", badge: 2 },
   { icon: FileText, label: "Mon Dossier Médical", href: "/medical-record" },
   { icon: UserSearch, label: "Trouver un Prestataire", href: "/providers" },
+  { icon: Map, label: "Cartographie Santé", href: "/cartography" },
   { icon: CreditCard, label: "Remboursements CNAMGS", href: "/reimbursements" },
   { icon: HelpCircle, label: "Aide & Support", href: "/support" },
 ];
@@ -40,6 +41,7 @@ const superAdminNavItems: NavItem[] = [
   { icon: Clock, label: "Approbations", href: "/admin/approvals", badge: 43 },
   { icon: Building2, label: "Établissements", href: "/admin/establishments" },
   { icon: Activity, label: "Professionnels", href: "/admin/professionals" },
+  { icon: Map, label: "Cartographie", href: "/cartography" },
   { icon: Sparkles, label: "Démo", href: "/admin/demo" },
   { icon: Shield, label: "Logs & Audit", href: "/admin/audit" },
   { icon: Settings, label: "Paramètres", href: "/admin/settings" },

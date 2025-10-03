@@ -1,11 +1,11 @@
-import { Home, Search, Plus, Pill, User } from "lucide-react";
+import { Home, Map, Plus, Pill, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
-  { icon: Search, label: "Recherche", href: "/providers" },
+  { icon: Map, label: "Carte", href: "/cartography" },
   { icon: Pill, label: "Ordonnances", href: "/prescriptions" },
   { icon: User, label: "Profil", href: "/profile" },
 ];
