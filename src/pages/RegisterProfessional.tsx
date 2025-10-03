@@ -1,46 +1,153 @@
-import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { ProgressIndicator } from "@/components/registration/ProgressIndicator";
+import { professionalRegistrationSchema, ProfessionalRegistrationData } from "@/lib/validation";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { sanitizeAuthError, logError } from "@/lib/errorHandler";
 
-const professionalTypes = {
-  doctor: {
-    title: "Inscription Médecin",
-    description: "Médecin généraliste ou spécialiste"
-  },
-  "medical-staff": {
-    title: "Inscription Personnel Médical",
-    description: "Infirmier(ère), sage-femme, kinésithérapeute, etc."
-  },
-  pharmacy: {
-    title: "Inscription Pharmacie",
-    description: "Officine ou pharmacie d'établissement"
-  },
-  laboratory: {
-    title: "Inscription Laboratoire",
-    description: "Laboratoire d'analyses médicales"
-  },
-  hospital: {
-    title: "Inscription Établissement",
-    description: "Hôpital, clinique ou centre de santé"
-  }
-};
+// Import des composants d'étapes
+import { Step1ProfessionalType } from "@/components/registration/pro/Step1ProfessionalType";
+import { Step2ProfessionalInfo } from "@/components/registration/pro/Step2ProfessionalInfo";
+import { Step3ProfessionalContact } from "@/components/registration/pro/Step3ProfessionalContact";
+import { Step4ProfessionalAddress } from "@/components/registration/pro/Step4ProfessionalAddress";
+import { Step5ProfessionalSecurity } from "@/components/registration/pro/Step5ProfessionalSecurity";
+
+const STEPS = ["Type", "Infos", "Contact", "Adresse", "Sécurité"];
 
 export default function RegisterProfessional() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const type = searchParams.get('type') as keyof typeof professionalTypes || 'doctor';
-  
-  const professionalInfo = professionalTypes[type] || professionalTypes.doctor;
+  const [searchParams] = useSearchParams();
+  const { signUp, user } = useAuth();
+  const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
+  const form = useForm<ProfessionalRegistrationData>({
+    resolver: zodResolver(professionalRegistrationSchema),
+    defaultValues: {
+      professionalType: searchParams.get('type') as any || undefined,
+      fullName: "",
+      establishmentName: "",
+      specialty: "",
+      licenseNumber: "",
+      professionalPhone: "+241 ",
+      professionalEmail: "",
+      province: "",
+      city: "",
+      address: "",
+      password: "",
+      passwordConfirm: "",
+      acceptTerms: false,
+      acceptProfessionalCode: false,
+    },
+    mode: "onBlur",
+  });
+
+  const onSubmit = async (data: ProfessionalRegistrationData) => {
+    try {
+      const { error } = await signUp(data.professionalEmail, data.password, {
+        full_name: data.fullName,
+        phone: data.professionalPhone,
+        professional_type: data.professionalType,
+        establishment_name: data.establishmentName,
+        specialty: data.specialty,
+        license_number: data.licenseNumber,
+        address: data.address,
+        city: data.city,
+        province: data.province,
+      });
+
+      if (error) {
+        const sanitized = sanitizeAuthError(error);
+        if (sanitized.shouldLog) {
+          logError('Register Professional', error);
+        }
+        toast.error("Erreur lors de l'inscription", {
+          description: sanitized.message,
+        });
+        return;
+      }
+
+      toast.success("Inscription réussie !", {
+        description: "Votre compte professionnel sera activé après vérification par nos équipes. Vous recevrez un email de confirmation.",
+        duration: 6000,
+      });
+      navigate("/login/pro");
+    } catch (error: any) {
+      toast.error("Erreur lors de l'inscription", {
+        description: "Une erreur est survenue. Veuillez réessayer.",
+      });
+    }
+  };
+
+  const nextStep = async () => {
+    let fieldsToValidate: (keyof ProfessionalRegistrationData)[] = [];
+
+    switch (currentStep) {
+      case 1:
+        fieldsToValidate = ["professionalType"];
+        break;
+      case 2:
+        fieldsToValidate = ["fullName", "establishmentName", "specialty", "licenseNumber"];
+        break;
+      case 3:
+        fieldsToValidate = ["professionalEmail", "professionalPhone"];
+        break;
+      case 4:
+        fieldsToValidate = ["province", "city", "address"];
+        break;
+    }
+
+    const isValid = await form.trigger(fieldsToValidate);
+    
+    if (isValid) {
+      setCurrentStep((prev) => Math.min(prev + 1, 5));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toast.error("Veuillez corriger les erreurs avant de continuer");
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1ProfessionalType form={form} />;
+      case 2:
+        return <Step2ProfessionalInfo form={form} />;
+      case 3:
+        return <Step3ProfessionalContact form={form} />;
+      case 4:
+        return <Step4ProfessionalAddress form={form} />;
+      case 5:
+        return <Step5ProfessionalSecurity form={form} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-primary/5 to-background">
       <Card className="w-full max-w-2xl">
         <CardHeader className="space-y-6">
           <div className="flex items-center justify-between">
-            <Link to="/register" className="text-muted-foreground hover:text-foreground transition-colors">
-              <ArrowLeft className="h-5 w-5" />
+            <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+              <ChevronLeft className="h-5 w-5" />
             </Link>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
               <Heart className="h-7 w-7 text-primary-foreground" fill="currentColor" />
@@ -49,69 +156,60 @@ export default function RegisterProfessional() {
           </div>
           
           <div className="text-center space-y-2">
-            <CardTitle className="text-2xl">{professionalInfo.title}</CardTitle>
-            <CardDescription>{professionalInfo.description}</CardDescription>
+            <CardTitle className="text-2xl">Inscription Professionnel</CardTitle>
+            <CardDescription>Étape {currentStep} sur 5</CardDescription>
           </div>
+
+          <ProgressIndicator
+            currentStep={currentStep}
+            totalSteps={5}
+            stepLabels={STEPS}
+          />
         </CardHeader>
 
-        <CardContent className="space-y-6">
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Fonctionnalité en développement</AlertTitle>
-            <AlertDescription>
-              L'inscription pour les professionnels de santé est actuellement en cours de développement. 
-              Cette fonctionnalité sera disponible prochainement et comprendra :
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Vérification des diplômes et qualifications</li>
-                <li>Validation par l'Ordre des Médecins du Gabon</li>
-                <li>Configuration du profil professionnel</li>
-                <li>Gestion du planning et des disponibilités</li>
-              </ul>
-            </AlertDescription>
-          </Alert>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {renderStep()}
 
-          <div className="space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <h3 className="font-semibold">Vous êtes déjà inscrit ?</h3>
-              <p className="text-sm text-muted-foreground">
-                Si vous avez déjà un compte professionnel, connectez-vous pour accéder à votre espace.
-              </p>
-              <Link to="/login">
-                <Button variant="outline" className="w-full">
-                  Se connecter
-                </Button>
+              <div className="flex gap-4 pt-4">
+                {currentStep > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={prevStep}
+                    className="flex-1 btn-mobile-xxl"
+                  >
+                    <ChevronLeft className="mr-2 h-5 w-5" />
+                    Précédent
+                  </Button>
+                )}
+
+                {currentStep < 5 ? (
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="flex-1 btn-mobile-xxl"
+                  >
+                    Suivant
+                    <ChevronRight className="ml-2 h-5 w-5" />
+                  </Button>
+                ) : (
+                  <Button type="submit" className="flex-1 btn-mobile-xxl">
+                    Créer mon compte professionnel
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
+
+          <div className="mt-6 text-center text-sm">
+            <p className="text-muted-foreground">
+              Déjà inscrit ?{" "}
+              <Link to="/login/pro" className="text-primary hover:underline font-medium">
+                Se connecter
               </Link>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <h3 className="font-semibold">Besoin d'aide ?</h3>
-              <p className="text-sm text-muted-foreground">
-                Pour toute question concernant l'inscription des professionnels de santé, 
-                contactez notre équipe de support.
-              </p>
-              <Button variant="outline" className="w-full" asChild>
-                <a href="mailto:support@sante.ga">
-                  Contacter le support
-                </a>
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/register')}
-              className="flex-1"
-            >
-              Retour
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => navigate('/')}
-              className="flex-1"
-            >
-              Retour à l'accueil
-            </Button>
+            </p>
           </div>
         </CardContent>
       </Card>

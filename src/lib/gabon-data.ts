@@ -73,3 +73,12 @@ export const mutuelles = [
   { value: "ogar", label: "OGAR" },
   { value: "autre", label: "Autre" },
 ];
+
+// Helper functions
+export const provinces = gabonProvinces.map(p => p.label);
+
+export const getCitiesByProvince = (provinceName: string): string[] => {
+  const provinceKey = gabonProvinces.find(p => p.label === provinceName)?.value;
+  if (!provinceKey) return [];
+  return (gabonCities[provinceKey] || []).map(c => c.label);
+};
