@@ -1,0 +1,333 @@
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Clock, 
+  MapPin, 
+  Phone, 
+  Video, 
+  Calendar,
+  FileText,
+  X,
+  Edit,
+  CreditCard,
+  Navigation,
+  Pill,
+  FileCheck,
+  AlertCircle,
+  CheckCircle2
+} from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+
+export interface Appointment {
+  id: string;
+  date: Date;
+  timeSlot: string;
+  type: "consultation" | "telemedicine" | "exam";
+  status: "upcoming" | "past" | "cancelled";
+  provider: {
+    name: string;
+    specialty: string;
+    photo?: string;
+  };
+  reason: string;
+  location?: string;
+  payment: {
+    status: "paid" | "unpaid";
+    amount: number;
+    method?: string;
+  };
+  documents?: {
+    type: "prescription" | "report" | "results";
+    label: string;
+  }[];
+  prescribedBy?: string;
+  instructions?: string;
+  cancellation?: {
+    date: Date;
+    by: "patient" | "provider";
+    refund?: number;
+    refundStatus?: "pending" | "completed";
+  };
+}
+
+interface AppointmentCardProps {
+  appointment: Appointment;
+  variant?: "full" | "compact";
+  onViewDetails?: () => void;
+  onCancel?: () => void;
+  onModify?: () => void;
+  onPay?: () => void;
+  onCall?: () => void;
+  onGetDirections?: () => void;
+}
+
+export const AppointmentCard = ({
+  appointment,
+  variant = "full",
+  onViewDetails,
+  onCancel,
+  onModify,
+  onPay,
+  onCall,
+  onGetDirections,
+}: AppointmentCardProps) => {
+  const getTimeUntil = (date: Date) => {
+    const now = new Date();
+    const diff = date.getTime() - now.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+
+    if (hours < 0) return null;
+    if (hours < 2) return `Dans ${hours}h`;
+    if (hours < 24) return `Dans ${hours} heures`;
+    return `Dans ${days} jours`;
+  };
+
+  const isToday = format(appointment.date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+  const isSoon = appointment.date.getTime() - new Date().getTime() < 2 * 60 * 60 * 1000;
+  const timeUntil = getTimeUntil(appointment.date);
+
+  const getTypeIcon = () => {
+    switch (appointment.type) {
+      case "telemedicine":
+        return <Video className="h-5 w-5" />;
+      case "exam":
+        return <FileCheck className="h-5 w-5" />;
+      default:
+        return <Calendar className="h-5 w-5" />;
+    }
+  };
+
+  const getTypeLabel = () => {
+    switch (appointment.type) {
+      case "telemedicine":
+        return "TÉLÉCONSULTATION";
+      case "exam":
+        return "EXAMEN";
+      default:
+        return "CONSULTATION";
+    }
+  };
+
+  if (variant === "compact") {
+    return (
+      <Card className="p-4 hover:shadow-md transition-shadow">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              {appointment.status === "past" && (
+                <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+              )}
+              {appointment.status === "cancelled" && (
+                <X className="h-4 w-4 text-destructive flex-shrink-0" />
+              )}
+              <p className="font-medium truncate">
+                {format(appointment.date, "dd/MM", { locale: fr })} - {appointment.timeSlot.split(" - ")[0]} | {appointment.provider.name}
+              </p>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {getTypeLabel()} | {appointment.provider.specialty}
+            </p>
+            {appointment.cancellation && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Annulé le {format(appointment.cancellation.date, "dd/MM", { locale: fr })} ({appointment.cancellation.by === "patient" ? "vous" : "praticien"})
+                {appointment.cancellation.refund && (
+                  <span className="block">
+                    Remboursement : {appointment.cancellation.refund.toLocaleString()} FCFA ({appointment.cancellation.refundStatus === "completed" ? "Remboursé" : "En cours"})
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            {appointment.documents && appointment.documents.length > 0 && (
+              <Button variant="outline" size="sm" onClick={onViewDetails}>
+                <FileText className="h-4 w-4" />
+                {appointment.documents.length}
+              </Button>
+            )}
+            {onViewDetails && (
+              <Button variant="ghost" size="sm" onClick={onViewDetails}>
+                Détails
+              </Button>
+            )}
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className={cn(
+      "p-6 hover:shadow-lg transition-all",
+      isSoon && appointment.status === "upcoming" && "border-primary shadow-md animate-pulse"
+    )}>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            {getTypeIcon()}
+          </div>
+          <div>
+            <p className="font-semibold text-lg">{appointment.timeSlot}</p>
+            {appointment.type === "telemedicine" && (
+              <Badge variant="outline" className="mt-1">
+                <Video className="h-3 w-3 mr-1" />
+                {getTypeLabel()}
+              </Badge>
+            )}
+          </div>
+        </div>
+        {isToday && appointment.status === "upcoming" && (
+          <Badge variant="destructive" className="animate-pulse">
+            AUJOURD'HUI
+          </Badge>
+        )}
+      </div>
+
+      {/* Provider Info */}
+      <div className="mb-4">
+        <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
+          👨‍⚕️ {appointment.provider.name}
+        </h3>
+        <p className="text-muted-foreground ml-6">{appointment.provider.specialty}</p>
+      </div>
+
+      {/* Reason */}
+      <div className="mb-4 flex items-start gap-2">
+        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+        <p className="text-sm">{appointment.reason}</p>
+      </div>
+
+      {/* Location or Telemedicine */}
+      {appointment.location && appointment.type !== "telemedicine" && (
+        <div className="mb-4">
+          <div className="flex items-start gap-2">
+            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm">{appointment.location}</p>
+              {onGetDirections && (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="h-auto p-0 mt-1"
+                  onClick={onGetDirections}
+                >
+                  🗺️ Voir itinéraire
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Prescribed By (for exams) */}
+      {appointment.prescribedBy && (
+        <div className="mb-4 flex items-start gap-2">
+          <Pill className="h-4 w-4 text-muted-foreground mt-0.5" />
+          <p className="text-sm">Prescrit par : {appointment.prescribedBy}</p>
+        </div>
+      )}
+
+      {/* Instructions */}
+      {appointment.instructions && (
+        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-warning/10 border border-warning/20">
+          <AlertCircle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-warning-foreground">{appointment.instructions}</p>
+        </div>
+      )}
+
+      {/* Payment Status */}
+      <div className="mb-4">
+        {appointment.payment.status === "paid" ? (
+          <div className="flex items-center gap-2 text-success">
+            <CheckCircle2 className="h-4 w-4" />
+            <span className="text-sm font-medium">
+              Payé : {appointment.payment.amount.toLocaleString()} FCFA
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-warning">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm font-medium">
+              À payer : {appointment.payment.amount.toLocaleString()} FCFA
+            </span>
+            {appointment.payment.method && (
+              <span className="text-xs text-muted-foreground">
+                (Paiement sur place sélectionné)
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Time Until */}
+      {timeUntil && appointment.status === "upcoming" && (
+        <div className={cn(
+          "mb-4 flex items-center gap-2 p-2 rounded-lg",
+          isSoon ? "bg-destructive/10 text-destructive" : "bg-muted"
+        )}>
+          <Clock className="h-4 w-4" />
+          <span className="text-sm font-medium">{timeUntil}</span>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex flex-wrap gap-2 pt-4 border-t">
+        {appointment.status === "upcoming" && (
+          <>
+            {appointment.type === "telemedicine" && isSoon && (
+              <Button size="sm" className="flex-1 sm:flex-none">
+                <Video className="h-4 w-4 mr-2" />
+                Rejoindre
+              </Button>
+            )}
+            {onCall && appointment.type !== "telemedicine" && (
+              <Button variant="outline" size="sm" onClick={onCall}>
+                <Phone className="h-4 w-4 mr-2" />
+                Appeler
+              </Button>
+            )}
+            {onGetDirections && appointment.type !== "telemedicine" && (
+              <Button variant="outline" size="sm" onClick={onGetDirections}>
+                <Navigation className="h-4 w-4 mr-2" />
+                Itinéraire
+              </Button>
+            )}
+            {appointment.payment.status === "unpaid" && onPay && (
+              <Button variant="default" size="sm" onClick={onPay}>
+                <CreditCard className="h-4 w-4 mr-2" />
+                Payer
+              </Button>
+            )}
+            {onModify && (
+              <Button variant="outline" size="sm" onClick={onModify}>
+                <Edit className="h-4 w-4 mr-2" />
+                Modifier
+              </Button>
+            )}
+            {onCancel && (
+              <Button variant="destructive" size="sm" onClick={onCancel}>
+                <X className="h-4 w-4 mr-2" />
+                Annuler
+              </Button>
+            )}
+          </>
+        )}
+        {appointment.status === "past" && appointment.documents && (
+          <>
+            {appointment.documents.map((doc, idx) => (
+              <Button key={idx} variant="outline" size="sm">
+                <FileText className="h-4 w-4 mr-2" />
+                {doc.label}
+              </Button>
+            ))}
+          </>
+        )}
+      </div>
+    </Card>
+  );
+};
