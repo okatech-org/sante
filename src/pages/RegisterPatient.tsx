@@ -16,6 +16,7 @@ import { Step2Address } from "@/components/registration/Step2Address";
 import { Step3Insurance } from "@/components/registration/Step3Insurance";
 import { Step4Security } from "@/components/registration/Step4Security";
 import { useAuth } from "@/contexts/AuthContext";
+import { sanitizeAuthError, logError } from "@/lib/errorHandler";
 
 const STEPS = ["Infos", "Adresse", "Assurance", "Sécurité"];
 
@@ -61,8 +62,12 @@ export default function RegisterPatient() {
       });
 
       if (error) {
+        const sanitized = sanitizeAuthError(error);
+        if (sanitized.shouldLog) {
+          logError('Register', error);
+        }
         toast.error("Erreur lors de l'inscription", {
-          description: error.message,
+          description: sanitized.message,
         });
         return;
       }

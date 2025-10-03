@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { loginSchema, LoginData } from "@/lib/validation";
 import { authService } from "@/lib/auth";
 import { toast } from "sonner";
+import { sanitizeAuthError, logError } from "@/lib/errorHandler";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,9 +36,12 @@ export default function Login() {
       });
       navigate("/dashboard");
     } catch (error: any) {
-      console.error('Login error:', error);
+      const sanitized = sanitizeAuthError(error);
+      if (sanitized.shouldLog) {
+        logError('Login', error);
+      }
       toast.error("Erreur de connexion", {
-        description: error.message || "Email/téléphone ou mot de passe incorrect",
+        description: sanitized.message,
       });
     } finally {
       setIsLoading(false);
