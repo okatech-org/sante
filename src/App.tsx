@@ -66,6 +66,11 @@ const App = () => (
                 <Prescriptions />
               </ProtectedRoute>
             } />
+            <Route path="/cartography" element={
+              <ProtectedRoute>
+                <Cartography />
+              </ProtectedRoute>
+            } />
             <Route path="/results" element={
               <ProtectedRoute>
                 <Results />

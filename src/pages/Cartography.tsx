@@ -15,8 +15,8 @@ import providersData from "@/data/cartography-providers.json";
 import provincesData from "@/data/cartography-provinces.json";
 
 export default function Cartography() {
-  const [providers, setProviders] = useState<CartographyProvider[]>(providersData);
-  const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>(providersData);
+  const [providers, setProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
+  const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
   const [userLocation, setUserLocation] = useState<Coordonnees | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [viewMode, setViewMode] = useState<'both' | 'map' | 'list'>('both');
