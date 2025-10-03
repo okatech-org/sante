@@ -17,38 +17,40 @@ import {
 } from "lucide-react";
 import { InfoCard } from "@/components/common/InfoCard";
 import { Header } from "@/components/layout/Header";
-
-const howItWorks = [
-  {
-    emoji: "🔍",
-    title: "Trouvez votre prestataire",
-    description: "Recherchez parmi des milliers de médecins, cliniques et pharmacies à Libreville et partout au Gabon",
-    icon: MapPin,
-  },
-  {
-    emoji: "📅",
-    title: "Prenez rendez-vous en ligne",
-    description: "Réservez votre consultation en quelques clics, 24h/24 et 7j/7",
-    icon: Calendar,
-  },
-  {
-    emoji: "💊",
-    title: "Recevez vos ordonnances",
-    description: "Accédez à vos ordonnances, résultats et documents médicaux depuis votre téléphone",
-    icon: Bell,
-  },
-];
-
-const services = [
-  { icon: Stethoscope, title: "Consultation médicale", color: "text-primary" },
-  { icon: Video, title: "Téléconsultation", color: "text-secondary" },
-  { icon: FileText, title: "Pharmacies 24/7", color: "text-success" },
-  { icon: TestTube, title: "Laboratoires", color: "text-warning" },
-  { icon: Building2, title: "Hôpitaux & Cliniques", color: "text-destructive" },
-  { icon: CreditCard, title: "Suivi CNAMGS/CNSS", color: "text-accent" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Landing() {
+  const { t } = useLanguage();
+
+  const howItWorks = [
+    {
+      emoji: "🔍",
+      title: t('landing.step1.title'),
+      description: t('landing.step1.desc'),
+      icon: MapPin,
+    },
+    {
+      emoji: "📅",
+      title: t('landing.step2.title'),
+      description: t('landing.step2.desc'),
+      icon: Calendar,
+    },
+    {
+      emoji: "💊",
+      title: t('landing.step3.title'),
+      description: t('landing.step3.desc'),
+      icon: Bell,
+    },
+  ];
+
+  const services = [
+    { icon: Stethoscope, title: t('landing.service.medical'), color: "text-primary" },
+    { icon: Video, title: t('landing.service.telehealth'), color: "text-secondary" },
+    { icon: FileText, title: t('landing.service.pharmacy'), color: "text-success" },
+    { icon: TestTube, title: t('landing.service.lab'), color: "text-warning" },
+    { icon: Building2, title: t('landing.service.hospital'), color: "text-destructive" },
+    { icon: CreditCard, title: t('landing.service.insurance'), color: "text-accent" },
+  ];
   return (
     <div className="min-h-screen">
       <Header />
@@ -60,28 +62,28 @@ export default function Landing() {
             <div className="space-y-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20">
                 <CheckCircle2 className="h-4 w-4 text-success" />
-                <span className="text-sm font-medium text-success">100% Sécurisé et Gratuit</span>
+                <span className="text-sm font-medium text-success">{t('landing.secure')}</span>
               </div>
               
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-                  La santé de tous,
-                  <span className="block text-primary mt-2">partout, tout le temps</span>
+                  {t('landing.hero.title')}
+                  <span className="block text-primary mt-2">{t('landing.hero.titleHighlight')}</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground">
-                  Plateforme e-santé du Gabon - Trouvez un médecin, prenez RDV, consultez vos résultats
+                  {t('landing.hero.subtitle')}
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register?type=patient" className="flex-1">
                   <Button size="lg" className="btn-mobile-xxl w-full text-lg">
-                    👤 Je suis Patient
+                    👤 {t('landing.hero.patient')}
                   </Button>
                 </Link>
                 <Link to="/register?type=pro" className="flex-1">
                   <Button size="lg" variant="outline" className="btn-mobile-xxl w-full text-lg">
-                    👨‍⚕️ Je suis Professionnel
+                    👨‍⚕️ {t('landing.hero.professional')}
                   </Button>
                 </Link>
               </div>
@@ -101,8 +103,8 @@ export default function Landing() {
       <section className="py-20 px-4 bg-card">
         <div className="container max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">Comment ça marche ?</h2>
-            <p className="text-lg text-muted-foreground">3 étapes simples pour gérer votre santé</p>
+            <h2 className="text-3xl md:text-4xl font-bold">{t('landing.howItWorks')}</h2>
+            <p className="text-lg text-muted-foreground">3 {t('landing.howItWorksSubtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -131,8 +133,8 @@ export default function Landing() {
       <section className="py-20 px-4">
         <div className="container max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">Services disponibles</h2>
-            <p className="text-lg text-muted-foreground">Tout ce dont vous avez besoin pour votre santé</p>
+            <h2 className="text-3xl md:text-4xl font-bold">{t('landing.services')}</h2>
+            <p className="text-lg text-muted-foreground">{t('landing.servicesSubtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -156,9 +158,9 @@ export default function Landing() {
         <div className="container max-w-5xl mx-auto">
           <div className="bg-card rounded-2xl p-8 md:p-12 border-2 shadow-xl">
             <div className="text-center space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">Votre assurance santé</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">{t('landing.insurance.title')}</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Vérifiez vos droits et suivez vos remboursements en temps réel
+                {t('landing.insurance.subtitle')}
               </p>
               
               <div className="flex flex-wrap items-center justify-center gap-8 py-8">
@@ -181,7 +183,7 @@ export default function Landing() {
 
               <Link to="/register?type=patient">
                 <Button size="lg" className="btn-mobile-xxl">
-                  Créer mon compte gratuit
+                  {t('landing.insurance.create')}
                 </Button>
               </Link>
             </div>
@@ -193,20 +195,20 @@ export default function Landing() {
       <section className="py-20 px-4 bg-primary text-primary-foreground">
         <div className="container max-w-4xl mx-auto text-center space-y-8">
           <h2 className="text-3xl md:text-4xl font-bold">
-            Prêt à prendre en main votre santé ?
+            {t('landing.cta.title')}
           </h2>
           <p className="text-lg opacity-90">
-            Rejoignez des milliers de Gabonais qui gèrent déjà leur santé en ligne
+            {t('landing.cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register?type=patient">
               <Button size="lg" variant="secondary" className="btn-mobile-xxl w-full sm:w-auto">
-                Créer mon compte patient
+                {t('landing.cta.patient')}
               </Button>
             </Link>
             <Link to="/login">
               <Button size="lg" variant="outline" className="btn-mobile-xxl w-full sm:w-auto bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                Je me connecte
+                {t('landing.cta.login')}
               </Button>
             </Link>
           </div>
@@ -223,34 +225,34 @@ export default function Landing() {
                 <span className="text-lg font-bold">SANTE<span className="text-primary">.GA</span></span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Plateforme e-santé du Gabon pour un accès facilité aux soins
+                {t('landing.footer.tagline')}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">À propos</h4>
+              <h4 className="font-semibold mb-4">{t('landing.footer.about')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Notre mission</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">L'équipe</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Partenaires</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.mission')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.team')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.partners')}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4">{t('landing.footer.support')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.contact')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.faq')}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Légal</h4>
+              <h4 className="font-semibold mb-4">{t('landing.footer.legal')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Mentions légales</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">CGU</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Confidentialité</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.terms')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.cgu')}</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">{t('landing.footer.privacy')}</a></li>
               </ul>
             </div>
           </div>
@@ -266,7 +268,7 @@ export default function Landing() {
           </div>
 
           <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© 2025 SANTE.GA - Ministère de la Santé du Gabon</p>
+            <p>© 2025 {t('landing.footer.copyright')}</p>
             <div className="flex gap-4">
               <a href="#" className="hover:text-foreground transition-colors">Facebook</a>
               <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
