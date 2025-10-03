@@ -28,6 +28,7 @@ import {
   Workflow
 } from "lucide-react";
 import { ImplementationPlan } from "@/components/admin/ImplementationPlan";
+import { BackendImplementationPlan } from "@/components/admin/BackendImplementationPlan";
 
 export default function AdminProject() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -84,7 +85,7 @@ export default function AdminProject() {
             {/* Tabs Navigation - Responsive */}
             <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-4 border-b">
               <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-8 gap-1 sm:gap-2 p-1">
+                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1 sm:gap-2 p-1">
                   <TabsTrigger value="overview" className="whitespace-nowrap text-xs sm:text-sm">
                     <FileText className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">Vue d&apos;ensemble</span>
@@ -112,6 +113,11 @@ export default function AdminProject() {
                     <Workflow className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">Implémentation</span>
                     <span className="sm:hidden">Plan</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="backend-cursor" className="whitespace-nowrap text-xs sm:text-sm">
+                    <Server className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Backend Cursor</span>
+                    <span className="sm:hidden">Cursor</span>
                   </TabsTrigger>
                   <TabsTrigger value="security" className="whitespace-nowrap text-xs sm:text-sm">
                     <Shield className="h-4 w-4 mr-1 sm:mr-2" />
@@ -845,6 +851,11 @@ Protection:
             {/* PLAN D'IMPLÉMENTATION */}
             <TabsContent value="implementation" className="space-y-6 animate-in fade-in-50 duration-300">
               <ImplementationPlan />
+            </TabsContent>
+
+            {/* BACKEND CURSOR */}
+            <TabsContent value="backend-cursor" className="space-y-6 animate-in fade-in-50 duration-300">
+              <BackendImplementationPlan />
             </TabsContent>
 
             {/* SÉCURITÉ */}
