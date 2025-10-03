@@ -1,6 +1,7 @@
 import { UseFormReturn } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProfessionalRegistrationData } from "@/lib/validation";
 import { Stethoscope, Users, Pill, TestTube, Building2 } from "lucide-react";
 
@@ -41,7 +42,22 @@ const professionalTypes = [
   },
 ];
 
+const medicalStaffTypes = [
+  { value: "nurse", label: "Infirmier(ère)" },
+  { value: "midwife", label: "Sage-femme" },
+  { value: "physiotherapist", label: "Kinésithérapeute" },
+  { value: "speech-therapist", label: "Orthophoniste" },
+  { value: "occupational-therapist", label: "Ergothérapeute" },
+  { value: "dietitian", label: "Diététicien(ne)" },
+  { value: "psychologist", label: "Psychologue" },
+  { value: "radiologist", label: "Manipulateur radio" },
+  { value: "dental-assistant", label: "Assistant(e) dentaire" },
+  { value: "medical-secretary", label: "Secrétaire médical(e)" },
+  { value: "other", label: "Autre" },
+];
+
 export function Step1ProfessionalType({ form }: Step1ProfessionalTypeProps) {
+  const selectedType = form.watch("professionalType");
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -98,6 +114,33 @@ export function Step1ProfessionalType({ form }: Step1ProfessionalTypeProps) {
           </FormItem>
         )}
       />
+
+      {selectedType === "medical-staff" && (
+        <FormField
+          control={form.control}
+          name="medicalStaffType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Spécifiez votre corps médical *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionnez votre spécialité" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {medicalStaffTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 }

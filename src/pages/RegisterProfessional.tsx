@@ -37,6 +37,7 @@ export default function RegisterProfessional() {
     resolver: zodResolver(professionalRegistrationSchema),
     defaultValues: {
       professionalType: searchParams.get('type') as any || undefined,
+      medicalStaffType: "",
       fullName: "",
       establishmentName: "",
       specialty: "",
@@ -96,7 +97,7 @@ export default function RegisterProfessional() {
 
     switch (currentStep) {
       case 1:
-        fieldsToValidate = ["professionalType"];
+        fieldsToValidate = ["professionalType", "medicalStaffType"];
         break;
       case 2:
         fieldsToValidate = ["fullName", "establishmentName", "specialty", "licenseNumber"];

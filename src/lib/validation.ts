@@ -134,6 +134,10 @@ export const professionalRegistrationSchema = z.object({
     required_error: "Le type de professionnel est requis",
   }),
   
+  medicalStaffType: z.string()
+    .optional()
+    .or(z.literal("")),
+  
   // Étape 2 : Informations professionnelles
   fullName: z.string()
     .min(3, "Le nom doit contenir au moins 3 caractères")
@@ -192,6 +196,15 @@ export const professionalRegistrationSchema = z.object({
 }).refine((data) => data.password === data.passwordConfirm, {
   message: "Les mots de passe ne correspondent pas",
   path: ["passwordConfirm"],
+}).refine((data) => {
+  // Validation conditionnelle pour le type de corps médical
+  if (data.professionalType === "medical-staff") {
+    return data.medicalStaffType && data.medicalStaffType.length > 0;
+  }
+  return true;
+}, {
+  message: "Veuillez spécifier votre corps médical",
+  path: ["medicalStaffType"],
 });
 
 export type ProfessionalRegistrationData = z.infer<typeof professionalRegistrationSchema>;
