@@ -505,6 +505,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   es: {
     // Navigation
+    'nav.home': 'Inicio',
     'nav.dashboard': 'Panel',
     'nav.appointments': 'Citas',
     'nav.providers': 'Profesionales',
@@ -518,6 +519,10 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.insurance': 'Seguro',
     'nav.settings': 'Configuración',
     'nav.logout': 'Cerrar sesión',
+    'nav.about': 'Acerca de',
+    'nav.services': 'Nuestros Servicios',
+    'nav.faq': 'FAQ',
+    'nav.contact': 'Contacto',
     
     // Dashboard
     'dashboard.welcome': 'Bienvenido',
@@ -614,6 +619,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   ar: {
     // Navigation
+    'nav.home': 'الرئيسية',
     'nav.dashboard': 'لوحة التحكم',
     'nav.appointments': 'المواعيد',
     'nav.providers': 'المهنيون',
@@ -627,6 +633,10 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.insurance': 'التأمين',
     'nav.settings': 'الإعدادات',
     'nav.logout': 'تسجيل الخروج',
+    'nav.about': 'حول',
+    'nav.services': 'خدماتنا',
+    'nav.faq': 'الأسئلة الشائعة',
+    'nav.contact': 'اتصل',
     
     // Dashboard
     'dashboard.welcome': 'مرحبا',
@@ -723,6 +733,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   pt: {
     // Navigation
+    'nav.home': 'Início',
     'nav.dashboard': 'Painel',
     'nav.appointments': 'Consultas',
     'nav.providers': 'Profissionais',
@@ -736,6 +747,10 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.insurance': 'Seguro',
     'nav.settings': 'Configurações',
     'nav.logout': 'Sair',
+    'nav.about': 'Sobre',
+    'nav.services': 'Nossos Serviços',
+    'nav.faq': 'FAQ',
+    'nav.contact': 'Contato',
     
     // Dashboard
     'dashboard.welcome': 'Bem-vindo',
