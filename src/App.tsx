@@ -30,6 +30,8 @@ import AdminAudit from "./pages/AdminAudit";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
 import Cartography from "./pages/Cartography";
+import MedicalRecord from "./pages/MedicalRecord";
+import Support from "./pages/Support";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +86,16 @@ const App = () => (
             <Route path="/reimbursements" element={
               <ProtectedRoute>
                 <Reimbursements />
+              </ProtectedRoute>
+            } />
+            <Route path="/medical-record" element={
+              <ProtectedRoute>
+                <MedicalRecord />
+              </ProtectedRoute>
+            } />
+            <Route path="/support" element={
+              <ProtectedRoute>
+                <Support />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
