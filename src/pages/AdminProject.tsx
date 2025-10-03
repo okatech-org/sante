@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   FileText, 
   Layers, 
@@ -31,6 +32,7 @@ import { ImplementationPlan } from "@/components/admin/ImplementationPlan";
 import { BackendImplementationPlan } from "@/components/admin/BackendImplementationPlan";
 
 export default function AdminProject() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("overview");
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -59,10 +61,10 @@ export default function AdminProject() {
                 </div>
                 <div>
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-                    Documentation SANTE.GA
+                    {t('project.title')}
                   </h1>
                   <p className="text-base sm:text-lg text-muted-foreground mt-1">
-                    Plateforme nationale de santé numérique du Gabon
+                    {t('project.subtitle')}
                   </p>
                 </div>
               </div>
@@ -70,11 +72,11 @@ export default function AdminProject() {
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="text-xs sm:text-sm">
                   <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                  v1.0.0
+                  {t('project.version')}
                 </Badge>
                 <Badge variant="outline" className="text-xs sm:text-sm">React + TypeScript</Badge>
                 <Badge variant="outline" className="text-xs sm:text-sm">Lovable Cloud</Badge>
-                <Badge variant="outline" className="text-xs sm:text-sm text-success border-success">Production Ready</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm text-success border-success">{t('project.productionReady')}</Badge>
               </div>
             </div>
           </div>
@@ -88,45 +90,41 @@ export default function AdminProject() {
                 <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1 sm:gap-2 p-1">
                   <TabsTrigger value="overview" className="whitespace-nowrap text-xs sm:text-sm">
                     <FileText className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Vue d&apos;ensemble</span>
-                    <span className="sm:hidden">Vue</span>
+                    <span className="hidden sm:inline">{t('project.overview')}</span>
+                    <span className="sm:hidden">{t('project.overview')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="features" className="whitespace-nowrap text-xs sm:text-sm">
                     <Activity className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Fonctionnalités</span>
-                    <span className="sm:hidden">Features</span>
+                    <span>{t('project.features')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="architecture" className="whitespace-nowrap text-xs sm:text-sm">
                     <Layers className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Architecture</span>
-                    <span className="sm:hidden">Archi</span>
+                    <span>{t('project.architecture')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="backend" className="whitespace-nowrap text-xs sm:text-sm">
                     <Database className="h-4 w-4 mr-1 sm:mr-2" />
-                    Backend
+                    {t('project.backend')}
                   </TabsTrigger>
                   <TabsTrigger value="frontend" className="whitespace-nowrap text-xs sm:text-sm">
                     <Code className="h-4 w-4 mr-1 sm:mr-2" />
-                    Frontend
+                    {t('project.frontend')}
                   </TabsTrigger>
                   <TabsTrigger value="implementation" className="whitespace-nowrap text-xs sm:text-sm">
                     <Workflow className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Implémentation</span>
-                    <span className="sm:hidden">Plan</span>
+                    <span>{t('project.implementation')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="backend-cursor" className="whitespace-nowrap text-xs sm:text-sm">
                     <Server className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Backend Cursor</span>
+                    <span className="hidden sm:inline">{t('project.backend')} Cursor</span>
                     <span className="sm:hidden">Cursor</span>
                   </TabsTrigger>
                   <TabsTrigger value="security" className="whitespace-nowrap text-xs sm:text-sm">
                     <Shield className="h-4 w-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Sécurité</span>
-                    <span className="sm:hidden">Sécu</span>
+                    <span>{t('project.security')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="roadmap" className="whitespace-nowrap text-xs sm:text-sm">
                     <GitBranch className="h-4 w-4 mr-1 sm:mr-2" />
-                    Roadmap
+                    {t('project.roadmap')}
                   </TabsTrigger>
                 </TabsList>
               </ScrollArea>
@@ -138,57 +136,55 @@ export default function AdminProject() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
                     <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
-                    Présentation du Projet
+                    {t('project.presentation')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg mb-3">Mission</h3>
+                    <h3 className="font-semibold text-base sm:text-lg mb-3">{t('project.mission')}</h3>
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                      SANTE.GA est la plateforme nationale de santé numérique du Gabon qui vise à digitaliser 
-                      et moderniser l&apos;écosystème de santé gabonais en connectant patients, professionnels de santé, 
-                      établissements médicaux et organismes d&apos;assurance (CNAMGS, CNSS).
+                      {t('project.missionDesc')}
                     </p>
                   </div>
 
                   <Separator />
 
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg mb-4">Objectifs Principaux</h3>
+                    <h3 className="font-semibold text-base sm:text-lg mb-4">{t('project.mainObjectives')}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
                         <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-sm sm:text-base">Accessibilité des Soins</p>
+                          <p className="font-medium text-sm sm:text-base">{t('project.healthcareAccess')}</p>
                           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            Faciliter l&apos;accès aux soins pour tous les Gabonais
+                            {t('project.healthcareAccessDesc')}
                           </p>
                         </div>
                       </div>
                       <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
                         <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-sm sm:text-base">Dossier Médical Unique</p>
+                          <p className="font-medium text-sm sm:text-base">{t('project.medicalRecord')}</p>
                           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            Centraliser l&apos;historique médical de chaque patient
+                            {t('project.medicalRecordDesc')}
                           </p>
                         </div>
                       </div>
                       <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
                         <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-sm sm:text-base">Gestion Administrative</p>
+                          <p className="font-medium text-sm sm:text-base">{t('project.adminManagement')}</p>
                           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            Simplifier les démarches et remboursements
+                            {t('project.adminManagementDesc')}
                           </p>
                         </div>
                       </div>
                       <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
                         <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-medium text-sm sm:text-base">Télémédecine</p>
+                          <p className="font-medium text-sm sm:text-base">{t('project.telemedicine')}</p>
                           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            Permettre les consultations à distance
+                            {t('project.telemedicineDesc')}
                           </p>
                         </div>
                       </div>
@@ -198,11 +194,11 @@ export default function AdminProject() {
                   <Separator />
 
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg mb-4">Écosystème</h3>
+                    <h3 className="font-semibold text-base sm:text-lg mb-4">{t('project.ecosystem')}</h3>
                     <div className="p-4 sm:p-6 rounded-lg border bg-gradient-to-br from-card to-muted/20">
                       <div className="flex items-center gap-2 mb-4">
                         <Users className="h-5 w-5 text-primary" />
-                        <h4 className="font-semibold text-sm sm:text-base">Acteurs du Système</h4>
+                        <h4 className="font-semibold text-sm sm:text-base">{t('project.systemActors')}</h4>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs sm:text-sm">
                         <div className="p-2 rounded bg-background">• Patients (citoyens gabonais)</div>
@@ -233,7 +229,7 @@ export default function AdminProject() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-xl sm:text-2xl">Technologies Utilisées</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl">{t('project.technologies')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
