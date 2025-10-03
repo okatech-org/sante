@@ -24,8 +24,10 @@ import {
   ArrowUp,
   BookOpen,
   Code,
-  Zap
+  Zap,
+  Workflow
 } from "lucide-react";
+import { ImplementationPlan } from "@/components/admin/ImplementationPlan";
 
 export default function AdminProject() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -82,7 +84,7 @@ export default function AdminProject() {
             {/* Tabs Navigation - Responsive */}
             <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-4 border-b">
               <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-7 gap-1 sm:gap-2 p-1">
+                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-8 gap-1 sm:gap-2 p-1">
                   <TabsTrigger value="overview" className="whitespace-nowrap text-xs sm:text-sm">
                     <FileText className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">Vue d&apos;ensemble</span>
@@ -105,6 +107,11 @@ export default function AdminProject() {
                   <TabsTrigger value="frontend" className="whitespace-nowrap text-xs sm:text-sm">
                     <Code className="h-4 w-4 mr-1 sm:mr-2" />
                     Frontend
+                  </TabsTrigger>
+                  <TabsTrigger value="implementation" className="whitespace-nowrap text-xs sm:text-sm">
+                    <Workflow className="h-4 w-4 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Implémentation</span>
+                    <span className="sm:hidden">Plan</span>
                   </TabsTrigger>
                   <TabsTrigger value="security" className="whitespace-nowrap text-xs sm:text-sm">
                     <Shield className="h-4 w-4 mr-1 sm:mr-2" />
@@ -833,6 +840,11 @@ Protection:
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* PLAN D'IMPLÉMENTATION */}
+            <TabsContent value="implementation" className="space-y-6 animate-in fade-in-50 duration-300">
+              <ImplementationPlan />
             </TabsContent>
 
             {/* SÉCURITÉ */}
