@@ -13,7 +13,9 @@ import {
   CheckCircle2,
   AlertCircle,
   Server,
-  Code2
+  Code2,
+  Pill,
+  FileCheck
 } from "lucide-react";
 
 export const BackendImplementationPlan = () => {
@@ -188,7 +190,121 @@ export const BackendImplementationPlan = () => {
     },
     {
       id: "cursor4",
-      title: "Prompt 4 : Paiements Mobile Money & Stripe",
+      title: "Prompt 4 : Ordonnances & Résultats Backend",
+      icon: Pill,
+      color: "from-indigo-500/10 to-indigo-500/5",
+      status: "planned",
+      sections: [
+        {
+          title: "convex/prescriptions/create.ts",
+          items: [
+            "creerOrdonnance mutation : Création ordonnance électronique par médecin",
+            "Génération numéro unique format ORD-YYYY-XXXXXX",
+            "Calcul automatique date expiration (3 mois)",
+            "Génération QR Code pour vérification pharmacie (contient données sérialisées)",
+            "Création PDF ordonnance (action asynchrone avec scheduler)",
+            "Notification patient (SMS + Push) ordonnance disponible",
+            "Notification pharmacie suggérée si spécifiée",
+            "Support médicaments multiples avec posologie détaillée"
+          ]
+        },
+        {
+          title: "Vérification & Dispensation Ordonnances",
+          items: [
+            "verifierOrdonnance query : Validation par pharmacie (numéro ou ID)",
+            "Vérifications : expiration (3 mois), statut (annulée/dispensée), validité",
+            "Enrichissement avec profils patient et médecin",
+            "dispenserOrdonnance mutation : Enregistrement dispensation par pharmacie",
+            "Gestion dispensation partielle vs complète",
+            "Historique dispensations (pharmacie, date, médicaments, montant)",
+            "Mise à jour statut automatique (active → dispensée_partielle/complète)",
+            "Notification patient après dispensation"
+          ]
+        },
+        {
+          title: "Liste & Compteurs Ordonnances",
+          items: [
+            "getOrdonnancesPatient query : Liste avec filtres statut",
+            "Enrichissement avec données médecin prescripteur",
+            "Tri chronologique descendant (plus récentes en premier)",
+            "countNouvellesOrdonnances : Badge \"Nouvelles\" si <48h",
+            "Calcul seuil temporel pour badge notification",
+            "Pagination avec limite configurable (défaut 50)"
+          ]
+        },
+        {
+          title: "convex/resultats/create.ts - Résultats Examens",
+          items: [
+            "Table resultats_examens : Biologie + Imagerie unifiée",
+            "creerResultatExamen mutation : Création par laboratoire/centre imagerie",
+            "Génération numéro résultat format BIO-YYYY-XXXXXX ou IMG-YYYY-XXXXXX",
+            "Support analyses biologiques avec valeurs, unités, normes (min/max)",
+            "Détection automatique valeurs critiques (hors normes)",
+            "Support imagerie : type (Radio/IRM/Scanner/Écho), compte-rendu, images DICOM",
+            "Upload PDF résultat (stockage Convex Storage)",
+            "Notification patient résultat disponible"
+          ]
+        },
+        {
+          title: "Alertes Valeurs Critiques",
+          items: [
+            "Détection automatique valeurCritique dans analyses",
+            "Notification URGENCE médecin prescripteur si valeurs critiques",
+            "Notification normale médecin sinon",
+            "Système double notification : patient + médecin",
+            "Flag vuParPatient et vuParMedecin pour tracking",
+            "marquerResultatVu mutation : Marquer résultat comme consulté"
+          ]
+        },
+        {
+          title: "Liste & Compteurs Résultats",
+          items: [
+            "getResultatsPatient query : Liste avec filtre type (biologie/imagerie)",
+            "Enrichissement médecin prescripteur + laboratoire",
+            "Tri chronologique descendant",
+            "countNouveauxResultats : Badge si <48h et non vus",
+            "Support téléchargement PDF via pdfUrl",
+            "Visualisation images DICOM (URLs multiples)"
+          ]
+        },
+        {
+          title: "Intégration Pharmacies",
+          items: [
+            "rechercherPharmacies query : Recherche avec filtres géolocalisés",
+            "Filtres : ouvert 24/7, conventionné CNAMGS, Mobile Money accepté",
+            "Calcul distance GPS similaire médecins",
+            "Tri par distance ou note",
+            "Support recherche garde de nuit/weekend",
+            "Badge \"Ouvert maintenant\" selon horaires"
+          ]
+        },
+        {
+          title: "Intégration Hôpitaux",
+          items: [
+            "rechercherHopitaux query : Recherche établissements",
+            "Filtres : urgences 24/7, services spécialisés (IRM, Scanner, Labo)",
+            "Support multi-spécialités (Chirurgie, Maternité, Pédiatrie...)",
+            "Capacité lits disponibles (optionnel)",
+            "Services ambulance disponibles",
+            "Conventionnement CNAMGS avec tarifs spécifiques"
+          ]
+        },
+        {
+          title: "Recherche Unifiée",
+          items: [
+            "rechercherTousPrestataires query : Multi-types simultanés",
+            "Array types : [medecin, pharmacie, laboratoire, hopital]",
+            "Agrégation résultats tous types",
+            "Tri global par distance (si GPS fourni)",
+            "Tag type sur chaque résultat pour affichage différencié",
+            "Pagination unifiée sur résultats mixtes"
+          ]
+        }
+      ]
+    },
+    {
+      id: "cursor5",
+      title: "Prompt 5 : Paiements Mobile Money & Stripe",
       icon: CreditCard,
       color: "from-orange-500/10 to-orange-500/5",
       status: "planned",
@@ -238,8 +354,8 @@ export const BackendImplementationPlan = () => {
       ]
     },
     {
-      id: "cursor5",
-      title: "Prompt 5 : Notifications SMS & Push",
+      id: "cursor6",
+      title: "Prompt 6 : Notifications SMS & Push",
       icon: Bell,
       color: "from-pink-500/10 to-pink-500/5",
       status: "planned",
@@ -287,8 +403,8 @@ export const BackendImplementationPlan = () => {
       ]
     },
     {
-      id: "cursor6",
-      title: "Prompt 6 : Authentification Clerk + Convex Auth",
+      id: "cursor7",
+      title: "Prompt 7 : Authentification Clerk + Convex Auth",
       icon: Lock,
       color: "from-cyan-500/10 to-cyan-500/5",
       status: "planned",
