@@ -41,6 +41,10 @@ export default function RegisterProfessional() {
       doctorSpecialty: "",
       lastName: "",
       firstName: "",
+      gender: undefined,
+      title: undefined,
+      birthDate: undefined,
+      nationality: "",
       establishmentName: "",
       specialty: "",
       licenseNumber: "",
@@ -63,6 +67,10 @@ export default function RegisterProfessional() {
         full_name: `${data.firstName} ${data.lastName}`,
         phone: data.professionalPhone,
         professional_type: data.professionalType,
+        gender: data.gender,
+        title: data.title,
+        birth_date: data.birthDate?.toISOString(),
+        nationality: data.nationality,
         establishment_name: data.establishmentName,
         specialty: data.specialty,
         license_number: data.licenseNumber,
@@ -102,7 +110,7 @@ export default function RegisterProfessional() {
         fieldsToValidate = ["professionalType", "medicalStaffType", "doctorSpecialty"];
         break;
       case 2:
-        fieldsToValidate = ["lastName", "firstName", "establishmentName", "specialty", "licenseNumber"];
+        fieldsToValidate = ["lastName", "firstName", "gender", "title", "birthDate", "nationality", "establishmentName", "specialty", "licenseNumber"];
         break;
       case 3:
         fieldsToValidate = ["professionalEmail", "professionalPhone"];

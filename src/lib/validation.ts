@@ -155,6 +155,24 @@ export const professionalRegistrationSchema = z.object({
     .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Le prénom ne peut contenir que des lettres")
     .transform((val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase()),
   
+  gender: z.enum(["M", "F"], {
+    required_error: "Le genre est requis",
+  }),
+  
+  title: z.enum(["doctor", "professor"], {
+    required_error: "Le titre est requis",
+  }),
+  
+  birthDate: z.date({
+    required_error: "La date de naissance est requise",
+  }).refine((date) => {
+    const age = new Date().getFullYear() - date.getFullYear();
+    return age >= 18 && age <= 80;
+  }, "Vous devez avoir entre 18 et 80 ans"),
+  
+  nationality: z.string()
+    .min(1, "La nationalité est requise"),
+  
   establishmentName: z.string()
     .min(2, "Le nom de l'établissement doit contenir au moins 2 caractères")
     .max(150, "Le nom ne peut pas dépasser 150 caractères"),
