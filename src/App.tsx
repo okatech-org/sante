@@ -9,7 +9,8 @@ import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-import RegisterChoice from "./pages/RegisterChoice";
+import LoginPatient from "./pages/LoginPatient";
+import LoginProfessional from "./pages/LoginProfessional";
 import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
 import Dashboard from "./pages/Dashboard";
@@ -50,8 +51,9 @@ const App = () => (
               <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/login/patient" element={<LoginPatient />} />
+            <Route path="/login/pro" element={<LoginProfessional />} />
             <Route path="/superadmin" element={<SuperAdminLogin />} />
-            <Route path="/register" element={<RegisterChoice />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
             <Route path="/dashboard" element={

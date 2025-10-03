@@ -76,12 +76,12 @@ export default function Landing() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/register?type=patient" className="flex-1">
+                <Link to="/register/patient" className="flex-1">
                   <Button size="lg" className="btn-mobile-xxl w-full text-lg">
                     👤 {t('landing.hero.patient')}
                   </Button>
                 </Link>
-                <Link to="/register?type=pro" className="flex-1">
+                <Link to="/register/pro" className="flex-1">
                   <Button size="lg" variant="outline" className="btn-mobile-xxl w-full text-lg">
                     👨‍⚕️ {t('landing.hero.professional')}
                   </Button>
@@ -181,7 +181,7 @@ export default function Landing() {
                 </div>
               </div>
 
-              <Link to="/register?type=patient">
+              <Link to="/register/patient">
                 <Button size="lg" className="btn-mobile-xxl">
                   {t('landing.insurance.create')}
                 </Button>
@@ -201,12 +201,12 @@ export default function Landing() {
             {t('landing.cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register?type=patient">
+            <Link to="/register/patient">
               <Button size="lg" variant="secondary" className="btn-mobile-xxl w-full sm:w-auto">
                 {t('landing.cta.patient')}
               </Button>
             </Link>
-            <Link to="/login">
+            <Link to="/login/patient">
               <Button size="lg" variant="outline" className="btn-mobile-xxl w-full sm:w-auto bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                 {t('landing.cta.login')}
               </Button>

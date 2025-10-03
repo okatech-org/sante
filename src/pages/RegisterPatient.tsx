@@ -141,7 +141,7 @@ export default function RegisterPatient() {
       <Card className="w-full max-w-2xl">
         <CardHeader className="space-y-6">
           <div className="flex items-center justify-between">
-            <Link to="/register" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="h-5 w-5" />
             </Link>
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
@@ -201,7 +201,7 @@ export default function RegisterPatient() {
           <div className="mt-6 text-center text-sm">
             <p className="text-muted-foreground">
               Déjà inscrit ?{" "}
-              <Link to="/login" className="text-primary hover:underline font-medium">
+              <Link to="/login/patient" className="text-primary hover:underline font-medium">
                 Se connecter
               </Link>
             </p>
