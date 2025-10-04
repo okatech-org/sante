@@ -10,6 +10,7 @@ import hospitalImage from "@/assets/hospital-reception.jpg";
 import awarenessNews from "@/assets/awareness-news.jpg";
 import awarenessTutorials from "@/assets/awareness-tutorials.jpg";
 import awarenessFirstAid from "@/assets/awareness-first-aid.jpg";
+import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import { 
   Calendar, 
   FileText, 
@@ -689,6 +690,17 @@ export default function Landing() {
             <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
               Actualités, conseils et formations pour prendre soin de votre santé
             </p>
+          </div>
+
+          {/* Carte Interactive du Gabon */}
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold mb-3">Carte Interactive des Professionnels de Santé</h3>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Localisez les hôpitaux, cliniques, pharmacies et professionnels de santé partout au Gabon
+              </p>
+            </div>
+            <HealthProvidersMap />
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
