@@ -294,7 +294,7 @@ export default function Landing() {
       </header>
 
       {/* Hero Section avec animations */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
+      <section className="relative pt-24 pb-8 md:pt-32 md:pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             {/* Contenu textuel */}
@@ -408,7 +408,7 @@ export default function Landing() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8">
+      <section id="services" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.services') || "Tous vos besoins de santé"}</h2>
@@ -480,7 +480,7 @@ export default function Landing() {
       </section>
 
       {/* How It Works */}
-      <section id="comment" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/20">
+      <section id="comment" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.howItWorks') || "Comment ça marche ?"}</h2>
@@ -544,7 +544,7 @@ export default function Landing() {
       </section>
 
       {/* Trust Section */}
-      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8">
+      <section id="propos" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
@@ -623,7 +623,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="relative py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t">
+      <footer className="relative py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
