@@ -229,7 +229,7 @@ export default function Landing() {
                 </Button>
               </Link>
               <Link to="/register/patient">
-                <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90">
+                <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-accent to-accent/90">
                   {t('landing.hero.patient') || "S'inscrire"}
                 </Button>
               </Link>
@@ -276,7 +276,7 @@ export default function Landing() {
                         </Button>
                       </Link>
                       <Link to="/register/patient" onClick={() => setMobileMenuOpen(false)}>
-                        <Button className="w-full bg-gradient-to-r from-primary to-primary/90">
+                        <Button className="w-full bg-gradient-to-r from-accent to-accent/90">
                           {t('landing.hero.patient') || "S'inscrire"}
                         </Button>
                       </Link>
