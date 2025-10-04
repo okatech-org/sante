@@ -35,21 +35,21 @@ export function Header() {
 
         {/* Navigation Desktop */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/services" className="text-sm font-medium hover:text-primary transition-colors">
+          <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors">
             Services
-          </Link>
-          <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
+          </a>
+          <a href="/#comment-ca-marche" className="text-sm font-medium hover:text-primary transition-colors">
             Comment ça marche
-          </Link>
-          <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
+          </a>
+          <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
             À propos
-          </Link>
-          <Link to="/for-professionals" className="text-sm font-medium hover:text-primary transition-colors">
+          </a>
+          <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors">
             Professionnels
-          </Link>
-          <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
+          </a>
+          <a href="/#awareness" className="text-sm font-medium hover:text-primary transition-colors">
             Sensibilisation
-          </Link>
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -91,21 +91,21 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <nav className="flex flex-col gap-4 mt-8">
-                <Link to="/services" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Services
-                </Link>
-                <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                </a>
+                <a href="/#comment-ca-marche" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Comment ça marche
-                </Link>
-                <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                </a>
+                <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   À propos
-                </Link>
-                <Link to="/for-professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                </a>
+                <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Professionnels
-                </Link>
-                <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                </a>
+                <a href="/#awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Sensibilisation
-                </Link>
+                </a>
                 
                 <div className="border-t pt-4 mt-4 flex flex-col gap-2">
                   {user ? (
