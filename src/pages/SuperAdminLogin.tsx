@@ -26,10 +26,15 @@ export default function SuperAdminLogin() {
 
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue Super Admin",
+        description: "Bienvenue",
       });
       
-      navigate("/admin/dashboard");
+      // Rediriger vers le dashboard approprié selon l'email
+      if (email === "superadmin@sante.ga") {
+        navigate("/dashboard/superadmin");
+      } else {
+        navigate("/dashboard/admin");
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
