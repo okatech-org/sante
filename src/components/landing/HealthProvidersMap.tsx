@@ -260,72 +260,74 @@ export default function HealthProvidersMap() {
 
   return (
     <div className="h-[600px] w-full relative">
-      {/* Contrôles de zoom */}
-      <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2">
-        <div className="bg-card/95 backdrop-blur-xl rounded-xl shadow-2xl border border-border/80 p-1.5 flex flex-col gap-1.5">
+      {/* Contrôles de zoom - Version compacte et transparente */}
+      <div className="absolute top-4 left-4 z-[1000]">
+        <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 p-1 flex flex-col gap-1">
           <Button
             size="icon"
             variant="ghost"
             onClick={handleZoomIn}
-            className="h-9 w-9 hover:bg-primary/10 hover:text-primary transition-all"
+            className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-all"
           >
-            <ZoomIn className="h-5 w-5" />
+            <ZoomIn className="h-4 w-4" />
           </Button>
           <Button
             size="icon"
             variant="ghost"
             onClick={handleZoomOut}
-            className="h-9 w-9 hover:bg-primary/10 hover:text-primary transition-all"
+            className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-all"
           >
-            <ZoomOut className="h-5 w-5" />
+            <ZoomOut className="h-4 w-4" />
           </Button>
           <Button
             size="icon"
             variant="ghost"
             onClick={handleFullscreen}
-            className="h-9 w-9 hover:bg-primary/10 hover:text-primary transition-all"
+            className="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-all"
           >
-            <Maximize2 className="h-5 w-5" />
+            <Maximize2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Filtres par type */}
-      <div className="absolute top-4 right-4 z-[1000] hidden md:block">
-        <div className="bg-card/95 backdrop-blur-xl rounded-xl shadow-2xl border border-border/80 p-2 space-y-1.5 min-w-[140px]">
-          <Button
-            variant={selectedType === null ? "default" : "ghost"}
-            size="sm"
-            className="w-full justify-start text-sm font-medium"
-            onClick={() => setSelectedType(null)}
-          >
-            <Layers className="h-4 w-4 mr-2" />
-            Tous
-          </Button>
-          {types.map(type => (
+      {/* Filtres par type - Version horizontale compacte */}
+      <div className="absolute top-4 right-4 z-[1000]">
+        <div className="bg-card/70 backdrop-blur-md rounded-xl shadow-lg border border-border/40 p-2">
+          <div className="flex items-center gap-1.5">
             <Button
-              key={type.id}
-              variant={selectedType === type.id ? "default" : "ghost"}
+              variant={selectedType === null ? "default" : "ghost"}
               size="sm"
-              className="w-full justify-start text-sm font-medium"
-              onClick={() => setSelectedType(type.id)}
+              className="h-8 px-3 text-xs font-medium"
+              onClick={() => setSelectedType(null)}
             >
-              <span className="mr-2">{type.icon}</span>
-              <span className="truncate text-xs">{type.label}</span>
+              <Layers className="h-3.5 w-3.5 mr-1.5" />
+              Tous
             </Button>
-          ))}
+            {types.map(type => (
+              <Button
+                key={type.id}
+                variant={selectedType === type.id ? "default" : "ghost"}
+                size="sm"
+                className="h-8 px-3 text-xs font-medium"
+                onClick={() => setSelectedType(type.id)}
+              >
+                <span className="mr-1">{type.icon}</span>
+                <span className="hidden sm:inline">{type.label}</span>
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Statistiques */}
+      {/* Statistiques - Version compacte et transparente */}
       <div className="absolute bottom-4 left-4 z-[1000]">
-        <div className="bg-card/95 backdrop-blur-xl rounded-xl shadow-2xl border border-border/80 px-4 py-2.5">
-          <p className="text-sm font-semibold text-foreground">
+        <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 px-3 py-2">
+          <p className="text-xs font-semibold text-foreground">
             {selectedType 
               ? providers.filter(p => p.type === selectedType).length 
               : providers.length
-            } établissements
-            {selectedType && ` • ${getTypeLabel(selectedType)}`}
+            } établissement{(selectedType ? providers.filter(p => p.type === selectedType).length : providers.length) > 1 ? 's' : ''}
+            {selectedType && <span className="text-muted-foreground ml-1">• {getTypeLabel(selectedType)}</span>}
           </p>
         </div>
       </div>
