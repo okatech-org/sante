@@ -89,85 +89,88 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen">
-      {/* Background avec pattern subtil */}
-      <div className="fixed inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20">
+      {/* Background avec pattern subtil et animations */}
+      <div className="fixed inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20 animate-fade-in">
         <div 
-          className="absolute inset-0 opacity-[0.03]" 
+          className="absolute inset-0 opacity-[0.03] animate-pulse" 
           style={{
             backgroundImage: 'radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1px), radial-gradient(circle at 75% 75%, currentColor 1px, transparent 1px)',
-            backgroundSize: '50px 50px'
+            backgroundSize: '50px 50px',
+            animationDuration: '4s'
           }}
         />
       </div>
 
       {/* Theme Toggle */}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-4 right-4 z-50 animate-fade-in">
         <ThemeToggle />
       </div>
 
-      {/* Header Navigation */}
-      <header className="fixed top-0 w-full z-40 bg-card/60 border-b border-border/40 backdrop-blur-lg">
+      {/* Header Navigation avec effet glassmorphism */}
+      <header className="fixed top-0 w-full z-40 bg-card/60 border-b border-border/40 backdrop-blur-xl animate-slide-in-right shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-muted shadow-lg">
-                <Heart className="w-7 h-7 text-foreground" />
+            <Link to="/" className="flex items-center space-x-3 hover-scale">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg backdrop-blur-sm border border-border/20">
+                <Heart className="w-7 h-7 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
                 <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
               </div>
             </Link>
             
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="font-medium text-foreground/80 hover:text-foreground transition-colors">
+              <a href="#services" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
                 {t('landing.services') || "Services"}
               </a>
-              <a href="#comment" className="font-medium text-foreground/80 hover:text-foreground transition-colors">
+              <a href="#comment" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
                 {t('landing.howItWorks') || "Comment ça marche"}
               </a>
-              <a href="#propos" className="font-medium text-foreground/80 hover:text-foreground transition-colors">
+              <a href="#propos" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
                 {t('landing.footer.about') || "À propos"}
               </a>
             </nav>
 
             <div className="flex items-center space-x-4">
               <Link to="/login/patient" className="hidden sm:block">
-                <Button variant="ghost">{t('landing.cta.login') || "Se connecter"}</Button>
+                <Button variant="ghost" className="hover-scale">{t('landing.cta.login') || "Se connecter"}</Button>
               </Link>
               <Link to="/register/patient">
-                <Button className="shadow-lg hover:shadow-xl hover:scale-105 transition-all">{t('landing.hero.patient') || "S'inscrire"}</Button>
+                <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90">
+                  {t('landing.hero.patient') || "S'inscrire"}
+                </Button>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      {/* Hero Section avec animations */}
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-muted/50 border border-border">
-              <Award className="w-4 h-4 text-foreground" />
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 backdrop-blur-sm animate-scale-in">
+              <Award className="w-4 h-4 text-primary" />
               <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
               {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-foreground/60 via-foreground to-foreground/60 bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
                 {t('landing.hero.titleHighlight') || "portée de clic"}
               </span>
             </h1>
             
-            <p className="text-xl sm:text-2xl mb-12 leading-relaxed text-muted-foreground">
+            <p className="text-xl sm:text-2xl mb-12 leading-relaxed text-muted-foreground animate-fade-in" style={{ animationDelay: '0.3s' }}>
               {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
             </p>
 
-            {/* Search Bar */}
-            <div className="rounded-2xl shadow-2xl p-3 max-w-3xl mx-auto backdrop-blur-lg bg-card/70 border border-border/40">
+            {/* Search Bar avec effet glassmorphism amélioré */}
+            <div className="rounded-2xl shadow-2xl p-3 max-w-3xl mx-auto backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 hover:shadow-3xl transition-all duration-500 animate-scale-in" style={{ animationDelay: '0.4s' }}>
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/50">
-                  <Stethoscope className="w-5 h-5 mr-3 text-muted-foreground" />
+                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
+                  <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
                   <input 
                     type="text" 
                     placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
@@ -176,8 +179,8 @@ export default function Landing() {
                     className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/50">
-                  <MapPin className="w-5 h-5 mr-3 text-muted-foreground" />
+                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
+                  <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
                   <input 
                     type="text" 
                     placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
@@ -187,7 +190,7 @@ export default function Landing() {
                   />
                 </div>
                 <Link to="/providers" className="sm:flex-shrink-0">
-                  <Button className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                  <Button className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90">
                     <Search className="w-5 h-5 mr-2" />
                     {t('landing.search.button') || "Rechercher"}
                   </Button>
@@ -195,13 +198,14 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Quick Access Chips */}
-            <div className="flex flex-wrap justify-center gap-3 mt-8">
-              {specialties.map((specialty) => (
+            {/* Quick Access Chips avec animations */}
+            <div className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+              {specialties.map((specialty, index) => (
                 <Button 
                   key={specialty}
                   variant="outline"
-                  className="rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all bg-card/70 backdrop-blur-sm border-border"
+                  className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
+                  style={{ animationDelay: `${0.6 + index * 0.1}s` }}
                 >
                   {specialty}
                 </Button>
@@ -209,15 +213,18 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Stats Bar */}
+          {/* Stats Bar avec animations en cascade */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-all hover:scale-105 backdrop-blur-lg bg-card/70 border border-border/40"
+                className="rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-500 hover-scale backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 animate-scale-in group"
+                style={{ animationDelay: `${0.7 + index * 0.1}s` }}
               >
-                <stat.icon className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
-                <div className="text-3xl font-bold mb-1">{stat.value}</div>
+                <div className="mb-3 inline-block p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:scale-110 transition-transform">
+                  <stat.icon className="w-8 h-8 text-primary" />
+                </div>
+                <div className="text-3xl font-bold mb-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
@@ -240,22 +247,23 @@ export default function Landing() {
               <div 
                 key={index}
                 onMouseEnter={() => setActiveService(index)}
-                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-lg bg-card/70 border border-border ${
-                  activeService === index ? 'scale-[1.02]' : ''
+                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border hover:border-primary/30 animate-fade-in ${
+                  activeService === index ? 'scale-[1.02] shadow-3xl' : ''
                 }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 bg-muted/20" />
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 bg-gradient-to-br from-primary/10 to-primary/5 opacity-50" />
                 
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform bg-muted/50">
-                  <service.icon className="w-8 h-8 text-foreground" />
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-sm border border-primary/20">
+                  <service.icon className="w-8 h-8 text-primary" />
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-3 text-foreground">{service.title}</h3>
+                <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{service.title}</h3>
                 <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
                 
-                <button className="flex items-center font-semibold text-foreground/80 hover:text-foreground transition-colors">
+                <button className="flex items-center font-semibold text-primary hover:text-primary/80 transition-all group-hover:gap-3 gap-2">
                   {service.action}
-                  <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" />
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </button>
               </div>
             ))}
@@ -274,17 +282,17 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-4 gap-8 relative">
-            {/* Connection Line */}
-            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-border" />
+            {/* Connection Line animée */}
+            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             
             {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all text-center backdrop-blur-lg bg-card/70 border border-border">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg bg-muted text-foreground">
+              <div key={index} className="relative animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
+                <div className="rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border hover:border-primary/30 hover-scale group">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20 group-hover:scale-110 transition-transform">
                     {step.number}
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-foreground">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
+                  <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -292,8 +300,9 @@ export default function Landing() {
 
           <div className="text-center mt-12">
             <Link to="/register/patient">
-              <Button size="lg" className="px-10 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+              <Button size="lg" className="px-10 py-6 text-lg shadow-xl hover:shadow-3xl hover-scale bg-gradient-to-r from-primary to-primary/90 animate-scale-in">
                 {t('landing.cta.patient') || "Commencer maintenant"}
+                <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
           </div>
