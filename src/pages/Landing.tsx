@@ -583,72 +583,94 @@ export default function Landing() {
           </div>
 
           {/* Trust & Mission Part */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image */}
-            <div className="order-2 lg:order-1">
-              <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40 hover:shadow-3xl transition-shadow duration-500">
-                <img 
-                  src={familyImage} 
-                  alt="Famille gabonaise consultant leur dossier médical"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
+          <div className="relative max-w-6xl mx-auto">
+            {/* Image de fond */}
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40">
+              <img 
+                src={familyImage} 
+                alt="Famille gabonaise consultant leur dossier médical"
+                className="w-full h-auto object-cover"
+              />
             </div>
             
-            {/* Contenu */}
-            <div className="order-1 lg:order-2">
-              <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-                {t('landing.trust.title') || "Une plateforme de confiance pour tous les Gabonais"}
-              </h2>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
-              </p>
-              <div className="flex gap-2 md:gap-4">
-                <div className="flex items-center gap-1.5 md:gap-2 bg-card/70 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2 rounded-lg border border-secondary/40 flex-shrink-0 flex-1 md:flex-initial">
-                  <Shield className="w-5 h-5 md:w-5 md:h-5 text-secondary flex-shrink-0" />
-                  <span className="text-xs md:text-base leading-tight">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
-                </div>
-                <div className="flex items-center gap-1.5 md:gap-2 bg-card/70 backdrop-blur-sm px-3 py-2 md:px-4 md:py-2 rounded-lg border border-primary/40 flex-shrink-0 flex-1 md:flex-initial">
-                  <Heart className="w-5 h-5 md:w-5 md:h-5 text-primary flex-shrink-0" />
-                  <span className="text-xs md:text-base leading-tight">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Section CNAMGS avec image d'hôpital */}
-            <div className="order-3 lg:col-span-2 mt-12">
-              <div className="grid lg:grid-cols-2 gap-8 items-center bg-card/70 backdrop-blur-lg rounded-3xl p-8 border border-border/40 shadow-xl">
-                <div>
-                  <h3 className="text-2xl font-bold mb-6">{t('landing.insurance.title') || "Vérifiez vos droits CNAMGS"}</h3>
-                  <div className="space-y-4">
-                    <input 
-                      type="text" 
-                      value={cnamgsNumber}
-                      onChange={(e) => setCnamgsNumber(e.target.value)}
-                      placeholder={t('landing.insurance.placeholder') || "Numéro d'assuré CNAMGS"}
-                      className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border outline-none focus:border-primary transition-colors"
-                      disabled={isVerifying}
-                    />
-                    <Button 
-                      onClick={handleCNAMGSVerification}
-                      disabled={isVerifying}
-                      className="w-full py-6 shadow-lg bg-gradient-to-r from-accent to-accent/90"
-                    >
-                      {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
-                    </p>
+            {/* Overlay des infos - visible uniquement sur tablette et desktop */}
+            <div className="hidden md:block absolute inset-0 p-6 lg:p-12">
+              <div className="flex flex-col justify-end h-full">
+                <div className="backdrop-blur-xl bg-card/90 rounded-2xl p-6 lg:p-8 border border-border shadow-2xl">
+                  <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                    {t('landing.trust.title') || "Une plateforme de confiance pour tous les Gabonais"}
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                    {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2 bg-background/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-secondary/40">
+                      <Shield className="w-5 h-5 text-secondary flex-shrink-0" />
+                      <span className="text-sm lg:text-base">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-background/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/40">
+                      <Heart className="w-5 h-5 text-primary flex-shrink-0" />
+                      <span className="text-sm lg:text-base">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="rounded-2xl overflow-hidden shadow-xl border border-border/40">
-                  <img 
-                    src={hospitalImage} 
-                    alt="Centre de santé au Gabon"
-                    className="w-full h-auto object-cover"
-                  />
+              </div>
+            </div>
+
+            {/* Version mobile - infos en dessous de l'image */}
+            <div className="md:hidden mt-6">
+              <h2 className="text-3xl font-bold mb-4">
+                {t('landing.trust.title') || "Une plateforme de confiance pour tous les Gabonais"}
+              </h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <div className="flex items-center gap-1.5 bg-card/70 backdrop-blur-sm px-3 py-2 rounded-lg border border-secondary/40 flex-1">
+                  <Shield className="w-5 h-5 text-secondary flex-shrink-0" />
+                  <span className="text-xs leading-tight">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
+                <div className="flex items-center gap-1.5 bg-card/70 backdrop-blur-sm px-3 py-2 rounded-lg border border-primary/40 flex-1">
+                  <Heart className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="text-xs leading-tight">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+            
+          {/* Section CNAMGS avec image d'hôpital */}
+          <div className="mt-12">
+            <div className="grid lg:grid-cols-2 gap-8 items-center bg-card/70 backdrop-blur-lg rounded-3xl p-8 border border-border/40 shadow-xl">
+              <div>
+                <h3 className="text-2xl font-bold mb-6">{t('landing.insurance.title') || "Vérifiez vos droits CNAMGS"}</h3>
+                <div className="space-y-4">
+                  <input 
+                    type="text" 
+                    value={cnamgsNumber}
+                    onChange={(e) => setCnamgsNumber(e.target.value)}
+                    placeholder={t('landing.insurance.placeholder') || "Numéro d'assuré CNAMGS"}
+                    className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border outline-none focus:border-primary transition-colors"
+                    disabled={isVerifying}
+                  />
+                  <Button 
+                    onClick={handleCNAMGSVerification}
+                    disabled={isVerifying}
+                    className="w-full py-6 shadow-lg bg-gradient-to-r from-accent to-accent/90"
+                  >
+                    {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
+                  </Button>
+                  <p className="text-sm text-muted-foreground">
+                    {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="rounded-2xl overflow-hidden shadow-xl border border-border/40">
+                <img 
+                  src={hospitalImage} 
+                  alt="Centre de santé au Gabon"
+                  className="w-full h-auto object-cover"
+                />
               </div>
             </div>
           </div>
