@@ -294,86 +294,92 @@ export default function Landing() {
       </header>
 
       {/* Hero Section avec animations */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in overflow-hidden">
-        {/* Hero Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={heroImage} 
-            alt="Patient using telemedicine" 
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/75 to-background/85" />
-        </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
-              <Award className="w-4 h-4 text-secondary" />
-              <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
-            </div>
-            
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                {t('landing.hero.titleHighlight') || "portée de clic"}
-              </span>
-            </h1>
-            
-            <p className="text-xl sm:text-2xl mb-12 leading-relaxed text-muted-foreground animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
-            </p>
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            {/* Contenu textuel */}
+            <div className="order-2 lg:order-1">
+              <div className="text-center lg:text-left">
+                <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
+                  <Award className="w-4 h-4 text-secondary" />
+                  <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
+                </div>
+                
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                  {t('landing.hero.title') || "Votre santé à"}
+                  <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                    {t('landing.hero.titleHighlight') || "portée de clic"}
+                  </span>
+                </h1>
+                
+                <p className="text-xl sm:text-2xl mb-12 leading-relaxed text-muted-foreground animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                  {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
+                </p>
 
-            {/* Search Bar avec effet glassmorphism amélioré */}
-            <div className="rounded-2xl shadow-2xl p-3 max-w-3xl mx-auto backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 hover:shadow-3xl transition-all duration-500 animate-scale-in" style={{ animationDelay: '0.4s' }}>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
-                  <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                  <input 
-                    type="text" 
-                    placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
-                  />
+                {/* Search Bar avec effet glassmorphism amélioré */}
+                <div className="rounded-2xl shadow-2xl p-3 backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 hover:shadow-3xl transition-all duration-500 animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
+                      <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
+                      <input 
+                        type="text" 
+                        placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                      />
+                    </div>
+                    <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
+                      <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
+                      <input 
+                        type="text" 
+                        placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
+                        value={searchLocation}
+                        onChange={(e) => setSearchLocation(e.target.value)}
+                        className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleSearch}
+                      className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
+                    >
+                      <Search className="w-5 h-5 mr-2" />
+                      {t('landing.search.button') || "Rechercher"}
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
-                  <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                  <input 
-                    type="text" 
-                    placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
-                  />
+
+                {/* Quick Access Chips avec animations */}
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3 mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+                  {specialties.map((specialty, index) => (
+                    <Button 
+                      key={specialty}
+                      onClick={() => handleSpecialtyClick(specialty)}
+                      variant="outline"
+                      className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
+                      style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+                    >
+                      {specialty}
+                    </Button>
+                  ))}
                 </div>
-                <Button 
-                  onClick={handleSearch}
-                  className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
-                >
-                  <Search className="w-5 h-5 mr-2" />
-                  {t('landing.search.button') || "Rechercher"}
-                </Button>
               </div>
             </div>
 
-            {/* Quick Access Chips avec animations */}
-            <div className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-              {specialties.map((specialty, index) => (
-                <Button 
-                  key={specialty}
-                  onClick={() => handleSpecialtyClick(specialty)}
-                  variant="outline"
-                  className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
-                  style={{ animationDelay: `${0.6 + index * 0.1}s` }}
-                >
-                  {specialty}
-                </Button>
-              ))}
+            {/* Image Hero */}
+            <div className="order-1 lg:order-2 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40 hover:shadow-3xl transition-shadow duration-500">
+                <img 
+                  src={heroImage} 
+                  alt="Patiente gabonaise utilisant la télémédecine"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
             </div>
           </div>
 
           {/* Stats Bar avec animations en cascade */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mt-16">
             {stats.map((stat, index) => (
               <div 
                 key={index}
@@ -402,24 +408,8 @@ export default function Landing() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Decorative background images */}
-        <div className="absolute left-0 top-1/4 w-64 h-64 hidden lg:block opacity-15">
-          <img 
-            src={doctorImage} 
-            alt="Doctor consultation" 
-            className="w-full h-full object-cover rounded-full"
-          />
-        </div>
-        <div className="absolute right-0 bottom-1/4 w-64 h-64 hidden lg:block opacity-15">
-          <img 
-            src={familyImage} 
-            alt="Family health" 
-            className="w-full h-full object-cover rounded-full"
-          />
-        </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.services') || "Tous vos besoins de santé"}</h2>
             <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
@@ -490,13 +480,24 @@ export default function Landing() {
       </section>
 
       {/* How It Works */}
-      <section id="comment" className="relative py-20 px-4 sm:px-6 lg:px-8">
+      <section id="comment" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.howItWorks') || "Comment ça marche ?"}</h2>
             <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
               {t('landing.howItWorksSubtitle') || "4 étapes simples pour accéder aux meilleurs soins"}
             </p>
+          </div>
+
+          {/* Image illustrative */}
+          <div className="mb-12 max-w-4xl mx-auto">
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40">
+              <img 
+                src={doctorImage} 
+                alt="Médecin gabonais en consultation vidéo"
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8 relative">
@@ -543,19 +544,22 @@ export default function Landing() {
       </section>
 
       {/* Trust Section */}
-      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 overflow-hidden">
-        {/* Background decorative image */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-          <img 
-            src={hospitalImage} 
-            alt="Modern hospital reception" 
-            className="w-full h-full object-cover opacity-20"
-          />
-        </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
+      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
+            {/* Image */}
+            <div className="order-2 lg:order-1">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40 hover:shadow-3xl transition-shadow duration-500">
+                <img 
+                  src={familyImage} 
+                  alt="Famille gabonaise consultant leur dossier médical"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </div>
+            
+            {/* Contenu */}
+            <div className="order-1 lg:order-2">
               <h2 className="text-4xl sm:text-5xl font-bold mb-6">
                 {t('landing.trust.title') || "Une plateforme de confiance pour tous les Gabonais"}
               </h2>
@@ -578,27 +582,40 @@ export default function Landing() {
               </div>
             </div>
             
-            <div className="bg-card/70 backdrop-blur-lg rounded-3xl p-8 border border-border/40 shadow-xl">
-              <h3 className="text-2xl font-bold mb-6">{t('landing.insurance.title') || "Vérifiez vos droits CNAMGS"}</h3>
-              <div className="space-y-4">
-                <input 
-                  type="text" 
-                  value={cnamgsNumber}
-                  onChange={(e) => setCnamgsNumber(e.target.value)}
-                  placeholder={t('landing.insurance.placeholder') || "Numéro d'assuré CNAMGS"}
-                  className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border outline-none focus:border-primary transition-colors"
-                  disabled={isVerifying}
-                />
-                <Button 
-                  onClick={handleCNAMGSVerification}
-                  disabled={isVerifying}
-                  className="w-full py-6 shadow-lg bg-gradient-to-r from-accent to-accent/90"
-                >
-                  {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
-                </Button>
-                <p className="text-sm text-muted-foreground text-center">
-                  {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
-                </p>
+            {/* Section CNAMGS avec image d'hôpital */}
+            <div className="order-3 lg:col-span-2 mt-12">
+              <div className="grid lg:grid-cols-2 gap-8 items-center bg-card/70 backdrop-blur-lg rounded-3xl p-8 border border-border/40 shadow-xl">
+                <div>
+                  <h3 className="text-2xl font-bold mb-6">{t('landing.insurance.title') || "Vérifiez vos droits CNAMGS"}</h3>
+                  <div className="space-y-4">
+                    <input 
+                      type="text" 
+                      value={cnamgsNumber}
+                      onChange={(e) => setCnamgsNumber(e.target.value)}
+                      placeholder={t('landing.insurance.placeholder') || "Numéro d'assuré CNAMGS"}
+                      className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border outline-none focus:border-primary transition-colors"
+                      disabled={isVerifying}
+                    />
+                    <Button 
+                      onClick={handleCNAMGSVerification}
+                      disabled={isVerifying}
+                      className="w-full py-6 shadow-lg bg-gradient-to-r from-accent to-accent/90"
+                    >
+                      {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
+                    </Button>
+                    <p className="text-sm text-muted-foreground text-center">
+                      {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="rounded-2xl overflow-hidden shadow-xl border border-border/40">
+                  <img 
+                    src={hospitalImage} 
+                    alt="Réception moderne d'hôpital gabonais"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
