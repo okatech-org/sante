@@ -300,9 +300,9 @@ export default function Landing() {
           <img 
             src={heroImage} 
             alt="Patient using telemedicine" 
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-30"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/75 to-background/85" />
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
@@ -404,14 +404,14 @@ export default function Landing() {
       {/* Services Grid */}
       <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Decorative background images */}
-        <div className="absolute left-0 top-1/4 w-64 h-64 hidden xl:block opacity-5">
+        <div className="absolute left-0 top-1/4 w-64 h-64 hidden lg:block opacity-15">
           <img 
             src={doctorImage} 
             alt="Doctor consultation" 
             className="w-full h-full object-cover rounded-full"
           />
         </div>
-        <div className="absolute right-0 bottom-1/4 w-64 h-64 hidden xl:block opacity-5">
+        <div className="absolute right-0 bottom-1/4 w-64 h-64 hidden lg:block opacity-15">
           <img 
             src={familyImage} 
             alt="Family health" 
@@ -549,7 +549,7 @@ export default function Landing() {
           <img 
             src={hospitalImage} 
             alt="Modern hospital reception" 
-            className="w-full h-full object-cover opacity-10"
+            className="w-full h-full object-cover opacity-20"
           />
         </div>
         
