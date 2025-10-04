@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import logoSante from "@/assets/logo_sante.png";
 import { 
   Calendar, 
   FileText, 
@@ -176,11 +177,12 @@ export default function Landing() {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 hover-scale group">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg backdrop-blur-sm border border-border/20 group-hover:scale-110 transition-transform">
-                <Heart className="w-7 h-7 text-primary group-hover:animate-pulse" />
-              </div>
+              <img 
+                src={logoSante} 
+                alt="SANTE.GA Logo" 
+                className="h-16 w-auto object-contain group-hover:scale-110 transition-transform"
+              />
               <div>
-                <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
                 <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
               </div>
             </Link>

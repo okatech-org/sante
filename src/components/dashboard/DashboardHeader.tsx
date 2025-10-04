@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Bell, Settings, CreditCard, LogOut, User } from "lucide-react";
+import logoSante from "@/assets/logo_sante.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -48,8 +49,12 @@ export function DashboardHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center gap-4 px-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          SANTE.GA
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <img 
+            src={logoSante} 
+            alt="SANTE.GA Logo" 
+            className="h-10 w-auto object-contain"
+          />
         </Link>
 
         {/* Barre de recherche centrale */}

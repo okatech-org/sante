@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Heart, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logoSante from "@/assets/logo_sante.png";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,8 +22,11 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <Heart className="h-6 w-6 text-primary" fill="currentColor" />
-          <span className="text-lg font-bold">SANTE<span className="text-primary">.GA</span></span>
+          <img 
+            src={logoSante} 
+            alt="SANTE.GA Logo" 
+            className="h-10 w-auto object-contain"
+          />
         </Link>
 
         {/* Navigation Desktop */}
