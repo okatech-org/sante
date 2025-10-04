@@ -517,7 +517,7 @@ export default function Landing() {
               
               {/* Overlay des 4 étapes - visible uniquement sur tablette et desktop */}
               <div className="hidden md:block absolute inset-0 p-6 lg:p-12">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 h-full items-center">
+                <div className="grid grid-cols-4 gap-4 lg:gap-6 h-full items-center">
                   {steps.map((step, index) => (
                     <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
                       <div className={`rounded-2xl p-4 lg:p-6 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/90 border border-border h-full flex flex-col ${
