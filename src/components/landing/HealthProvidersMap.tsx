@@ -60,7 +60,11 @@ export default function HealthProvidersMap() {
       zoomControl: false,
       attributionControl: true,
       minZoom: DEFAULT_ZOOM,
-      maxZoom: 18
+      maxZoom: 18,
+      scrollWheelZoom: false,
+      doubleClickZoom: true,
+      touchZoom: true,
+      boxZoom: false
     }).setView(GABON_CENTER, DEFAULT_ZOOM);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
