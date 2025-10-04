@@ -420,15 +420,6 @@ export default function HealthProvidersMap() {
         </div>
       </div>
 
-      {/* Statistiques - Version compacte et transparente */}
-      <div className="absolute bottom-4 left-4 z-[1000]">
-        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 px-4 py-2.5 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500">
-          <p className="text-xs font-semibold text-foreground">
-            {filteredProviders.length} établissement{filteredProviders.length > 1 ? 's' : ''}
-            {selectedType && <span className="text-muted-foreground ml-1">• {getTypeLabel(selectedType)}</span>}
-          </p>
-        </div>
-      </div>
 
       {/* Container de la carte */}
       <div ref={mapContainer} className="w-full h-full rounded-2xl overflow-hidden" />
