@@ -417,12 +417,12 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 lg:gap-8">
             {services.map((service, index) => (
               <div 
                 key={index}
                 onMouseEnter={() => setActiveService(index)}
-                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border ${
+                className={`group relative rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border h-full flex flex-col ${
                   index === 0 ? 'hover:border-primary/30' :
                   index === 1 ? 'hover:border-secondary/30' :
                   index === 2 ? 'hover:border-warning/30' :
@@ -432,20 +432,20 @@ export default function Landing() {
                 }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 opacity-50 ${
+                <div className={`absolute top-0 right-0 w-20 h-20 md:w-32 md:h-32 rounded-bl-full transition-all duration-500 group-hover:w-24 group-hover:h-24 md:group-hover:w-40 md:group-hover:h-40 opacity-50 ${
                   index === 0 ? 'bg-gradient-to-br from-primary/10 to-primary/5' :
                   index === 1 ? 'bg-gradient-to-br from-secondary/10 to-secondary/5' :
                   index === 2 ? 'bg-gradient-to-br from-warning/10 to-warning/5' :
                   'bg-gradient-to-br from-accent/10 to-accent/5'
                 }`} />
                 
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 backdrop-blur-sm ${
+                <div className={`w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 backdrop-blur-sm flex-shrink-0 ${
                   index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20' :
                   index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20' :
                   index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 border border-warning/20' :
                   'bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20'
                 }`}>
-                  <service.icon className={`w-8 h-8 ${
+                  <service.icon className={`w-5 h-5 md:w-7 md:h-7 lg:w-8 lg:h-8 ${
                     index === 0 ? 'text-primary' :
                     index === 1 ? 'text-secondary' :
                     index === 2 ? 'text-warning' :
@@ -453,25 +453,25 @@ export default function Landing() {
                   }`} />
                 </div>
                 
-                <h3 className={`text-2xl font-bold mb-3 text-foreground transition-colors ${
+                <h3 className={`text-sm md:text-lg lg:text-2xl font-bold mb-2 md:mb-3 text-foreground transition-colors leading-tight ${
                   index === 0 ? 'group-hover:text-primary' :
                   index === 1 ? 'group-hover:text-secondary' :
                   index === 2 ? 'group-hover:text-warning' :
                   'group-hover:text-accent'
                 }`}>{service.title}</h3>
-                <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
+                <p className="mb-3 md:mb-6 leading-snug text-xs md:text-sm text-muted-foreground flex-grow">{service.description}</p>
                 
                 <button 
                   onClick={() => handleServiceClick(index)}
-                  className={`flex items-center font-semibold transition-all group-hover:gap-3 gap-2 ${
+                  className={`flex items-center text-xs md:text-sm font-semibold transition-all group-hover:gap-3 gap-2 mt-auto ${
                     index === 0 ? 'text-primary hover:text-primary/80' :
                     index === 1 ? 'text-secondary hover:text-secondary/80' :
                     index === 2 ? 'text-warning hover:text-warning/80' :
                     'text-accent hover:text-accent/80'
                   }`}
                 >
-                  {service.action}
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                  <span className="hidden md:inline">{service.action}</span>
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
                 </button>
               </div>
             ))}
