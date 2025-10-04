@@ -7,7 +7,7 @@ import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
 import CartographyStats from "@/components/cartography/CartographyStats";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Map, List, LayoutGrid, Filter, MapPin } from "lucide-react";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
@@ -34,6 +34,8 @@ export default function Cartography() {
     maxDistance: null,
     searchText: ''
   });
+
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const getUserLocation = () => {
     if (!navigator.geolocation) {
@@ -120,23 +122,22 @@ export default function Cartography() {
             <div className="flex flex-wrap items-center gap-2 justify-between backdrop-blur-xl bg-card/80 p-3 rounded-lg border">
               <div className="flex gap-2">
                 {/* Mobile Filter Button */}
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" size="sm" className="lg:hidden">
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filtres
-                      {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
-                        <span className="ml-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
-                          {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
-                        </span>
-                      )}
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="w-full sm:w-96 overflow-y-auto">
-                    <SheetHeader>
-                      <SheetTitle>Filtres de recherche</SheetTitle>
-                    </SheetHeader>
-                    <div className="pt-6">
+                <Button variant="outline" size="sm" className="lg:hidden" onClick={() => setMobileFiltersOpen(true)}>
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filtres
+                  {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
+                    <span className="ml-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                      {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
+                    </span>
+                  )}
+                </Button>
+
+                <Dialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+                  <DialogContent className="w-full sm:max-w-md overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Filtres de recherche</DialogTitle>
+                    </DialogHeader>
+                    <div className="pt-2">
                       <CartographyFilterPanel
                         filters={filters}
                         onFiltersChange={setFilters}
@@ -144,8 +145,8 @@ export default function Cartography() {
                         hasUserLocation={!!userLocation}
                       />
                     </div>
-                  </SheetContent>
-                </Sheet>
+                  </DialogContent>
+                </Dialog>
 
                 {/* View Mode Switcher */}
                 <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
