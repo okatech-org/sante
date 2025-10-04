@@ -811,14 +811,17 @@
       "lng": 8.7800
     },
     "adresse_descriptive": "Route de la Sobraga, Près du Cadastre, Port-Gentil",
-    "telephones": ["077 69 17 35"],
+    "telephones": ["077 69 17 35", "077 25 25 69"],
     "secteur": "prive",
     "niveau_reference": "secondaire",
+    "services": ["Radiologie", "Échographie", "Analyses médicales", "Soins dentaires"],
+    "specialites": ["Radiologie", "Chirurgie dentaire"],
     "conventionnement": {
       "cnamgs": true
     },
     "contact_urgence": "077 69 17 35",
-    "statut_operationnel": "operationnel"
+    "statut_operationnel": "operationnel",
+    "notes": "Service dentaire disponible"
   },
   {
     "id": "CLI_PG_ERASME",
@@ -861,17 +864,19 @@
   {
     "id": "CAB_PG_GROUPE",
     "type": "cabinet_medical",
-    "nom": "Cabinet de Groupe - Carrefour Tobia",
+    "nom": "Cabinet de Groupe Port-Gentil",
     "province": "G4",
     "ville": "Port-Gentil",
     "coordonnees": {
       "lat": -0.7220,
       "lng": 8.7810
     },
-    "adresse_descriptive": "Carrefour Tobia, Port-Gentil",
-    "telephones": ["011 55 28 46"],
+    "adresse_descriptive": "Port-Gentil",
+    "telephones": ["011 55 28 46", "077 36 36 09"],
     "secteur": "prive",
     "niveau_reference": "primaire",
+    "services": ["Consultations généralistes"],
+    "specialites": ["Médecine générale"],
     "conventionnement": {
       "cnamgs": true
     },
@@ -1186,5 +1191,381 @@
     },
     "statut_operationnel": "operationnel",
     "notes": "Statut réseau 'En cours' - vérification recommandée avant référencement"
+  },
+  {
+    "id": "CAB_LBV_CMIE",
+    "type": "cabinet_medical",
+    "nom": "Centre Médical Inter Entreprises (CMIE)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4050,
+      "lng": 9.4800
+    },
+    "adresse_descriptive": "ZI Oloumi, Libreville",
+    "telephones": ["011 72 88 00", "011 72 88 11"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations généralistes", "Cardiologie", "Médecine du travail"],
+    "specialites": ["Médecine générale", "Cardiologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_GUEGUE",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical des Gué-Gué",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4280,
+      "lng": 9.4560
+    },
+    "adresse_descriptive": "Haut de GuéGué, face Ambassade d'Italie, Libreville",
+    "telephones": ["011 44 96 36", "077 70 18 78"],
+    "horaires": "Lun-Ven 8h-17h, Sam 8h-12h",
+    "services": ["Consultations spécialisées"],
+    "specialites": ["Cardiologie", "Gynécologie", "Néphrologie", "Endocrinologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "Cabinet de groupe pluridisciplinaire"
+  },
+  {
+    "id": "CAB_LBV_PRO",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical Pro",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4600
+    },
+    "adresse_descriptive": "Derrière Imm. Air France, Libreville",
+    "telephones": ["077 80 57 65", "066 91 17 75"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations spécialisées"],
+    "specialites": ["Cardiologie", "Gynécologie", "Gastro-entérologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_AEM",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical AEM (Dr EDOU)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4100,
+      "lng": 9.4700
+    },
+    "adresse_descriptive": "Ancienne Sobraga, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations gynécologiques"],
+    "specialites": ["Gynécologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_AFONSO",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Dr AFONSO",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4100,
+      "lng": 9.4700
+    },
+    "adresse_descriptive": "Ancienne Sobraga, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Ven 9h-17h",
+    "services": ["Consultations généralistes"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_ALLOPSY",
+    "type": "cabinet_medical",
+    "nom": "Allô Psy",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Boulevard Triomphal, Libreville",
+    "telephones": [],
+    "horaires": "Sur rendez-vous",
+    "services": ["Psychothérapie", "Consultations psychologiques"],
+    "specialites": ["Psychologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "Service privé de psychologie clinique"
+  },
+  {
+    "id": "DEN_LBV_ABBAS",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr ABBAS",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4650
+    },
+    "adresse_descriptive": "Immeuble Centr'Affaires, Rénovation, Libreville",
+    "telephones": ["011 74 17 39", "066 24 89 99"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_MATHIEU",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr JÉRÔME MATHIEU",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Centre Ville, Libreville",
+    "telephones": ["076 51 92 18", "066 62 62 28"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_CHABBERT",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr CHABBERT",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4250,
+      "lng": 9.4520
+    },
+    "adresse_descriptive": "Montagne Sainte, près du Cabinet de Groupe, Libreville",
+    "telephones": ["011 74 12 52", "077 11 41 10"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_ACAE",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire ACAÉ Sourire",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4220,
+      "lng": 9.4630
+    },
+    "adresse_descriptive": "Carrefour ACAÉ, à côté de la pharmacie, Libreville",
+    "telephones": ["065 66 85 85", "077 10 62 69"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_VIAULT",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Gué-Gué - Dr E. VIAULT",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4280,
+      "lng": 9.4560
+    },
+    "adresse_descriptive": "Près du Lycée Français, Gué-Gué, Libreville",
+    "telephones": ["011 44 57 08", "065 08 57 08"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_CABON",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire LILIA - Dr ANNE CABON",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4180,
+      "lng": 9.4550
+    },
+    "adresse_descriptive": "Glass, à côté de l'Ecole Publique, Libreville",
+    "telephones": ["011 76 38 32", "074 23 65 65"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_OWE_SNI",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire SNI Owendo",
+    "province": "G1",
+    "ville": "Owendo",
+    "coordonnees": {
+      "lat": 0.3200,
+      "lng": 9.5000
+    },
+    "adresse_descriptive": "Carrefour SNI, Prix Import Owendo",
+    "telephones": ["011 70 58 38", "077 07 39 39"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_PG_CASSAGNEAU",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Dr CASSAGNEAU Bernard",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7193,
+      "lng": 8.7815
+    },
+    "adresse_descriptive": "Cabinet médical BP, Port-Gentil",
+    "telephones": ["079 21 06 3"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations généralistes", "Médecine du travail"],
+    "specialites": ["Médecine générale", "Médecine du travail"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_PG_BOITARD",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr C. BOITARD",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7193,
+      "lng": 8.7815
+    },
+    "adresse_descriptive": "Centre ville, Immeuble AXA, Port-Gentil",
+    "telephones": ["011 55 36 69", "065 23 71 92"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_MOA_HIPPOCRATE",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Hippocrate de Moanda",
+    "province": "G5",
+    "ville": "Moanda",
+    "coordonnees": {
+      "lat": -1.5667,
+      "lng": 13.2000
+    },
+    "adresse_descriptive": "Moanda",
+    "telephones": ["011 66 27 06", "074 99 66 99"],
+    "horaires": "Lun-Ven 8h-18h, Sam 9h-13h",
+    "services": ["Soins dentaires", "Chirurgie dentaire"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
   }
 ]
