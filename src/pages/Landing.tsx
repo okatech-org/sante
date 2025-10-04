@@ -514,7 +514,7 @@ export default function Landing() {
                 <img 
                   src={logoSante} 
                   alt="SANTE.GA Logo" 
-                  className="h-12 w-auto object-contain"
+                  className="h-16 w-auto object-contain"
                 />
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight">
