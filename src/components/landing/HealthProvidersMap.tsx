@@ -3,7 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X } from "lucide-react";
 import providersData from "@/data/cartography-providers.json";
 import { CartographyProvider } from "@/types/cartography";
 
@@ -41,6 +42,7 @@ export default function HealthProvidersMap() {
   const mapInstance = useRef<L.Map | null>(null);
   const markersGroup = useRef<L.LayerGroup | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   
   const providers = useMemo(() => {
     return (providersData as CartographyProvider[]).filter(p => p.coordonnees);
@@ -69,17 +71,37 @@ export default function HealthProvidersMap() {
     };
   }, []);
 
+  // Filtrer les providers
+  const filteredProviders = useMemo(() => {
+    let filtered = providers;
+    
+    // Filtrer par type
+    if (selectedType) {
+      filtered = filtered.filter(p => p.type === selectedType);
+    }
+    
+    // Filtrer par recherche
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.nom.toLowerCase().includes(query) ||
+        p.ville.toLowerCase().includes(query) ||
+        p.type.toLowerCase().includes(query) ||
+        p.adresse_descriptive?.toLowerCase().includes(query) ||
+        p.specialites?.some(s => s.toLowerCase().includes(query))
+      );
+    }
+    
+    return filtered;
+  }, [providers, selectedType, searchQuery]);
+
   // Mettre à jour les marqueurs
   useEffect(() => {
     if (!mapInstance.current || !markersGroup.current) return;
 
     markersGroup.current.clearLayers();
 
-    const displayedProviders = selectedType 
-      ? providers.filter(p => p.type === selectedType)
-      : providers;
-
-    displayedProviders.forEach(provider => {
+    filteredProviders.forEach(provider => {
       if (!provider.coordonnees) return;
 
       const color = TYPE_COLORS[provider.type] || '#6B7280';
@@ -202,16 +224,16 @@ export default function HealthProvidersMap() {
       markersGroup.current?.addLayer(marker);
     });
 
-    if (displayedProviders.length > 0) {
+    if (filteredProviders.length > 0) {
       const bounds = L.latLngBounds(
-        displayedProviders
+        filteredProviders
           .filter(p => p.coordonnees)
           .map(p => [p.coordonnees!.lat, p.coordonnees!.lng])
       );
       
       mapInstance.current?.fitBounds(bounds, { padding: [80, 80], maxZoom: 12 });
     }
-  }, [providers, selectedType]);
+  }, [filteredProviders]);
 
   const handleZoomIn = () => mapInstance.current?.zoomIn();
   const handleZoomOut = () => mapInstance.current?.zoomOut();
@@ -260,6 +282,37 @@ export default function HealthProvidersMap() {
 
   return (
     <div className="h-[600px] w-full relative">
+      {/* Barre de recherche intelligente */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[90%] max-w-xl">
+        <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-2xl border border-border/60 p-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Rechercher un établissement, ville, spécialité..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 h-11 bg-background/80 border-border/40 focus:border-primary/50 text-sm font-medium"
+            />
+            {searchQuery && (
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+          {searchQuery && (
+            <div className="mt-2 text-xs text-muted-foreground px-3">
+              {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''} trouvé{filteredProviders.length > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Contrôles de zoom - Version compacte et transparente */}
       <div className="absolute top-4 left-4 z-[1000]">
         <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 p-1 flex flex-col gap-1">
@@ -323,10 +376,7 @@ export default function HealthProvidersMap() {
       <div className="absolute bottom-4 left-4 z-[1000]">
         <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 px-3 py-2">
           <p className="text-xs font-semibold text-foreground">
-            {selectedType 
-              ? providers.filter(p => p.type === selectedType).length 
-              : providers.length
-            } établissement{(selectedType ? providers.filter(p => p.type === selectedType).length : providers.length) > 1 ? 's' : ''}
+            {filteredProviders.length} établissement{filteredProviders.length > 1 ? 's' : ''}
             {selectedType && <span className="text-muted-foreground ml-1">• {getTypeLabel(selectedType)}</span>}
           </p>
         </div>
