@@ -107,6 +107,52 @@ All colors MUST be HSL.
     --sidebar-border: 210 30% 18%;
     --sidebar-ring: 156 81% 45%;
   }
+
+  /* Theme Monochrome Premium SuperAdmin */
+  .theme-superadmin {
+    --background: 0 0% 4%; /* Noir profond #0A0A0A */
+    --foreground: 0 0% 100%; /* Blanc pur */
+
+    --card: 0 0% 10%; /* Gris anthracite #1A1A1A */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%; /* Blanc pour les accents */
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 25%; /* Gris #404040 */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 38%; /* Gris #606060 */
+
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 4%;
+
+    --border: 0 0% 15%; /* Bordures subtiles */
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 0 0% 100%;
+  }
 }
 
 @layer base {
