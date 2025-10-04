@@ -347,14 +347,53 @@ export default function HealthProvidersMap() {
   };
 
   const types = [
-    { id: 'hopital', label: 'Hôpitaux', icon: '🏥' },
-    { id: 'clinique', label: 'Cliniques', icon: '🏨' },
-    { id: 'cabinet_medical', label: 'Cabinets', icon: '👨‍⚕️' },
-    { id: 'pharmacie', label: 'Pharmacies', icon: '💊' },
+    { id: 'hopital', label: 'Hôpitaux', icon: '🏥', color: TYPE_COLORS.hopital },
+    { id: 'clinique', label: 'Cliniques', icon: '🏨', color: TYPE_COLORS.clinique },
+    { id: 'cabinet_medical', label: 'Cabinets', icon: '👨‍⚕️', color: TYPE_COLORS.cabinet_medical },
+    { id: 'cabinet_dentaire', label: 'Dentistes', icon: '🦷', color: TYPE_COLORS.cabinet_dentaire },
+    { id: 'pharmacie', label: 'Pharmacies', icon: '💊', color: TYPE_COLORS.pharmacie },
+    { id: 'laboratoire', label: 'Laboratoires', icon: '🔬', color: TYPE_COLORS.laboratoire },
+    { id: 'imagerie', label: 'Imagerie', icon: '📷', color: TYPE_COLORS.imagerie },
   ];
 
   return (
     <div className="h-[600px] w-full relative">
+      {/* Filtres par type - Nouvelle interface */}
+      <div className="absolute top-4 right-4 z-[1000]">
+        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 p-3 max-w-[200px]">
+          <h3 className="text-xs font-bold text-foreground mb-2 flex items-center gap-2">
+            <Layers className="h-3 w-3" />
+            Types d'établissements
+          </h3>
+          <div className="flex flex-col gap-1.5">
+            <Button
+              size="sm"
+              variant={selectedType === null ? "default" : "ghost"}
+              onClick={() => setSelectedType(null)}
+              className="w-full justify-start text-xs h-7 px-2"
+            >
+              <span className="mr-1.5">📍</span>
+              Tous ({providers.length})
+            </Button>
+            {types.map((type) => {
+              const count = providers.filter(p => p.type === type.id).length;
+              return (
+                <Button
+                  key={type.id}
+                  size="sm"
+                  variant={selectedType === type.id ? "default" : "ghost"}
+                  onClick={() => setSelectedType(type.id)}
+                  className="w-full justify-start text-xs h-7 px-2"
+                >
+                  <span className="mr-1.5">{type.icon}</span>
+                  {type.label} ({count})
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Contrôles de zoom - Version compacte et transparente */}
       <div className="absolute top-32 left-4 z-[1000]">
         <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 p-2 flex flex-col gap-1 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500">
