@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { SearchBar } from "@/components/providers/SearchBar";
 import { FiltersSidebar } from "@/components/providers/FiltersSidebar";
 import { ProviderCard } from "@/components/providers/ProviderCard";

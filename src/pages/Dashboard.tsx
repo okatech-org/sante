@@ -1,11 +1,11 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { InsuranceStatus } from "@/components/dashboard/InsuranceStatus";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 import { ActivePrescriptions } from "@/components/dashboard/ActivePrescriptions";
 import { RecentResults } from "@/components/dashboard/RecentResults";
 import { QuickActions } from "@/components/dashboard/QuickActions";
-import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+
 
 export default function Dashboard() {
   return (

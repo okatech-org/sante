@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";

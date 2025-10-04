@@ -13,7 +13,6 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
   const { user, userRoles, isLoading } = useAuth();
 
-  // Afficher le chargement uniquement pendant la résolution de l'état d'auth
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
