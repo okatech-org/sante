@@ -7,6 +7,9 @@ import heroImage from "@/assets/hero-telemedicine.jpg";
 import doctorImage from "@/assets/doctor-consultation.jpg";
 import familyImage from "@/assets/family-health.jpg";
 import hospitalImage from "@/assets/hospital-reception.jpg";
+import awarenessNews from "@/assets/awareness-news.jpg";
+import awarenessTutorials from "@/assets/awareness-tutorials.jpg";
+import awarenessFirstAid from "@/assets/awareness-first-aid.jpg";
 import { 
   Calendar, 
   FileText, 
@@ -690,8 +693,12 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
-              <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                <FileText className="w-16 h-16 text-primary group-hover:scale-110 transition-transform" />
+              <div className="h-48 overflow-hidden">
+                <img 
+                  src={awarenessNews} 
+                  alt="Actualités santé"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-3">Actualités Santé</h3>
@@ -703,8 +710,12 @@ export default function Landing() {
             </div>
 
             <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
-              <div className="h-48 bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
-                <Video className="w-16 h-16 text-secondary group-hover:scale-110 transition-transform" />
+              <div className="h-48 overflow-hidden">
+                <img 
+                  src={awarenessTutorials} 
+                  alt="Tutoriels vidéo"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-3">Tutoriels Vidéo</h3>
@@ -716,8 +727,12 @@ export default function Landing() {
             </div>
 
             <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
-              <div className="h-48 bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
-                <Heart className="w-16 h-16 text-accent group-hover:scale-110 transition-transform" />
+              <div className="h-48 overflow-hidden">
+                <img 
+                  src={awarenessFirstAid} 
+                  alt="Premiers secours"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-3">Premiers Secours</h3>
