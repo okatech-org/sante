@@ -500,7 +500,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8 relative">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 relative">
             {/* Connection Line animée */}
             <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
             
