@@ -17,26 +17,27 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 20% 15%;
 
-    /* Vert médical - Couleur principale santé */
-    --primary: 156 81% 40%;
+    /* Turquoise moderne - Couleur principale #17CCB9 */
+    --primary: 173 78% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 156 73% 85%;
+    --primary-light: 173 70% 85%;
 
-    /* Bleu ciel - Couleur secondaire */
-    --secondary: 217 91% 60%;
+    /* Bleu électrique - Couleur secondaire #00A1FE */
+    --secondary: 202 100% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 217 91% 60%;
+    /* Rose vibrant - Couleur accent #E63B7A */
+    --accent: 338 80% 57%;
     --accent-foreground: 0 0% 100%;
 
     /* Alertes et statuts */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --success: 158 64% 40%;
+    --success: 173 78% 45%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -44,19 +45,19 @@ All colors MUST be HSL.
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 156 81% 40%;
+    --ring: 173 78% 45%;
 
     --radius: 0.75rem;
 
     /* Sidebar design system */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 210 20% 15%;
-    --sidebar-primary: 156 81% 40%;
+    --sidebar-primary: 173 78% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 156 73% 95%;
-    --sidebar-accent-foreground: 156 81% 40%;
+    --sidebar-accent: 173 70% 95%;
+    --sidebar-accent-foreground: 173 78% 45%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 156 81% 40%;
+    --sidebar-ring: 173 78% 45%;
 
     /* Transitions douces */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,23 +73,23 @@ All colors MUST be HSL.
     --popover: 210 30% 10%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 156 81% 45%;
+    --primary: 173 78% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 156 73% 30%;
+    --primary-light: 173 70% 30%;
 
-    --secondary: 217 91% 65%;
+    --secondary: 202 100% 55%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 30% 15%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 91% 65%;
+    --accent: 338 80% 62%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --success: 158 64% 45%;
+    --success: 173 78% 50%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 55%;
@@ -96,16 +97,16 @@ All colors MUST be HSL.
 
     --border: 210 30% 18%;
     --input: 210 30% 18%;
-    --ring: 156 81% 45%;
+    --ring: 173 78% 50%;
 
     --sidebar-background: 210 30% 10%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 156 81% 45%;
+    --sidebar-primary: 173 78% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 156 73% 20%;
-    --sidebar-accent-foreground: 156 81% 45%;
+    --sidebar-accent: 173 70% 20%;
+    --sidebar-accent-foreground: 173 78% 50%;
     --sidebar-border: 210 30% 18%;
-    --sidebar-ring: 156 81% 45%;
+    --sidebar-ring: 173 78% 50%;
   }
 
   /* Theme Monochrome Premium SuperAdmin */
