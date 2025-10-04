@@ -516,17 +516,17 @@ export default function Landing() {
               </div>
               
               {/* Overlay des 4 étapes - visible uniquement sur tablette et desktop */}
-              <div className="hidden md:block absolute inset-0 p-6 lg:p-12">
-                <div className="grid grid-cols-4 gap-4 lg:gap-6 h-full items-center">
+              <div className="hidden md:block absolute bottom-0 left-0 right-0 p-6 lg:p-8">
+                <div className="grid grid-cols-4 gap-3 lg:gap-4">
                   {steps.map((step, index) => (
-                    <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
-                      <div className={`rounded-2xl p-4 lg:p-6 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/90 border border-border h-full flex flex-col ${
+                    <div key={index} className="relative animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
+                      <div className={`rounded-xl p-3 lg:p-4 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/95 border border-border ${
                         index === 0 ? 'hover:border-primary/50' :
                         index === 1 ? 'hover:border-secondary/50' :
                         index === 2 ? 'hover:border-warning/50' :
                         'hover:border-accent/50'
                       } hover-scale group`}>
-                        <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center text-xl lg:text-2xl font-bold mx-auto mb-3 lg:mb-4 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
+                        <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-lg lg:text-xl font-bold mx-auto mb-2 lg:mb-3 shadow-lg group-hover:scale-110 transition-transform ${
                           index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
                           index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
                           index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
@@ -534,13 +534,13 @@ export default function Landing() {
                         }`}>
                           {step.number}
                         </div>
-                        <h3 className={`text-base lg:text-lg font-bold mb-2 text-foreground transition-colors leading-tight ${
+                        <h3 className={`text-sm lg:text-base font-bold mb-1 lg:mb-2 text-foreground transition-colors leading-tight ${
                           index === 0 ? 'group-hover:text-primary' :
                           index === 1 ? 'group-hover:text-secondary' :
                           index === 2 ? 'group-hover:text-warning' :
                           'group-hover:text-accent'
                         }`}>{step.title}</h3>
-                        <p className="text-xs lg:text-sm text-muted-foreground leading-snug">{step.description}</p>
+                        <p className="text-xs text-muted-foreground leading-snug line-clamp-2">{step.description}</p>
                       </div>
                     </div>
                   ))}
