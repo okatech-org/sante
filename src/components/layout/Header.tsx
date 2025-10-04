@@ -27,6 +27,10 @@ export function Header() {
             alt="SANTE.GA Logo" 
             className="h-10 w-auto object-contain"
           />
+          <span className="text-lg font-bold">
+            <span className="text-foreground">SANTE</span>
+            <span className="text-primary">.GA</span>
+          </span>
         </Link>
 
         {/* Navigation Desktop */}

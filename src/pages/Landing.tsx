@@ -183,6 +183,10 @@ export default function Landing() {
                 className="h-16 w-auto object-contain group-hover:scale-110 transition-transform"
               />
               <div>
+                <h1 className="text-2xl font-bold tracking-tight">
+                  <span className="text-foreground">SANTE</span>
+                  <span className="text-primary">.GA</span>
+                </h1>
                 <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
               </div>
             </Link>
