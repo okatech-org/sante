@@ -566,18 +566,18 @@ export default function Landing() {
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                 {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
               </p>
-              <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 scrollbar-thin">
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg border border-secondary/40 whitespace-nowrap flex-shrink-0">
-                  <Shield className="w-4 md:w-5 h-4 md:h-5 text-secondary" />
-                  <span className="text-xs md:text-sm">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
+              <div className="flex gap-1.5 md:gap-4 overflow-x-auto pb-2 scrollbar-thin -mx-2 px-2">
+                <div className="flex items-center gap-1.5 md:space-x-2 bg-card/70 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2 rounded-lg border border-secondary/40 whitespace-nowrap flex-shrink-0">
+                  <Shield className="w-3.5 md:w-5 h-3.5 md:h-5 text-secondary flex-shrink-0" />
+                  <span className="text-[10px] md:text-sm">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg border border-warning/40 whitespace-nowrap flex-shrink-0">
-                  <Award className="w-4 md:w-5 h-4 md:h-5 text-warning" />
-                  <span className="text-xs md:text-sm">{t('landing.trust.badge2') || "Validé par le Ministère"}</span>
+                <div className="flex items-center gap-1.5 md:space-x-2 bg-card/70 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2 rounded-lg border border-warning/40 whitespace-nowrap flex-shrink-0">
+                  <Award className="w-3.5 md:w-5 h-3.5 md:h-5 text-warning flex-shrink-0" />
+                  <span className="text-[10px] md:text-sm">{t('landing.trust.badge2') || "Validé par le Ministère"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg border border-primary/40 whitespace-nowrap flex-shrink-0">
-                  <Heart className="w-4 md:w-5 h-4 md:h-5 text-primary" />
-                  <span className="text-xs md:text-sm">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
+                <div className="flex items-center gap-1.5 md:space-x-2 bg-card/70 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2 rounded-lg border border-primary/40 whitespace-nowrap flex-shrink-0">
+                  <Heart className="w-3.5 md:w-5 h-3.5 md:h-5 text-primary flex-shrink-0" />
+                  <span className="text-[10px] md:text-sm">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
                 </div>
               </div>
             </div>
