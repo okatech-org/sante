@@ -1,0 +1,123 @@
+[
+  {
+    "id": "CHU_LBV_001",
+    "type": "hopital",
+    "nom": "CHU de Libreville",
+    "province": "Estuaire",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3920,
+      "lng": 9.4540
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": ["011 72 32 15", "011 72 62 65"],
+    "horaires": "24h/24, 7j/7",
+    "services": [
+      "Urgences",
+      "Médecine générale",
+      "Chirurgie",
+      "Maternité",
+      "Pédiatrie",
+      "Cardiologie",
+      "Radiologie",
+      "Laboratoire"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": false
+    },
+    "secteur": "public",
+    "niveau_reference": "tertiaire",
+    "statut_operationnel": "operationnel",
+    "notes": "Centre hospitalier universitaire de référence nationale"
+  },
+  {
+    "id": "HOP_SINO_001",
+    "type": "hopital",
+    "nom": "Hôpital de la Coopération Sino-Gabonaise",
+    "province": "Estuaire",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3850,
+      "lng": 9.4480
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 72 31 19"],
+    "horaires": "24h/24",
+    "services": ["Urgences", "Médecine générale", "Chirurgie"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": false
+    },
+    "secteur": "public"
+  },
+  {
+    "id": "HOP_NKEMBO_001",
+    "type": "hopital",
+    "nom": "Hôpital Spécialisé de Nkembo",
+    "province": "Estuaire",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4280,
+      "lng": 9.4150
+    },
+    "adresse_descriptive": "Nkembo, Libreville",
+    "telephones": ["011 72 62 65"],
+    "services": ["Médecine spécialisée", "Hospitalisation"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": false
+    },
+    "secteur": "public"
+  },
+  {
+    "id": "CLI_CHAMBRIER_001",
+    "type": "clinique",
+    "nom": "Polyclinique Dr. Chambrier",
+    "province": "Estuaire",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4250,
+      "lng": 9.4520
+    },
+    "adresse_descriptive": "Montagne Sainte, Boulevard Triomphal",
+    "telephones": ["011 76 14 68", "065 04 61 66"],
+    "email": "contact@chambrier.ga",
+    "horaires": "24h/24, 7j/7",
+    "services": [
+      "Consultations spécialisées",
+      "Chirurgie",
+      "Hospitalisation",
+      "Urgences",
+      "Imagerie médicale",
+      "Laboratoire d'analyses"
+    ],
+    "specialites": [
+      "Cardiologie (Dr ALAWOE, Dr KOUADIO)",
+      "Gynécologie",
+      "Radiologie",
+      "Anesthésie-Réanimation"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": false
+    },
+    "secteur": "prive",
+    "equipements_specialises": [
+      "IRM (SEUL AU GABON)",
+      "Scanner 16 barrettes",
+      "Scanner 120 barrettes",
+      "Mammographie",
+      "Échographie Doppler",
+      "Radiologie conventionnelle"
+    ],
+    "niveau_reference": "tertiaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "065 04 61 66",
+    "notes": "⚠️ MONOPOLE : Seul centre avec IRM et Scanner haute résolution au Gabon. Service radiologie 24/7 avec radiologues sur place."
+  }
+]
