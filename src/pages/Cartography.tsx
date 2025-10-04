@@ -7,7 +7,7 @@ import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
 import CartographyStats from "@/components/cartography/CartographyStats";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Map, List, LayoutGrid, Filter, MapPin } from "lucide-react";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
@@ -133,6 +133,9 @@ export default function Cartography() {
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="left" className="w-full sm:w-96 overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle>Filtres de recherche</SheetTitle>
+                    </SheetHeader>
                     <div className="pt-6">
                       <CartographyFilterPanel
                         filters={filters}
