@@ -351,7 +351,7 @@ export default function HealthProvidersMap() {
     <div className="h-[600px] w-full relative">
       {/* Contrôles de zoom - Version compacte et transparente */}
       <div className="absolute top-4 left-4 z-[1000]">
-        <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 p-1 flex flex-col gap-1">
+        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 p-2 flex flex-col gap-1 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500">
           <Button
             size="icon"
             variant="ghost"
@@ -381,7 +381,7 @@ export default function HealthProvidersMap() {
 
       {/* Statistiques - Version compacte et transparente */}
       <div className="absolute bottom-4 left-4 z-[1000]">
-        <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 px-3 py-2">
+        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 px-4 py-2.5 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500">
           <p className="text-xs font-semibold text-foreground">
             {filteredProviders.length} établissement{filteredProviders.length > 1 ? 's' : ''}
             {selectedType && <span className="text-muted-foreground ml-1">• {getTypeLabel(selectedType)}</span>}
