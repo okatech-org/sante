@@ -35,17 +35,20 @@ export function Header() {
 
         {/* Navigation Desktop */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/#services" className="text-sm font-medium hover:text-primary transition-colors">
-            {t('nav.services')}
+          <Link to="/services" className="text-sm font-medium hover:text-primary transition-colors">
+            Services
           </Link>
-          <Link to="/#about" className="text-sm font-medium hover:text-primary transition-colors">
-            {t('nav.about')}
+          <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
+            Comment ça marche
           </Link>
-          <Link to="/#faq" className="text-sm font-medium hover:text-primary transition-colors">
-            {t('nav.faq')}
+          <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
+            À propos
           </Link>
-          <Link to="/#contact" className="text-sm font-medium hover:text-primary transition-colors">
-            {t('nav.contact')}
+          <Link to="/for-professionals" className="text-sm font-medium hover:text-primary transition-colors">
+            Professionnels
+          </Link>
+          <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
+            Sensibilisation
           </Link>
         </nav>
 
@@ -88,17 +91,20 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <nav className="flex flex-col gap-4 mt-8">
-                <Link to="/#services" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  {t('nav.services')}
+                <Link to="/services" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  Services
                 </Link>
-                <Link to="/#about" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  {t('nav.about')}
+                <Link to="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  Comment ça marche
                 </Link>
-                <Link to="/#faq" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  {t('nav.faq')}
+                <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  À propos
                 </Link>
-                <Link to="/#contact" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  {t('nav.contact')}
+                <Link to="/for-professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  Professionnels
+                </Link>
+                <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  Sensibilisation
                 </Link>
                 
                 <div className="border-t pt-4 mt-4 flex flex-col gap-2">

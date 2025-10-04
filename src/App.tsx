@@ -8,6 +8,11 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
+import Services from "./pages/Services";
+import HowItWorks from "./pages/HowItWorks";
+import About from "./pages/About";
+import ForProfessionals from "./pages/ForProfessionals";
+import Awareness from "./pages/Awareness";
 import Login from "./pages/Login";
 import LoginPatient from "./pages/LoginPatient";
 import LoginProfessional from "./pages/LoginProfessional";
@@ -52,6 +57,11 @@ const App = () => (
             <TooltipProvider>
               <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/for-professionals" element={<ForProfessionals />} />
+            <Route path="/awareness" element={<Awareness />} />
             <Route path="/login" element={<Login />} />
             <Route path="/login/patient" element={<LoginPatient />} />
             <Route path="/login/pro" element={<LoginProfessional />} />
