@@ -193,30 +193,31 @@ export default function ForProfessionals() {
 
           <div className="space-y-16">
             {benefits.map((benefit, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="relative">
-                  <img 
-                    src={benefit.image} 
-                    alt={benefit.title}
-                    className="w-full h-[400px] object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent" />
-                </div>
-                <div className="p-8 lg:p-12">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-primary/10 text-primary mb-6">
-                    <benefit.icon className="w-8 h-8" />
+              <Card key={index} className="overflow-hidden relative min-h-[500px] lg:min-h-[600px]">
+                <img 
+                  src={benefit.image} 
+                  alt={benefit.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-background/20" />
+                
+                <div className="relative z-10 p-8 lg:p-12 flex flex-col justify-end h-full">
+                  <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-6 lg:p-8 shadow-2xl border border-border/50">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-primary/10 text-primary mb-6">
+                      <benefit.icon className="w-8 h-8" />
+                    </div>
+                    <CardTitle className="text-2xl lg:text-3xl mb-4">{benefit.title}</CardTitle>
+                    <CardDescription className="text-base mb-6">{benefit.description}</CardDescription>
+                    
+                    <ul className="space-y-3">
+                      {benefit.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                          <span className="text-foreground">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <CardTitle className="text-2xl lg:text-3xl mb-4">{benefit.title}</CardTitle>
-                  <CardDescription className="text-base mb-6">{benefit.description}</CardDescription>
-                  
-                  <ul className="space-y-3">
-                    {benefit.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                        <span className="text-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </Card>
             ))}
