@@ -215,12 +215,12 @@ export default function Landing() {
               >
                 À propos
               </a>
-              <a 
-                href="#professionals" 
+              <Link 
+                to="/for-professionals" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
                 Professionnels
-              </a>
+              </Link>
               <a 
                 href="#awareness" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
@@ -271,13 +271,13 @@ export default function Landing() {
                     >
                       À propos
                     </a>
-                    <a 
-                      href="#professionals"
+                    <Link 
+                      to="/for-professionals"
                       onClick={() => setMobileMenuOpen(false)} 
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
                       Professionnels
-                    </a>
+                    </Link>
                     <a 
                       href="#awareness"
                       onClick={() => setMobileMenuOpen(false)} 
@@ -621,58 +621,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Section For Professionals */}
-      <section id="professionals" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">Pour les Professionnels de Santé</h2>
-            <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
-              Modernisez votre pratique et développez votre activité
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-shadow bg-card/80 backdrop-blur-xl border border-border/40">
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-                <Calendar className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Gestion d'Agenda</h3>
-              <p className="text-muted-foreground">
-                Optimisez votre planning avec notre système de gestion automatisé
-              </p>
-            </div>
-
-            <div className="rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-shadow bg-card/80 backdrop-blur-xl border border-border/40">
-              <div className="w-14 h-14 rounded-xl bg-secondary/10 flex items-center justify-center mb-6">
-                <Users className="w-7 h-7 text-secondary" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Dossiers Patients</h3>
-              <p className="text-muted-foreground">
-                Accédez instantanément à l'historique complet de vos patients
-              </p>
-            </div>
-
-            <div className="rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-shadow bg-card/80 backdrop-blur-xl border border-border/40">
-              <div className="w-14 h-14 rounded-xl bg-warning/10 flex items-center justify-center mb-6">
-                <Video className="w-7 h-7 text-warning" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Téléconsultation</h3>
-              <p className="text-muted-foreground">
-                Consultez vos patients à distance avec notre solution sécurisée
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <Link to="/for-professionals">
-              <Button size="lg" variant="outline" className="px-10 py-6 text-lg">
-                En savoir plus
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Section Awareness */}
       <section id="awareness" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-muted/30 to-muted/10">
