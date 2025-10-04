@@ -1567,5 +1567,434 @@
     },
     "secteur": "prive",
     "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_AKEBE",
+    "type": "pharmacie",
+    "nom": "Pharmacie d'Akébé",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Rond-point de l'église, Akébé, Libreville",
+    "telephones": ["011 72 01 38"],
+    "horaires": "Lun-Sam 8h-20h, Dim 9h-13h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Parapharmacie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_AWONDO",
+    "type": "pharmacie",
+    "nom": "Nouvelle Pharmacie d'Awondo",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4180,
+      "lng": 9.4580
+    },
+    "adresse_descriptive": "Awondo, Libreville",
+    "telephones": ["061 58 000"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : Dr YOBA BERNADETTE"
+  },
+  {
+    "id": "PHA_LBV_GUEGUE",
+    "type": "pharmacie",
+    "nom": "Pharmacie des Gué-Gué",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4347,
+      "lng": 9.4425
+    },
+    "adresse_descriptive": "Rond-point de Gué-Gué, Libreville",
+    "telephones": ["011 44 41 36", "065 19 03 40"],
+    "horaires": "Lun-Sam 8h-20h, Dim 9h-13h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Parapharmacie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_NZENG",
+    "type": "pharmacie",
+    "nom": "Pharmacie de Garde de Nzeng-Ayong",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4020,
+      "lng": 9.4750
+    },
+    "adresse_descriptive": "Nzeng-Ayong, Libreville",
+    "telephones": ["060 38 04 44"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Dispensation médicaments", "Urgences pharmaceutiques", "Conseils pharmaceutiques"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true,
+      "mutuelles": ["ASCOMA", "SOGAC"]
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "060 38 04 44",
+    "notes": "Service d'urgence permanent 24/7"
+  },
+  {
+    "id": "PHA_LBV_CENTRALE_GARDE",
+    "type": "pharmacie",
+    "nom": "Pharmacie Centrale de Garde",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4200,
+      "lng": 9.4540
+    },
+    "adresse_descriptive": "Centre-ville, face Agatour, Libreville",
+    "telephones": ["066 15 87 44"],
+    "horaires": "Service de garde selon planning",
+    "services": ["Dispensation médicaments", "Service de garde", "Urgences pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "066 15 87 44"
+  },
+  {
+    "id": "PHA_LBV_COMMISSARIAT",
+    "type": "pharmacie",
+    "nom": "Pharmacie du Commissariat Central",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4195,
+      "lng": 9.4535
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_OCEAN",
+    "type": "pharmacie",
+    "nom": "Pharmacie de l'Océan",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4210,
+      "lng": 9.4550
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 72 89 66"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : MAPALI ANTOINE"
+  },
+  {
+    "id": "PHA_LBV_OLOUMI",
+    "type": "pharmacie",
+    "nom": "Pharmacie d'Oloumi",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4050,
+      "lng": 9.4800
+    },
+    "adresse_descriptive": "Zone Industrielle d'Oloumi, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_GABONAISE",
+    "type": "pharmacie",
+    "nom": "Pharmacie Gabonaise",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4205,
+      "lng": 9.4545
+    },
+    "adresse_descriptive": "Entre 9 étages et cinéma Komo, Centre-ville, Libreville",
+    "telephones": ["011 74 30 71"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Parapharmacie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_PRESIDENT",
+    "type": "pharmacie",
+    "nom": "Pharmacie Le Président",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4215,
+      "lng": 9.4560
+    },
+    "adresse_descriptive": "Immeuble Le Président, Centre-ville, Libreville",
+    "telephones": ["011 74 12 48"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_NTOUM_ESSASSA",
+    "type": "pharmacie",
+    "nom": "Pharmacie Essassa",
+    "province": "G1",
+    "ville": "Ntoum",
+    "coordonnees": {
+      "lat": 0.3910,
+      "lng": 9.7620
+    },
+    "adresse_descriptive": "Ntoum",
+    "telephones": [],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : NDJEMBI MPOLO F.C."
+  },
+  {
+    "id": "PHA_PG_CAP",
+    "type": "pharmacie",
+    "nom": "Pharmacie du Cap",
+    "province": "G2",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7193,
+      "lng": 8.7815
+    },
+    "adresse_descriptive": "Centre-ville, Port-Gentil",
+    "telephones": ["011 55 26 80"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Parapharmacie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_OYEM_MATHIS",
+    "type": "pharmacie",
+    "nom": "Pharmacie Mathis",
+    "province": "G7",
+    "ville": "Oyem",
+    "coordonnees": {
+      "lat": 1.5993,
+      "lng": 11.5793
+    },
+    "adresse_descriptive": "BP 17, Oyem",
+    "telephones": ["074 18 29 17"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : ANTOINE JUNIOR MEKONTSO"
+  },
+  {
+    "id": "PHA_BITAM_NOTRE",
+    "type": "pharmacie",
+    "nom": "Pharmacie Notre Pharmacie",
+    "province": "G7",
+    "ville": "Bitam",
+    "coordonnees": {
+      "lat": 2.0756,
+      "lng": 11.4914
+    },
+    "adresse_descriptive": "385 Bitam",
+    "telephones": ["968317", "947242"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : ONDO MBA MARIE"
+  },
+  {
+    "id": "PHA_OYEM_MINANG",
+    "type": "pharmacie",
+    "nom": "Gabon Dépôt de Pharmacie Minang",
+    "province": "G7",
+    "ville": "Oyem",
+    "coordonnees": {
+      "lat": 1.5990,
+      "lng": 11.5800
+    },
+    "adresse_descriptive": "Centre-ville, Oyem",
+    "telephones": [],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Dépôt pharmaceutique"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_MOANDA_STE_GUILAINE",
+    "type": "pharmacie",
+    "nom": "Pharmacie Sainte Guilaine de Moanda",
+    "province": "G8",
+    "ville": "Moanda",
+    "coordonnees": {
+      "lat": -1.5667,
+      "lng": 13.2000
+    },
+    "adresse_descriptive": "Moanda",
+    "telephones": [],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_HO_JIJI",
+    "type": "pharmacie",
+    "nom": "Pharmacie Jiji",
+    "province": "G8",
+    "ville": "Franceville",
+    "coordonnees": {
+      "lat": -1.6333,
+      "lng": 13.5833
+    },
+    "adresse_descriptive": "Franceville",
+    "telephones": ["00241 77070166"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_HO_KIYINE",
+    "type": "pharmacie",
+    "nom": "Pharmacie La Kiyine",
+    "province": "G8",
+    "ville": "Franceville",
+    "coordonnees": {
+      "lat": -1.6340,
+      "lng": 13.5840
+    },
+    "adresse_descriptive": "Franceville",
+    "telephones": ["0060406037"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_MAKOKOU_STE_HELENE",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Sainte Hélène",
+    "province": "G6",
+    "ville": "Makokou",
+    "coordonnees": {
+      "lat": 0.5739,
+      "lng": 12.8644
+    },
+    "adresse_descriptive": "Makokou",
+    "telephones": ["07358650"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Dispensation médicaments"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Titulaire : MME ASSOUBE HELENE. Structure hybride assurant dispensation pharmaceutique."
   }
 ]
