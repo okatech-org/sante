@@ -325,10 +325,42 @@ export default function AdminProject() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Landing Page - Aurora Glass */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-primary" />
+                      Landing Page "Aurora Glass" ✨
+                    </h3>
+                    <div className="grid gap-3">
+                      {[
+                        { title: "Design System Aurora Glass", desc: "Glassmorphism + palette 4 couleurs (turquoise, bleu, jaune, rose)" },
+                        { title: "Hero Section Dynamique", desc: "Gradients multicolores, search bar avancée, badges animés" },
+                        { title: "Stats Bar Interactive", desc: "4 statistiques avec icônes colorées et animations cascade" },
+                        { title: "Services Grid", desc: "4 services avec hover effects, bordures colorées et transitions" },
+                        { title: "Comment ça marche", desc: "4 étapes numérotées avec couleurs alternées et line animée" },
+                        { title: "Section Trust", desc: "Badges sécurisé/validé, formulaire CNAMGS avec bouton rose" },
+                        { title: "Traductions Complètes", desc: "5 langues (FR, EN, ES, AR, PT) - Page 100% internationalisée" },
+                        { title: "Responsive Design", desc: "Mobile-first avec menu hamburger et navigation adaptative" },
+                        { title: "Animations Fluides", desc: "Fade-in, scale-in, hover-scale avec délais en cascade" },
+                        { title: "Footer Complet", desc: "Logo, description, services, contact - Tout traduit" }
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg border bg-gradient-to-br from-card to-primary/5 hover:shadow-md transition-all">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-medium text-sm sm:text-base">{item.title}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
                   {/* Authentification */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
-                      <Lock className="h-5 w-5 text-primary" />
+                      <Lock className="h-5 w-5 text-secondary" />
                       Authentification &amp; Autorisation
                     </h3>
                     <div className="grid gap-3">
@@ -354,7 +386,7 @@ export default function AdminProject() {
                   {/* Patient */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-base sm:text-lg flex items-center gap-2">
-                      <Users className="h-5 w-5 text-primary" />
+                      <Users className="h-5 w-5 text-warning" />
                       Espace Patient
                     </h3>
                     <div className="grid gap-3">
@@ -775,42 +807,178 @@ Protection:
                   <Separator />
 
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg mb-4">Design System</h3>
-                    <div className="space-y-3">
-                      <div className="p-4 rounded-lg border bg-card">
-                        <h4 className="font-semibold mb-2 text-sm sm:text-base">Composants shadcn/ui</h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs sm:text-sm text-muted-foreground">
-                          {["Button", "Card", "Dialog", "Form", "Input", "Select", "Table", "Tabs", "Toast", "Badge", "Avatar", "Dropdown"].map((comp, i) => (
-                            <div key={i} className="p-2 rounded bg-muted font-mono">{comp}</div>
-                          ))}
+                    <h3 className="font-semibold text-base sm:text-lg mb-4">Design System "Aurora Glass"</h3>
+                    <div className="space-y-4">
+                      {/* Description */}
+                      <div className="p-6 rounded-xl border bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+                        <h4 className="font-semibold mb-3 text-base flex items-center gap-2">
+                          <Zap className="h-5 w-5 text-primary" />
+                          Design System "Aurora Glass"
+                        </h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                          Un design moderne combinant l'élégance du glassmorphism avec une palette de couleurs vibrantes inspirée des aurores boréales. 
+                          Caractérisé par des effets de transparence, des gradients fluides et des animations douces.
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                          <div className="p-2 rounded-lg bg-background/80 backdrop-blur border border-primary/20 flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+                            <span>Glassmorphism</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-background/80 backdrop-blur border border-secondary/20 flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-secondary" />
+                            <span>Gradients</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-background/80 backdrop-blur border border-warning/20 flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-warning" />
+                            <span>Animations</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-background/80 backdrop-blur border border-accent/20 flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-accent" />
+                            <span>Responsive</span>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Palette de couleurs */}
                       <div className="p-4 rounded-lg border bg-card">
-                        <h4 className="font-semibold mb-2 text-sm sm:text-base">Thème & Couleurs</h4>
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-3">
-                          Système de design tokens HSL avec support mode sombre
+                        <h4 className="font-semibold mb-3 text-sm sm:text-base">Palette de Couleurs (HSL)</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                          4 couleurs principales harmonieusement réparties dans l'interface
                         </p>
-                        <div className="flex flex-wrap gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded bg-primary" />
-                            <span className="text-xs">Primary</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                          <div className="p-4 rounded-lg border border-primary/30 bg-gradient-to-br from-primary/10 to-primary/5">
+                            <div className="h-12 w-full rounded-lg bg-primary mb-3 shadow-lg" />
+                            <p className="font-semibold text-sm">Primary (Turquoise)</p>
+                            <p className="text-xs text-muted-foreground font-mono">#17CCB9</p>
+                            <p className="text-xs text-muted-foreground font-mono">173 78% 45%</p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded bg-secondary" />
-                            <span className="text-xs">Secondary</span>
+                          <div className="p-4 rounded-lg border border-secondary/30 bg-gradient-to-br from-secondary/10 to-secondary/5">
+                            <div className="h-12 w-full rounded-lg bg-secondary mb-3 shadow-lg" />
+                            <p className="font-semibold text-sm">Secondary (Bleu)</p>
+                            <p className="text-xs text-muted-foreground font-mono">#00A1FE</p>
+                            <p className="text-xs text-muted-foreground font-mono">202 100% 50%</p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded bg-accent" />
-                            <span className="text-xs">Accent</span>
+                          <div className="p-4 rounded-lg border border-warning/30 bg-gradient-to-br from-warning/10 to-warning/5">
+                            <div className="h-12 w-full rounded-lg bg-warning mb-3 shadow-lg" />
+                            <p className="font-semibold text-sm">Warning (Jaune)</p>
+                            <p className="text-xs text-muted-foreground font-mono">#FDAD00</p>
+                            <p className="text-xs text-muted-foreground font-mono">41 100% 50%</p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded bg-destructive" />
-                            <span className="text-xs">Destructive</span>
+                          <div className="p-4 rounded-lg border border-accent/30 bg-gradient-to-br from-accent/10 to-accent/5">
+                            <div className="h-12 w-full rounded-lg bg-accent mb-3 shadow-lg" />
+                            <p className="font-semibold text-sm">Accent (Rose)</p>
+                            <p className="text-xs text-muted-foreground font-mono">#E63B7A</p>
+                            <p className="text-xs text-muted-foreground font-mono">338 80% 57%</p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded bg-muted" />
-                            <span className="text-xs">Muted</span>
+                        </div>
+                      </div>
+
+                      {/* Effets Glassmorphism */}
+                      <div className="p-4 rounded-lg border bg-card">
+                        <h4 className="font-semibold mb-3 text-sm sm:text-base">Effets Glassmorphism</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2 text-xs sm:text-sm">
+                            <p className="font-medium">Classes principales :</p>
+                            <div className="space-y-1 font-mono text-xs">
+                              <div className="p-2 rounded bg-muted">backdrop-blur-xl</div>
+                              <div className="p-2 rounded bg-muted">backdrop-blur-2xl</div>
+                              <div className="p-2 rounded bg-muted">bg-card/80 to-card/60</div>
+                              <div className="p-2 rounded bg-muted">border-border/40</div>
+                            </div>
                           </div>
+                          <div className="space-y-2 text-xs sm:text-sm">
+                            <p className="font-medium">Utilisation :</p>
+                            <ul className="space-y-1">
+                              <li className="flex items-start gap-2">
+                                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />
+                                Cards flottantes avec ombres
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />
+                                Headers avec transparence
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />
+                                Overlays et modals
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1" />
+                                Sections avec fond dégradé
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Animations */}
+                      <div className="p-4 rounded-lg border bg-card">
+                        <h4 className="font-semibold mb-3 text-sm sm:text-base">Animations & Transitions</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                          <div className="p-3 rounded-lg border bg-muted/30">
+                            <p className="font-semibold mb-2">Fade Animations</p>
+                            <div className="space-y-1 font-mono text-xs">
+                              <div>animate-fade-in</div>
+                              <div>animate-fade-out</div>
+                            </div>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-muted/30">
+                            <p className="font-semibold mb-2">Scale Animations</p>
+                            <div className="space-y-1 font-mono text-xs">
+                              <div>animate-scale-in</div>
+                              <div>hover-scale</div>
+                            </div>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-muted/30">
+                            <p className="font-semibold mb-2">Interactive</p>
+                            <div className="space-y-1 font-mono text-xs">
+                              <div>story-link</div>
+                              <div>hover:shadow-2xl</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Internationalisation */}
+                      <div className="p-4 rounded-lg border bg-card">
+                        <h4 className="font-semibold mb-3 text-sm sm:text-base">Internationalisation (i18n)</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                          Système de traduction complet avec 5 langues supportées
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                          <div className="p-3 rounded-lg border bg-primary/5 text-center">
+                            <p className="font-semibold text-sm">🇫🇷 Français</p>
+                            <p className="text-xs text-muted-foreground mt-1">Par défaut</p>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-secondary/5 text-center">
+                            <p className="font-semibold text-sm">🇬🇧 English</p>
+                            <p className="text-xs text-muted-foreground mt-1">Complet</p>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-warning/5 text-center">
+                            <p className="font-semibold text-sm">🇪🇸 Español</p>
+                            <p className="text-xs text-muted-foreground mt-1">Complet</p>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-accent/5 text-center">
+                            <p className="font-semibold text-sm">🇸🇦 العربية</p>
+                            <p className="text-xs text-muted-foreground mt-1">Complet</p>
+                          </div>
+                          <div className="p-3 rounded-lg border bg-primary/5 text-center">
+                            <p className="font-semibold text-sm">🇵🇹 Português</p>
+                            <p className="text-xs text-muted-foreground mt-1">Complet</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 p-3 rounded-lg bg-muted/30 text-xs font-mono">
+                          <p className="mb-2 text-muted-foreground">Usage :</p>
+                          <code>{`const { t } = useLanguage();\n<p>{t('landing.hero.title')}</p>`}</code>
+                        </div>
+                      </div>
+
+                      {/* Composants shadcn/ui */}
+                      <div className="p-4 rounded-lg border bg-card">
+                        <h4 className="font-semibold mb-2 text-sm sm:text-base">Composants shadcn/ui</h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs sm:text-sm text-muted-foreground">
+                          {["Button", "Card", "Dialog", "Form", "Input", "Select", "Table", "Tabs", "Toast", "Badge", "Avatar", "Dropdown", "Sheet", "Sidebar", "Tooltip", "Separator"].map((comp, i) => (
+                            <div key={i} className="p-2 rounded bg-muted/50 font-mono hover:bg-muted transition-colors">{comp}</div>
+                          ))}
                         </div>
                       </div>
                     </div>
