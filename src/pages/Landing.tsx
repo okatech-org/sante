@@ -300,7 +300,7 @@ export default function Landing() {
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
               {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
+              <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
                 {t('landing.hero.titleHighlight') || "portée de clic"}
               </span>
             </h1>
@@ -369,14 +369,14 @@ export default function Landing() {
                 <div className={`mb-3 inline-block p-3 rounded-xl group-hover:scale-110 transition-transform ${
                   index === 0 ? 'bg-gradient-to-br from-primary/10 to-primary/5' :
                   index === 1 ? 'bg-gradient-to-br from-secondary/10 to-secondary/5' :
-                  index === 2 ? 'bg-gradient-to-br from-accent/10 to-accent/5' :
-                  'bg-gradient-to-br from-primary/10 to-primary/5'
+                  index === 2 ? 'bg-gradient-to-br from-warning/10 to-warning/5' :
+                  'bg-gradient-to-br from-accent/10 to-accent/5'
                 }`}>
                   <stat.icon className={`w-8 h-8 ${
                     index === 0 ? 'text-primary' :
                     index === 1 ? 'text-secondary' :
-                    index === 2 ? 'text-accent' :
-                    'text-primary'
+                    index === 2 ? 'text-warning' :
+                    'text-accent'
                   }`} />
                 </div>
                 <div className="text-3xl font-bold mb-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{stat.value}</div>
@@ -405,8 +405,8 @@ export default function Landing() {
                 className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border ${
                   index === 0 ? 'hover:border-primary/30' :
                   index === 1 ? 'hover:border-secondary/30' :
-                  index === 2 ? 'hover:border-accent/30' :
-                  'hover:border-primary/30'
+                  index === 2 ? 'hover:border-warning/30' :
+                  'hover:border-accent/30'
                 } animate-fade-in ${
                   activeService === index ? 'scale-[1.02] shadow-3xl' : ''
                 }`}
@@ -415,29 +415,29 @@ export default function Landing() {
                 <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 opacity-50 ${
                   index === 0 ? 'bg-gradient-to-br from-primary/10 to-primary/5' :
                   index === 1 ? 'bg-gradient-to-br from-secondary/10 to-secondary/5' :
-                  index === 2 ? 'bg-gradient-to-br from-accent/10 to-accent/5' :
-                  'bg-gradient-to-br from-primary/10 to-primary/5'
+                  index === 2 ? 'bg-gradient-to-br from-warning/10 to-warning/5' :
+                  'bg-gradient-to-br from-accent/10 to-accent/5'
                 }`} />
                 
                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 backdrop-blur-sm ${
                   index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20' :
                   index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20' :
-                  index === 2 ? 'bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20' :
-                  'bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20'
+                  index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 border border-warning/20' :
+                  'bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20'
                 }`}>
                   <service.icon className={`w-8 h-8 ${
                     index === 0 ? 'text-primary' :
                     index === 1 ? 'text-secondary' :
-                    index === 2 ? 'text-accent' :
-                    'text-primary'
+                    index === 2 ? 'text-warning' :
+                    'text-accent'
                   }`} />
                 </div>
                 
                 <h3 className={`text-2xl font-bold mb-3 text-foreground transition-colors ${
                   index === 0 ? 'group-hover:text-primary' :
                   index === 1 ? 'group-hover:text-secondary' :
-                  index === 2 ? 'group-hover:text-accent' :
-                  'group-hover:text-primary'
+                  index === 2 ? 'group-hover:text-warning' :
+                  'group-hover:text-accent'
                 }`}>{service.title}</h3>
                 <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
                 
@@ -446,8 +446,8 @@ export default function Landing() {
                   className={`flex items-center font-semibold transition-all group-hover:gap-3 gap-2 ${
                     index === 0 ? 'text-primary hover:text-primary/80' :
                     index === 1 ? 'text-secondary hover:text-secondary/80' :
-                    index === 2 ? 'text-accent hover:text-accent/80' :
-                    'text-primary hover:text-primary/80'
+                    index === 2 ? 'text-warning hover:text-warning/80' :
+                    'text-accent hover:text-accent/80'
                   }`}
                 >
                   {service.action}
@@ -478,22 +478,22 @@ export default function Landing() {
                 <div className={`rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border ${
                   index === 0 ? 'hover:border-primary/30' :
                   index === 1 ? 'hover:border-secondary/30' :
-                  index === 2 ? 'hover:border-accent/30' :
-                  'hover:border-primary/30'
+                  index === 2 ? 'hover:border-warning/30' :
+                  'hover:border-accent/30'
                 } hover-scale group`}>
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform ${
                     index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
                     index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
-                    index === 2 ? 'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20' :
-                    'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20'
+                    index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
+                    'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20'
                   }`}>
                     {step.number}
                   </div>
                   <h3 className={`text-xl font-bold mb-3 text-foreground transition-colors ${
                     index === 0 ? 'group-hover:text-primary' :
                     index === 1 ? 'group-hover:text-secondary' :
-                    index === 2 ? 'group-hover:text-accent' :
-                    'group-hover:text-primary'
+                    index === 2 ? 'group-hover:text-warning' :
+                    'group-hover:text-accent'
                   }`}>{step.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
@@ -528,8 +528,8 @@ export default function Landing() {
                   <Shield className="w-5 h-5 text-secondary" />
                   <span>{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-accent/40">
-                  <Award className="w-5 h-5 text-accent" />
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-warning/40">
+                  <Award className="w-5 h-5 text-warning" />
                   <span>{t('landing.trust.badge2') || "Validé par le Ministère"}</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/40">
