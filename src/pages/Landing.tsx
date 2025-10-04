@@ -520,7 +520,7 @@ export default function Landing() {
                 <div className="grid grid-cols-4 gap-3 lg:gap-4">
                   {steps.map((step, index) => (
                     <div key={index} className="relative animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
-                      <div className={`rounded-xl p-3 lg:p-4 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/95 border border-border ${
+                      <div className={`rounded-xl p-3 lg:p-4 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/95 border border-border h-full flex flex-col ${
                         index === 0 ? 'hover:border-primary/50' :
                         index === 1 ? 'hover:border-secondary/50' :
                         index === 2 ? 'hover:border-warning/50' :
