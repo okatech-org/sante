@@ -504,8 +504,9 @@ export default function Landing() {
               </p>
             </div>
 
-            {/* Image illustrative */}
-            <div className="mb-12 max-w-4xl mx-auto">
+            {/* Image illustrative avec overlay des étapes */}
+            <div className="relative mb-12 max-w-6xl mx-auto">
+              {/* Image de fond */}
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40">
                 <img 
                   src={doctorImage} 
@@ -513,21 +514,54 @@ export default function Landing() {
                   className="w-full h-auto object-cover"
                 />
               </div>
+              
+              {/* Overlay des 4 étapes - visible uniquement sur tablette et desktop */}
+              <div className="hidden md:block absolute inset-0 p-6 lg:p-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 h-full items-center">
+                  {steps.map((step, index) => (
+                    <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
+                      <div className={`rounded-2xl p-4 lg:p-6 shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-card/90 border border-border h-full flex flex-col ${
+                        index === 0 ? 'hover:border-primary/50' :
+                        index === 1 ? 'hover:border-secondary/50' :
+                        index === 2 ? 'hover:border-warning/50' :
+                        'hover:border-accent/50'
+                      } hover-scale group`}>
+                        <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center text-xl lg:text-2xl font-bold mx-auto mb-3 lg:mb-4 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
+                          index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
+                          index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
+                          index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
+                          'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20'
+                        }`}>
+                          {step.number}
+                        </div>
+                        <h3 className={`text-base lg:text-lg font-bold mb-2 text-foreground transition-colors leading-tight ${
+                          index === 0 ? 'group-hover:text-primary' :
+                          index === 1 ? 'group-hover:text-secondary' :
+                          index === 2 ? 'group-hover:text-warning' :
+                          'group-hover:text-accent'
+                        }`}>{step.title}</h3>
+                        <p className="text-xs lg:text-sm text-muted-foreground leading-snug">{step.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 relative">
+            {/* Version mobile - étapes en dessous de l'image */}
+            <div className="md:hidden grid grid-cols-2 gap-4 relative">
               {/* Connection Line animée */}
-              <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
+              <div className="hidden absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
               
               {steps.map((step, index) => (
                 <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
-                  <div className={`rounded-2xl p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border h-full flex flex-col ${
+                  <div className={`rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border h-full flex flex-col ${
                     index === 0 ? 'hover:border-primary/30' :
                     index === 1 ? 'hover:border-secondary/30' :
                     index === 2 ? 'hover:border-warning/30' :
                     'hover:border-accent/30'
                   } hover-scale group`}>
-                    <div className={`w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
                       index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
                       index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
                       index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
@@ -535,13 +569,13 @@ export default function Landing() {
                     }`}>
                       {step.number}
                     </div>
-                    <h3 className={`text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-foreground transition-colors leading-tight ${
+                    <h3 className={`text-base font-bold mb-2 text-foreground transition-colors leading-tight ${
                       index === 0 ? 'group-hover:text-primary' :
                       index === 1 ? 'group-hover:text-secondary' :
                       index === 2 ? 'group-hover:text-warning' :
                       'group-hover:text-accent'
                     }`}>{step.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground leading-snug">{step.description}</p>
+                    <p className="text-xs text-muted-foreground leading-snug">{step.description}</p>
                   </div>
                 </div>
               ))}
