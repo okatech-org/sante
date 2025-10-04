@@ -352,8 +352,28 @@ export default function HealthProvidersMap() {
       {/* Barre de recherche intelligente avec filtres intégrés */}
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[95%] max-w-2xl">
         <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-2xl border border-border/60 p-3">
-          {/* Localisation */}
+          {/* Recherche, Ville et Localisation sur la même ligne */}
           <div className="flex gap-2 mb-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Rechercher un établissement, spécialité..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 h-10 bg-background/80 border-border/40 focus:border-primary/50 text-sm font-medium"
+              />
+              {searchQuery && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
             <div className="relative flex-1">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -375,27 +395,6 @@ export default function HealthProvidersMap() {
             >
               <Locate className={`h-4 w-4 ${isLocating ? 'animate-pulse' : ''}`} />
             </Button>
-          </div>
-          {/* Champ de recherche */}
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Rechercher un établissement, ville, spécialité..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10 h-11 bg-background/80 border-border/40 focus:border-primary/50 text-sm font-medium"
-            />
-            {searchQuery && (
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
           </div>
           
           {/* Filtres par type en ligne */}
