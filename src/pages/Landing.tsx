@@ -16,8 +16,13 @@ import {
   Activity,
   Award,
   ChevronRight,
-  Mail
+  Mail,
+  Menu,
+  X,
+  Globe
 } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "next-themes";
@@ -32,6 +37,17 @@ export default function Landing() {
   const [searchLocation, setSearchLocation] = useState("");
   const [cnamgsNumber, setCnamgsNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Detect scroll for header background
+  useState(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -155,13 +171,18 @@ export default function Landing() {
         <ThemeToggle />
       </div>
 
-      {/* Header Navigation avec effet glassmorphism */}
-      <header className="fixed top-0 w-full z-40 bg-card/60 border-b border-border/40 backdrop-blur-xl animate-slide-in-right shadow-sm">
+      {/* Header Navigation avec effet glassmorphism amélioré */}
+      <header className={`fixed top-0 w-full z-40 border-b transition-all duration-500 ${
+        scrolled 
+          ? 'bg-card/95 border-border/60 shadow-lg backdrop-blur-2xl' 
+          : 'bg-card/60 border-border/40 backdrop-blur-xl shadow-sm'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link to="/" className="flex items-center space-x-3 hover-scale">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg backdrop-blur-sm border border-border/20">
-                <Heart className="w-7 h-7 text-primary" />
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3 hover-scale group">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg backdrop-blur-sm border border-border/20 group-hover:scale-110 transition-transform">
+                <Heart className="w-7 h-7 text-primary group-hover:animate-pulse" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
@@ -169,27 +190,91 @@ export default function Landing() {
               </div>
             </Link>
             
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
+              <a 
+                href="#services" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
                 {t('landing.services') || "Services"}
               </a>
-              <a href="#comment" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
+              <a 
+                href="#comment" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
                 {t('landing.howItWorks') || "Comment ça marche"}
               </a>
-              <a href="#propos" className="story-link font-medium text-foreground/80 hover:text-foreground transition-all duration-300">
+              <a 
+                href="#propos" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
                 {t('landing.footer.about') || "À propos"}
               </a>
             </nav>
 
-            <div className="flex items-center space-x-4">
-              <Link to="/login/patient" className="hidden sm:block">
-                <Button variant="ghost" className="hover-scale">{t('landing.cta.login') || "Se connecter"}</Button>
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-3">
+              <LanguageToggle />
+              <Link to="/login/patient">
+                <Button variant="ghost" className="hover-scale">
+                  {t('landing.cta.login') || "Se connecter"}
+                </Button>
               </Link>
               <Link to="/register/patient">
                 <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90">
                   {t('landing.hero.patient') || "S'inscrire"}
                 </Button>
               </Link>
+            </div>
+
+            {/* Mobile Menu */}
+            <div className="flex md:hidden items-center gap-2">
+              <LanguageToggle />
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover-scale">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <nav className="flex flex-col gap-6 mt-8">
+                    <a 
+                      href="#services" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+                    >
+                      {t('landing.services') || "Services"}
+                    </a>
+                    <a 
+                      href="#comment"
+                      onClick={() => setMobileMenuOpen(false)} 
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+                    >
+                      {t('landing.howItWorks') || "Comment ça marche"}
+                    </a>
+                    <a 
+                      href="#propos"
+                      onClick={() => setMobileMenuOpen(false)} 
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+                    >
+                      {t('landing.footer.about') || "À propos"}
+                    </a>
+                    
+                    <div className="flex flex-col gap-3 mt-6">
+                      <Link to="/login/patient" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="outline" className="w-full">
+                          {t('landing.cta.login') || "Se connecter"}
+                        </Button>
+                      </Link>
+                      <Link to="/register/patient" onClick={() => setMobileMenuOpen(false)}>
+                        <Button className="w-full bg-gradient-to-r from-primary to-primary/90">
+                          {t('landing.hero.patient') || "S'inscrire"}
+                        </Button>
+                      </Link>
+                    </div>
+                  </nav>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>

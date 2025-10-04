@@ -32,6 +32,70 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
     
+    // Landing Page
+    'landing.services': 'Services',
+    'landing.howItWorks': 'Comment ça marche',
+    'landing.servicesSubtitle': 'Des services simples et rapides pour prendre soin de vous et votre famille',
+    'landing.howItWorksSubtitle': '4 étapes simples pour accéder aux meilleurs soins',
+    'landing.secure': 'Plateforme E-Santé Nationale du Gabon',
+    'landing.cta.login': 'Se connecter',
+    'landing.cta.patient': 'Commencer maintenant',
+    
+    'landing.hero.title': 'Votre santé à',
+    'landing.hero.titleHighlight': 'portée de clic',
+    'landing.hero.subtitle': 'Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n\'importe où au Gabon',
+    'landing.hero.patient': 'S\'inscrire',
+    
+    'landing.search.doctor': 'Médecin, spécialité, hôpital...',
+    'landing.search.location': 'Libreville, Port-Gentil...',
+    'landing.search.button': 'Rechercher',
+    
+    'landing.stats.doctors': 'Médecins inscrits',
+    'landing.stats.facilities': 'Hôpitaux & Cliniques',
+    'landing.stats.available': 'Service disponible',
+    'landing.stats.secure': 'Données sécurisées',
+    
+    'landing.service1.title': 'Prendre Rendez-vous',
+    'landing.service1.desc': 'Trouvez et réservez un rendez-vous avec un médecin en quelques clics',
+    'landing.service1.action': 'Trouver un médecin',
+    'landing.service2.title': 'Téléconsultation',
+    'landing.service2.desc': 'Consultez un médecin par vidéo depuis chez vous, où que vous soyez',
+    'landing.service2.action': 'Démarrer une consultation',
+    'landing.service3.title': 'Mon Dossier Médical',
+    'landing.service3.desc': 'Accédez à tous vos documents médicaux en un seul endroit sécurisé',
+    'landing.service3.action': 'Voir mon dossier',
+    'landing.service4.title': 'Mes Droits CNAMGS',
+    'landing.service4.desc': 'Vérifiez votre couverture santé et suivez vos remboursements',
+    'landing.service4.action': 'Vérifier mes droits',
+    
+    'landing.step1.title': 'Créez votre compte',
+    'landing.step1.desc': 'Inscription simple en 2 minutes',
+    'landing.step2.title': 'Recherchez un professionnel',
+    'landing.step2.desc': 'Par spécialité ou localisation',
+    'landing.step3.title': 'Réservez votre rendez-vous',
+    'landing.step3.desc': 'Choisissez l\'horaire qui vous convient',
+    'landing.step4.title': 'Consultez et suivez',
+    'landing.step4.desc': 'En ligne ou en présentiel',
+    
+    'landing.trust.title': 'Une plateforme de confiance pour tous les Gabonais',
+    'landing.trust.subtitle': 'SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon.',
+    'landing.trust.badge1': 'Données 100% sécurisées',
+    'landing.trust.badge2': 'Validé par le Ministère',
+    'landing.trust.badge3': 'Gratuit pour les patients',
+    
+    'landing.insurance.title': 'Vérifiez vos droits CNAMGS',
+    'landing.insurance.placeholder': 'Numéro d\'assuré CNAMGS',
+    'landing.insurance.verify': 'Vérifier ma couverture',
+    'landing.insurance.subtitle': 'Vérifiez instantanément votre statut d\'assurance et vos droits aux remboursements',
+    
+    'landing.footer.tagline': 'Votre santé, notre priorité',
+    'landing.footer.about': 'À propos',
+    'landing.footer.support': 'Contact',
+    'landing.footer.copyright': 'SANTE.GA - Ministère de la Santé du Gabon. Tous droits réservés.',
+    'landing.footer.privacy': 'Confidentialité',
+    'landing.footer.terms': 'Conditions d\'utilisation',
+    'landing.footer.helpCenter': 'Aide',
+    
     // Dashboard
     'dashboard.welcome': 'Bienvenue',
     'dashboard.quickActions': 'Actions rapides',
@@ -39,6 +103,12 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.noAppointments': 'Aucun rendez-vous prévu',
     'dashboard.makeAppointment': 'Prendre rendez-vous',
     'dashboard.viewAllAppointments': 'Voir tous mes RDV',
+    
+    // Quick Actions
+    'quickActions.findDoctor': 'Trouver un médecin',
+    'quickActions.pharmacies': 'Pharmacies de garde',
+    'quickActions.teleconsultation': 'Téléconsultation',
+    'quickActions.hospitals': 'Hôpitaux',
     
     // Common
     'common.loading': 'Chargement...',
@@ -77,6 +147,70 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
     
+    // Landing Page
+    'landing.services': 'Services',
+    'landing.howItWorks': 'How It Works',
+    'landing.servicesSubtitle': 'Simple and fast services to take care of you and your family',
+    'landing.howItWorksSubtitle': '4 simple steps to access the best care',
+    'landing.secure': 'National E-Health Platform of Gabon',
+    'landing.cta.login': 'Login',
+    'landing.cta.patient': 'Get Started',
+    
+    'landing.hero.title': 'Your health at',
+    'landing.hero.titleHighlight': 'your fingertips',
+    'landing.hero.subtitle': 'Find a doctor, book appointments, consult online and manage your health easily from Libreville, Port-Gentil or anywhere in Gabon',
+    'landing.hero.patient': 'Sign Up',
+    
+    'landing.search.doctor': 'Doctor, specialty, hospital...',
+    'landing.search.location': 'Libreville, Port-Gentil...',
+    'landing.search.button': 'Search',
+    
+    'landing.stats.doctors': 'Registered Doctors',
+    'landing.stats.facilities': 'Hospitals & Clinics',
+    'landing.stats.available': 'Service Available',
+    'landing.stats.secure': 'Secure Data',
+    
+    'landing.service1.title': 'Book Appointment',
+    'landing.service1.desc': 'Find and book an appointment with a doctor in a few clicks',
+    'landing.service1.action': 'Find a doctor',
+    'landing.service2.title': 'Teleconsultation',
+    'landing.service2.desc': 'Consult a doctor by video from home, wherever you are',
+    'landing.service2.action': 'Start consultation',
+    'landing.service3.title': 'Medical Record',
+    'landing.service3.desc': 'Access all your medical documents in one secure place',
+    'landing.service3.action': 'View my record',
+    'landing.service4.title': 'CNAMGS Rights',
+    'landing.service4.desc': 'Check your health coverage and track reimbursements',
+    'landing.service4.action': 'Check my rights',
+    
+    'landing.step1.title': 'Create your account',
+    'landing.step1.desc': 'Simple registration in 2 minutes',
+    'landing.step2.title': 'Search for a professional',
+    'landing.step2.desc': 'By specialty or location',
+    'landing.step3.title': 'Book your appointment',
+    'landing.step3.desc': 'Choose the time that suits you',
+    'landing.step4.title': 'Consult and follow',
+    'landing.step4.desc': 'Online or in person',
+    
+    'landing.trust.title': 'A trusted platform for all Gabonese',
+    'landing.trust.subtitle': 'SANTE.GA is the official e-health platform of Gabon, developed to connect patients, doctors, hospitals and pharmacies. Secure, free and accessible throughout Gabon.',
+    'landing.trust.badge1': '100% Secure Data',
+    'landing.trust.badge2': 'Ministry Validated',
+    'landing.trust.badge3': 'Free for Patients',
+    
+    'landing.insurance.title': 'Check your CNAMGS rights',
+    'landing.insurance.placeholder': 'CNAMGS Member Number',
+    'landing.insurance.verify': 'Check my coverage',
+    'landing.insurance.subtitle': 'Instantly verify your insurance status and reimbursement rights',
+    
+    'landing.footer.tagline': 'Your health, our priority',
+    'landing.footer.about': 'About',
+    'landing.footer.support': 'Contact',
+    'landing.footer.copyright': 'SANTE.GA - Ministry of Health of Gabon. All rights reserved.',
+    'landing.footer.privacy': 'Privacy',
+    'landing.footer.terms': 'Terms of Use',
+    'landing.footer.helpCenter': 'Help',
+    
     // Dashboard
     'dashboard.welcome': 'Welcome',
     'dashboard.quickActions': 'Quick Actions',
@@ -84,6 +218,12 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.noAppointments': 'No appointments scheduled',
     'dashboard.makeAppointment': 'Book Appointment',
     'dashboard.viewAllAppointments': 'View All Appointments',
+    
+    // Quick Actions
+    'quickActions.findDoctor': 'Find a doctor',
+    'quickActions.pharmacies': 'On-duty pharmacies',
+    'quickActions.teleconsultation': 'Teleconsultation',
+    'quickActions.hospitals': 'Hospitals',
     
     // Common
     'common.loading': 'Loading...',
