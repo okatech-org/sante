@@ -38,9 +38,6 @@ export function Header() {
           <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors">
             Services
           </a>
-          <a href="/#comment-ca-marche" className="text-sm font-medium hover:text-primary transition-colors">
-            Comment ça marche
-          </a>
           <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
             À propos
           </a>
@@ -93,9 +90,6 @@ export function Header() {
               <nav className="flex flex-col gap-4 mt-8">
                 <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Services
-                </a>
-                <a href="/#comment-ca-marche" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  Comment ça marche
                 </a>
                 <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   À propos

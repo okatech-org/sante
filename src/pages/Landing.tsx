@@ -210,12 +210,6 @@ export default function Landing() {
                 Services
               </a>
               <a 
-                href="#comment-ca-marche" 
-                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
-              >
-                Comment ça marche
-              </a>
-              <a 
                 href="#about" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
@@ -269,13 +263,6 @@ export default function Landing() {
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
                       Services
-                    </a>
-                    <a 
-                      href="#comment-ca-marche"
-                      onClick={() => setMobileMenuOpen(false)} 
-                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
-                    >
-                      Comment ça marche
                     </a>
                     <a 
                       href="#about"
@@ -505,73 +492,63 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="comment-ca-marche" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/20">
+      {/* About Section - includes How It Works + Trust */}
+      <section id="about" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-muted/30 to-muted/10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.howItWorks') || "Comment ça marche ?"}</h2>
-            <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
-              {t('landing.howItWorksSubtitle') || "4 étapes simples pour accéder aux meilleurs soins"}
-            </p>
-          </div>
+          {/* How It Works Part */}
+          <div className="mb-20">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.howItWorks') || "Comment ça marche ?"}</h2>
+              <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
+                {t('landing.howItWorksSubtitle') || "4 étapes simples pour accéder aux meilleurs soins"}
+              </p>
+            </div>
 
-          {/* Image illustrative */}
-          <div className="mb-12 max-w-4xl mx-auto">
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40">
-              <img 
-                src={doctorImage} 
-                alt="Médecin gabonais en consultation vidéo"
-                className="w-full h-auto object-cover"
-              />
+            {/* Image illustrative */}
+            <div className="mb-12 max-w-4xl mx-auto">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40">
+                <img 
+                  src={doctorImage} 
+                  alt="Médecin gabonais en consultation vidéo"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 relative">
+              {/* Connection Line animée */}
+              <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
+              
+              {steps.map((step, index) => (
+                <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
+                  <div className={`rounded-2xl p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border h-full flex flex-col ${
+                    index === 0 ? 'hover:border-primary/30' :
+                    index === 1 ? 'hover:border-secondary/30' :
+                    index === 2 ? 'hover:border-warning/30' :
+                    'hover:border-accent/30'
+                  } hover-scale group`}>
+                    <div className={`w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
+                      index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
+                      index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
+                      index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
+                      'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20'
+                    }`}>
+                      {step.number}
+                    </div>
+                    <h3 className={`text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-foreground transition-colors leading-tight ${
+                      index === 0 ? 'group-hover:text-primary' :
+                      index === 1 ? 'group-hover:text-secondary' :
+                      index === 2 ? 'group-hover:text-warning' :
+                      'group-hover:text-accent'
+                    }`}>{step.title}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground leading-snug">{step.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 relative">
-            {/* Connection Line animée */}
-            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
-            
-            {steps.map((step, index) => (
-              <div key={index} className="relative animate-fade-in h-full" style={{ animationDelay: `${index * 0.15}s` }}>
-                <div className={`rounded-2xl p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border h-full flex flex-col ${
-                  index === 0 ? 'hover:border-primary/30' :
-                  index === 1 ? 'hover:border-secondary/30' :
-                  index === 2 ? 'hover:border-warning/30' :
-                  'hover:border-accent/30'
-                } hover-scale group`}>
-                  <div className={`w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center text-xl md:text-2xl font-bold mx-auto mb-3 md:mb-4 lg:mb-6 shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${
-                    index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
-                    index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
-                    index === 2 ? 'bg-gradient-to-br from-warning/20 to-warning/10 text-warning border border-warning/20' :
-                    'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20'
-                  }`}>
-                    {step.number}
-                  </div>
-                  <h3 className={`text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 text-foreground transition-colors leading-tight ${
-                    index === 0 ? 'group-hover:text-primary' :
-                    index === 1 ? 'group-hover:text-secondary' :
-                    index === 2 ? 'group-hover:text-warning' :
-                    'group-hover:text-accent'
-                  }`}>{step.title}</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground leading-snug">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link to="/register/patient">
-              <Button size="lg" className="px-10 py-6 text-lg shadow-xl hover:shadow-3xl hover-scale bg-gradient-to-r from-accent to-accent/90 animate-scale-in">
-                {t('landing.cta.patient') || "Commencer maintenant"}
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Section - About */}
-      <section id="about" className="relative py-8 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+          {/* Trust & Mission Part */}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
             <div className="order-2 lg:order-1">
@@ -625,7 +602,7 @@ export default function Landing() {
                     >
                       {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
                     </Button>
-                    <p className="text-sm text-muted-foreground text-center">
+                    <p className="text-sm text-muted-foreground">
                       {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
                     </p>
                   </div>
@@ -634,7 +611,7 @@ export default function Landing() {
                 <div className="rounded-2xl overflow-hidden shadow-xl border border-border/40">
                   <img 
                     src={hospitalImage} 
-                    alt="Réception moderne d'hôpital gabonais"
+                    alt="Centre de santé au Gabon"
                     className="w-full h-auto object-cover"
                   />
                 </div>
