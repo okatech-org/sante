@@ -39,6 +39,7 @@ import AdminSettings from "./pages/AdminSettings";
 import Cartography from "./pages/Cartography";
 import MedicalRecord from "./pages/MedicalRecord";
 import Support from "./pages/Support";
+import Teleconsultation from "./pages/Teleconsultation";
 
 const queryClient = new QueryClient();
 
@@ -127,6 +128,11 @@ const App = () => (
             <Route path="/support" element={
               <ProtectedRoute>
                 <Support />
+              </ProtectedRoute>
+            } />
+            <Route path="/teleconsultation" element={
+              <ProtectedRoute>
+                <Teleconsultation />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
