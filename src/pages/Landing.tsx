@@ -511,10 +511,17 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary/80 to-primary rounded-xl flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-primary-foreground" />
+                <img 
+                  src={logoSante} 
+                  alt="SANTE.GA Logo" 
+                  className="h-12 w-auto object-contain"
+                />
+                <div>
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    <span className="text-foreground">SANTE</span>
+                    <span className="text-primary">.GA</span>
+                  </h2>
                 </div>
-                <span className="text-2xl font-bold">SANTE.GA</span>
               </div>
               <p className="text-muted-foreground mb-6 leading-relaxed">
                 {t('landing.footer.tagline') || "La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon."}
