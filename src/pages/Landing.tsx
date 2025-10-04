@@ -525,7 +525,7 @@ export default function Landing() {
                 </div>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon.
+                {t('landing.footer.description') || "La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon."}
               </p>
             </div>
 
@@ -534,22 +534,22 @@ export default function Landing() {
               <ul className="space-y-3">
                 <li>
                   <Link to="/providers" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Trouver un médecin
+                    {t('landing.footer.findDoctor') || "Trouver un médecin"}
                   </Link>
                 </li>
                 <li>
                   <Link to="/teleconsultation" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Téléconsultation
+                    {t('landing.footer.teleconsultation') || "Téléconsultation"}
                   </Link>
                 </li>
                 <li>
                   <Link to="/medical-record" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Dossier médical
+                    {t('landing.footer.medicalRecord') || "Dossier médical"}
                   </Link>
                 </li>
                 <li>
                   <Link to="/login/patient" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Droits CNAMGS
+                    {t('landing.footer.cnamgsRights') || "Droits CNAMGS"}
                   </Link>
                 </li>
               </ul>
@@ -560,7 +560,7 @@ export default function Landing() {
               <ul className="space-y-3">
                 <li className="flex items-start text-muted-foreground">
                   <MapPin className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
-                  <span>Libreville, Gabon</span>
+                  <span>{t('landing.footer.location') || "Libreville, Gabon"}</span>
                 </li>
                 <li className="flex items-start text-muted-foreground">
                   <Mail className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
@@ -568,7 +568,7 @@ export default function Landing() {
                 </li>
                 <li className="flex items-start text-muted-foreground">
                   <Clock className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
-                  <span>24/7 Support disponible</span>
+                  <span>{t('landing.footer.availability') || "24/7 Support disponible"}</span>
                 </li>
               </ul>
             </div>
