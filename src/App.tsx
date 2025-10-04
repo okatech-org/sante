@@ -50,8 +50,6 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <TooltipProvider>
-              <Toaster />
-              <Sonner />
               <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
