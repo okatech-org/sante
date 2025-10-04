@@ -58,7 +58,9 @@ export default function HealthProvidersMap() {
 
     const map = L.map(mapContainer.current, {
       zoomControl: false,
-      attributionControl: true
+      attributionControl: true,
+      minZoom: DEFAULT_ZOOM,
+      maxZoom: 18
     }).setView(GABON_CENTER, DEFAULT_ZOOM);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
