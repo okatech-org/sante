@@ -521,10 +521,11 @@ export default function Landing() {
                     <span className="text-foreground">SANTE</span>
                     <span className="text-primary">.GA</span>
                   </h2>
+                  <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
                 </div>
               </div>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                {t('landing.footer.tagline') || "La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon."}
+                La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon.
               </p>
               <div className="flex space-x-4">
                 {['Facebook', 'Twitter', 'LinkedIn'].map((social) => (
