@@ -44,9 +44,9 @@ export function Header() {
           <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors">
             Professionnels
           </a>
-          <a href="/#awareness" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
             Sensibilisation
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -97,9 +97,9 @@ export function Header() {
                 <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Professionnels
                 </a>
-                <a href="/#awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Sensibilisation
-                </a>
+                </Link>
                 
                 <div className="border-t pt-4 mt-4 flex flex-col gap-2">
                   {user ? (
