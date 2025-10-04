@@ -524,20 +524,9 @@ export default function Landing() {
                   <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 La plateforme nationale e-santé du Gabon. Connectant patients, médecins et professionnels de santé pour un accès équitable aux soins partout au Gabon.
               </p>
-              <div className="flex space-x-4">
-                {['Facebook', 'Twitter', 'LinkedIn'].map((social) => (
-                  <button 
-                    key={social}
-                    className="w-10 h-10 bg-card rounded-lg hover:bg-muted transition-colors flex items-center justify-center border border-border/40"
-                  >
-                    <span className="sr-only">{social}</span>
-                    <div className="w-5 h-5 bg-muted-foreground/30 rounded" />
-                  </button>
-                ))}
-              </div>
             </div>
 
             <div>
