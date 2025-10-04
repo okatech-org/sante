@@ -4,9 +4,10 @@ import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X } from "lucide-react";
+import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X, Locate } from "lucide-react";
 import providersData from "@/data/cartography-providers.json";
 import { CartographyProvider } from "@/types/cartography";
+import { toast } from "sonner";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -43,6 +44,9 @@ export default function HealthProvidersMap() {
   const markersGroup = useRef<L.LayerGroup | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [locationQuery, setLocationQuery] = useState("");
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
   
   const providers = useMemo(() => {
     return (providersData as CartographyProvider[]).filter(p => p.coordonnees);
@@ -247,6 +251,69 @@ export default function HealthProvidersMap() {
     }
   };
 
+  const handleGetCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("La géolocalisation n'est pas supportée par votre navigateur");
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords: [number, number] = [position.coords.latitude, position.coords.longitude];
+        setUserLocation(coords);
+        mapInstance.current?.setView(coords, 13);
+        
+        // Ajouter un marqueur pour la position de l'utilisateur
+        if (markersGroup.current) {
+          const userMarker = L.marker(coords, {
+            icon: L.divIcon({
+              className: 'user-location-marker',
+              html: `
+                <div style="
+                  background: hsl(var(--primary));
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                  border: 3px solid white;
+                  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                "></div>
+              `,
+              iconSize: [20, 20],
+              iconAnchor: [10, 10],
+            })
+          });
+          userMarker.bindPopup("📍 Votre position");
+        }
+        
+        setIsLocating(false);
+        toast.success("Position obtenue avec succès");
+      },
+      (error) => {
+        setIsLocating(false);
+        toast.error("Impossible d'obtenir votre position");
+        console.error(error);
+      }
+    );
+  };
+
+  const handleLocationSearch = () => {
+    if (!locationQuery.trim()) return;
+    
+    // Rechercher dans les villes des providers
+    const locationMatch = providers.find(p => 
+      p.ville.toLowerCase().includes(locationQuery.toLowerCase()) ||
+      p.adresse_descriptive?.toLowerCase().includes(locationQuery.toLowerCase())
+    );
+    
+    if (locationMatch && locationMatch.coordonnees) {
+      mapInstance.current?.setView([locationMatch.coordonnees.lat, locationMatch.coordonnees.lng], 12);
+      toast.success(`Centré sur ${locationMatch.ville}`);
+    } else {
+      toast.error("Localisation non trouvée");
+    }
+  };
+
   const getProviderIcon = (type: string): string => {
     const icons: Record<string, string> = {
       hopital: '🏥',
@@ -283,8 +350,32 @@ export default function HealthProvidersMap() {
   return (
     <div className="h-[600px] w-full relative">
       {/* Barre de recherche intelligente avec filtres intégrés */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[95%] max-w-4xl">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[95%] max-w-2xl">
         <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-2xl border border-border/60 p-3">
+          {/* Localisation */}
+          <div className="flex gap-2 mb-3">
+            <div className="relative flex-1">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Ville, quartier, lieu..."
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleLocationSearch()}
+                className="pl-10 h-10 bg-background/80 border-border/40 focus:border-primary/50 text-sm font-medium"
+              />
+            </div>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={handleGetCurrentLocation}
+              disabled={isLocating}
+              className="h-10 w-10 flex-shrink-0"
+              title="Ma position actuelle"
+            >
+              <Locate className={`h-4 w-4 ${isLocating ? 'animate-pulse' : ''}`} />
+            </Button>
+          </div>
           {/* Champ de recherche */}
           <div className="relative mb-3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
