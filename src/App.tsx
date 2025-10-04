@@ -14,6 +14,9 @@ import LoginProfessional from "./pages/LoginProfessional";
 import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
 import Dashboard from "./pages/Dashboard";
+import DashboardPatient from "./pages/DashboardPatient";
+import DashboardProfessional from "./pages/DashboardProfessional";
+import DashboardAdmin from "./pages/DashboardAdmin";
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
 import Prescriptions from "./pages/Prescriptions";
@@ -59,6 +62,21 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/patient" element={
+              <ProtectedRoute requiredRoles={['patient']}>
+                <DashboardPatient />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/professional" element={
+              <ProtectedRoute requiredRoles={['doctor', 'hospital', 'pharmacy', 'laboratory', 'medical_staff']}>
+                <DashboardProfessional />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/admin" element={
+              <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                <DashboardAdmin />
               </ProtectedRoute>
             } />
             <Route path="/appointments" element={

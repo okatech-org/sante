@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAdmin = hasRole('admin') || isSuperAdmin;
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
+    const redirectUrl = `${window.location.origin}/`;
     
     const { data, error } = await supabase.auth.signUp({
       email,
