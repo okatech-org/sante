@@ -166,11 +166,6 @@ export default function Landing() {
         />
       </div>
 
-      {/* Theme Toggle */}
-      <div className="fixed top-4 right-4 z-50 animate-fade-in">
-        <ThemeToggle />
-      </div>
-
       {/* Header Navigation avec effet glassmorphism amélioré */}
       <header className={`fixed top-0 w-full z-40 border-b transition-all duration-500 ${
         scrolled 
@@ -214,6 +209,7 @@ export default function Landing() {
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-3">
+              <ThemeToggle />
               <LanguageToggle />
               <Link to="/login/patient">
                 <Button variant="ghost" className="hover-scale">
@@ -229,6 +225,7 @@ export default function Landing() {
 
             {/* Mobile Menu */}
             <div className="flex md:hidden items-center gap-2">
+              <ThemeToggle />
               <LanguageToggle />
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>

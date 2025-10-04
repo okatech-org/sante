@@ -40,6 +40,12 @@ const translations: Record<Language, Record<string, string>> = {
     'language.ar': 'العربية',
     'language.pt': 'Português',
     
+    // Theme
+    'theme.toggle': 'Changer de thème',
+    'theme.light': 'Clair',
+    'theme.dark': 'Sombre',
+    'theme.system': 'Système',
+    
     // Landing Page
     'landing.services': 'Services',
     'landing.howItWorks': 'Comment ça marche',
@@ -162,6 +168,12 @@ const translations: Record<Language, Record<string, string>> = {
     'language.es': 'Español',
     'language.ar': 'العربية',
     'language.pt': 'Português',
+    
+    // Theme
+    'theme.toggle': 'Change theme',
+    'theme.light': 'Light',
+    'theme.dark': 'Dark',
+    'theme.system': 'System',
     
     // Landing Page
     'landing.services': 'Services',
@@ -286,6 +298,12 @@ const translations: Record<Language, Record<string, string>> = {
     'language.ar': 'العربية',
     'language.pt': 'Português',
     
+    // Theme
+    'theme.toggle': 'Cambiar tema',
+    'theme.light': 'Claro',
+    'theme.dark': 'Oscuro',
+    'theme.system': 'Sistema',
+    
     // Dashboard
     'dashboard.welcome': 'Bienvenido',
     'dashboard.quickActions': 'Acciones Rápidas',
@@ -339,6 +357,12 @@ const translations: Record<Language, Record<string, string>> = {
     'language.ar': 'العربية',
     'language.pt': 'Português',
     
+    // Theme
+    'theme.toggle': 'تغيير المظهر',
+    'theme.light': 'فاتح',
+    'theme.dark': 'داكن',
+    'theme.system': 'النظام',
+    
     // Dashboard
     'dashboard.welcome': 'مرحبا',
     'dashboard.quickActions': 'إجراءات سريعة',
@@ -391,6 +415,12 @@ const translations: Record<Language, Record<string, string>> = {
     'language.es': 'Español',
     'language.ar': 'العربية',
     'language.pt': 'Português',
+    
+    // Theme
+    'theme.toggle': 'Mudar tema',
+    'theme.light': 'Claro',
+    'theme.dark': 'Escuro',
+    'theme.system': 'Sistema',
     
     // Dashboard
     'dashboard.welcome': 'Bem-vindo',
