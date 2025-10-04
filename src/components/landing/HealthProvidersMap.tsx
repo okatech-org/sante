@@ -62,7 +62,7 @@ export default function HealthProvidersMap() {
   };
 
   return (
-    <div className="h-[500px] w-full rounded-2xl overflow-hidden border-2 border-border shadow-xl">
+    <div className="h-[600px] w-full rounded-2xl overflow-hidden border-2 border-border shadow-xl">
       <MapContainer
         center={[GABON_CENTER.lat, GABON_CENTER.lng]}
         zoom={6}

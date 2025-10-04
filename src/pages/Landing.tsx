@@ -310,93 +310,88 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* Hero Section avec animations */}
+      {/* Hero Section avec carte interactive */}
       <section className="relative pt-24 pb-8 md:pt-32 md:pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            {/* Contenu textuel */}
-            <div className="order-2 lg:order-1">
-              <div className="text-center lg:text-left">
-                <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
-                  <Award className="w-4 h-4 text-secondary" />
-                  <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
-                </div>
-                
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-none sm:leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                  {t('landing.hero.title') || "Votre santé à"}
-                  <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                    {t('landing.hero.titleHighlight') || "portée de clic"}
-                  </span>
-                </h1>
-                
-                <p className="text-xl sm:text-2xl mb-12 leading-relaxed text-muted-foreground animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                  {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
-                </p>
+          {/* Texte d'introduction */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
+              <Award className="w-4 h-4 text-secondary" />
+              <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
+            </div>
+            
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-none sm:leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              {t('landing.hero.title') || "Votre santé à"}
+              <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                {t('landing.hero.titleHighlight') || "portée de clic"}
+              </span>
+            </h1>
+            
+            <p className="text-xl sm:text-2xl mb-8 leading-relaxed text-muted-foreground max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
+            </p>
+          </div>
 
-                {/* Search Bar avec effet glassmorphism amélioré */}
-                <div className="rounded-2xl shadow-2xl p-3 backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 hover:shadow-3xl transition-all duration-500 animate-scale-in" style={{ animationDelay: '0.4s' }}>
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
-                      <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                      <input 
-                        type="text" 
-                        placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
-                      />
-                    </div>
-                    <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/50 hover:bg-background/70 transition-colors group">
-                      <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform" />
-                      <input 
-                        type="text" 
-                        placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
-                        value={searchLocation}
-                        onChange={(e) => setSearchLocation(e.target.value)}
-                        className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
-                      />
-                    </div>
-                    <Button 
-                      onClick={handleSearch}
-                      className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
-                    >
-                      <Search className="w-5 h-5 mr-2" />
-                      {t('landing.search.button') || "Rechercher"}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Quick Access Chips avec animations */}
-                <div className="flex flex-wrap justify-center lg:justify-start gap-3 mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                  {specialties.map((specialty, index) => (
-                    <Button 
-                      key={specialty}
-                      onClick={() => handleSpecialtyClick(specialty)}
-                      variant="outline"
-                      className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
-                      style={{ animationDelay: `${0.6 + index * 0.1}s` }}
-                    >
-                      {specialty}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+          {/* Carte Interactive avec barre de recherche flottante */}
+          <div className="relative animate-scale-in mb-16" style={{ animationDelay: '0.4s' }}>
+            {/* Carte en arrière-plan */}
+            <div className="rounded-3xl overflow-hidden shadow-2xl border-2 border-border/40">
+              <HealthProvidersMap />
             </div>
 
-            {/* Image Hero */}
-            <div className="order-1 lg:order-2 animate-scale-in" style={{ animationDelay: '0.3s' }}>
-              <div className="rounded-3xl overflow-hidden shadow-2xl border border-border/40 hover:shadow-3xl transition-shadow duration-500">
-                <img 
-                  src={heroImage} 
-                  alt="Patiente gabonaise utilisant la télémédecine"
-                  className="w-full h-auto object-cover"
-                />
+            {/* Barre de recherche flottante par-dessus la carte */}
+            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-[95%] max-w-4xl z-10">
+              <div className="rounded-2xl shadow-2xl p-3 backdrop-blur-xl bg-gradient-to-br from-card/95 to-card/90 border border-border/60 hover:shadow-3xl transition-all duration-500">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/80 hover:bg-background/90 transition-colors group">
+                    <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
+                    <input 
+                      type="text" 
+                      placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/80 hover:bg-background/90 transition-colors group">
+                    <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
+                    <input 
+                      type="text" 
+                      placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
+                      value={searchLocation}
+                      onChange={(e) => setSearchLocation(e.target.value)}
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleSearch}
+                    className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
+                  >
+                    <Search className="w-5 h-5 mr-2" />
+                    {t('landing.search.button') || "Rechercher"}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Quick Access Chips avec animations */}
+          <div className="flex flex-wrap justify-center gap-3 mb-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            {specialties.map((specialty, index) => (
+              <Button 
+                key={specialty}
+                onClick={() => handleSpecialtyClick(specialty)}
+                variant="outline"
+                className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
+                style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+              >
+                {specialty}
+              </Button>
+            ))}
+          </div>
+
           {/* Stats Bar avec animations en cascade */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mt-16">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {stats.map((stat, index) => (
               <div 
                 key={index}
@@ -690,17 +685,6 @@ export default function Landing() {
             <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
               Actualités, conseils et formations pour prendre soin de votre santé
             </p>
-          </div>
-
-          {/* Carte Interactive du Gabon */}
-          <div className="mb-16">
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold mb-3">Carte Interactive des Professionnels de Santé</h3>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Localisez les hôpitaux, cliniques, pharmacies et professionnels de santé partout au Gabon
-              </p>
-            </div>
-            <HealthProvidersMap />
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
