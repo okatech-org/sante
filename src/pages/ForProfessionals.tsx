@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MainLayout } from "@/components/layout/MainLayout";
 import professionalsHero from "@/assets/professionals-hero.jpg";
 import doctorImage from "@/assets/doctor-consultation.jpg";
 import hospitalImage from "@/assets/hospital-reception.jpg";
@@ -126,8 +127,9 @@ export default function ForProfessionals() {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
+    <MainLayout>
+      <div className="min-h-screen">
+        {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
@@ -342,6 +344,7 @@ export default function ForProfessionals() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </MainLayout>
   );
 }

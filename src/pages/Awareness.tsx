@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { MainLayout } from "@/components/layout/MainLayout";
 import awarenessHero from "@/assets/awareness-hero.jpg";
 import doctorImage from "@/assets/doctor-consultation.jpg";
 import familyImage from "@/assets/family-health.jpg";
@@ -167,8 +168,9 @@ export default function Awareness() {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
+    <MainLayout>
+      <div className="min-h-screen">
+        {/* Hero Section */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
@@ -395,6 +397,7 @@ export default function Awareness() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </MainLayout>
   );
 }
