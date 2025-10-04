@@ -71,14 +71,14 @@
     "notes": "Service d'urgence permanent. Mobile Money accepté."
   },
   {
-    "id": "CAB_LBV_001",
+    "id": "CAB_LBV_MONTAGNE",
     "type": "cabinet_medical",
-    "nom": "Cabinet de Groupe Montagne Sainte",
+    "nom": "Cabinet de Groupe - Montagne Sainte",
     "province": "G1",
     "ville": "Libreville",
     "coordonnees": {
-      "lat": 0.4260,
-      "lng": 9.4510
+      "lat": 0.4250,
+      "lng": 9.4520
     },
     "adresse_descriptive": "Montagne Sainte, Libreville",
     "telephones": ["011 74 31 31", "011 74 32 32"],
@@ -108,17 +108,17 @@
     "notes": "Modèle de cabinet pluridisciplinaire. Mutualisation des équipements."
   },
   {
-    "id": "HOP_LBV_001",
+    "id": "CHU_LBV_001",
     "type": "hopital",
-    "nom": "CHU de Libreville",
+    "nom": "Centre Hospitalier Universitaire (CHU) de Libreville",
     "province": "G1",
     "ville": "Libreville",
     "coordonnees": {
-      "lat": 0.3920,
-      "lng": 9.4540
+      "lat": 0.4162,
+      "lng": 9.4673
     },
-    "adresse_descriptive": "Centre-ville, Libreville",
-    "telephones": ["011 72 32 15", "077 12 34 56"],
+    "adresse_descriptive": "Centreville, Libreville",
+    "telephones": ["011 72 32 15"],
     "horaires": "24h/24",
     "services": [
       "Urgences",
@@ -136,9 +136,8 @@
       "cnss": true
     },
     "secteur": "public",
-    "niveau_reference": "tertiaire",
-    "statut_operationnel": "operationnel",
-    "contact_urgence": "077 12 34 56"
+    "niveau_reference": "CHU",
+    "statut_operationnel": "operationnel"
   },
   {
     "id": "PHA_LBV_002",
@@ -190,17 +189,17 @@
     "statut_operationnel": "operationnel"
   },
   {
-    "id": "CLI_PG_001",
+    "id": "CLI_PG_MANDJI",
     "type": "clinique",
     "nom": "Clinique Mandji",
-    "province": "G2",
+    "province": "G4",
     "ville": "Port-Gentil",
     "coordonnees": {
-      "lat": -0.7193,
-      "lng": 8.7815
+      "lat": -0.7180,
+      "lng": 8.7830
     },
-    "adresse_descriptive": "Centre-ville, Port-Gentil",
-    "telephones": ["011 55 12 34", "065 22 33 44"],
+    "adresse_descriptive": "Rue du carrefour des douanes, Port-Gentil",
+    "telephones": ["011 55 35 56", "065 65 99 10"],
     "horaires": "24h/24",
     "services": [
       "Consultations",
@@ -222,7 +221,7 @@
     "secteur": "prive",
     "niveau_reference": "secondaire",
     "statut_operationnel": "operationnel",
-    "contact_urgence": "065 22 33 44"
+    "contact_urgence": "065 65 99 10"
   },
   {
     "id": "PHA_PG_001",
@@ -247,16 +246,16 @@
     "statut_operationnel": "operationnel"
   },
   {
-    "id": "HOP_LAM_001",
+    "id": "HOP_LAM_SCHWEITZER",
     "type": "hopital",
     "nom": "Hôpital Albert Schweitzer",
     "province": "G3",
     "ville": "Lambaréné",
     "coordonnees": {
-      "lat": -0.7097,
-      "lng": 10.2314
+      "lat": -0.7000,
+      "lng": 10.2333
     },
-    "adresse_descriptive": "Lambaréné, Moyen-Ogooué",
+    "adresse_descriptive": "Lambaréné",
     "telephones": ["011 58 11 96", "077 16 67 40"],
     "horaires": "24h/24",
     "services": [
@@ -275,21 +274,22 @@
       "cnss": true
     },
     "secteur": "confessionnel",
-    "niveau_reference": "secondaire",
+    "niveau_reference": "reference",
     "statut_operationnel": "operationnel",
-    "notes": "✅ Hôpital de mission reconnu internationalement. Pôle de référence pour le Moyen-Ogooué."
+    "contact_urgence": "077 16 67 40",
+    "notes": "Hôpital confessionnel géré par une fondation. Contact Directeur Dr Patrick ANVANE. Structure de référence internationale."
   },
   {
-    "id": "HOP_MOU_001",
+    "id": "CHR_MOU_001",
     "type": "hopital",
-    "nom": "Centre Hospitalier Régional de Mouila",
-    "province": "G4",
+    "nom": "Centre Hospitalier Régional (CHR) de Mouila",
+    "province": "G7",
     "ville": "Mouila",
     "coordonnees": {
-      "lat": -1.8633,
-      "lng": 11.0558
+      "lat": -1.8667,
+      "lng": 11.0167
     },
-    "adresse_descriptive": "Centre-ville, Mouila",
+    "adresse_descriptive": "Mouila",
     "telephones": ["011 86 12 32"],
     "horaires": "24h/24",
     "services": [
@@ -307,22 +307,21 @@
       "cnss": true
     },
     "secteur": "public",
-    "niveau_reference": "secondaire",
-    "statut_operationnel": "operationnel",
-    "notes": "⚠️ CHR avec problèmes d'équipements et maintenance. Pas d'imagerie lourde."
+    "niveau_reference": "CHR",
+    "statut_operationnel": "operationnel"
   },
   {
-    "id": "HOP_FRA_001",
+    "id": "CHR_FCV_001",
     "type": "hopital",
-    "nom": "CHR de Franceville",
+    "nom": "Centre Hospitalier Régional (CHR) Amissa Bongo de Franceville",
     "province": "G5",
     "ville": "Franceville",
     "coordonnees": {
       "lat": -1.6333,
       "lng": 13.5833
     },
-    "adresse_descriptive": "Centre-ville, Franceville",
-    "telephones": ["011 67 12 34"],
+    "adresse_descriptive": "Franceville",
+    "telephones": ["011 67 72 82", "077 07 03 66", "066 95 82 84"],
     "horaires": "24h/24",
     "services": [
       "Urgences",
@@ -337,8 +336,10 @@
       "cnss": true
     },
     "secteur": "public",
-    "niveau_reference": "secondaire",
-    "statut_operationnel": "operationnel"
+    "niveau_reference": "CHR",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "077 07 03 66",
+    "notes": "Contact Directeur Dr Roland Fabrice KASSA KASSA"
   },
   {
     "id": "CAB_LBV_002",
@@ -455,6 +456,437 @@
     },
     "secteur": "prive",
     "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LBV_NKEMBO",
+    "type": "hopital",
+    "nom": "Hôpital Spécialisé de Nkembo",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4180,
+      "lng": 9.4550
+    },
+    "adresse_descriptive": "Nkembo, Libreville",
+    "telephones": ["011 72 62 65"],
+    "secteur": "public",
+    "niveau_reference": "specialise",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LBV_SINO",
+    "type": "hopital",
+    "nom": "Hôpital de la Coopération Sino-Gabonaise",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4100,
+      "lng": 9.4600
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 72 31 19"],
+    "secteur": "public",
+    "niveau_reference": "regional",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "SMUR_LBV_001",
+    "type": "hopital",
+    "nom": "Service Mobile d'Urgence et de Réanimation (SMUR-CNSS)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": [],
+    "secteur": "public",
+    "niveau_reference": "urgence",
+    "ouvert_24_7": true,
+    "services": ["Urgences mobiles", "Réanimation"],
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_LBV_ELRAPHA",
+    "type": "clinique",
+    "nom": "Polyclinique El-Rapha",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4200,
+      "lng": 9.4700
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 44 26 96", "066 93 46 69", "066 04 17 97", "077 98 66 60"],
+    "secteur": "prive",
+    "niveau_reference": "tertiaire",
+    "services": ["Orthopédie", "Consultations spécialisées", "Chirurgie"],
+    "specialites": ["Orthopédie"],
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "contact_urgence": "077 98 66 60",
+    "statut_operationnel": "operationnel",
+    "notes": "Contact Dr Jean Luc CAINE: 077 98 66 60"
+  },
+  {
+    "id": "CLI_LBV_CINQPALMIERS",
+    "type": "clinique",
+    "nom": "Clinique des Cinq Palmiers",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4220,
+      "lng": 9.4650
+    },
+    "adresse_descriptive": "Près du stade, Libreville (BP 869)",
+    "telephones": ["011 74 31 40"],
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_LBV_MEDIVISION",
+    "type": "clinique",
+    "nom": "Clinique Medivision",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4190,
+      "lng": 9.4680
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 73 78 14", "011 44 57 00", "074 19 72 27"],
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "contact_urgence": "074 19 72 27",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_BATTERIEIV",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical de Batterie IV (Dr CONIQUET)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4300,
+      "lng": 9.4500
+    },
+    "adresse_descriptive": "Batterie IV, Libreville",
+    "telephones": ["011 73 71 43", "066 25 89 07"],
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_OLOUMI",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical d'Oloumi",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4050,
+      "lng": 9.4800
+    },
+    "adresse_descriptive": "Z.I Oloumi, face AFG BANK, Libreville",
+    "telephones": ["011 74 43 16", "066 78 08 29"],
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "IMG_LBV_IMENO",
+    "type": "imagerie",
+    "nom": "Gabon Centre Medical Imeno",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4100,
+      "lng": 9.4700
+    },
+    "adresse_descriptive": "Libreville - Ex. Sobraga",
+    "telephones": [],
+    "secteur": "prive",
+    "services": ["Radiodiagnostic", "Imagerie médicale"],
+    "specialites": ["Radiologie"],
+    "niveau_reference": "specialise",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CHR_PG_001",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional (CHR) de Port-Gentil",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7193,
+      "lng": 8.7815
+    },
+    "adresse_descriptive": "Port-Gentil",
+    "telephones": ["011 77 37 69", "077 40 12 37", "074 84 24 23"],
+    "secteur": "public",
+    "niveau_reference": "CHR",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "contact_urgence": "077 40 12 37",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_PG_BILIE",
+    "type": "clinique",
+    "nom": "Polyclinique Bilie",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7210,
+      "lng": 8.7850
+    },
+    "adresse_descriptive": "Centre-ville, Port-Gentil",
+    "telephones": ["011 55 19 11", "011 56 28 82", "077 52 88 13"],
+    "secteur": "prive",
+    "niveau_reference": "tertiaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "contact_urgence": "077 52 88 13",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_PG_ASSALAS",
+    "type": "clinique",
+    "nom": "Clinique des Assalas",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7200,
+      "lng": 8.7800
+    },
+    "adresse_descriptive": "Route de la Sobraga, Près du Cadastre, Port-Gentil",
+    "telephones": ["077 69 17 35"],
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "contact_urgence": "077 69 17 35",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_PG_ERASME",
+    "type": "clinique",
+    "nom": "Clinique Erasme",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7190,
+      "lng": 8.7820
+    },
+    "adresse_descriptive": "Av. de la Mosquée, Port-Gentil",
+    "telephones": ["011 53 14 00"],
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_PG_MEDIRAPHA",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Medi Rapha",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7195,
+      "lng": 8.7840
+    },
+    "adresse_descriptive": "Centre-ville, imm. Axa, Port-Gentil",
+    "telephones": ["062 16 84 45", "060 08 52 08"],
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_PG_GROUPE",
+    "type": "cabinet_medical",
+    "nom": "Cabinet de Groupe - Carrefour Tobia",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7220,
+      "lng": 8.7810
+    },
+    "adresse_descriptive": "Carrefour Tobia, Port-Gentil",
+    "telephones": ["011 55 28 46"],
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_NDJ_001",
+    "type": "hopital",
+    "nom": "Hôpital de Ndjolé",
+    "province": "G3",
+    "ville": "Ndjolé",
+    "coordonnees": {
+      "lat": -0.1833,
+      "lng": 10.7667
+    },
+    "adresse_descriptive": "Route de Libreville, Ndjolé",
+    "telephones": [],
+    "secteur": "public",
+    "niveau_reference": "departemental",
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CHR_OYE_001",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional (CHR) de Oyem",
+    "province": "G9",
+    "ville": "Oyem",
+    "coordonnees": {
+      "lat": 1.5833,
+      "lng": 11.5833
+    },
+    "adresse_descriptive": "Oyem",
+    "telephones": ["011 98 61 18", "011 98 61 56"],
+    "secteur": "public",
+    "niveau_reference": "CHR",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CHR_MAK_001",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional (CHR) de Makokou",
+    "province": "G6",
+    "ville": "Makokou",
+    "coordonnees": {
+      "lat": 0.5667,
+      "lng": 12.8667
+    },
+    "adresse_descriptive": "Makokou",
+    "telephones": ["011 90 30 78", "011 90 30 84", "011 90 31 65"],
+    "secteur": "public",
+    "niveau_reference": "CHR",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel",
+    "notes": "En cours de modernisation vers un hôpital départemental"
+  },
+  {
+    "id": "CAB_MAK_BITHEGUE",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Dr Bithegue",
+    "province": "G6",
+    "ville": "Makokou",
+    "coordonnees": {
+      "lat": 0.5667,
+      "lng": 12.8667
+    },
+    "adresse_descriptive": "Makokou",
+    "telephones": ["066 18 01 14"],
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LEB_BONGOLO",
+    "type": "hopital",
+    "nom": "Hôpital Bongolo",
+    "province": "G7",
+    "ville": "Lebamba",
+    "coordonnees": {
+      "lat": -2.2333,
+      "lng": 10.9333
+    },
+    "adresse_descriptive": "Lebamba",
+    "telephones": ["074 35 01 40", "074 24 34 44", "062 96 59 85"],
+    "secteur": "confessionnel",
+    "niveau_reference": "reference",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "contact_urgence": "062 96 59 85",
+    "statut_operationnel": "operationnel",
+    "notes": "Hôpital confessionnel (ONG). Structure de référence critique pour le sud du pays."
+  },
+  {
+    "id": "CHR_TCH_001",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional (CHR) de Tchibanga",
+    "province": "G8",
+    "ville": "Tchibanga",
+    "coordonnees": {
+      "lat": -2.8500,
+      "lng": 11.0167
+    },
+    "adresse_descriptive": "Tchibanga",
+    "telephones": ["011 82 02 93"],
+    "secteur": "public",
+    "niveau_reference": "CHR",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
     "statut_operationnel": "operationnel"
   }
 ]
