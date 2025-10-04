@@ -207,19 +207,31 @@ export default function Landing() {
                 href="#services" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
-                {t('landing.services') || "Services"}
+                Services
               </a>
               <a 
-                href="#comment" 
+                href="#comment-ca-marche" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
-                {t('landing.howItWorks') || "Comment ça marche"}
+                Comment ça marche
               </a>
               <a 
-                href="#propos" 
+                href="#about" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
-                {t('landing.footer.about') || "À propos"}
+                À propos
+              </a>
+              <a 
+                href="#professionals" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
+                Professionnels
+              </a>
+              <a 
+                href="#awareness" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
+                Sensibilisation
               </a>
             </nav>
 
@@ -256,21 +268,35 @@ export default function Landing() {
                       onClick={() => setMobileMenuOpen(false)}
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
-                      {t('landing.services') || "Services"}
+                      Services
                     </a>
                     <a 
-                      href="#comment"
+                      href="#comment-ca-marche"
                       onClick={() => setMobileMenuOpen(false)} 
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
-                      {t('landing.howItWorks') || "Comment ça marche"}
+                      Comment ça marche
                     </a>
                     <a 
-                      href="#propos"
+                      href="#about"
                       onClick={() => setMobileMenuOpen(false)} 
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
-                      {t('landing.footer.about') || "À propos"}
+                      À propos
+                    </a>
+                    <a 
+                      href="#professionals"
+                      onClick={() => setMobileMenuOpen(false)} 
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+                    >
+                      Professionnels
+                    </a>
+                    <a 
+                      href="#awareness"
+                      onClick={() => setMobileMenuOpen(false)} 
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+                    >
+                      Sensibilisation
                     </a>
                     
                     <div className="flex flex-col gap-3 mt-6">
