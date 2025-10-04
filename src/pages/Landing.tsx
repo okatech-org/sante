@@ -340,7 +340,7 @@ export default function Landing() {
             </div>
 
             {/* Barre de recherche flottante par-dessus la carte */}
-            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-[95%] max-w-5xl z-10">
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-[95%] max-w-5xl z-[1001]">
               <div className="rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] p-4 backdrop-blur-2xl bg-card/98 border border-border/80 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-[1.01]">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 flex items-center rounded-xl px-5 py-4 bg-muted/40 hover:bg-muted/60 transition-all duration-300 border border-transparent hover:border-primary/30 group">
