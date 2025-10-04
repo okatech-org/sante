@@ -638,7 +638,7 @@ export default function Landing() {
           <div className="border-t border-border pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-muted-foreground text-sm">
-                © 2025 {t('landing.footer.copyright') || "SANTE.GA - Ministère de la Santé du Gabon. Tous droits réservés."}
+                © 2025 SANTE.GA - Conçu et développé par ORGANÈUS Gabon. Tous droits réservés.
               </p>
               
               <Link to="/superadmin" className="opacity-30 hover:opacity-60 transition-opacity flex items-center gap-1 text-xs text-muted-foreground">
