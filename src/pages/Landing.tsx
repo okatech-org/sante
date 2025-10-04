@@ -182,7 +182,7 @@ export default function Landing() {
       </div>
 
       {/* Header Navigation avec effet glassmorphism amélioré */}
-      <header className={`fixed top-0 w-full z-40 border-b transition-all duration-500 ${
+      <header className={`fixed top-0 w-full z-[1100] border-b transition-all duration-500 ${
         scrolled 
           ? 'bg-card/95 border-border/60 shadow-lg backdrop-blur-2xl' 
           : 'bg-card/60 border-border/40 backdrop-blur-xl shadow-sm'
