@@ -15,6 +15,7 @@ import { filterProviders, sortProviders, calculateStats } from "@/utils/cartogra
 import providersData from "@/data/cartography-providers.json";
 import provincesData from "@/data/cartography-provinces.json";
 import { cn } from "@/lib/utils";
+import { DebugContext } from "@/components/debug/DebugContext";
 
 export default function Cartography() {
   const [providers, setProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
@@ -96,6 +97,8 @@ export default function Cartography() {
           </div>
         </div>
       </header>
+
+      <DebugContext />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Stats avec animation */}
