@@ -87,14 +87,16 @@
       "Consultations généralistes",
       "Consultations spécialisées",
       "Radiologie",
-      "Laboratoire analyses"
+      "Laboratoire analyses médicales",
+      "Imagerie médicale"
     ],
     "specialites": [
       "Médecine générale",
       "Cardiologie",
       "Gynécologie",
       "Dermatologie",
-      "Néphrologie"
+      "Néphrologie",
+      "Radiologie"
     ],
     "ouvert_24_7": false,
     "conventionnement": {
@@ -105,7 +107,7 @@
     "secteur": "prive",
     "niveau_reference": "secondaire",
     "statut_operationnel": "operationnel",
-    "notes": "Modèle de cabinet pluridisciplinaire. Mutualisation des équipements."
+    "notes": "Cabinet pluridisciplinaire multi-services: LAM + Radiologie. Mutualisation des équipements."
   },
   {
     "id": "CHU_LBV_001",
@@ -164,21 +166,23 @@
   {
     "id": "LAB_LBV_001",
     "type": "laboratoire",
-    "nom": "Laboratoire Biolab",
+    "nom": "BIOLAB",
     "province": "G1",
     "ville": "Libreville",
     "coordonnees": {
-      "lat": 0.4180,
-      "lng": 9.4550
+      "lat": 0.4162,
+      "lng": 9.4673
     },
-    "adresse_descriptive": "Glass, Face Total",
-    "telephones": ["011 76 22 33", "066 11 22 33"],
+    "adresse_descriptive": "Centre-ville, immeuble Sonagar, face AFG Bank",
+    "telephones": ["011 72 14 29"],
     "horaires": "Lun-Ven 7h-18h, Sam 8h-13h",
     "services": [
       "Analyses de sang",
       "Analyses d'urine",
       "Bactériologie",
-      "Sérologie"
+      "Sérologie",
+      "Biochimie",
+      "Hématologie"
     ],
     "ouvert_24_7": false,
     "conventionnement": {
@@ -187,6 +191,116 @@
     },
     "secteur": "prive",
     "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "LAB_LBV_LCAM",
+    "type": "laboratoire",
+    "nom": "LCAM (Laboratoire Central d'Analyses Médicales)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4200,
+      "lng": 9.4600
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["066 770 057", "074 725 000"],
+    "horaires": "Lun-Ven 7h-18h, Sam 7h-13h",
+    "services": [
+      "Analyses médicales complètes",
+      "Biochimie automatisée",
+      "Hématologie",
+      "Sérologie",
+      "Bactériologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "reference",
+    "statut_operationnel": "operationnel",
+    "notes": "Société Anonyme (SA) créée en 1991. Laboratoire de référence."
+  },
+  {
+    "id": "LAB_LBV_LABO2000",
+    "type": "laboratoire",
+    "nom": "GABON LABO 2000",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4650
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Ven 7h-18h, Sam 8h-13h",
+    "services": [
+      "Analyses médicales",
+      "Biochimie",
+      "Hématologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "LAB_LBV_BIOMERCURE",
+    "type": "laboratoire",
+    "nom": "Laboratoire Bio-Mercure",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4150,
+      "lng": 9.4600
+    },
+    "adresse_descriptive": "Quartier Louis, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Ven 7h-18h, Sam 8h-13h",
+    "services": [
+      "Analyses médicales",
+      "Biochimie",
+      "Hématologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "LAB_LBV_SAINTEMARIE",
+    "type": "laboratoire",
+    "nom": "Laboratoire d'Analyses Médicales Sainte Marie",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4100,
+      "lng": 9.4500
+    },
+    "adresse_descriptive": "Vallée Sainte-Marie, Libreville",
+    "telephones": [],
+    "horaires": "Lun-Ven 7h-18h, Sam 7h-13h",
+    "services": [
+      "Analyses médicales",
+      "Biochimie",
+      "Hématologie",
+      "Sérologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Horaires étendus en semaine"
   },
   {
     "id": "CLI_PG_MANDJI",
@@ -883,10 +997,194 @@
     "secteur": "public",
     "niveau_reference": "CHR",
     "ouvert_24_7": true,
+    "services": ["Analyses médicales", "Radiologie", "Urgences"],
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel",
+    "notes": "Statut réseau 'En cours' - vérification recommandée"
+  },
+  {
+    "id": "IMG_LBV_HIAOBO",
+    "type": "imagerie",
+    "nom": "Hiaobo - Imagerie Médicale",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4220,
+      "lng": 9.4580
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 79 38 19"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Radiologie", "Imagerie médicale", "Urgences imagerie"],
+    "specialites": ["Radiologie"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "specialise",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "011 79 38 19",
+    "notes": "Service d'urgence 24/24, 7/7. Dirigé par Pr NGUEMA EDZANG Béatrice, Dr REDOUANE ROUKHSI"
+  },
+  {
+    "id": "IMG_LBV_EMILIE",
+    "type": "imagerie",
+    "nom": "Centre Radiologie Émilie (Dr ADIAHENOT)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4180,
+      "lng": 9.4520
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": [],
+    "services": ["Radiologie", "Imagerie conventionnelle"],
+    "specialites": ["Radiologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "IMG_LBV_MRS",
+    "type": "imagerie",
+    "nom": "MRS GABON (Monitoring Radiology Systems)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Libreville, BP: 20.171",
+    "telephones": [],
+    "services": ["Radiologie", "Systèmes de radiologie"],
+    "specialites": ["Radiologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "specialise",
+    "statut_operationnel": "operationnel",
+    "notes": "Spécialisé en fourniture et gestion de systèmes de radiologie"
+  },
+  {
+    "id": "CLI_PG_WELCOME",
+    "type": "clinique",
+    "nom": "Clinique Welcome",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7205,
+      "lng": 8.7825
+    },
+    "adresse_descriptive": "Port-Gentil",
+    "telephones": ["065 999 473", "077 090 091"],
+    "services": ["Radiologie", "Sonologie (Échographie)", "Consultations"],
+    "specialites": ["Médecine générale", "Radiologie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_MOU_SILOE",
+    "type": "clinique",
+    "nom": "Clinique Médicale Siloé",
+    "province": "G7",
+    "ville": "Mouila",
+    "coordonnees": {
+      "lat": -1.8667,
+      "lng": 11.0167
+    },
+    "adresse_descriptive": "Mouila",
+    "telephones": ["073 906 78"],
+    "services": ["Analyses médicales", "Radiologie", "Consultations"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_MOU_MATHOO",
+    "type": "clinique",
+    "nom": "Polyclinique Matho'o Saint Gabriel",
+    "province": "G7",
+    "ville": "Mouila",
+    "coordonnees": {
+      "lat": -1.8650,
+      "lng": 11.0150
+    },
+    "adresse_descriptive": "Mouila",
+    "telephones": ["060 35 00 00", "074 05 00 00"],
+    "services": ["Analyses médicales", "Radiologie", "Consultations", "Chirurgie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_NDJ_CENTRE",
+    "type": "hopital",
+    "nom": "Centre Médical de Ndjolé",
+    "province": "G3",
+    "ville": "Ndjolé",
+    "coordonnees": {
+      "lat": -0.1833,
+      "lng": 10.7667
+    },
+    "adresse_descriptive": "Non loin de la Gendarmerie, Route de Libreville, Ndjolé",
+    "telephones": ["077 81 48 54"],
+    "services": ["Analyses médicales", "Radiologie", "Hospitalisation", "Consultations"],
+    "secteur": "prive",
+    "niveau_reference": "departemental",
+    "ouvert_24_7": false,
     "conventionnement": {
       "cnamgs": true,
       "cnss": true
     },
     "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LAM_RAWIRI",
+    "type": "hopital",
+    "nom": "Centre Hospitalier Régional (CHR) G. RAWIRI",
+    "province": "G3",
+    "ville": "Lambaréné",
+    "coordonnees": {
+      "lat": -0.7000,
+      "lng": 10.2350
+    },
+    "adresse_descriptive": "Lambaréné",
+    "telephones": [],
+    "services": ["Analyses médicales", "Radiologie", "Urgences"],
+    "secteur": "public",
+    "niveau_reference": "CHR",
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "statut_operationnel": "operationnel",
+    "notes": "Statut réseau 'En cours' - vérification recommandée avant référencement"
   }
 ]
