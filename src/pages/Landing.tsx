@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { 
   Calendar, 
   FileText, 
-  TestTube, 
   Shield, 
   Clock,
   MapPin,
@@ -19,9 +18,11 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "next-themes";
 
 export default function Landing() {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const [activeService, setActiveService] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
@@ -104,15 +105,15 @@ export default function Landing() {
       </div>
 
       {/* Header Navigation */}
-      <header className="fixed top-0 w-full z-40 bg-background/60 border-b border-border/40 backdrop-blur-lg">
+      <header className="fixed top-0 w-full z-40 bg-card/60 border-b border-border/40 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/80 to-primary shadow-lg">
-                <Heart className="w-7 h-7 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-muted shadow-lg">
+                <Heart className="w-7 h-7 text-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-foreground">SANTE.GA</h1>
                 <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
               </div>
             </Link>
@@ -134,7 +135,7 @@ export default function Landing() {
                 <Button variant="ghost">{t('landing.cta.login') || "Se connecter"}</Button>
               </Link>
               <Link to="/register/patient">
-                <Button className="shadow-lg">{t('landing.hero.patient') || "S'inscrire"}</Button>
+                <Button className="shadow-lg hover:shadow-xl hover:scale-105 transition-all">{t('landing.hero.patient') || "S'inscrire"}</Button>
               </Link>
             </div>
           </div>
@@ -145,14 +146,14 @@ export default function Landing() {
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-success/10 border border-success/20">
-              <Award className="w-4 h-4 text-success" />
-              <span className="text-success">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-muted/50 border border-border">
+              <Award className="w-4 h-4 text-foreground" />
+              <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground">
               {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-primary/80 via-primary to-primary/80 bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-foreground/60 via-foreground to-foreground/60 bg-clip-text text-transparent">
                 {t('landing.hero.titleHighlight') || "portée de clic"}
               </span>
             </h1>
@@ -164,7 +165,7 @@ export default function Landing() {
             {/* Search Bar */}
             <div className="rounded-2xl shadow-2xl p-3 max-w-3xl mx-auto backdrop-blur-lg bg-card/70 border border-border/40">
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/30">
+                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/50">
                   <Stethoscope className="w-5 h-5 mr-3 text-muted-foreground" />
                   <input 
                     type="text" 
@@ -174,7 +175,7 @@ export default function Landing() {
                     className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
-                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/30">
+                <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-muted/50">
                   <MapPin className="w-5 h-5 mr-3 text-muted-foreground" />
                   <input 
                     type="text" 
@@ -185,7 +186,7 @@ export default function Landing() {
                   />
                 </div>
                 <Link to="/providers" className="sm:flex-shrink-0">
-                  <Button className="w-full sm:w-auto px-8 py-3 shadow-lg">
+                  <Button className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
                     <Search className="w-5 h-5 mr-2" />
                     {t('landing.search.button') || "Rechercher"}
                   </Button>
@@ -199,7 +200,7 @@ export default function Landing() {
                 <Button 
                   key={specialty}
                   variant="outline"
-                  className="rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all bg-card/70 backdrop-blur-sm"
+                  className="rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all bg-card/70 backdrop-blur-sm border-border"
                 >
                   {specialty}
                 </Button>
@@ -238,17 +239,17 @@ export default function Landing() {
               <div 
                 key={index}
                 onMouseEnter={() => setActiveService(index)}
-                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-lg bg-card/70 border border-border/40 ${
-                  activeService === index ? 'scale-105' : ''
+                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-lg bg-card/70 border border-border ${
+                  activeService === index ? 'scale-[1.02]' : ''
                 }`}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 bg-muted/20" />
                 
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform bg-muted/30">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform bg-muted/50">
                   <service.icon className="w-8 h-8 text-foreground" />
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                <h3 className="text-2xl font-bold mb-3 text-foreground">{service.title}</h3>
                 <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
                 
                 <button className="flex items-center font-semibold text-foreground/80 hover:text-foreground transition-colors">
@@ -277,11 +278,11 @@ export default function Landing() {
             
             {steps.map((step, index) => (
               <div key={index} className="relative">
-                <div className="rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all text-center backdrop-blur-lg bg-card/70 border border-border/40">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg bg-gradient-to-br from-primary/80 to-primary text-primary-foreground">
+                <div className="rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all text-center backdrop-blur-lg bg-card/70 border border-border">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg bg-muted text-foreground">
                     {step.number}
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-foreground">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
               </div>
@@ -299,7 +300,7 @@ export default function Landing() {
       </section>
 
       {/* Trust Section */}
-      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/10 via-background to-primary/5">
+      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
