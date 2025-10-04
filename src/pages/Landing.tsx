@@ -293,14 +293,14 @@ export default function Landing() {
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-4xl mx-auto mb-16">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 backdrop-blur-sm animate-scale-in">
-              <Award className="w-4 h-4 text-primary" />
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
+              <Award className="w-4 h-4 text-secondary" />
               <span className="text-foreground">{t('landing.secure') || "Plateforme E-Santé Nationale du Gabon"}</span>
             </div>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
               {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
+              <span className="block mt-2 bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
                 {t('landing.hero.titleHighlight') || "portée de clic"}
               </span>
             </h1>
@@ -334,7 +334,7 @@ export default function Landing() {
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90"
+                  className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
                 >
                   <Search className="w-5 h-5 mr-2" />
                   {t('landing.search.button') || "Rechercher"}
@@ -366,8 +366,18 @@ export default function Landing() {
                 className="rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-500 hover-scale backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border/40 animate-scale-in group"
                 style={{ animationDelay: `${0.7 + index * 0.1}s` }}
               >
-                <div className="mb-3 inline-block p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:scale-110 transition-transform">
-                  <stat.icon className="w-8 h-8 text-primary" />
+                <div className={`mb-3 inline-block p-3 rounded-xl group-hover:scale-110 transition-transform ${
+                  index === 0 ? 'bg-gradient-to-br from-primary/10 to-primary/5' :
+                  index === 1 ? 'bg-gradient-to-br from-secondary/10 to-secondary/5' :
+                  index === 2 ? 'bg-gradient-to-br from-accent/10 to-accent/5' :
+                  'bg-gradient-to-br from-primary/10 to-primary/5'
+                }`}>
+                  <stat.icon className={`w-8 h-8 ${
+                    index === 0 ? 'text-primary' :
+                    index === 1 ? 'text-secondary' :
+                    index === 2 ? 'text-accent' :
+                    'text-primary'
+                  }`} />
                 </div>
                 <div className="text-3xl font-bold mb-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{stat.value}</div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -392,23 +402,53 @@ export default function Landing() {
               <div 
                 key={index}
                 onMouseEnter={() => setActiveService(index)}
-                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border hover:border-primary/30 animate-fade-in ${
+                className={`group relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border ${
+                  index === 0 ? 'hover:border-primary/30' :
+                  index === 1 ? 'hover:border-secondary/30' :
+                  index === 2 ? 'hover:border-accent/30' :
+                  'hover:border-primary/30'
+                } animate-fade-in ${
                   activeService === index ? 'scale-[1.02] shadow-3xl' : ''
                 }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 bg-gradient-to-br from-primary/10 to-primary/5 opacity-50" />
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-full transition-all duration-500 group-hover:w-40 group-hover:h-40 opacity-50 ${
+                  index === 0 ? 'bg-gradient-to-br from-primary/10 to-primary/5' :
+                  index === 1 ? 'bg-gradient-to-br from-secondary/10 to-secondary/5' :
+                  index === 2 ? 'bg-gradient-to-br from-accent/10 to-accent/5' :
+                  'bg-gradient-to-br from-primary/10 to-primary/5'
+                }`} />
                 
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-sm border border-primary/20">
-                  <service.icon className="w-8 h-8 text-primary" />
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-all duration-300 backdrop-blur-sm ${
+                  index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20' :
+                  index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20' :
+                  index === 2 ? 'bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20' :
+                  'bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20'
+                }`}>
+                  <service.icon className={`w-8 h-8 ${
+                    index === 0 ? 'text-primary' :
+                    index === 1 ? 'text-secondary' :
+                    index === 2 ? 'text-accent' :
+                    'text-primary'
+                  }`} />
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{service.title}</h3>
+                <h3 className={`text-2xl font-bold mb-3 text-foreground transition-colors ${
+                  index === 0 ? 'group-hover:text-primary' :
+                  index === 1 ? 'group-hover:text-secondary' :
+                  index === 2 ? 'group-hover:text-accent' :
+                  'group-hover:text-primary'
+                }`}>{service.title}</h3>
                 <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
                 
                 <button 
                   onClick={() => handleServiceClick(index)}
-                  className="flex items-center font-semibold text-primary hover:text-primary/80 transition-all group-hover:gap-3 gap-2"
+                  className={`flex items-center font-semibold transition-all group-hover:gap-3 gap-2 ${
+                    index === 0 ? 'text-primary hover:text-primary/80' :
+                    index === 1 ? 'text-secondary hover:text-secondary/80' :
+                    index === 2 ? 'text-accent hover:text-accent/80' :
+                    'text-primary hover:text-primary/80'
+                  }`}
                 >
                   {service.action}
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -431,15 +471,30 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-4 gap-8 relative">
             {/* Connection Line animée */}
-            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+            <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
             
             {steps.map((step, index) => (
               <div key={index} className="relative animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
-                <div className="rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border hover:border-primary/30 hover-scale group">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20 group-hover:scale-110 transition-transform">
+                <div className={`rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center backdrop-blur-xl bg-gradient-to-br from-card/80 to-card/60 border border-border ${
+                  index === 0 ? 'hover:border-primary/30' :
+                  index === 1 ? 'hover:border-secondary/30' :
+                  index === 2 ? 'hover:border-accent/30' :
+                  'hover:border-primary/30'
+                } hover-scale group`}>
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform ${
+                    index === 0 ? 'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20' :
+                    index === 1 ? 'bg-gradient-to-br from-secondary/20 to-secondary/10 text-secondary border border-secondary/20' :
+                    index === 2 ? 'bg-gradient-to-br from-accent/20 to-accent/10 text-accent border border-accent/20' :
+                    'bg-gradient-to-br from-primary/20 to-primary/10 text-primary border border-primary/20'
+                  }`}>
                     {step.number}
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{step.title}</h3>
+                  <h3 className={`text-xl font-bold mb-3 text-foreground transition-colors ${
+                    index === 0 ? 'group-hover:text-primary' :
+                    index === 1 ? 'group-hover:text-secondary' :
+                    index === 2 ? 'group-hover:text-accent' :
+                    'group-hover:text-primary'
+                  }`}>{step.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
               </div>
@@ -448,7 +503,7 @@ export default function Landing() {
 
           <div className="text-center mt-12">
             <Link to="/register/patient">
-              <Button size="lg" className="px-10 py-6 text-lg shadow-xl hover:shadow-3xl hover-scale bg-gradient-to-r from-primary to-primary/90 animate-scale-in">
+              <Button size="lg" className="px-10 py-6 text-lg shadow-xl hover:shadow-3xl hover-scale bg-gradient-to-r from-accent to-accent/90 animate-scale-in">
                 {t('landing.cta.patient') || "Commencer maintenant"}
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
@@ -469,16 +524,16 @@ export default function Landing() {
                 {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
               </p>
               <div className="flex flex-wrap gap-4">
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-border/40">
-                  <Shield className="w-5 h-5" />
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-secondary/40">
+                  <Shield className="w-5 h-5 text-secondary" />
                   <span>{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-border/40">
-                  <Award className="w-5 h-5" />
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-accent/40">
+                  <Award className="w-5 h-5 text-accent" />
                   <span>{t('landing.trust.badge2') || "Validé par le Ministère"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-border/40">
-                  <Heart className="w-5 h-5" />
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/40">
+                  <Heart className="w-5 h-5 text-primary" />
                   <span>{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
                 </div>
               </div>
@@ -498,7 +553,7 @@ export default function Landing() {
                 <Button 
                   onClick={handleCNAMGSVerification}
                   disabled={isVerifying}
-                  className="w-full py-6 shadow-lg"
+                  className="w-full py-6 shadow-lg bg-gradient-to-r from-accent to-accent/90"
                 >
                   {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
                 </Button>
