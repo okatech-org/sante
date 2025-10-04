@@ -358,38 +358,34 @@ export default function HealthProvidersMap() {
 
   return (
     <div className="h-[600px] w-full relative">
-      {/* Filtres par type - Nouvelle interface */}
-      <div className="absolute top-4 right-4 z-[1000]">
-        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 p-3 max-w-[200px]">
-          <h3 className="text-xs font-bold text-foreground mb-2 flex items-center gap-2">
+      {/* Filtres par type - Interface compacte en bas à droite */}
+      <div className="absolute bottom-4 right-4 z-[1000]">
+        <div className="bg-card/98 backdrop-blur-2xl rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] border border-border/80 p-2.5 max-w-[180px]">
+          <h3 className="text-[10px] font-bold text-foreground/70 mb-2 flex items-center gap-1.5 uppercase tracking-wide">
             <Layers className="h-3 w-3" />
-            Types d'établissements
+            Filtrer
           </h3>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-wrap gap-1">
             <Button
               size="sm"
               variant={selectedType === null ? "default" : "ghost"}
               onClick={() => setSelectedType(null)}
-              className="w-full justify-start text-xs h-7 px-2"
+              className="h-6 px-2 text-[10px] rounded-md"
             >
-              <span className="mr-1.5">📍</span>
-              Tous ({providers.length})
+              Tous
             </Button>
-            {types.map((type) => {
-              const count = providers.filter(p => p.type === type.id).length;
-              return (
-                <Button
-                  key={type.id}
-                  size="sm"
-                  variant={selectedType === type.id ? "default" : "ghost"}
-                  onClick={() => setSelectedType(type.id)}
-                  className="w-full justify-start text-xs h-7 px-2"
-                >
-                  <span className="mr-1.5">{type.icon}</span>
-                  {type.label} ({count})
-                </Button>
-              );
-            })}
+            {types.map((type) => (
+              <Button
+                key={type.id}
+                size="sm"
+                variant={selectedType === type.id ? "default" : "ghost"}
+                onClick={() => setSelectedType(type.id)}
+                className="h-6 px-2 text-[10px] rounded-md"
+                title={type.label}
+              >
+                {type.icon}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
