@@ -282,10 +282,11 @@ export default function HealthProvidersMap() {
 
   return (
     <div className="h-[600px] w-full relative">
-      {/* Barre de recherche intelligente */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[90%] max-w-xl">
-        <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-2xl border border-border/60 p-2">
-          <div className="relative">
+      {/* Barre de recherche intelligente avec filtres intégrés */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] w-[95%] max-w-4xl">
+        <div className="bg-card/80 backdrop-blur-lg rounded-xl shadow-2xl border border-border/60 p-3">
+          {/* Champ de recherche */}
+          <div className="relative mb-3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
@@ -305,8 +306,35 @@ export default function HealthProvidersMap() {
               </Button>
             )}
           </div>
-          {searchQuery && (
-            <div className="mt-2 text-xs text-muted-foreground px-3">
+          
+          {/* Filtres par type en ligne */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+            <Button
+              variant={selectedType === null ? "default" : "ghost"}
+              size="sm"
+              className="h-8 px-3 text-xs font-medium whitespace-nowrap flex-shrink-0"
+              onClick={() => setSelectedType(null)}
+            >
+              <Layers className="h-3.5 w-3.5 mr-1.5" />
+              Tous
+            </Button>
+            {types.map(type => (
+              <Button
+                key={type.id}
+                variant={selectedType === type.id ? "default" : "ghost"}
+                size="sm"
+                className="h-8 px-3 text-xs font-medium whitespace-nowrap flex-shrink-0"
+                onClick={() => setSelectedType(type.id)}
+              >
+                <span className="mr-1">{type.icon}</span>
+                <span>{type.label}</span>
+              </Button>
+            ))}
+          </div>
+          
+          {/* Compteur de résultats */}
+          {(searchQuery || selectedType) && (
+            <div className="mt-2 text-xs text-muted-foreground px-1">
               {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''} trouvé{filteredProviders.length > 1 ? 's' : ''}
             </div>
           )}
@@ -343,35 +371,6 @@ export default function HealthProvidersMap() {
         </div>
       </div>
 
-      {/* Filtres par type - Version horizontale compacte */}
-      <div className="absolute top-4 right-4 z-[1000]">
-        <div className="bg-card/70 backdrop-blur-md rounded-xl shadow-lg border border-border/40 p-2">
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant={selectedType === null ? "default" : "ghost"}
-              size="sm"
-              className="h-8 px-3 text-xs font-medium"
-              onClick={() => setSelectedType(null)}
-            >
-              <Layers className="h-3.5 w-3.5 mr-1.5" />
-              Tous
-            </Button>
-            {types.map(type => (
-              <Button
-                key={type.id}
-                variant={selectedType === type.id ? "default" : "ghost"}
-                size="sm"
-                className="h-8 px-3 text-xs font-medium"
-                onClick={() => setSelectedType(type.id)}
-              >
-                <span className="mr-1">{type.icon}</span>
-                <span className="hidden sm:inline">{type.label}</span>
-              </Button>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Statistiques - Version compacte et transparente */}
       <div className="absolute bottom-4 left-4 z-[1000]">
         <div className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg border border-border/40 px-3 py-2">
@@ -405,6 +404,15 @@ export default function HealthProvidersMap() {
 
         .leaflet-container {
           background: hsl(var(--muted) / 0.3);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>
