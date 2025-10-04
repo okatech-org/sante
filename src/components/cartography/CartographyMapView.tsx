@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { CartographyProvider, Coordonnees } from "@/types/cartography";
@@ -111,96 +110,90 @@ export default function CartographyMapView({
           </Marker>
         )}
 
-        {/* Markers groupés */}
-        <MarkerClusterGroup
-          chunkedLoading
-          spiderfyOnMaxZoom={true}
-          maxClusterRadius={50}
-        >
-          {providers
-            .filter(p => p.coordonnees)
-            .map(provider => (
-              <Marker
-                key={provider.id}
-                position={[provider.coordonnees!.lat, provider.coordonnees!.lng]}
-                icon={createColoredIcon(provider.type)}
-              >
-                <Popup maxWidth={320} className="custom-popup">
-                  <div className="space-y-2 p-1">
+        {/* Markers */}
+        {providers
+          .filter(p => p.coordonnees)
+          .map(provider => (
+            <Marker
+              key={provider.id}
+              position={[provider.coordonnees!.lat, provider.coordonnees!.lng]}
+              icon={createColoredIcon(provider.type)}
+            >
+              <Popup maxWidth={320} className="custom-popup">
+                <div className="space-y-2 p-1">
+                  <div>
+                    <h3 className="font-bold text-base">{provider.nom}</h3>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {provider.type.replace('_', ' ')} • {provider.ville}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1">
+                    {provider.ouvert_24_7 && (
+                      <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
+                    )}
+                    {provider.conventionnement.cnamgs && (
+                      <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
+                    )}
+                    {provider.equipements_specialises?.some(e => e.includes('IRM') || e.includes('Scanner')) && (
+                      <Badge variant="default" className="text-xs bg-purple-600">Imagerie</Badge>
+                    )}
+                  </div>
+
+                  <div className="space-y-1 text-xs">
+                    <p>📍 {provider.adresse_descriptive}</p>
+                    <p>📞 {provider.telephones[0]}</p>
+                    {provider.distance && (
+                      <p className="text-primary font-semibold">
+                        📏 {provider.distance} km de vous
+                      </p>
+                    )}
+                  </div>
+
+                  {provider.services.length > 0 && (
                     <div>
-                      <h3 className="font-bold text-base">{provider.nom}</h3>
-                      <p className="text-xs text-muted-foreground capitalize">
-                        {provider.type.replace('_', ' ')} • {provider.ville}
+                      <p className="text-xs font-semibold mb-1">Services:</p>
+                      <p className="text-xs text-muted-foreground">
+                        {provider.services.slice(0, 3).join(', ')}
+                        {provider.services.length > 3 && '...'}
                       </p>
                     </div>
+                  )}
 
-                    <div className="flex flex-wrap gap-1">
-                      {provider.ouvert_24_7 && (
-                        <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
-                      )}
-                      {provider.conventionnement.cnamgs && (
-                        <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
-                      )}
-                      {provider.equipements_specialises?.some(e => e.includes('IRM') || e.includes('Scanner')) && (
-                        <Badge variant="default" className="text-xs bg-purple-600">Imagerie</Badge>
-                      )}
-                    </div>
-
-                    <div className="space-y-1 text-xs">
-                      <p>📍 {provider.adresse_descriptive}</p>
-                      <p>📞 {provider.telephones[0]}</p>
-                      {provider.distance && (
-                        <p className="text-primary font-semibold">
-                          📏 {provider.distance} km de vous
-                        </p>
-                      )}
-                    </div>
-
-                    {provider.services.length > 0 && (
-                      <div>
-                        <p className="text-xs font-semibold mb-1">Services:</p>
-                        <p className="text-xs text-muted-foreground">
-                          {provider.services.slice(0, 3).join(', ')}
-                          {provider.services.length > 3 && '...'}
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleCall(provider.telephones[0])}
+                      className="flex-1 text-xs"
+                    >
+                      <Phone className="h-3 w-3 mr-1" />
+                      Appeler
+                    </Button>
+                    {provider.coordonnees && (
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleCall(provider.telephones[0])}
+                        onClick={() => handleDirections(provider.coordonnees!, provider.nom)}
                         className="flex-1 text-xs"
                       >
-                        <Phone className="h-3 w-3 mr-1" />
-                        Appeler
+                        <Navigation className="h-3 w-3 mr-1" />
+                        Itinéraire
                       </Button>
-                      {provider.coordonnees && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDirections(provider.coordonnees!, provider.nom)}
-                          className="flex-1 text-xs"
-                        >
-                          <Navigation className="h-3 w-3 mr-1" />
-                          Itinéraire
-                        </Button>
-                      )}
-                    </div>
-
-                    <Button
-                      size="sm"
-                      className="w-full text-xs"
-                      onClick={() => onMarkerClick(provider.id)}
-                    >
-                      Voir détails complets →
-                    </Button>
+                    )}
                   </div>
-                </Popup>
-              </Marker>
-            ))}
-        </MarkerClusterGroup>
+
+                  <Button
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => onMarkerClick(provider.id)}
+                  >
+                    Voir détails complets →
+                  </Button>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
       </MapContainer>
 
       <style>{`
