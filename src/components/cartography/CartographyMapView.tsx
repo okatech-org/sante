@@ -55,8 +55,10 @@ function MapCenter({ center }: { center: Coordonnees }) {
   const map = useMap();
   
   useEffect(() => {
-    map.setView([center.lat, center.lng], map.getZoom());
-  }, [center, map]);
+    if (map) {
+      map.setView([center.lat, center.lng], map.getZoom());
+    }
+  }, [center.lat, center.lng, map]);
   
   return null;
 }
