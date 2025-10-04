@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Calendar, 
   FileText, 
@@ -24,9 +25,57 @@ import { useTheme } from "next-themes";
 export default function Landing() {
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeService, setActiveService] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
+  const [cnamgsNumber, setCnamgsNumber] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('search', searchQuery);
+    if (searchLocation) params.set('location', searchLocation);
+    navigate(`/providers?${params.toString()}`);
+  };
+
+  const handleSpecialtyClick = (specialty: string) => {
+    navigate(`/providers?search=${encodeURIComponent(specialty)}`);
+  };
+
+  const handleServiceClick = (index: number) => {
+    const routes = [
+      '/providers',        // Prendre Rendez-vous
+      '/teleconsultation', // Téléconsultation
+      '/medical-record',   // Mon Dossier Médical
+      '/login/patient'     // Mes Droits CNAMGS
+    ];
+    navigate(routes[index]);
+  };
+
+  const handleCNAMGSVerification = async () => {
+    if (!cnamgsNumber.trim()) {
+      toast({
+        title: "Champ requis",
+        description: "Veuillez entrer votre numéro d'assuré CNAMGS",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsVerifying(true);
+    
+    // Simulation de vérification
+    setTimeout(() => {
+      setIsVerifying(false);
+      toast({
+        title: "Vérification effectuée",
+        description: "Veuillez vous connecter pour voir vos droits complets",
+      });
+      navigate('/login/patient');
+    }, 1500);
+  };
 
   const stats = [
     { value: "2,159", label: t('landing.stats.doctors') || "Médecins inscrits", icon: Users },
@@ -189,12 +238,13 @@ export default function Landing() {
                     className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
-                <Link to="/providers" className="sm:flex-shrink-0">
-                  <Button className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90">
-                    <Search className="w-5 h-5 mr-2" />
-                    {t('landing.search.button') || "Rechercher"}
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handleSearch}
+                  className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-primary to-primary/90"
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  {t('landing.search.button') || "Rechercher"}
+                </Button>
               </div>
             </div>
 
@@ -203,6 +253,7 @@ export default function Landing() {
               {specialties.map((specialty, index) => (
                 <Button 
                   key={specialty}
+                  onClick={() => handleSpecialtyClick(specialty)}
                   variant="outline"
                   className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
                   style={{ animationDelay: `${0.6 + index * 0.1}s` }}
@@ -261,7 +312,10 @@ export default function Landing() {
                 <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{service.title}</h3>
                 <p className="mb-6 leading-relaxed text-muted-foreground">{service.description}</p>
                 
-                <button className="flex items-center font-semibold text-primary hover:text-primary/80 transition-all group-hover:gap-3 gap-2">
+                <button 
+                  onClick={() => handleServiceClick(index)}
+                  className="flex items-center font-semibold text-primary hover:text-primary/80 transition-all group-hover:gap-3 gap-2"
+                >
                   {service.action}
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </button>
@@ -341,11 +395,18 @@ export default function Landing() {
               <div className="space-y-4">
                 <input 
                   type="text" 
+                  value={cnamgsNumber}
+                  onChange={(e) => setCnamgsNumber(e.target.value)}
                   placeholder={t('landing.insurance.placeholder') || "Numéro d'assuré CNAMGS"}
                   className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border outline-none focus:border-primary transition-colors"
+                  disabled={isVerifying}
                 />
-                <Button className="w-full py-6 shadow-lg">
-                  {t('landing.insurance.verify') || "Vérifier ma couverture"}
+                <Button 
+                  onClick={handleCNAMGSVerification}
+                  disabled={isVerifying}
+                  className="w-full py-6 shadow-lg"
+                >
+                  {isVerifying ? "Vérification en cours..." : (t('landing.insurance.verify') || "Vérifier ma couverture")}
                 </Button>
                 <p className="text-sm text-muted-foreground text-center">
                   {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
@@ -386,11 +447,26 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold text-lg mb-4">{t('landing.services') || "Services"}</h4>
               <ul className="space-y-3">
-                {['Trouver un médecin', 'Téléconsultation', 'Dossier médical', 'Droits CNAMGS'].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">{item}</a>
-                  </li>
-                ))}
+                <li>
+                  <Link to="/providers" className="text-muted-foreground hover:text-foreground transition-colors">
+                    Trouver un médecin
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/teleconsultation" className="text-muted-foreground hover:text-foreground transition-colors">
+                    Téléconsultation
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/medical-record" className="text-muted-foreground hover:text-foreground transition-colors">
+                    Dossier médical
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/login/patient" className="text-muted-foreground hover:text-foreground transition-colors">
+                    Droits CNAMGS
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -425,13 +501,15 @@ export default function Landing() {
               </Link>
               
               <div className="flex space-x-6 text-sm">
-                {[
-                  t('landing.footer.privacy') || 'Confidentialité', 
-                  t('landing.footer.terms') || "Conditions d'utilisation", 
-                  t('landing.footer.helpCenter') || 'Aide'
-                ].map((item) => (
-                  <a key={item} href="#" className="text-muted-foreground hover:text-foreground transition-colors">{item}</a>
-                ))}
+                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {t('landing.footer.privacy') || 'Confidentialité'}
+                </Link>
+                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {t('landing.footer.terms') || "Conditions d'utilisation"}
+                </Link>
+                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {t('landing.footer.helpCenter') || 'Aide'}
+                </Link>
               </div>
             </div>
           </div>
