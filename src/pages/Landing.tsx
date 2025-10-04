@@ -566,14 +566,14 @@ export default function Landing() {
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                 {t('landing.trust.subtitle') || "SANTE.GA est la plateforme officielle e-santé du Gabon, développée pour connecter patients, médecins, hôpitaux et pharmacies. Sécurisée, gratuite et accessible partout au Gabon."}
               </p>
-              <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2">
-                <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2 bg-card/70 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2 rounded-lg border border-secondary/40 flex-shrink-0 min-w-[90px] md:min-w-0">
-                  <Shield className="w-4 h-4 md:w-5 md:h-5 text-secondary flex-shrink-0" />
-                  <span className="text-[9px] md:text-sm leading-tight text-center md:text-left">{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-secondary/40">
+                  <Shield className="w-5 h-5 text-secondary" />
+                  <span>{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
-                <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2 bg-card/70 backdrop-blur-sm px-2 py-1.5 md:px-4 md:py-2 rounded-lg border border-primary/40 flex-shrink-0 min-w-[90px] md:min-w-0">
-                  <Heart className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
-                  <span className="text-[9px] md:text-sm leading-tight text-center md:text-left">{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
+                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/40">
+                  <Heart className="w-5 h-5 text-primary" />
+                  <span>{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
                 </div>
               </div>
             </div>
