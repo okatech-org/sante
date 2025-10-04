@@ -571,10 +571,6 @@ export default function Landing() {
                   <Shield className="w-5 h-5 text-secondary" />
                   <span>{t('landing.trust.badge1') || "Données 100% sécurisées"}</span>
                 </div>
-                <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-warning/40">
-                  <Award className="w-5 h-5 text-warning" />
-                  <span>{t('landing.trust.badge2') || "Validé par le Ministère"}</span>
-                </div>
                 <div className="flex items-center space-x-2 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-primary/40">
                   <Heart className="w-5 h-5 text-primary" />
                   <span>{t('landing.trust.badge3') || "Gratuit pour les patients"}</span>
