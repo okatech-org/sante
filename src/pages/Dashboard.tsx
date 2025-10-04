@@ -1,4 +1,5 @@
-
+import { MainLayout } from "@/components/layout/MainLayout";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { InsuranceStatus } from "@/components/dashboard/InsuranceStatus";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
