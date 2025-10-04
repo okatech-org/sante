@@ -32,6 +32,14 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
     
+    // Language
+    'language.toggle': 'Changer de langue',
+    'language.fr': 'Français',
+    'language.en': 'English',
+    'language.es': 'Español',
+    'language.ar': 'العربية',
+    'language.pt': 'Português',
+    
     // Landing Page
     'landing.services': 'Services',
     'landing.howItWorks': 'Comment ça marche',
@@ -146,6 +154,14 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.services': 'Our Services',
     'nav.faq': 'FAQ',
     'nav.contact': 'Contact',
+    
+    // Language
+    'language.toggle': 'Change language',
+    'language.fr': 'Français',
+    'language.en': 'English',
+    'language.es': 'Español',
+    'language.ar': 'العربية',
+    'language.pt': 'Português',
     
     // Landing Page
     'landing.services': 'Services',
@@ -262,6 +278,14 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.faq': 'FAQ',
     'nav.contact': 'Contacto',
     
+    // Language
+    'language.toggle': 'Cambiar idioma',
+    'language.fr': 'Français',
+    'language.en': 'English',
+    'language.es': 'Español',
+    'language.ar': 'العربية',
+    'language.pt': 'Português',
+    
     // Dashboard
     'dashboard.welcome': 'Bienvenido',
     'dashboard.quickActions': 'Acciones Rápidas',
@@ -307,6 +331,14 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.faq': 'الأسئلة الشائعة',
     'nav.contact': 'اتصل',
     
+    // Language
+    'language.toggle': 'تغيير اللغة',
+    'language.fr': 'Français',
+    'language.en': 'English',
+    'language.es': 'Español',
+    'language.ar': 'العربية',
+    'language.pt': 'Português',
+    
     // Dashboard
     'dashboard.welcome': 'مرحبا',
     'dashboard.quickActions': 'إجراءات سريعة',
@@ -351,6 +383,14 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.services': 'Nossos Serviços',
     'nav.faq': 'FAQ',
     'nav.contact': 'Contato',
+    
+    // Language
+    'language.toggle': 'Mudar idioma',
+    'language.fr': 'Français',
+    'language.en': 'English',
+    'language.es': 'Español',
+    'language.ar': 'العربية',
+    'language.pt': 'Português',
     
     // Dashboard
     'dashboard.welcome': 'Bem-vindo',
