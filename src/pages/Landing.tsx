@@ -408,8 +408,10 @@ export default function Landing() {
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-muted-foreground text-sm flex items-center gap-2">
                 © 2025 {t('landing.footer.copyright') || "SANTE.GA - Ministère de la Santé du Gabon. Tous droits réservés."}
-                <Link to="/superadmin" className="opacity-20 hover:opacity-40 transition-opacity">
+                <span className="text-muted-foreground/30">•</span>
+                <Link to="/superadmin" className="opacity-30 hover:opacity-60 transition-opacity flex items-center gap-1 text-xs">
                   <Shield className="h-3 w-3" />
+                  <span>Admin</span>
                 </Link>
               </p>
               <div className="flex space-x-6 text-sm">
