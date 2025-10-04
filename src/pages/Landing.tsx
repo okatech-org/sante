@@ -335,37 +335,38 @@ export default function Landing() {
           {/* Carte Interactive avec barre de recherche flottante */}
           <div className="relative animate-scale-in mb-16" style={{ animationDelay: '0.4s' }}>
             {/* Carte en arrière-plan */}
-            <div className="rounded-3xl overflow-hidden shadow-2xl border-2 border-border/40">
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-primary/20 ring-1 ring-primary/10">
               <HealthProvidersMap />
             </div>
 
             {/* Barre de recherche flottante par-dessus la carte */}
-            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-[95%] max-w-4xl z-10">
-              <div className="rounded-2xl shadow-2xl p-3 backdrop-blur-xl bg-gradient-to-br from-card/95 to-card/90 border border-border/60 hover:shadow-3xl transition-all duration-500">
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-[95%] max-w-5xl z-10">
+              <div className="rounded-2xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] p-4 backdrop-blur-2xl bg-card/98 border border-border/80 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500 hover:scale-[1.01]">
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/80 hover:bg-background/90 transition-colors group">
+                  <div className="flex-1 flex items-center rounded-xl px-5 py-4 bg-muted/40 hover:bg-muted/60 transition-all duration-300 border border-transparent hover:border-primary/30 group">
                     <Stethoscope className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.doctor') || "Médecin, spécialité, hôpital..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground font-medium"
                     />
                   </div>
-                  <div className="flex-1 flex items-center rounded-xl px-4 py-3 bg-background/80 hover:bg-background/90 transition-colors group">
-                    <MapPin className="w-5 h-5 mr-3 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
+                  <div className="flex-1 flex items-center rounded-xl px-5 py-4 bg-muted/40 hover:bg-muted/60 transition-all duration-300 border border-transparent hover:border-secondary/30 group">
+                    <MapPin className="w-5 h-5 mr-3 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.location') || "Libreville, Port-Gentil..."}
                       value={searchLocation}
                       onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground"
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground font-medium"
                     />
                   </div>
                   <Button 
                     onClick={handleSearch}
-                    className="w-full sm:w-auto px-8 py-3 shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-secondary to-secondary/90"
+                    size="lg"
+                    className="w-full sm:w-auto px-10 py-4 text-base shadow-xl hover:shadow-2xl hover-scale bg-gradient-to-r from-primary via-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
                   >
                     <Search className="w-5 h-5 mr-2" />
                     {t('landing.search.button') || "Rechercher"}
