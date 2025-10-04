@@ -14,7 +14,8 @@ import {
   Users,
   Activity,
   Award,
-  ChevronRight
+  ChevronRight,
+  Mail
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -392,7 +393,7 @@ export default function Landing() {
                   <span>Libreville, Gabon</span>
                 </li>
                 <li className="flex items-start text-muted-foreground">
-                  <TestTube className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
+                  <Mail className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
                   <span>support@sante.ga</span>
                 </li>
                 <li className="flex items-start text-muted-foreground">
