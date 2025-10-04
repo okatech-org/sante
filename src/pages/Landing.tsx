@@ -3,6 +3,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import logoSante from "@/assets/logo_sante.png";
+import heroImage from "@/assets/hero-telemedicine.jpg";
+import doctorImage from "@/assets/doctor-consultation.jpg";
+import familyImage from "@/assets/family-health.jpg";
+import hospitalImage from "@/assets/hospital-reception.jpg";
 import { 
   Calendar, 
   FileText, 
@@ -290,8 +294,18 @@ export default function Landing() {
       </header>
 
       {/* Hero Section avec animations */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 animate-fade-in overflow-hidden">
+        {/* Hero Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={heroImage} 
+            alt="Patient using telemedicine" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto mb-16">
             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
               <Award className="w-4 h-4 text-secondary" />
@@ -388,8 +402,24 @@ export default function Landing() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section id="services" className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Decorative background images */}
+        <div className="absolute left-0 top-1/4 w-64 h-64 hidden xl:block opacity-5">
+          <img 
+            src={doctorImage} 
+            alt="Doctor consultation" 
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <div className="absolute right-0 bottom-1/4 w-64 h-64 hidden xl:block opacity-5">
+          <img 
+            src={familyImage} 
+            alt="Family health" 
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">{t('landing.services') || "Tous vos besoins de santé"}</h2>
             <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
@@ -513,8 +543,17 @@ export default function Landing() {
       </section>
 
       {/* Trust Section */}
-      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-        <div className="max-w-7xl mx-auto">
+      <section id="propos" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 overflow-hidden">
+        {/* Background decorative image */}
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
+          <img 
+            src={hospitalImage} 
+            alt="Modern hospital reception" 
+            className="w-full h-full object-cover opacity-10"
+          />
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl sm:text-5xl font-bold mb-6">
