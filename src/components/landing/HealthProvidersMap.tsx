@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X, Locate } from "lucide-react";
 import providersData from "@/data/cartography-providers.json";
+import annuaireData from "@/data/gabon-hospitals-annuaire-2024.json";
 import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
 
@@ -49,7 +50,11 @@ export default function HealthProvidersMap() {
   const [isLocating, setIsLocating] = useState(false);
   
   const providers = useMemo(() => {
-    return (providersData as CartographyProvider[]).filter(p => p.coordonnees);
+    // Fusionner les données existantes avec l'annuaire 2024
+    const existing = providersData as CartographyProvider[];
+    const annuaire = annuaireData as CartographyProvider[];
+    const combined = [...existing, ...annuaire];
+    return combined.filter(p => p.coordonnees);
   }, []);
 
   // Initialiser la carte
