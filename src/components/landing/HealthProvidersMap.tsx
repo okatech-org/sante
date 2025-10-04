@@ -143,6 +143,9 @@ export default function HealthProvidersMap() {
             ${provider.ouvert_24_7 ? 
               '<span style="background: hsl(var(--accent)); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">24/7</span>' 
               : ''}
+            ${provider.secteur === 'public' ?
+              '<span style="background: hsl(var(--secondary)); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Public</span>'
+              : ''}
           </div>
           <div style="display: flex; gap: 8px;">
             <a 
