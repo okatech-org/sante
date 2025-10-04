@@ -74,8 +74,8 @@ export default function Landing() {
   const handleCNAMGSVerification = async () => {
     if (!cnamgsNumber.trim()) {
       toast({
-        title: "Champ requis",
-        description: "Veuillez entrer votre numéro d'assuré CNAMGS",
+        title: t('landing.toast.required') || "Champ requis",
+        description: t('landing.toast.enterNumber') || "Veuillez entrer votre numéro d'assuré CNAMGS",
         variant: "destructive"
       });
       return;
@@ -87,8 +87,8 @@ export default function Landing() {
     setTimeout(() => {
       setIsVerifying(false);
       toast({
-        title: "Vérification effectuée",
-        description: "Veuillez vous connecter pour voir vos droits complets",
+        title: t('landing.toast.verified') || "Vérification effectuée",
+        description: t('landing.toast.loginPrompt') || "Veuillez vous connecter pour voir vos droits complets",
       });
       navigate('/login/patient');
     }, 1500);
@@ -151,7 +151,13 @@ export default function Landing() {
     }
   ];
 
-  const specialties = ['Cardiologue', 'Gynécologue', 'Pédiatre', 'Dentiste', 'Urgences'];
+  const specialties = [
+    t('landing.specialties.cardiologist') || 'Cardiologue',
+    t('landing.specialties.gynecologist') || 'Gynécologue', 
+    t('landing.specialties.pediatrician') || 'Pédiatre',
+    t('landing.specialties.dentist') || 'Dentiste',
+    t('landing.specialties.emergency') || 'Urgences'
+  ];
 
   return (
     <div className="min-h-screen">
@@ -494,7 +500,7 @@ export default function Landing() {
                   disabled={isVerifying}
                   className="w-full py-6 shadow-lg"
                 >
-                  {isVerifying ? "Vérification en cours..." : (t('landing.insurance.verify') || "Vérifier ma couverture")}
+                  {isVerifying ? (t('landing.insurance.verifying') || "Vérification en cours...") : (t('landing.insurance.verify') || "Vérifier ma couverture")}
                 </Button>
                 <p className="text-sm text-muted-foreground text-center">
                   {t('landing.insurance.subtitle') || "Vérifiez instantanément votre statut d'assurance et vos droits aux remboursements"}
