@@ -404,20 +404,13 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Bouton Admin subtile */}
-          <div className="border-t pt-6 pb-2 flex justify-center">
-            <Link to="/superadmin">
-              <button className="text-xs text-muted-foreground/40 hover:text-muted-foreground/60 transition-colors duration-200 flex items-center gap-1">
-                <Shield className="h-3 w-3" />
-                <span>•</span>
-              </button>
-            </Link>
-          </div>
-
-          <div className="border-t pt-8">
+          <div className="border-t border-border pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-sm flex items-center gap-2">
                 © 2025 {t('landing.footer.copyright') || "SANTE.GA - Ministère de la Santé du Gabon. Tous droits réservés."}
+                <Link to="/superadmin" className="opacity-20 hover:opacity-40 transition-opacity">
+                  <Shield className="h-3 w-3" />
+                </Link>
               </p>
               <div className="flex space-x-6 text-sm">
                 {[
