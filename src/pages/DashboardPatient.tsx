@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Menu, X, Edit } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Menu, X, Edit, LogOut, Sun, Moon, Globe, Laptop } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -9,22 +9,47 @@ import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { EditMedicalInfoModal } from "@/components/profile/EditMedicalInfoModal";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import logoSante from "@/assets/logo_sante.png";
 export default function DashboardPatient() {
   const {
     user
   } = useAuth();
   const navigate = useNavigate();
-  const {
-    theme
-  } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editMedicalOpen, setEditMedicalOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [language, setLanguage] = useState('fr');
+  
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Déconnexion réussie",
+        description: "À bientôt !",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la déconnexion",
+        variant: "destructive",
+      });
+    }
+  };
   
   // Séparer le nom et le prénom
   const nameParts = fullName.split(' ');
@@ -171,7 +196,82 @@ export default function DashboardPatient() {
             </nav>
 
             {/* User Profile */}
-            <div className="mt-auto pt-4 border-t border-white/10">
+            <div className="mt-auto pt-4 border-t border-white/10 space-y-2">
+              {/* Theme, Language & Logout Controls */}
+              <div className="flex items-center gap-2 px-2">
+                {/* Theme Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                      {theme === 'dark' ? (
+                        <Moon className="w-4 h-4" />
+                      ) : theme === 'light' ? (
+                        <Sun className="w-4 h-4" />
+                      ) : (
+                        <Laptop className="w-4 h-4" />
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                    <DropdownMenuItem 
+                      onClick={() => setTheme('light')}
+                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      <Sun className="w-4 h-4 mr-2" />
+                      Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setTheme('dark')}
+                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      <Moon className="w-4 h-4 mr-2" />
+                      Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setTheme('system')}
+                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      <Laptop className="w-4 h-4 mr-2" />
+                      Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Language Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                      <Globe className="w-4 h-4" />
+                      <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                    <DropdownMenuItem 
+                      onClick={() => setLanguage('fr')}
+                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      🇫🇷 Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setLanguage('en')}
+                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      🇬🇧 English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Logout Button */}
+                <button 
+                  onClick={handleLogout}
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                  title="Déconnexion"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* User Profile Card */}
               <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
@@ -252,7 +352,82 @@ export default function DashboardPatient() {
                   </nav>
 
                   {/* User Profile Mobile */}
-                  <div className="mt-auto pt-6 border-t border-white/10">
+                  <div className="mt-auto pt-6 border-t border-white/10 space-y-2">
+                    {/* Theme, Language & Logout Controls Mobile */}
+                    <div className="flex items-center gap-2 px-2">
+                      {/* Theme Selector */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                            {theme === 'dark' ? (
+                              <Moon className="w-4 h-4" />
+                            ) : theme === 'light' ? (
+                              <Sun className="w-4 h-4" />
+                            ) : (
+                              <Laptop className="w-4 h-4" />
+                            )}
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                          <DropdownMenuItem 
+                            onClick={() => setTheme('light')}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                          >
+                            <Sun className="w-4 h-4 mr-2" />
+                            Clair
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => setTheme('dark')}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                          >
+                            <Moon className="w-4 h-4 mr-2" />
+                            Sombre
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => setTheme('system')}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                          >
+                            <Laptop className="w-4 h-4 mr-2" />
+                            Système
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* Language Selector */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                            <Globe className="w-4 h-4" />
+                            <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                          <DropdownMenuItem 
+                            onClick={() => setLanguage('fr')}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                          >
+                            🇫🇷 Français
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => setLanguage('en')}
+                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                          >
+                            🇬🇧 English
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* Logout Button */}
+                      <button 
+                        onClick={handleLogout}
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                        title="Déconnexion"
+                      >
+                        <LogOut className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* User Profile Card Mobile */}
                     <div className="p-3 rounded-xl bg-white/5">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff] text-lg">
