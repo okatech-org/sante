@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, Eye, EyeOff } from "lucide-react";
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
@@ -34,6 +34,9 @@ interface ChangePasswordModalProps {
 
 export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalProps) {
   const [loading, setLoading] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
@@ -84,13 +87,26 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
             <Label htmlFor="currentPassword" className="text-sm text-gray-300">
               Mot de passe actuel
             </Label>
-            <Input
-              id="currentPassword"
-              type="password"
-              {...register("currentPassword")}
-              placeholder="••••••••"
-              className="bg-white/5 border-white/10 text-white h-9 text-sm"
-            />
+            <div className="relative">
+              <Input
+                id="currentPassword"
+                type={showCurrentPassword ? "text" : "password"}
+                {...register("currentPassword")}
+                placeholder="••••••••"
+                className="bg-white/5 border-white/10 text-white h-9 text-sm pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showCurrentPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
             {errors.currentPassword && (
               <p className="text-xs text-red-400">{errors.currentPassword.message}</p>
             )}
@@ -100,13 +116,26 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
             <Label htmlFor="newPassword" className="text-sm text-gray-300">
               Nouveau mot de passe
             </Label>
-            <Input
-              id="newPassword"
-              type="password"
-              {...register("newPassword")}
-              placeholder="••••••••"
-              className="bg-white/5 border-white/10 text-white h-9 text-sm"
-            />
+            <div className="relative">
+              <Input
+                id="newPassword"
+                type={showNewPassword ? "text" : "password"}
+                {...register("newPassword")}
+                placeholder="••••••••"
+                className="bg-white/5 border-white/10 text-white h-9 text-sm pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showNewPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
             {errors.newPassword && (
               <p className="text-xs text-red-400">{errors.newPassword.message}</p>
             )}
@@ -116,13 +145,26 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
             <Label htmlFor="confirmPassword" className="text-sm text-gray-300">
               Confirmer le nouveau mot de passe
             </Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...register("confirmPassword")}
-              placeholder="••••••••"
-              className="bg-white/5 border-white/10 text-white h-9 text-sm"
-            />
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                {...register("confirmPassword")}
+                placeholder="••••••••"
+                className="bg-white/5 border-white/10 text-white h-9 text-sm pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <p className="text-xs text-red-400">{errors.confirmPassword.message}</p>
             )}
