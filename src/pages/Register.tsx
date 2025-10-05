@@ -286,18 +286,18 @@ const Register = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-6 mb-6">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
+              <div className="flex items-center -gap-1 mb-4">
                 <img 
                   src={logoSante} 
                   alt="SANTE.GA Logo" 
-                  className="h-12 w-auto object-contain"
+                  className="h-12 w-12 object-contain"
                 />
-                <div>
+                <div className="flex flex-col">
                   <h2 className="text-xl font-bold tracking-tight">
                     <span className="text-white">SANTE</span>
                     <span className="text-cyan-400">.GA</span>
                   </h2>
-                  <p className="text-xs text-gray-400">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
+                  <p className="text-[10px] text-gray-400">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
                 </div>
               </div>
               <p className="text-gray-400 leading-relaxed text-sm">
