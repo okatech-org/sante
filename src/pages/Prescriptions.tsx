@@ -615,6 +615,37 @@ export default function Prescriptions() {
                           {/* Colonne droite - Miniature A4 (desktop uniquement) */}
                           <div className="hidden lg:block w-64 flex-shrink-0">
                             <div className="bg-white rounded-lg shadow-lg overflow-hidden aspect-[1/1.414] relative">
+                              {/* Actions en haut à droite */}
+                              <div className="absolute top-2 right-2 flex gap-1 z-10">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => setPreviewPrescription(prescription)}
+                                  className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-6 w-6 p-0"
+                                  title="Agrandir"
+                                >
+                                  <Eye className="h-3 w-3" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleShare(prescription.id)}
+                                  className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 h-6 w-6 p-0"
+                                  title="Partager"
+                                >
+                                  <Share2 className="h-3 w-3" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleDownload(prescription.id)}
+                                  className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-6 w-6 p-0"
+                                  title="Télécharger"
+                                >
+                                  <Download className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              
                               <div className="absolute inset-0 p-4 overflow-hidden text-[6px] leading-tight">
                                 {/* En-tête */}
                                 <div className="text-center mb-2 pb-1 border-b border-gray-300">
@@ -654,37 +685,6 @@ export default function Prescriptions() {
                                     <p className="text-gray-700">{prescription.notes}</p>
                                   </div>
                                 )}
-
-                                {/* Actions desktop */}
-                                <div className="absolute bottom-2 right-2 flex gap-1">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => setPreviewPrescription(prescription)}
-                                    className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-6 w-6 p-0"
-                                    title="Agrandir"
-                                  >
-                                    <Eye className="h-3 w-3" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => handleShare(prescription.id)}
-                                    className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 h-6 w-6 p-0"
-                                    title="Partager"
-                                  >
-                                    <Share2 className="h-3 w-3" />
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm"
-                                    onClick={() => handleDownload(prescription.id)}
-                                    className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-6 w-6 p-0"
-                                    title="Télécharger"
-                                  >
-                                    <Download className="h-3 w-3" />
-                                  </Button>
-                                </div>
                               </div>
                             </div>
                           </div>
