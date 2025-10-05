@@ -461,7 +461,7 @@ export default function Profile() {
 
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {/* Informations personnelles */}
                       <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
                         <h2 className="text-sm sm:text-base font-bold text-white mb-3 flex items-center gap-2">
