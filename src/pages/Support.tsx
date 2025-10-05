@@ -563,7 +563,7 @@ export default function Support() {
         <main className="flex-1 md:ml-64 pt-20 md:pt-0">
           <div className="h-screen flex flex-col">
             {/* Header */}
-            <div className="p-3 sm:p-4 lg:p-6 border-b border-white/10">
+            <div className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
                 <div className="flex-1 min-w-0">
                   <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
