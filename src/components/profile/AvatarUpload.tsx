@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 interface AvatarUploadProps {
@@ -160,6 +161,7 @@ export function AvatarUpload({ currentAvatarUrl, onAvatarUpdate }: AvatarUploadP
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Photo de profil</DialogTitle>
+            <DialogDescription>Prendre une photo ou importer une image (JPG/PNG, max 5 Mo).</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">

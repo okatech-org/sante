@@ -45,6 +45,7 @@ import Cartography from "./pages/Cartography";
 import MedicalRecord from "./pages/MedicalRecord";
 import Support from "./pages/Support";
 import Teleconsultation from "./pages/Teleconsultation";
+import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
         <AuthProvider>
           <LanguageProvider>
             <TooltipProvider>
+              {import.meta.env.DEV && <ConsoleSilencer />}
               <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
