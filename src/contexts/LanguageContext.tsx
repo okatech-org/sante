@@ -158,6 +158,26 @@ const translations: Record<Language, Record<string, string>> = {
     'common.next': 'Suivant',
     'common.previous': 'Précédent',
     'common.close': 'Fermer',
+    
+    // Register Page
+    'register.title': 'Rejoignez-nous',
+    'register.subtitle': 'Choisissez votre type de compte pour commencer',
+    'register.patient.title': 'Patient',
+    'register.patient.description': 'Gérez votre santé facilement',
+    'register.patient.feature1': 'Prendre des rendez-vous en ligne',
+    'register.patient.feature2': 'Accéder à votre dossier médical',
+    'register.patient.feature3': 'Consulter en ligne (téléconsultation)',
+    'register.patient.feature4': 'Suivre vos prescriptions et résultats',
+    'register.patient.cta': 'S\'inscrire en tant que Patient',
+    'register.professional.title': 'Professionnel de Santé',
+    'register.professional.description': 'Développez votre activité médicale',
+    'register.professional.feature1': 'Gérer votre agenda en ligne',
+    'register.professional.feature2': 'Accéder aux dossiers patients',
+    'register.professional.feature3': 'Proposer des téléconsultations',
+    'register.professional.feature4': 'Augmenter votre visibilité',
+    'register.professional.cta': 'S\'inscrire en tant que Professionnel',
+    'register.hasAccount': 'Vous avez déjà un compte ?',
+    'register.login': 'Se connecter',
   },
   en: {
     // Navigation
@@ -306,6 +326,26 @@ const translations: Record<Language, Record<string, string>> = {
     'common.next': 'Next',
     'common.previous': 'Previous',
     'common.close': 'Close',
+    
+    // Register Page
+    'register.title': 'Join Us',
+    'register.subtitle': 'Choose your account type to get started',
+    'register.patient.title': 'Patient',
+    'register.patient.description': 'Manage your health easily',
+    'register.patient.feature1': 'Book appointments online',
+    'register.patient.feature2': 'Access your medical records',
+    'register.patient.feature3': 'Consult online (teleconsultation)',
+    'register.patient.feature4': 'Track your prescriptions and results',
+    'register.patient.cta': 'Sign Up as Patient',
+    'register.professional.title': 'Healthcare Professional',
+    'register.professional.description': 'Grow your medical practice',
+    'register.professional.feature1': 'Manage your online schedule',
+    'register.professional.feature2': 'Access patient records',
+    'register.professional.feature3': 'Offer teleconsultations',
+    'register.professional.feature4': 'Increase your visibility',
+    'register.professional.cta': 'Sign Up as Professional',
+    'register.hasAccount': 'Already have an account?',
+    'register.login': 'Log in',
   },
   es: {
     // Navigation
