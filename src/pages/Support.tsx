@@ -74,6 +74,7 @@ export default function Support() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -217,6 +218,7 @@ export default function Support() {
 
   const handleMessageClick = (message: Message) => {
     setSelectedMessage(message);
+    setIsMobileDetailOpen(true);
     if (!message.is_read) {
       markAsRead(message.id);
     }
@@ -557,54 +559,52 @@ export default function Support() {
         <main className="flex-1 md:ml-64 pt-20 md:pt-0">
           <div className="h-screen flex flex-col">
             {/* Header */}
-            <div className="p-4 sm:p-6 lg:p-8 border-b border-white/10">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h1 className="text-3xl font-bold text-white">
+            <div className="p-3 sm:p-4 lg:p-6 border-b border-white/10">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                     <span className="bg-gradient-to-r from-[#ffaa00] via-[#ff8800] to-[#ff6600] bg-clip-text text-transparent">Messages</span>
                   </h1>
-                  <p className="text-gray-400 mt-1">
+                  <p className="text-xs sm:text-sm text-gray-400 mt-1 truncate">
                     Communications des professionnels de santé
                   </p>
                 </div>
                 {unreadCount > 0 && (
-                  <Badge className="bg-[#ffaa00] text-white px-3 py-1">
-                    {unreadCount} non lu{unreadCount > 1 ? 's' : ''}
+                  <Badge className="bg-[#ffaa00] text-white px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm flex-shrink-0">
+                    {unreadCount}
                   </Badge>
                 )}
               </div>
 
-              {/* Search and Filters */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    placeholder="Rechercher dans les messages..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-                  />
-                </div>
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                <Input
+                  placeholder="Rechercher..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 sm:pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm"
+                />
               </div>
             </div>
 
             {/* Messages Layout */}
             <div className="flex-1 flex overflow-hidden">
-              {/* Messages List */}
-              <div className="w-full lg:w-2/5 xl:w-1/3 border-r border-white/10 flex flex-col bg-[#1a1f2e]/30">
+              {/* Messages List - Always visible on desktop, hidden when detail open on mobile */}
+              <div className={`w-full lg:w-2/5 xl:w-1/3 border-r border-white/10 flex flex-col bg-[#1a1f2e]/30 ${isMobileDetailOpen ? 'hidden lg:flex' : 'flex'}`}>
                 <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col">
-                  <TabsList className="bg-white/5 border-b border-white/10 rounded-none p-1">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-white/10">
-                      <Inbox className="h-4 w-4 mr-2" />
-                      Tous
+                  <TabsList className="bg-white/5 border-b border-white/10 rounded-none p-1 grid grid-cols-3 w-full">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
+                      <Inbox className="h-4 w-4" />
+                      <span className="hidden sm:inline">Tous</span>
                     </TabsTrigger>
-                    <TabsTrigger value="unread" className="data-[state=active]:bg-white/10">
-                      <MailOpen className="h-4 w-4 mr-2" />
-                      Non lus
+                    <TabsTrigger value="unread" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
+                      <MailOpen className="h-4 w-4" />
+                      <span className="hidden sm:inline">Non lus</span>
                     </TabsTrigger>
-                    <TabsTrigger value="starred" className="data-[state=active]:bg-white/10">
-                      <Star className="h-4 w-4 mr-2" />
-                      Favoris
+                    <TabsTrigger value="starred" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
+                      <Star className="h-4 w-4" />
+                      <span className="hidden sm:inline">Favoris</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -625,12 +625,12 @@ export default function Support() {
                             <div
                               key={message.id}
                               onClick={() => handleMessageClick(message)}
-                              className={`p-4 hover:bg-white/5 cursor-pointer transition-colors ${
+                              className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-colors active:bg-white/10 ${
                                 selectedMessage?.id === message.id ? 'bg-white/10' : ''
                               } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
                             >
-                              <div className="flex items-start gap-3">
-                                <div className={`p-2 rounded-lg ${
+                              <div className="flex items-start gap-2 sm:gap-3">
+                                <div className={`p-2 rounded-lg flex-shrink-0 ${
                                   message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
                                   message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
                                   message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
@@ -641,7 +641,7 @@ export default function Support() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between mb-1">
-                                    <p className={`text-sm font-medium truncate ${
+                                    <p className={`text-xs sm:text-sm font-medium truncate ${
                                       !message.is_read ? 'text-white' : 'text-gray-300'
                                     }`}>
                                       {message.sender_name}
@@ -651,32 +651,32 @@ export default function Support() {
                                         e.stopPropagation();
                                         toggleStar(message.id, message.is_starred);
                                       }}
-                                      className="ml-2"
+                                      className="ml-2 p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
                                     >
                                       <Star className={`h-4 w-4 ${
                                         message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
                                       }`} />
                                     </button>
                                   </div>
-                                  <p className={`text-sm truncate mb-1 ${
+                                  <p className={`text-xs sm:text-sm truncate mb-1 ${
                                     !message.is_read ? 'text-white font-medium' : 'text-gray-400'
                                   }`}>
                                     {message.subject}
                                   </p>
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    <Badge variant="outline" className="text-xs border-white/20 text-gray-400">
+                                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
                                       {getCategoryLabel(message.category)}
                                     </Badge>
                                     {message.priority !== 'normal' && (
-                                      <div className={`w-2 h-2 rounded-full ${getPriorityColor(message.priority)}`} />
+                                      <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
                                     )}
                                     {message.attachments && message.attachments.length > 0 && (
-                                      <Badge variant="secondary" className="text-xs bg-white/5">
-                                        <Paperclip className="h-3 w-3 mr-1" />
+                                      <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
+                                        <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                                         {message.attachments.length}
                                       </Badge>
                                     )}
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-[10px] sm:text-xs text-gray-500">
                                       {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
                                     </span>
                                   </div>
@@ -691,7 +691,99 @@ export default function Support() {
                 </Tabs>
               </div>
 
-              {/* Message Detail */}
+              {/* Message Detail - Sheet on mobile, fixed panel on desktop */}
+              <Sheet open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
+                <SheetContent 
+                  side="right" 
+                  className="w-full p-0 bg-[#0f1419] border-white/10 lg:hidden"
+                >
+                  {selectedMessage && (
+                    <div className="h-full flex flex-col">
+                      {/* Mobile Message Header */}
+                      <div className="p-4 border-b border-white/10">
+                        <div className="flex items-start gap-4">
+                          <div className={`p-3 rounded-lg flex-shrink-0 ${
+                            selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
+                            selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
+                            selectedMessage.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
+                            selectedMessage.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
+                            'bg-gray-500/10 text-gray-400'
+                          }`}>
+                            {getSenderIcon(selectedMessage.sender_type)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <h2 className="font-semibold text-white text-lg truncate">
+                                  {selectedMessage.sender_name}
+                                </h2>
+                                <p className="text-sm text-gray-400 mt-1">
+                                  {format(new Date(selectedMessage.created_at), 'dd MMMM yyyy à HH:mm', { locale: fr })}
+                                </p>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleStar(selectedMessage.id, selectedMessage.is_starred);
+                                }}
+                                className="flex-shrink-0 p-2 hover:bg-white/5 rounded-lg transition-colors"
+                              >
+                                <Star className={`h-5 w-5 ${
+                                  selectedMessage.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                }`} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3">
+                          <h3 className="text-xl font-semibold text-white mb-2">
+                            {selectedMessage.subject}
+                          </h3>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="outline" className="border-white/20 text-gray-400">
+                              {getCategoryLabel(selectedMessage.category)}
+                            </Badge>
+                            {selectedMessage.priority !== 'normal' && (
+                              <Badge className={`${getPriorityColor(selectedMessage.priority)} text-white border-0`}>
+                                {selectedMessage.priority === 'urgent' ? 'Urgent' :
+                                 selectedMessage.priority === 'high' ? 'Haute' :
+                                 selectedMessage.priority === 'low' ? 'Basse' : 'Normal'}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Mobile Message Content */}
+                      <ScrollArea className="flex-1 p-4">
+                        <div className="prose prose-invert max-w-none">
+                          <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                            {selectedMessage.content}
+                          </p>
+                        </div>
+
+                        {/* Mobile Attachments */}
+                        {selectedMessage.attachments && selectedMessage.attachments.length > 0 && (
+                          <div className="mt-6">
+                            <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                              <Paperclip className="h-4 w-4" />
+                              Pièces jointes ({selectedMessage.attachments.length})
+                            </h4>
+                            <div className="space-y-3">
+                              {selectedMessage.attachments.map((attachment, index) => 
+                                renderAttachment(attachment, index)
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </ScrollArea>
+                    </div>
+                  )}
+                </SheetContent>
+              </Sheet>
+
+              {/* Desktop Message Detail */}
               <div className="hidden lg:block flex-1 bg-[#0f1419]">
                 {selectedMessage ? (
                   <div className="h-full flex flex-col">
