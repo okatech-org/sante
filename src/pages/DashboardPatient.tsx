@@ -277,39 +277,46 @@ export default function DashboardPatient() {
                   time: 'Aujourd\'hui 14h30', 
                   event: 'Consultation cardiologie - Dr.Ékomi', 
                   location: 'Cabinet Montagne Sainte',
-                  icon: Calendar
+                  icon: Calendar,
+                  color: '#00d4ff'
                 },
                 { 
                   time: 'Dans 3 jours', 
                   event: 'Résultats d\'analyses disponibles', 
                   location: 'Laboratoire BIOLAB',
-                  icon: Activity
+                  icon: Activity,
+                  color: '#0088ff'
                 },
                 { 
                   time: 'Cette semaine', 
                   event: 'Ordonnance à renouveler', 
                   location: 'Pharmacie de la Grâce',
-                  icon: Pill
+                  icon: Pill,
+                  color: '#ffaa00'
                 },
                 { 
                   time: 'Urgent', 
                   event: 'Vaccin tétanos recommandé', 
                   location: 'Tout centre de vaccination',
-                  icon: AlertCircle
+                  icon: AlertCircle,
+                  color: '#ff0088'
                 }
               ].map((reminder, idx) => {
                 const Icon = reminder.icon;
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-4 rounded-lg hover:scale-[1.01] transition-all cursor-pointer bg-white/5 hover:bg-white/10"
+                    className="flex items-center justify-between p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10">
-                        <Icon className="w-5 h-5 text-gray-400" />
+                      <div 
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: `${reminder.color}20` }}
+                      >
+                        <Icon className="w-6 h-6" style={{ color: reminder.color }} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">{reminder.event}</p>
+                        <p className="text-sm font-semibold text-white mb-1">{reminder.event}</p>
                         <p className="text-xs text-gray-400">
                           {reminder.time} • {reminder.location}
                         </p>
@@ -338,20 +345,25 @@ export default function DashboardPatient() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart },
-                { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill },
-                { title: 'Dernière analyse', date: '15 Sept 2025', type: 'Bilan sanguin', icon: Activity }
+                { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
+                { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
+                { title: 'Dernière analyse', date: '15 Sept 2025', type: 'Bilan sanguin', icon: Activity, color: '#0088ff' }
               ].map((doc, idx) => {
                 const Icon = doc.icon;
                 return (
                   <div
                     key={idx}
-                    className="p-4 rounded-lg hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10"
+                    className="p-6 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5"
                   >
-                    <Icon className="w-6 h-6 mb-3 text-gray-400" />
-                    <p className="text-sm font-medium mb-1 text-white">{doc.title}</p>
-                    <p className="text-xs text-gray-400">{doc.date}</p>
-                    <p className="text-xs mt-1 text-gray-500">{doc.type}</p>
+                    <div 
+                      className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                      style={{ backgroundColor: `${doc.color}20` }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: doc.color }} />
+                    </div>
+                    <p className="text-sm font-semibold mb-2 text-white">{doc.title}</p>
+                    <p className="text-xs text-gray-400 mb-1">{doc.date}</p>
+                    <p className="text-xs text-gray-500">{doc.type}</p>
                   </div>
                 );
               })}
