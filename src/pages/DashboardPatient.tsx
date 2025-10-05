@@ -272,14 +272,23 @@ export default function DashboardPatient() {
               </div>
 
               {/* Informations personnelles */}
-              <div className="flex-1 space-y-3">
-                {/* Nom complet */}
+              <div className="flex-1 space-y-2 sm:space-y-3">
+                {/* Nom de famille en gros */}
                 <div>
-                  <p className="text-2xl sm:text-3xl font-bold text-white">{fullName}</p>
+                  <p className="text-2xl sm:text-4xl font-bold text-white uppercase tracking-wide">
+                    {fullName.split(' ').slice(1).join(' ') || 'PELLEN-LAKOUMBA'}
+                  </p>
                 </div>
 
-                {/* Âge et Sexe */}
-                <div className="flex gap-6 text-base sm:text-lg text-gray-300">
+                {/* Prénom en dessous */}
+                <div>
+                  <p className="text-xl sm:text-3xl font-normal text-white">
+                    {fullName.split(' ')[0] || 'Gueylord'} {fullName.split(' ')[1] || 'Asted'}
+                  </p>
+                </div>
+
+                {/* Âge et Sexe sur la même ligne */}
+                <div className="flex gap-8 sm:gap-12 text-base sm:text-xl text-gray-300">
                   <span>34 ans</span>
                   <span>Masculin</span>
                 </div>
