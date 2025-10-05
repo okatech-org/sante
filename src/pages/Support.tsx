@@ -114,6 +114,8 @@ export default function Support() {
   };
 
   const loadMessages = async () => {
+    if (!user?.id) return;
+    
     try {
       setLoading(true);
       
@@ -124,9 +126,15 @@ export default function Support() {
         .eq('recipient_id', user?.id)
         .limit(1);
 
+      if (checkError) {
+        console.error('Error checking messages:', checkError);
+      }
+
       // If no messages exist for this user, create demo messages
       if (existingMessages && existingMessages.length === 0) {
         await createDemoMessages();
+        // After creating, load will happen in createDemoMessages
+        return;
       }
 
       const { data, error } = await supabase
@@ -135,8 +143,12 @@ export default function Support() {
         .eq('recipient_id', user?.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setMessages((data as any) || []);
+      if (error) {
+        console.error('Error loading messages:', error);
+        toast.error("Erreur lors du chargement des messages");
+      } else {
+        setMessages((data as any) || []);
+      }
     } catch (error) {
       console.error('Error loading messages:', error);
       toast.error("Erreur lors du chargement des messages");
@@ -153,7 +165,13 @@ export default function Support() {
       
       if (error) {
         console.error('Error creating demo messages:', error);
+        return;
       }
+
+      console.log('Demo messages created:', data);
+      
+      // Reload messages after creation
+      await loadMessages();
     } catch (error) {
       console.error('Error in createDemoMessages:', error);
     }
