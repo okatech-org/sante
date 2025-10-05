@@ -106,10 +106,16 @@ export default function Profile() {
         .eq("id", user?.id)
         .maybeSingle();
 
+      console.log("Profile data from DB:", data);
+      console.log("User metadata:", user?.user_metadata);
+
       if (error) throw error;
 
       if (data) {
         const nameParts = data.full_name?.split(' ') || [];
+        console.log("Full name from DB:", data.full_name);
+        console.log("Name parts:", nameParts);
+        
         reset({
           first_name: nameParts[0] || "",
           last_name: nameParts.slice(1).join(' ') || "",
@@ -136,6 +142,7 @@ export default function Profile() {
           two_factor_enabled: data.two_factor_enabled ?? false,
         });
       } else {
+        console.log("No profile data found, using user metadata");
         reset({
           first_name: (user?.user_metadata as any)?.first_name || "",
           last_name: (user?.user_metadata as any)?.last_name || "",
