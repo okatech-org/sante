@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,7 @@ import { fr } from "date-fns/locale";
 
 interface Message {
   id: string;
+  sender_id: string | null;
   sender_name: string;
   sender_type: 'doctor' | 'hospital' | 'pharmacy' | 'laboratory' | 'admin' | 'system';
   subject: string;
@@ -61,6 +63,8 @@ interface Message {
   category: 'general' | 'appointment' | 'result' | 'prescription' | 'billing' | 'reminder' | 'alert';
   created_at: string;
   read_at: string | null;
+  allow_reply: boolean;
+  parent_message_id: string | null;
 }
 
 export default function Support() {
@@ -75,6 +79,8 @@ export default function Support() {
   const [selectedTab, setSelectedTab] = useState("all");
   const [loading, setLoading] = useState(true);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+  const [replyContent, setReplyContent] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -226,6 +232,50 @@ export default function Support() {
 
   const handleCloseDialog = () => {
     setIsMessageDialogOpen(false);
+    setReplyContent("");
+  };
+
+  const handleSendReply = async () => {
+    if (!replyContent.trim() || !selectedMessage || !user?.id) {
+      toast.error("Veuillez saisir un message");
+      return;
+    }
+
+    try {
+      setIsSendingReply(true);
+
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single();
+
+      const { error } = await supabase
+        .from('messages')
+        .insert({
+          sender_id: user.id,
+          recipient_id: selectedMessage.sender_id,
+          sender_name: profileData?.full_name || 'Patient',
+          sender_type: 'patient',
+          subject: `Re: ${selectedMessage.subject}`,
+          content: replyContent,
+          parent_message_id: selectedMessage.id,
+          category: selectedMessage.category,
+          priority: 'normal',
+          attachments: []
+        });
+
+      if (error) throw error;
+
+      toast.success("Réponse envoyée avec succès");
+      setReplyContent("");
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error sending reply:', error);
+      toast.error("Erreur lors de l'envoi de la réponse");
+    } finally {
+      setIsSendingReply(false);
+    }
   };
 
   const filteredMessages = messages.filter(message => {
@@ -789,6 +839,39 @@ export default function Support() {
                               {selectedMessage.attachments.map((attachment, index) => 
                                 renderAttachment(attachment, index)
                               )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Reply Section */}
+                        {selectedMessage.allow_reply && (
+                          <div className="mt-6 pt-6 border-t border-white/10">
+                            <h4 className="text-sm font-semibold text-white mb-3">Répondre</h4>
+                            <div className="space-y-3">
+                              <Textarea
+                                placeholder="Écrivez votre réponse..."
+                                value={replyContent}
+                                onChange={(e) => setReplyContent(e.target.value)}
+                                className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-gray-500 resize-none"
+                              />
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setReplyContent("")}
+                                  className="border-white/10 text-gray-400 hover:text-white hover:bg-white/5"
+                                >
+                                  Annuler
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={handleSendReply}
+                                  disabled={!replyContent.trim() || isSendingReply}
+                                  className="bg-gradient-to-r from-[#ffaa00] to-[#ff6600] text-white hover:opacity-90"
+                                >
+                                  {isSendingReply ? "Envoi..." : "Envoyer"}
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         )}

@@ -91,6 +91,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          allow_reply: boolean | null
           attachments: Json | null
           category: string | null
           content: string
@@ -98,6 +99,7 @@ export type Database = {
           id: string
           is_read: boolean | null
           is_starred: boolean | null
+          parent_message_id: string | null
           priority: string | null
           read_at: string | null
           recipient_id: string
@@ -107,6 +109,7 @@ export type Database = {
           subject: string
         }
         Insert: {
+          allow_reply?: boolean | null
           attachments?: Json | null
           category?: string | null
           content: string
@@ -114,6 +117,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           is_starred?: boolean | null
+          parent_message_id?: string | null
           priority?: string | null
           read_at?: string | null
           recipient_id: string
@@ -123,6 +127,7 @@ export type Database = {
           subject: string
         }
         Update: {
+          allow_reply?: boolean | null
           attachments?: Json | null
           category?: string | null
           content?: string
@@ -130,6 +135,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           is_starred?: boolean | null
+          parent_message_id?: string | null
           priority?: string | null
           read_at?: string | null
           recipient_id?: string
@@ -138,7 +144,15 @@ export type Database = {
           sender_type?: string
           subject?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_parent_message_id_fkey"
+            columns: ["parent_message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pharmacies: {
         Row: {
