@@ -1,14 +1,16 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function DashboardPatient() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const [activeMenu, setActiveMenu] = useState('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
@@ -53,8 +55,8 @@ export default function DashboardPatient() {
 
       {/* Container avec sidebar */}
       <div className="relative flex">
-        {/* Sidebar */}
-        <aside className="w-64 h-screen fixed left-0 top-0 p-4 z-40">
+        {/* Sidebar Desktop - cachée sur mobile */}
+        <aside className="hidden lg:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
           <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-8">
@@ -139,8 +141,115 @@ export default function DashboardPatient() {
           </div>
         </aside>
 
+        {/* Mobile Header avec menu hamburger */}
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                <Heart className="w-6 h-6 text-[#00d4ff]" />
+              </div>
+              <h1 className="text-xl font-bold text-white tracking-tight">
+                SANTE.GA
+              </h1>
+            </div>
+            
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                  <Menu className="w-6 h-6" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+                <div className="h-full flex flex-col p-6">
+                  {/* Logo */}
+                  <div className="mb-8 mt-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                        <Heart className="w-6 h-6 text-[#00d4ff]" />
+                      </div>
+                      <h1 className="text-2xl font-bold text-white tracking-tight">
+                        SANTE.GA
+                      </h1>
+                    </div>
+                    <p className="text-xs text-gray-500 ml-1">
+                      Votre santé à portée de clic
+                    </p>
+                  </div>
+
+                  {/* Menu Mobile */}
+                  <nav className="space-y-1 flex-1 overflow-y-auto">
+                    {menuItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeMenu === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setActiveMenu(item.id);
+                            if (item.path) navigate(item.path);
+                            setMobileMenuOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
+                            isActive
+                              ? 'bg-white/10 text-white'
+                              : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                                isActive ? '' : 'bg-white/5'
+                              }`}
+                              style={isActive ? {
+                                backgroundColor: `${item.color}20`
+                              } : {}}
+                            >
+                              <Icon 
+                                className="w-5 h-5" 
+                                style={{ color: isActive ? item.color : '' }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{item.label}</span>
+                          </div>
+                          {item.badge && (
+                            <span 
+                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                              style={{ backgroundColor: item.color }}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </nav>
+
+                  {/* User Profile Mobile */}
+                  <div className="mt-auto pt-6 border-t border-white/10">
+                    <div className="p-3 rounded-xl bg-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff] text-lg">
+                          {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-white truncate">
+                            {fullName}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            N° ••••7891
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+
         {/* Main Content */}
-        <main className="flex-1 ml-64 p-6 max-w-7xl">
+        <main className="flex-1 lg:ml-64 p-4 lg:p-6 max-w-7xl pt-20 lg:pt-6">
           {/* Header Card avec dégradé coloré comme "portée de clic" */}
           <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
             <h2 className="text-3xl font-bold mb-3">
