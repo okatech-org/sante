@@ -6,6 +6,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Generate a secure random password
+function generateSecurePassword(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => chars[byte % chars.length]).join('');
+}
+
 interface DemoAccount {
   email: string;
   password: string;
@@ -14,122 +22,105 @@ interface DemoAccount {
   phone: string;
 }
 
-const demoAccounts: DemoAccount[] = [
+const demoAccountTemplates: Omit<DemoAccount, 'password'>[] = [
   {
     email: "patient.demo@sante.ga",
-    password: "demo123",
     fullName: "Marie OKOME",
     role: "patient",
     phone: "+24101234567"
   },
   {
     email: "medecin.demo@sante.ga",
-    password: "demo123",
     fullName: "Dr. Pierre KOMBILA",
     role: "doctor",
     phone: "+24101234568"
   },
   {
     email: "specialiste.demo@sante.ga",
-    password: "demo123",
     fullName: "Dr. Sylvie NGUEMA",
     role: "specialist",
     phone: "+24101234569"
   },
   {
     email: "infirmiere.demo@sante.ga",
-    password: "demo123",
     fullName: "Sophie MBOUMBA",
     role: "nurse",
     phone: "+24101234570"
   },
   {
     email: "sagefemme.demo@sante.ga",
-    password: "demo123",
     fullName: "Grace ONDO",
     role: "midwife",
     phone: "+24101234571"
   },
   {
     email: "kine.demo@sante.ga",
-    password: "demo123",
     fullName: "Marc MOUNGUENGUI",
     role: "physiotherapist",
     phone: "+24101234572"
   },
   {
     email: "psychologue.demo@sante.ga",
-    password: "demo123",
     fullName: "Alice BOULINGUI",
     role: "psychologist",
     phone: "+24101234573"
   },
   {
     email: "ophtalmo.demo@sante.ga",
-    password: "demo123",
     fullName: "Dr. Joseph MENGUE",
     role: "ophthalmologist",
     phone: "+24101234574"
   },
   {
     email: "anesthesiste.demo@sante.ga",
-    password: "demo123",
     fullName: "Dr. François OVONO",
     role: "anesthesiologist",
     phone: "+24101234575"
   },
   {
     email: "pharmacien.demo@sante.ga",
-    password: "demo123",
     fullName: "Jean MOUSSAVOU",
     role: "pharmacist",
     phone: "+24101234576"
   },
   {
     email: "pharmacie.demo@sante.ga",
-    password: "demo123",
     fullName: "Pharmacie du Centre",
     role: "pharmacy",
     phone: "+24101234577"
   },
   {
     email: "labo.demo@sante.ga",
-    password: "demo123",
     fullName: "Claire NDONG",
     role: "laboratory_technician",
     phone: "+24101234578"
   },
   {
     email: "radiologue.demo@sante.ga",
-    password: "demo123",
     fullName: "Dr. Daniel IBINGA",
     role: "radiologist",
     phone: "+24101234579"
   },
   {
     email: "radiologie.demo@sante.ga",
-    password: "demo123",
     fullName: "Centre d'Imagerie Médicale",
     role: "radiology_center",
     phone: "+24101234580"
   },
   {
     email: "admin.demo@sante.ga",
-    password: "demo123",
     fullName: "Admin MBADINGA",
     role: "admin",
     phone: "+24101234581"
   },
   {
     email: "hopital.demo@sante.ga",
-    password: "demo123",
     fullName: "CHU Owendo",
     role: "hospital_admin",
     phone: "+24101234582"
   },
   {
     email: "clinique.demo@sante.ga",
-    password: "demo123",
     fullName: "Clinique Sainte-Marie",
     role: "clinic_admin",
     phone: "+24101234583"
@@ -142,6 +133,16 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -153,9 +154,57 @@ serve(async (req) => {
       }
     )
 
-    const results = []
+    // Verify the user's JWT token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
 
-    for (const account of demoAccounts) {
+    if (authError || !user) {
+      console.error('Invalid token:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if user has admin or super_admin role
+    const { data: roles, error: rolesError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+
+    if (rolesError) {
+      console.error('Error checking roles:', rolesError);
+      return new Response(
+        JSON.stringify({ error: 'Error verifying permissions' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const isAdmin = roles?.some(r => r.role === 'super_admin' || r.role === 'admin');
+    if (!isAdmin) {
+      console.error(`User ${user.id} attempted to create demo accounts without admin privileges`);
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Admin user ${user.email} is creating demo accounts`);
+
+    const results = []
+    const generatedPasswords: Record<string, string> = {};
+
+    // Generate demo accounts with secure random passwords
+    for (const template of demoAccountTemplates) {
+      const password = generateSecurePassword();
+      generatedPasswords[template.email] = password;
+      
+      const account: DemoAccount = {
+        ...template,
+        password
+      };
+      
+      console.log(`Creating account: ${account.email}`)
       console.log(`Creating account: ${account.email}`)
       
       // Try to create the user
@@ -249,8 +298,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Demo accounts processed',
-        results 
+        message: 'Demo accounts processed. Passwords have been generated securely.',
+        results,
+        passwords: generatedPasswords // Return generated passwords to admin
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

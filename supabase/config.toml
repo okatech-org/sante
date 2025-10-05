@@ -2,3 +2,6 @@ project_id = "bolidzesitkkfojdyuyg"
 
 [functions.bootstrap-superadmin]
 verify_jwt = true
+
+[functions.create-demo-accounts]
+verify_jwt = true
