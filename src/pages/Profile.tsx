@@ -581,7 +581,7 @@ export default function Profile() {
                                 Informations médicales
                               </h3>
                               
-                              <div className="grid grid-cols-2 gap-2 items-stretch">
+                              <div className="grid grid-cols-4 gap-2 items-stretch">
                                 <div className="space-y-1.5 w-full h-full flex flex-col">
                                   <Label htmlFor="weight_kg" className="text-gray-300 text-xs">
                                     Poids (kg)
@@ -609,12 +609,10 @@ export default function Profile() {
                                     className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
                                   />
                                 </div>
-                              </div>
 
-                              <div className="grid grid-cols-2 gap-2 items-stretch mt-2">
                                 <div className="space-y-1.5 w-full h-full flex flex-col">
                                   <Label htmlFor="blood_group" className="text-gray-300 text-xs">
-                                    Groupe sanguin
+                                    Groupe
                                   </Label>
                                   <Select 
                                     value={bloodGroupValue || ""}
