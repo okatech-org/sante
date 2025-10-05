@@ -85,12 +85,18 @@ export function AvatarUpload({ currentAvatarUrl, onAvatarUpdate }: AvatarUploadP
 
     setUploading(true);
     try {
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      // Get current session to ensure we have a valid auth token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (authError || !user) {
+      console.log('Session check:', { hasSession: !!session, sessionError });
+      
+      if (sessionError || !session?.user) {
+        console.error('Auth error:', sessionError);
         throw new Error("Vous devez être connecté pour uploader une photo");
       }
+
+      const user = session.user;
+      console.log('User ID:', user.id);
 
       // Convert preview URL to blob
       const response = await fetch(previewUrl);
