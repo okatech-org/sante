@@ -628,7 +628,7 @@ export default function Support() {
             {/* Messages Layout */}
             <div className="flex-1 flex overflow-hidden">
               {/* Messages List */}
-              <div className="w-full flex flex-col bg-[#1a1f2e]/30">
+              <div className="w-full flex flex-col">
                 <ScrollArea className="flex-1">
                   {loading ? (
                     <div className="flex items-center justify-center h-full py-12">
