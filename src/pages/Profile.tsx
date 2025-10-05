@@ -392,12 +392,12 @@ export default function Profile() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-72 p-3 lg:p-4 max-w-7xl pt-16 md:pt-4">
-          <div className="space-y-3">
+        <main className="flex-1 md:ml-72 p-3 lg:p-4 pt-16 md:pt-4 min-w-0">
+          <div className="space-y-3 max-w-6xl mx-auto">
             {/* Menu secondaire des sections */}
-            <div className="lg:col-span-4">
+            <div className="w-full overflow-hidden">
               <div className="rounded-xl backdrop-blur-xl p-2 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                <nav className="flex gap-1 overflow-x-auto scrollbar-hide">
+                <nav className="flex gap-1 overflow-x-auto scrollbar-hide pb-1">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -405,7 +405,7 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap text-sm ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap text-sm flex-shrink-0 ${
                           isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
                         }`}
                       >
@@ -468,25 +468,25 @@ export default function Profile() {
                         Informations personnelles
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="full_name" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             Nom complet *
                           </Label>
                           <Input
                             id="full_name"
                             {...register("full_name")}
                             placeholder="Votre nom complet"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                           {errors.full_name && (
                             <p className="text-[10px] sm:text-xs text-red-400">{errors.full_name.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="email" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             Email
                           </Label>
                           <Input
@@ -494,46 +494,46 @@ export default function Profile() {
                             type="email"
                             {...register("email")}
                             placeholder="votre@email.com"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                           {errors.email && (
                             <p className="text-[10px] sm:text-xs text-red-400">{errors.email.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="phone" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             Téléphone *
                           </Label>
                           <Input
                             id="phone"
                             {...register("phone")}
                             placeholder="+241 XX XX XX XX"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                           {errors.phone && (
                             <p className="text-[10px] sm:text-xs text-red-400">{errors.phone.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="birth_date" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             Date de naissance
                           </Label>
                           <Input
                             id="birth_date"
                             type="date"
                             {...register("birth_date")}
-                            className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                         </div>
 
-                        <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+                        <div className="space-y-1.5 sm:col-span-2 lg:col-span-1 w-full">
                           <Label htmlFor="gender" className="text-gray-300 text-xs sm:text-sm">Genre</Label>
                           <Select onValueChange={(value) => setValue("gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full">
                               <SelectValue placeholder="Sélectionnez votre genre" />
                             </SelectTrigger>
                             <SelectContent>
@@ -553,36 +553,36 @@ export default function Profile() {
                         Adresse
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="province" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
                             Province
                           </Label>
                           <Input
                             id="province"
                             {...register("province")}
                             placeholder="Ex: Estuaire"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 w-full">
                           <Label htmlFor="city" className="text-gray-300 text-xs sm:text-sm">Ville</Label>
                           <Input
                             id="city"
                             {...register("city")}
                             placeholder="Ex: Libreville"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                         </div>
 
-                        <div className="space-y-1.5 sm:col-span-2">
+                        <div className="space-y-1.5 sm:col-span-2 w-full">
                           <Label htmlFor="neighborhood" className="text-gray-300 text-xs sm:text-sm">Quartier</Label>
                           <Input
                             id="neighborhood"
                             {...register("neighborhood")}
                             placeholder="Ex: Nombakele"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
                           />
                         </div>
                       </div>
@@ -740,41 +740,41 @@ export default function Profile() {
                     Confidentialité
                   </h2>
                   <div className="space-y-2.5 sm:space-y-3">
-                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088]" />
-                        <h3 className="font-semibold text-white text-xs sm:text-sm">Visibilité du profil</h3>
+                      <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088] flex-shrink-0" />
+                          <h3 className="font-semibold text-white text-xs sm:text-sm">Visibilité du profil</h3>
+                        </div>
+                        <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Contrôlez qui peut voir vos informations personnelles</p>
+                        <Select 
+                          value={preferences.profile_visibility}
+                          onValueChange={(value) => updatePreferences({ profile_visibility: value })}
+                        >
+                          <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="public">
+                              <div className="flex items-center gap-2">
+                                <Eye className="h-3 w-3 flex-shrink-0" />
+                                <span className="truncate">Public - Visible par tous</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="private">
+                              <div className="flex items-center gap-2">
+                                <Lock className="h-3 w-3 flex-shrink-0" />
+                                <span className="truncate">Privé - Visible uniquement par vous</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="friends">
+                              <div className="flex items-center gap-2">
+                                <Shield className="h-3 w-3 flex-shrink-0" />
+                                <span className="truncate">Contacts - Visible par vos contacts</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Contrôlez qui peut voir vos informations personnelles</p>
-                      <Select 
-                        value={preferences.profile_visibility}
-                        onValueChange={(value) => updatePreferences({ profile_visibility: value })}
-                      >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="public">
-                            <div className="flex items-center gap-2">
-                              <Eye className="h-3 w-3" />
-                              Public - Visible par tous
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="private">
-                            <div className="flex items-center gap-2">
-                              <Lock className="h-3 w-3" />
-                              Privé - Visible uniquement par vous
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="friends">
-                            <div className="flex items-center gap-2">
-                              <Shield className="h-3 w-3" />
-                              Contacts - Visible par vos contacts
-                            </div>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
 
                     <div className="p-2.5 sm:p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                       <div className="flex items-start gap-2">
@@ -822,18 +822,18 @@ export default function Profile() {
                         value={preferences.language}
                         onValueChange={(value) => updatePreferences({ language: value })}
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="fr">
                             <div className="flex items-center gap-2">
-                              🇫🇷 Français
+                              <span>🇫🇷 Français</span>
                             </div>
                           </SelectItem>
                           <SelectItem value="en">
                             <div className="flex items-center gap-2">
-                              🇬🇧 English
+                              <span>🇬🇧 English</span>
                             </div>
                           </SelectItem>
                         </SelectContent>
@@ -842,7 +842,7 @@ export default function Profile() {
 
                     <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                       <div className="flex items-center gap-2 mb-2">
-                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088]" />
+                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088] flex-shrink-0" />
                         <h3 className="font-semibold text-white text-xs sm:text-sm">Thème de l'interface</h3>
                       </div>
                       <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Choisissez l'apparence qui vous convient</p>
@@ -850,7 +850,7 @@ export default function Profile() {
                         value={preferences.theme}
                         onValueChange={(value) => updatePreferences({ theme: value })}
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
