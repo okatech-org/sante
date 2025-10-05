@@ -360,7 +360,7 @@ export default function HealthProvidersMap() {
     <div className="h-[600px] w-full relative">
       {/* Filtres par type - Interface sur toute la largeur */}
       <div className="absolute bottom-4 left-4 right-4 z-[1000]">
-        <div className="bg-white/20 dark:bg-black/20 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
+        <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h3 className="text-xs font-bold text-foreground/80 dark:text-foreground/90 flex items-center gap-2 uppercase tracking-wide">
               <Layers className="h-3 w-3" />
