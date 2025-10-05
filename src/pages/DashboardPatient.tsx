@@ -291,22 +291,22 @@ export default function DashboardPatient() {
                   <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
                 </div>
 
-                {/* Poids */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
-                  <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
-                </div>
+                {/* Poids, Taille, Groupe sanguin - sur une même ligne */}
+                <div className="col-span-2 sm:col-span-3 grid grid-cols-3 gap-2 sm:gap-3">
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
+                    <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
+                  </div>
 
-                {/* Taille */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
-                  <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
-                </div>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
+                    <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
+                  </div>
 
-                {/* Groupe sanguin */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
-                  <p className="text-base sm:text-xl font-bold text-white">O+</p>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
+                    <p className="text-base sm:text-xl font-bold text-white">O+</p>
+                  </div>
                 </div>
 
                 {/* N° CNAMGS */}
