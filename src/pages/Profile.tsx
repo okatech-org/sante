@@ -486,22 +486,6 @@ export default function Profile() {
                           </div>
 
                           <div className="space-y-1.5 w-full">
-                            <Label htmlFor="phone" className="text-gray-300 text-xs flex items-center gap-1.5">
-                              <Phone className="h-3 w-3 flex-shrink-0" />
-                              Téléphone *
-                            </Label>
-                            <Input
-                              id="phone"
-                              {...register("phone")}
-                              placeholder="+241 XX XX XX XX"
-                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
-                            />
-                            {errors.phone && (
-                              <p className="text-[10px] text-red-400">{errors.phone.message}</p>
-                            )}
-                          </div>
-
-                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Calendar className="h-3 w-3 flex-shrink-0" />
                               Date de naissance
