@@ -57,8 +57,15 @@ export default function Profile() {
   });
 
   const genderValue = watch("gender");
+  const firstName = watch("first_name");
+  const lastName = watch("last_name");
+  const currentEmail = watch("email");
 
   const fullName = (user?.user_metadata as any)?.full_name || user?.email || "Utilisateur";
+  const displayFirstName = firstName || fullName.split(' ')[0] || "";
+  const displayLastName = lastName || fullName.split(' ').slice(1).join(' ') || "";
+  const displayFullName = `${displayFirstName} ${displayLastName}`.trim() || fullName;
+  const displayEmail = currentEmail || user?.email || "";
 
   const menuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
@@ -225,7 +232,7 @@ export default function Profile() {
     );
   }
 
-  const initials = fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+  const initials = displayFullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -461,13 +468,13 @@ export default function Profile() {
                       <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
                         <div className="mb-0.5">
                           <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
-                            {fullName.split(' ').slice(1).join(' ')}
+                            {displayLastName}
                           </h3>
                           <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
-                            {fullName.split(' ')[0]}
+                            {displayFirstName}
                           </h3>
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-400 truncate">{user?.email}</p>
+                        <p className="text-xs sm:text-sm text-gray-400 truncate">{displayEmail}</p>
                         <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Membre depuis {new Date().getFullYear()}</p>
                       </div>
                     </div>
