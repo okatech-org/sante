@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      consultations: {
+        Row: {
+          consultation_date: string
+          consultation_type: string
+          created_at: string
+          diagnosis: string | null
+          doctor_name: string
+          documents: Json | null
+          id: string
+          notes: string | null
+          reason: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consultation_date: string
+          consultation_type: string
+          created_at?: string
+          diagnosis?: string | null
+          doctor_name: string
+          documents?: Json | null
+          id?: string
+          notes?: string | null
+          reason: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consultation_date?: string
+          consultation_type?: string
+          created_at?: string
+          diagnosis?: string | null
+          doctor_name?: string
+          documents?: Json | null
+          id?: string
+          notes?: string | null
+          reason?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medical_history: {
+        Row: {
+          condition_name: string
+          created_at: string
+          diagnosed_date: string | null
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          condition_name: string
+          created_at?: string
+          diagnosed_date?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          condition_name?: string
+          created_at?: string
+          diagnosed_date?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_change_requests: {
         Row: {
           change_type: string
@@ -137,6 +212,48 @@ export type Database = {
           setting_value?: Json
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      treatments: {
+        Row: {
+          created_at: string
+          dosage: string
+          end_date: string | null
+          frequency: string
+          id: string
+          medication_name: string
+          notes: string | null
+          start_date: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dosage: string
+          end_date?: string | null
+          frequency: string
+          id?: string
+          medication_name: string
+          notes?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dosage?: string
+          end_date?: string | null
+          frequency?: string
+          id?: string
+          medication_name?: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

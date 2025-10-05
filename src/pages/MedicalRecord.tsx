@@ -3,9 +3,140 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, User, Heart, Activity, Pill, Download, Share2 } from "lucide-react";
+import { FileText, Calendar, User, Heart, Activity, Pill, Download, Share2, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { ConsultationDetailsModal } from "@/components/medical/ConsultationDetailsModal";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+
+interface MedicalHistory {
+  id: string;
+  condition_name: string;
+  diagnosed_date: string | null;
+  status: string;
+  notes: string | null;
+}
+
+interface Treatment {
+  id: string;
+  medication_name: string;
+  dosage: string;
+  frequency: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
+}
+
+interface Consultation {
+  id: string;
+  consultation_date: string;
+  consultation_type: string;
+  doctor_name: string;
+  reason: string;
+  diagnosis: string | null;
+  notes: string | null;
+  documents: any;
+}
 
 export default function MedicalRecord() {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [medicalHistory, setMedicalHistory] = useState<MedicalHistory[]>([]);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadMedicalData();
+    }
+  }, [user?.id]);
+
+  const loadMedicalData = async () => {
+    try {
+      setLoading(true);
+
+      // Load profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user!.id)
+        .single();
+      
+      if (profileData) setProfile(profileData);
+
+      // Load medical history
+      const { data: historyData, error: historyError } = await supabase
+        .from('medical_history')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('diagnosed_date', { ascending: false });
+
+      if (historyError) throw historyError;
+      setMedicalHistory(historyData || []);
+
+      // Load treatments
+      const { data: treatmentsData, error: treatmentsError } = await supabase
+        .from('treatments')
+        .select('*')
+        .eq('user_id', user!.id)
+        .eq('status', 'active')
+        .order('start_date', { ascending: false });
+
+      if (treatmentsError) throw treatmentsError;
+      setTreatments(treatmentsData || []);
+
+      // Load consultations
+      const { data: consultationsData, error: consultationsError } = await supabase
+        .from('consultations')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('consultation_date', { ascending: false });
+
+      if (consultationsError) throw consultationsError;
+      setConsultations(consultationsData || []);
+
+    } catch (error) {
+      console.error('Error loading medical data:', error);
+      toast.error("Erreur lors du chargement des données médicales");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <Badge variant="destructive">Actif</Badge>;
+      case 'chronic':
+        return <Badge>Chronique</Badge>;
+      case 'resolved':
+        return <Badge variant="outline">Résolu</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const handleViewConsultation = (consultation: Consultation) => {
+    setSelectedConsultation(consultation);
+    setModalOpen(true);
+  };
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -35,8 +166,8 @@ export default function MedicalRecord() {
                 <User className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Informations</p>
-                <p className="text-2xl font-bold">Patient</p>
+                <p className="text-sm text-muted-foreground">Patient</p>
+                <p className="text-2xl font-bold">{profile?.full_name || 'N/A'}</p>
               </div>
             </div>
           </Card>
@@ -48,7 +179,7 @@ export default function MedicalRecord() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Consultations</p>
-                <p className="text-2xl font-bold">24</p>
+                <p className="text-2xl font-bold">{consultations.length}</p>
               </div>
             </div>
           </Card>
@@ -59,8 +190,8 @@ export default function MedicalRecord() {
                 <FileText className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Documents</p>
-                <p className="text-2xl font-bold">156</p>
+                <p className="text-sm text-muted-foreground">Antécédents</p>
+                <p className="text-2xl font-bold">{medicalHistory.length}</p>
               </div>
             </div>
           </Card>
@@ -74,27 +205,25 @@ export default function MedicalRecord() {
             </div>
             <Separator className="mb-4" />
             <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Hypertension artérielle</p>
-                  <p className="text-sm text-muted-foreground">Diagnostiqué en 2018</p>
-                </div>
-                <Badge>Chronique</Badge>
-              </div>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Diabète type 2</p>
-                  <p className="text-sm text-muted-foreground">Diagnostiqué en 2020</p>
-                </div>
-                <Badge variant="destructive">Actif</Badge>
-              </div>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Allergie pénicilline</p>
-                  <p className="text-sm text-muted-foreground">Déclaré en 2015</p>
-                </div>
-                <Badge variant="outline">Allergie</Badge>
-              </div>
+              {medicalHistory.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Aucun antécédent médical enregistré
+                </p>
+              ) : (
+                medicalHistory.map((item) => (
+                  <div key={item.id} className="flex items-start justify-between">
+                    <div>
+                      <p className="font-medium">{item.condition_name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.diagnosed_date
+                          ? `Diagnostiqué le ${format(new Date(item.diagnosed_date), "dd/MM/yyyy", { locale: fr })}`
+                          : 'Date inconnue'}
+                      </p>
+                    </div>
+                    {getStatusBadge(item.status)}
+                  </div>
+                ))
+              )}
             </div>
           </Card>
 
@@ -105,27 +234,21 @@ export default function MedicalRecord() {
             </div>
             <Separator className="mb-4" />
             <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Lisinopril 10mg</p>
-                  <p className="text-sm text-muted-foreground">1 comprimé/jour le matin</p>
-                </div>
-                <Badge className="bg-green-600">Actif</Badge>
-              </div>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Metformine 500mg</p>
-                  <p className="text-sm text-muted-foreground">2 fois/jour aux repas</p>
-                </div>
-                <Badge className="bg-green-600">Actif</Badge>
-              </div>
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-medium">Aspirine 100mg</p>
-                  <p className="text-sm text-muted-foreground">1 comprimé/jour</p>
-                </div>
-                <Badge className="bg-green-600">Actif</Badge>
-              </div>
+              {treatments.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Aucun traitement en cours
+                </p>
+              ) : (
+                treatments.map((treatment) => (
+                  <div key={treatment.id} className="flex items-start justify-between">
+                    <div>
+                      <p className="font-medium">{treatment.medication_name} {treatment.dosage}</p>
+                      <p className="text-sm text-muted-foreground">{treatment.frequency}</p>
+                    </div>
+                    <Badge className="bg-green-600">Actif</Badge>
+                  </div>
+                ))
+              )}
             </div>
           </Card>
         </div>
@@ -137,31 +260,47 @@ export default function MedicalRecord() {
           </div>
           <Separator className="mb-4" />
           <div className="space-y-4">
-            {[
-              { date: "15/12/2024", type: "Consultation généraliste", medecin: "Dr. Mbina", motif: "Contrôle tension" },
-              { date: "03/11/2024", type: "Analyse de sang", medecin: "Laboratoire Biolab", motif: "Bilan diabète" },
-              { date: "20/10/2024", type: "Consultation cardiologie", medecin: "Dr. Ondo", motif: "ECG de contrôle" },
-              { date: "05/09/2024", type: "Consultation généraliste", medecin: "Dr. Nzamba", motif: "Renouvellement ordonnance" },
-            ].map((consultation, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">{consultation.date}</span>
-                    <Badge variant="outline">{consultation.type}</Badge>
+            {consultations.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                Aucune consultation enregistrée
+              </p>
+            ) : (
+              consultations.map((consultation) => (
+                <div
+                  key={consultation.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">
+                        {format(new Date(consultation.consultation_date), "dd/MM/yyyy", { locale: fr })}
+                      </span>
+                      <Badge variant="outline">{consultation.consultation_type}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{consultation.doctor_name}</p>
+                    <p className="text-sm mt-1">{consultation.reason}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">{consultation.medecin}</p>
-                  <p className="text-sm mt-1">{consultation.motif}</p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleViewConsultation(consultation)}
+                  >
+                    <FileText className="h-4 w-4 mr-1" />
+                    Voir
+                  </Button>
                 </div>
-                <Button variant="ghost" size="sm">
-                  <FileText className="h-4 w-4 mr-1" />
-                  Voir
-                </Button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
       </div>
+
+      <ConsultationDetailsModal
+        consultation={selectedConsultation}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+      />
     </MainLayout>
   );
 }
