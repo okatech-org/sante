@@ -6,10 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { 
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
   FileText, 
   Download, 
-  Share2, 
+  Share2,
+  Eye,
   Calendar, 
   Clock, 
   User, 
@@ -145,6 +147,7 @@ export default function Prescriptions() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('ordonnances');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [previewPrescription, setPreviewPrescription] = useState<Prescription | null>(null);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -517,8 +520,18 @@ export default function Prescriptions() {
                             <Button 
                               variant="ghost" 
                               size="sm"
+                              onClick={() => setPreviewPrescription(prescription)}
+                              className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
+                              title="Visualiser"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
                               onClick={() => handleShare(prescription.id)}
                               className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
+                              title="Partager"
                             >
                               <Share2 className="h-3.5 w-3.5" />
                             </Button>
@@ -527,6 +540,7 @@ export default function Prescriptions() {
                               size="sm"
                               onClick={() => handleDownload(prescription.id)}
                               className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
+                              title="Télécharger"
                             >
                               <Download className="h-3.5 w-3.5" />
                             </Button>
@@ -583,6 +597,90 @@ export default function Prescriptions() {
           </div>
         </main>
       </div>
+
+      {/* Modal de prévisualisation */}
+      <Dialog open={!!previewPrescription} onOpenChange={() => setPreviewPrescription(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#1a1f2e] border-white/10">
+          <DialogHeader>
+            <DialogTitle className="text-white">Aperçu de l'ordonnance</DialogTitle>
+          </DialogHeader>
+          
+          {previewPrescription && (
+            <div className="space-y-4">
+              {/* En-tête ordonnance */}
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="text-center mb-6 pb-4 border-b-2 border-gray-200">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-1">ORDONNANCE MÉDICALE</h2>
+                  <p className="text-sm text-gray-600">République Gabonaise - Ministère de la Santé</p>
+                </div>
+
+                {/* Informations médecin */}
+                <div className="mb-6">
+                  <p className="font-bold text-gray-800">{previewPrescription.doctor}</p>
+                  <p className="text-sm text-gray-600">{previewPrescription.specialty}</p>
+                  <p className="text-sm text-gray-600">N° d'ordre: {previewPrescription.id}</p>
+                </div>
+
+                {/* Date et validité */}
+                <div className="flex justify-between text-sm mb-6 pb-4 border-b border-gray-200">
+                  <p className="text-gray-600">Date: <span className="font-medium text-gray-800">{previewPrescription.date}</span></p>
+                  <p className="text-gray-600">Valable jusqu'au: <span className="font-medium text-gray-800">{previewPrescription.validUntil}</span></p>
+                </div>
+
+                {/* Médicaments */}
+                <div className="mb-6">
+                  <h3 className="font-bold text-gray-800 mb-3">MÉDICAMENTS PRESCRITS</h3>
+                  {previewPrescription.medications.map((med, index) => (
+                    <div key={index} className="mb-4 pl-4 border-l-2 border-[#ff0088]">
+                      <p className="font-semibold text-gray-800">{index + 1}. {med.name}</p>
+                      <p className="text-sm text-gray-600">Dosage: {med.dosage}</p>
+                      <p className="text-sm text-gray-600">Posologie: {med.frequency}</p>
+                      <p className="text-sm text-gray-600">Durée: {med.duration}</p>
+                      {med.instructions && (
+                        <p className="text-sm text-gray-600 italic mt-1">→ {med.instructions}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Notes */}
+                {previewPrescription.notes && (
+                  <div className="bg-blue-50 p-3 rounded border-l-4 border-blue-500 mb-6">
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Note du médecin:</span> {previewPrescription.notes}
+                    </p>
+                  </div>
+                )}
+
+                {/* Signature */}
+                <div className="mt-8 pt-4 border-t border-gray-200 text-right">
+                  <p className="text-sm text-gray-600 mb-4">Signature et cachet du médecin</p>
+                  <div className="h-16"></div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 justify-end">
+                <Button 
+                  variant="outline"
+                  onClick={() => handleShare(previewPrescription.id)}
+                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Partager
+                </Button>
+                <Button 
+                  onClick={() => handleDownload(previewPrescription.id)}
+                  className="bg-[#00d4ff] hover:bg-[#00d4ff]/80 text-white"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Télécharger
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
