@@ -54,9 +54,17 @@ Deno.serve(async (req) => {
 
     console.log('Creating demo messages for user:', user.id);
 
+    // Create fake sender IDs for professionals (these are example UUIDs for demo purposes)
+    const drJeanOndoId = '00000000-0000-0000-0000-000000000001';
+    const pharmacieCentraleId = '00000000-0000-0000-0000-000000000002';
+    const drMarieAkendengueId = '00000000-0000-0000-0000-000000000003';
+    const cliniqueKineId = '00000000-0000-0000-0000-000000000004';
+    const drSophieMoukagniId = '00000000-0000-0000-0000-000000000005';
+
     const demoMessages = [
       {
         recipient_id: user.id,
+        sender_id: drJeanOndoId,
         sender_name: "Dr. Jean ONDO",
         sender_type: "doctor",
         subject: "Résultats de vos analyses sanguines",
@@ -89,6 +97,7 @@ Deno.serve(async (req) => {
       },
       {
         recipient_id: user.id,
+        sender_id: pharmacieCentraleId,
         sender_name: "Pharmacie Centrale",
         sender_type: "pharmacy",
         subject: "Votre ordonnance est prête",
@@ -108,6 +117,7 @@ Deno.serve(async (req) => {
       },
       {
         recipient_id: user.id,
+        sender_id: drMarieAkendengueId,
         sender_name: "Dr. Marie AKENDENGUE",
         sender_type: "doctor",
         subject: "Résultats de votre radiographie pulmonaire",
@@ -136,6 +146,7 @@ Deno.serve(async (req) => {
       },
       {
         recipient_id: user.id,
+        sender_id: cliniqueKineId,
         sender_name: "Clinique de Kinésithérapie",
         sender_type: "hospital",
         subject: "Exercices de rééducation - Tutoriel vidéo",
@@ -193,6 +204,7 @@ Deno.serve(async (req) => {
       },
       {
         recipient_id: user.id,
+        sender_id: drSophieMoukagniId,
         sender_name: "Dr. Sophie MOUKAGNI",
         sender_type: "doctor",
         subject: "Suivi dermatologique - Photos d'évolution",
