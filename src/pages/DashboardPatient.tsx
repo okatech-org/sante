@@ -34,6 +34,46 @@ export default function DashboardPatient() {
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
 
+  // Charger les préférences depuis la base de données
+  useEffect(() => {
+    const loadPreferences = async () => {
+      if (user?.id) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('language, theme')
+          .eq('id', user.id)
+          .single();
+        
+        if (data) {
+          if (data.language) setLanguage(data.language);
+          if (data.theme) setTheme(data.theme);
+        }
+      }
+    };
+    loadPreferences();
+  }, [user?.id, setTheme]);
+
+  // Sauvegarder les préférences
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', user.id);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -214,21 +254,21 @@ export default function DashboardPatient() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
                     <DropdownMenuItem 
-                      onClick={() => setTheme('light')}
+                      onClick={() => handleThemeChange('light')}
                       className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       <Sun className="w-4 h-4 mr-2" />
                       Clair
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => setTheme('dark')}
+                      onClick={() => handleThemeChange('dark')}
                       className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       <Moon className="w-4 h-4 mr-2" />
                       Sombre
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => setTheme('system')}
+                      onClick={() => handleThemeChange('system')}
                       className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       <Laptop className="w-4 h-4 mr-2" />
@@ -247,13 +287,13 @@ export default function DashboardPatient() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
                     <DropdownMenuItem 
-                      onClick={() => setLanguage('fr')}
+                      onClick={() => handleLanguageChange('fr')}
                       className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       🇫🇷 Français
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => setLanguage('en')}
+                      onClick={() => handleLanguageChange('en')}
                       className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                     >
                       🇬🇧 English
@@ -370,21 +410,21 @@ export default function DashboardPatient() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
                           <DropdownMenuItem 
-                            onClick={() => setTheme('light')}
+                            onClick={() => handleThemeChange('light')}
                             className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                           >
                             <Sun className="w-4 h-4 mr-2" />
                             Clair
                           </DropdownMenuItem>
                           <DropdownMenuItem 
-                            onClick={() => setTheme('dark')}
+                            onClick={() => handleThemeChange('dark')}
                             className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                           >
                             <Moon className="w-4 h-4 mr-2" />
                             Sombre
                           </DropdownMenuItem>
                           <DropdownMenuItem 
-                            onClick={() => setTheme('system')}
+                            onClick={() => handleThemeChange('system')}
                             className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                           >
                             <Laptop className="w-4 h-4 mr-2" />
@@ -403,13 +443,13 @@ export default function DashboardPatient() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
                           <DropdownMenuItem 
-                            onClick={() => setLanguage('fr')}
+                            onClick={() => handleLanguageChange('fr')}
                             className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                           >
                             🇫🇷 Français
                           </DropdownMenuItem>
                           <DropdownMenuItem 
-                            onClick={() => setLanguage('en')}
+                            onClick={() => handleLanguageChange('en')}
                             className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
                           >
                             🇬🇧 English
