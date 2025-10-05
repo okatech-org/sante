@@ -343,24 +343,24 @@ export default function Landing() {
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-4xl z-[1001]">
               <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/50 dark:bg-white/10 hover:bg-muted/70 dark:hover:bg-white/15 transition-all duration-300 border border-transparent hover:border-primary/40 dark:hover:border-primary/60 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-white/60 dark:bg-white/15 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-primary/60 dark:hover:border-primary/70 group">
                     <Stethoscope className="w-4 h-4 mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.doctor') || "Médecin, spécialité..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground dark:placeholder:text-white/60 text-sm font-medium"
+                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-sm font-medium"
                     />
                   </div>
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/50 dark:bg-white/10 hover:bg-muted/70 dark:hover:bg-white/15 transition-all duration-300 border border-transparent hover:border-secondary/40 dark:hover:border-secondary/60 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-white/60 dark:bg-white/15 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-secondary/60 dark:hover:border-secondary/70 group">
                     <MapPin className="w-4 h-4 mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.location') || "Ville, quartier..."}
                       value={searchLocation}
                       onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground dark:placeholder:text-white/60 text-sm font-medium"
+                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-sm font-medium"
                     />
                   </div>
                   <Button 
