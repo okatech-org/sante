@@ -434,23 +434,23 @@ export default function DashboardPatient() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
+                    className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between p-3 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl gap-2"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
                       <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: `${reminder.color}20` }}
                       >
-                        <Icon className="w-6 h-6" style={{ color: reminder.color }} />
+                        <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: reminder.color }} />
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white mb-1">{reminder.event}</p>
-                        <p className="text-xs text-gray-400">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm font-semibold text-white mb-0.5 sm:mb-1 truncate">{reminder.event}</p>
+                        <p className="text-[10px] sm:text-xs text-gray-400 truncate">
                           {reminder.time} • {reminder.location}
                         </p>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-500" />
+                    <ChevronRight className="hidden sm:block w-5 h-5 text-gray-500 flex-shrink-0" />
                   </div>
                 );
               })}
