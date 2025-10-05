@@ -127,10 +127,10 @@ export default function DashboardPatient() {
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar Desktop et Tablette - caché uniquement sur mobile */}
-        <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+        <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
                 <h1 className="text-2xl font-bold text-white">
@@ -171,7 +171,7 @@ export default function DashboardPatient() {
             </nav>
 
             {/* User Profile */}
-            <div className="mt-auto pt-6 border-t border-white/10">
+            <div className="mt-auto pt-4 border-t border-white/10">
               <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
@@ -276,7 +276,7 @@ export default function DashboardPatient() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
+        <main className="flex-1 md:ml-72 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
           {/* Header Card avec dégradé coloré comme "portée de clic" */}
           <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6 relative">
             {/* Bouton Modifier en haut à droite */}
