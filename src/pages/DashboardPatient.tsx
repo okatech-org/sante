@@ -258,22 +258,64 @@ export default function DashboardPatient() {
         {/* Main Content */}
         <main className="flex-1 lg:ml-64 p-4 lg:p-6 max-w-7xl pt-20 lg:pt-6">
           {/* Header Card avec dégradé coloré comme "portée de clic" */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
-            <h2 className="text-3xl font-bold mb-3">
-              <span className="text-white">Bonjour </span>
-              <span 
-                className="bg-gradient-to-r from-[#00d4ff] via-[#00ff88] to-[#ffaa00] bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: 'linear-gradient(90deg, #00d4ff 0%, #00ff88 25%, #ffdd00 50%, #ff8800 75%, #ff0088 100%)'
-                }}
-              >
-                {userName}
-              </span>
-              <span className="text-white"> ! 👋</span>
-            </h2>
-            <p className="text-gray-400 text-base">
-              Bienvenue sur votre espace santé personnel. Gérez vos rendez-vous et consultations facilement.
-            </p>
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+              {/* Photo d'identité */}
+              <div className="flex-shrink-0 mx-auto sm:mx-0">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                  <div className="w-full h-full rounded-xl bg-[#1a1f2e] flex items-center justify-center">
+                    <span className="text-3xl sm:text-4xl font-bold text-white">
+                      {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Informations personnelles */}
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                {/* Nom complet - prend toute la largeur sur mobile */}
+                <div className="col-span-2 sm:col-span-3 bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Nom complet</p>
+                  <p className="text-sm sm:text-lg font-bold text-white truncate">{fullName}</p>
+                </div>
+
+                {/* Âge */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
+                  <p className="text-base sm:text-xl font-bold text-white">34 ans</p>
+                </div>
+
+                {/* Sexe */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
+                  <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
+                </div>
+
+                {/* Poids */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
+                  <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
+                </div>
+
+                {/* Taille */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
+                  <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
+                </div>
+
+                {/* Groupe sanguin */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
+                  <p className="text-base sm:text-xl font-bold text-white">O+</p>
+                </div>
+
+                {/* N° CNAMGS */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
+                  <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Quick Actions */}
