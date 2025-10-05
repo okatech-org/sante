@@ -1,9 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Menu, X } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Menu, X, Edit } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { EditProfileModal } from "@/components/profile/EditProfileModal";
+import { EditMedicalInfoModal } from "@/components/profile/EditMedicalInfoModal";
 import logoSante from "@/assets/logo_sante.png";
 export default function DashboardPatient() {
   const {
@@ -15,6 +18,8 @@ export default function DashboardPatient() {
   } = useTheme();
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [editMedicalOpen, setEditMedicalOpen] = useState(false);
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
   
@@ -254,7 +259,18 @@ export default function DashboardPatient() {
         {/* Main Content */}
         <main className="flex-1 md:ml-64 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
           {/* Header Card avec dégradé coloré comme "portée de clic" */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6 relative">
+            {/* Bouton Modifier en haut à droite */}
+            <Button
+              onClick={() => setEditProfileOpen(true)}
+              variant="outline"
+              size="sm"
+              className="absolute top-4 right-4 gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Modifier
+            </Button>
+
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               {/* Photo d'identité */}
               <div className="flex-shrink-0 mx-auto sm:mx-0">
@@ -292,7 +308,18 @@ export default function DashboardPatient() {
           </div>
 
           {/* Informations médicales - Bloc séparé */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6 relative">
+            {/* Bouton Modifier */}
+            <Button
+              onClick={() => setEditMedicalOpen(true)}
+              variant="outline"
+              size="sm"
+              className="absolute top-4 right-4 gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Modifier
+            </Button>
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
               <div className="bg-white/5 rounded-xl p-3">
                 <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
@@ -550,5 +577,30 @@ export default function DashboardPatient() {
           </div>
         </main>
       </div>
+
+      {/* Modals de modification */}
+      <EditProfileModal
+        isOpen={editProfileOpen}
+        onClose={() => setEditProfileOpen(false)}
+        userId={user?.id || ''}
+        currentData={{
+          firstName,
+          lastName,
+          birthDate: user?.user_metadata?.birth_date,
+          gender: user?.user_metadata?.gender
+        }}
+      />
+      
+      <EditMedicalInfoModal
+        isOpen={editMedicalOpen}
+        onClose={() => setEditMedicalOpen(false)}
+        userId={user?.id || ''}
+        currentData={{
+          weight: 78,
+          height: 1.75,
+          bloodGroup: 'O+',
+          cnamgsNumber: 'GA2384567891'
+        }}
+      />
     </div>;
 }

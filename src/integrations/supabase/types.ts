@@ -14,48 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
+      profile_change_requests: {
+        Row: {
+          change_type: string
+          created_at: string
+          current_data: Json
+          id: string
+          rejection_reason: string | null
+          requested_data: Json
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          change_type: string
+          created_at?: string
+          current_data: Json
+          id?: string
+          rejection_reason?: string | null
+          requested_data: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          change_type?: string
+          created_at?: string
+          current_data?: Json
+          id?: string
+          rejection_reason?: string | null
+          requested_data?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           birth_date: string | null
+          blood_group: string | null
           city: string | null
+          cnamgs_number: string | null
           created_at: string
           email: string | null
           full_name: string
           gender: string | null
+          height_m: number | null
           id: string
           neighborhood: string | null
           phone: string
           province: string | null
           updated_at: string
+          weight_kg: number | null
         }
         Insert: {
           avatar_url?: string | null
           birth_date?: string | null
+          blood_group?: string | null
           city?: string | null
+          cnamgs_number?: string | null
           created_at?: string
           email?: string | null
           full_name: string
           gender?: string | null
+          height_m?: number | null
           id: string
           neighborhood?: string | null
           phone: string
           province?: string | null
           updated_at?: string
+          weight_kg?: number | null
         }
         Update: {
           avatar_url?: string | null
           birth_date?: string | null
+          blood_group?: string | null
           city?: string | null
+          cnamgs_number?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
           gender?: string | null
+          height_m?: number | null
           id?: string
           neighborhood?: string | null
           phone?: string
           province?: string | null
           updated_at?: string
+          weight_kg?: number | null
         }
         Relationships: []
       }
