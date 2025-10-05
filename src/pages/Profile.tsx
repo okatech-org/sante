@@ -513,8 +513,8 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="grid grid-cols-2 gap-2 items-end">
+                            <div className="space-y-1.5 w-full min-h-[72px] flex flex-col">
                               <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
                                 <Calendar className="h-3 w-3 flex-shrink-0" />
                                 Date de naissance
@@ -527,8 +527,11 @@ export default function Profile() {
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full min-h-[72px]">
-                              <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
+                            <div className="space-y-1.5 w-full min-h-[72px] flex flex-col">
+                              <Label htmlFor="gender" className="text-gray-300 text-xs flex items-center gap-1.5">
+                                <User className="h-3 w-3 flex-shrink-0" />
+                                Genre
+                              </Label>
                               <Select onValueChange={(value) => setValue("gender", value)}>
                                 <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
                                   <SelectValue placeholder="Sélectionnez votre genre" />
