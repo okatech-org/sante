@@ -56,6 +56,8 @@ export default function Profile() {
     resolver: zodResolver(profileSchema),
   });
 
+  const genderValue = watch("gender");
+
   const fullName = (user?.user_metadata as any)?.full_name || user?.email || "Utilisateur";
 
   const menuItems = [
@@ -533,7 +535,7 @@ export default function Profile() {
                                   Genre
                                 </Label>
                                 <Select 
-                                  value={watch("gender")}
+                                  value={genderValue || ""}
                                   onValueChange={(value) => setValue("gender", value)}
                                 >
                                   <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
