@@ -48,7 +48,7 @@ const Register = () => {
                   <span className="text-white">SANTE</span>
                   <span className="text-cyan-400">.GA</span>
                 </span>
-                <span className="text-xs text-gray-400">Votre santé, notre priorité</span>
+                <span className="text-[10px] text-gray-400">Votre santé, notre priorité</span>
               </div>
             </Link>
 
