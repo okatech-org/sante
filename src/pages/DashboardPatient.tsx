@@ -179,11 +179,11 @@ export default function DashboardPatient() {
     loadAvatar();
   }, [user?.id]);
   const isDark = theme === 'dark';
-  return <div className="min-h-screen relative overflow-hidden">
-      {/* Background sombre avec étoiles comme la page d'accueil */}
-      <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div className="absolute inset-0 opacity-40" style={{
-        backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
+  return <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Background avec effet étoiles */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-20 dark:opacity-40" style={{
+        backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, hsl(var(--foreground) / 0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, hsl(var(--foreground) / 0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, hsl(var(--foreground) / 0.06) 1px, transparent 1px)',
         backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
         backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
       }} />
@@ -193,16 +193,16 @@ export default function DashboardPatient() {
       <div className="relative flex">
         {/* Sidebar Desktop et Tablette - caché uniquement sur mobile */}
         <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar/90 border border-sidebar-border shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-sidebar-foreground">
                   SANTE.GA
                 </h1>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Votre santé à portée de clic
               </p>
             </div>
@@ -215,9 +215,9 @@ export default function DashboardPatient() {
               return <button key={item.id} onClick={() => {
                 setActiveMenu(item.id);
                 if (item.path) navigate(item.path);
-              }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
+              }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-white/5'}`} style={isActive ? {
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-sidebar-accent/30'}`} style={isActive ? {
                     backgroundColor: `${item.color}20`
                   } : {}}>
                         <Icon className="w-5 h-5" style={{
@@ -236,13 +236,13 @@ export default function DashboardPatient() {
             </nav>
 
             {/* User Profile */}
-            <div className="mt-auto pt-4 border-t border-white/10 space-y-2">
+            <div className="mt-auto pt-4 border-t border-sidebar-border space-y-2">
               {/* Theme, Language & Logout Controls */}
               <div className="flex items-center gap-2 px-2">
                 {/* Theme Selector */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
                       {theme === 'dark' ? (
                         <Moon className="w-4 h-4" />
                       ) : theme === 'light' ? (
@@ -252,24 +252,24 @@ export default function DashboardPatient() {
                       )}
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
                     <DropdownMenuItem 
                       onClick={() => handleThemeChange('light')}
-                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
                     >
                       <Sun className="w-4 h-4 mr-2" />
                       Clair
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleThemeChange('dark')}
-                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
                     >
                       <Moon className="w-4 h-4 mr-2" />
                       Sombre
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleThemeChange('system')}
-                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
                     >
                       <Laptop className="w-4 h-4 mr-2" />
                       Système
@@ -280,21 +280,21 @@ export default function DashboardPatient() {
                 {/* Language Selector */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
                       <Globe className="w-4 h-4" />
                       <span className="text-xs font-medium">{language.toUpperCase()}</span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
                     <DropdownMenuItem 
                       onClick={() => handleLanguageChange('fr')}
-                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
                     >
                       🇫🇷 Français
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleLanguageChange('en')}
-                      className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
                     >
                       🇬🇧 English
                     </DropdownMenuItem>
@@ -312,16 +312,16 @@ export default function DashboardPatient() {
               </div>
 
               {/* User Profile Card */}
-              <div className="p-3 rounded-lg bg-white/5">
+              <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-medium text-sidebar-foreground truncate">
                       {fullName.split(' ')[0]} ast...
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       N° ••••7891
                     </p>
                   </div>
@@ -332,32 +332,32 @@ export default function DashboardPatient() {
         </aside>
 
         {/* Mobile Header avec menu hamburger - visible uniquement sur mobile */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-sidebar-border">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-white tracking-tight">
+              <h1 className="text-xl font-bold text-sidebar-foreground tracking-tight">
                 SANTE.GA
               </h1>
             </div>
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent/30 text-sidebar-foreground hover:bg-sidebar-accent transition-all">
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+              <SheetContent side="left" className="w-72 bg-sidebar border-sidebar-border p-0">
                 <div className="h-full flex flex-col p-6">
                   {/* Logo */}
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-white tracking-tight">
+                      <h1 className="text-2xl font-bold text-sidebar-foreground tracking-tight">
                         SANTE.GA
                       </h1>
                     </div>
-                    <p className="text-xs text-gray-500 ml-1">
+                    <p className="text-xs text-muted-foreground ml-1">
                       Votre santé à portée de clic
                     </p>
                   </div>
@@ -371,9 +371,9 @@ export default function DashboardPatient() {
                       setActiveMenu(item.id);
                       if (item.path) navigate(item.path);
                       setMobileMenuOpen(false);
-                    }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
+                    }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}`}>
                           <div className="flex items-center gap-3">
-                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-white/5'}`} style={isActive ? {
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-sidebar-accent/30'}`} style={isActive ? {
                           backgroundColor: `${item.color}20`
                         } : {}}>
                               <Icon className="w-5 h-5" style={{
@@ -392,13 +392,13 @@ export default function DashboardPatient() {
                   </nav>
 
                   {/* User Profile Mobile */}
-                  <div className="mt-auto pt-6 border-t border-white/10 space-y-2">
+                  <div className="mt-auto pt-6 border-t border-sidebar-border space-y-2">
                     {/* Theme, Language & Logout Controls Mobile */}
                     <div className="flex items-center gap-2 px-2">
                       {/* Theme Selector */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
                             {theme === 'dark' ? (
                               <Moon className="w-4 h-4" />
                             ) : theme === 'light' ? (
@@ -408,24 +408,24 @@ export default function DashboardPatient() {
                             )}
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                        <DropdownMenuContent align="end" className="bg-popover border-border">
                           <DropdownMenuItem 
                             onClick={() => handleThemeChange('light')}
-                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                            className="text-popover-foreground hover:bg-accent cursor-pointer"
                           >
                             <Sun className="w-4 h-4 mr-2" />
                             Clair
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => handleThemeChange('dark')}
-                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                            className="text-popover-foreground hover:bg-accent cursor-pointer"
                           >
                             <Moon className="w-4 h-4 mr-2" />
                             Sombre
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => handleThemeChange('system')}
-                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                            className="text-popover-foreground hover:bg-accent cursor-pointer"
                           >
                             <Laptop className="w-4 h-4 mr-2" />
                             Système
@@ -436,21 +436,21 @@ export default function DashboardPatient() {
                       {/* Language Selector */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-gray-300 hover:text-white">
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
                             <Globe className="w-4 h-4" />
                             <span className="text-xs font-medium">{language.toUpperCase()}</span>
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-[#1a1f2e] border-white/10">
+                        <DropdownMenuContent align="end" className="bg-popover border-border">
                           <DropdownMenuItem 
                             onClick={() => handleLanguageChange('fr')}
-                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                            className="text-popover-foreground hover:bg-accent cursor-pointer"
                           >
                             🇫🇷 Français
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => handleLanguageChange('en')}
-                            className="text-gray-300 hover:text-white hover:bg-white/10 cursor-pointer"
+                            className="text-popover-foreground hover:bg-accent cursor-pointer"
                           >
                             🇬🇧 English
                           </DropdownMenuItem>
@@ -468,16 +468,16 @@ export default function DashboardPatient() {
                     </div>
 
                     {/* User Profile Card Mobile */}
-                    <div className="p-3 rounded-xl bg-white/5">
+                    <div className="p-3 rounded-xl bg-sidebar-accent/30">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff] text-lg">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">
+                          <p className="text-sm font-semibold text-sidebar-foreground truncate">
                             {fullName}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             N° ••••7891
                           </p>
                         </div>
@@ -493,7 +493,7 @@ export default function DashboardPatient() {
         {/* Main Content */}
         <main className="flex-1 md:ml-72 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
           {/* Header Card avec dégradé coloré comme "portée de clic" */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6 relative">
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl mb-6 relative">
             {/* Bouton Modifier en haut à droite */}
             <Button
               onClick={() => setEditProfileOpen(true)}
@@ -509,7 +509,7 @@ export default function DashboardPatient() {
               {/* Photo d'identité */}
               <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
-                  <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-full rounded-full bg-card flex items-center justify-center overflow-hidden">
                     {avatarUrl ? (
                       <img 
                         src={avatarUrl} 
@@ -517,7 +517,7 @@ export default function DashboardPatient() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-4xl sm:text-5xl font-bold text-white">
+                      <span className="text-4xl sm:text-5xl font-bold text-card-foreground">
                         {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </span>
                     )}
@@ -532,21 +532,21 @@ export default function DashboardPatient() {
               {/* Informations personnelles */}
               <div className="flex-1 space-y-3 sm:space-y-4">
                 {/* Nom complet - Bloc séparé */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide">{lastName}</p>
-                  <p className="text-base sm:text-xl font-normal text-white mt-1">{firstName}</p>
+                <div className="bg-muted/30 rounded-xl p-3">
+                  <p className="text-xl sm:text-2xl font-bold text-foreground uppercase tracking-wide">{lastName}</p>
+                  <p className="text-base sm:text-xl font-normal text-foreground mt-1">{firstName}</p>
                 </div>
 
                 {/* Âge et Sexe - sur la même ligne */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
-                    <p className="text-base sm:text-xl font-bold text-white">34 ans</p>
+                  <div className="bg-muted/30 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Âge</p>
+                    <p className="text-base sm:text-xl font-bold text-foreground">34 ans</p>
                   </div>
 
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
-                    <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
+                  <div className="bg-muted/30 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Sexe</p>
+                    <p className="text-base sm:text-xl font-bold text-foreground">Masculin</p>
                   </div>
                 </div>
               </div>
@@ -554,7 +554,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Informations médicales - Bloc séparé */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6 relative">
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-2xl mb-6 relative">
             {/* Bouton Modifier */}
             <Button
               onClick={() => setEditMedicalOpen(true)}
@@ -567,61 +567,61 @@ export default function DashboardPatient() {
             </Button>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
-                <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Poids</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">78 kg</p>
               </div>
 
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
-                <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Taille</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">1.75 m</p>
               </div>
 
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
-                <p className="text-base sm:text-xl font-bold text-white">O+</p>
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Groupe</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">O+</p>
               </div>
 
-              <div className="bg-white/5 rounded-xl p-3">
-                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
-                <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">N° CNAMGS</p>
+                <p className="text-xs sm:text-sm font-bold text-foreground">GA2384567891</p>
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div onClick={() => navigate('/appointments')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl">
+            <div onClick={() => navigate('/appointments')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
                     <Calendar className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-xs sm:text-lg mb-0.5 sm:mb-2">Prendre RDV</h3>
+                    <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Prendre RDV</h3>
                     <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
                       Disponible aujourd'hui
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="hidden sm:block w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </div>
             </div>
 
-            <div onClick={() => navigate('/teleconsultation')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl">
+            <div onClick={() => navigate('/teleconsultation')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
                     <Video className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-xs sm:text-lg mb-0.5 sm:mb-2">Téléconsultation</h3>
+                    <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Téléconsultation</h3>
                     <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
                       Médecins disponibles
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="hidden sm:block w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </div>
             </div>
           </div>
@@ -629,38 +629,38 @@ export default function DashboardPatient() {
           {/* Health Overview - compact pour mobile */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
             {/* Prochain RDV */}
-            <div className="p-4 sm:p-6 rounded-xl bg-[#1a1f2e]/80 backdrop-blur-xl border border-white/10 shadow-xl">
+            <div className="p-4 sm:p-6 rounded-xl bg-card/80 backdrop-blur-xl border border-border shadow-xl">
               <div className="flex justify-between items-start mb-3 sm:mb-4">
                 <div className="flex-1">
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium">Prochain Rendez-vous</p>
-                  <p className="text-base sm:text-xl font-bold mt-0.5 sm:mt-1 text-white">Mardi 8 Oct - 14h30</p>
-                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Dr.Ékomi - Cardiologie</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Cabinet Montagne Sainte, Libreville</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-medium">Prochain Rendez-vous</p>
+                  <p className="text-base sm:text-xl font-bold mt-0.5 sm:mt-1 text-card-foreground">Mardi 8 Oct - 14h30</p>
+                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">Dr.Ékomi - Cardiologie</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">Cabinet Montagne Sainte, Libreville</p>
                 </div>
                 <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
                   <Stethoscope className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3 bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mt-2 sm:mt-3 bg-muted/20 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
                 <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#00d4ff]" />
                 <span>3.2 km de votre position</span>
               </div>
             </div>
 
             {/* Couverture CNAMGS */}
-            <div className="p-4 sm:p-6 rounded-xl bg-[#1a1f2e]/80 backdrop-blur-xl border border-white/10 shadow-xl">
+            <div className="p-4 sm:p-6 rounded-xl bg-card/80 backdrop-blur-xl border border-border shadow-xl">
               <div className="flex justify-between items-start mb-3 sm:mb-4">
                 <div className="flex-1">
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium">Couverture CNAMGS</p>
-                  <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">100%</p>
-                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Statut: Actif</p>
-                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">N° GA2384567891</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-medium">Couverture CNAMGS</p>
+                  <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-card-foreground">100%</p>
+                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">Statut: Actif</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">N° GA2384567891</p>
                 </div>
                 <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
                   <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
                 </div>
               </div>
-              <div className="h-2 sm:h-2.5 rounded-full overflow-hidden bg-white/10 mt-3 sm:mt-4">
+              <div className="h-2 sm:h-2.5 rounded-full overflow-hidden bg-muted/20 mt-3 sm:mt-4">
                 <div className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]" style={{
                 width: '0%'
               }} />
@@ -669,7 +669,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Stats Grid - compact pour mobile */}
-          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mb-6">
+          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl mb-6">
             <div className="grid grid-cols-4 gap-3 sm:gap-4">
               {[{
               label: 'Consultations',
@@ -705,9 +705,9 @@ export default function DashboardPatient() {
                     color: stat.color
                   }} />
                     </div>
-                    <p className="text-lg sm:text-3xl font-bold text-white mb-1">{stat.value}</p>
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium">{stat.label}</p>
-                    <p className="text-[9px] sm:text-xs text-gray-500 hidden sm:block">{stat.trend}</p>
+                    <p className="text-lg sm:text-3xl font-bold text-card-foreground mb-1">{stat.value}</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-[9px] sm:text-xs text-muted-foreground/70 hidden sm:block">{stat.trend}</p>
                   </div>;
             })}
             </div>
@@ -717,7 +717,7 @@ export default function DashboardPatient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Rappels & Alertes */}
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
                 Rappels & Alertes
               </h3>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -747,7 +747,7 @@ export default function DashboardPatient() {
                 color: '#ff0088'
               }].map((reminder, idx) => {
                 const Icon = reminder.icon;
-                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl">
+                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{
@@ -758,11 +758,11 @@ export default function DashboardPatient() {
                         }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] sm:text-xs font-medium text-gray-400 mb-0.5">{reminder.time}</p>
-                          <p className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2">{reminder.event}</p>
+                          <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-0.5">{reminder.time}</p>
+                          <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight line-clamp-2">{reminder.event}</p>
                         </div>
                       </div>
-                      <p className="text-[9px] sm:text-xs text-gray-500 ml-10 sm:ml-0 truncate">
+                      <p className="text-[9px] sm:text-xs text-muted-foreground/70 ml-10 sm:ml-0 truncate">
                         {reminder.location}
                       </p>
                     </div>
@@ -773,7 +773,7 @@ export default function DashboardPatient() {
 
             {/* Dossier Médical Récent */}
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
                 Dossier Médical Récent
               </h3>
               <div className="grid grid-cols-2 gap-2 sm:gap-4">
@@ -797,7 +797,7 @@ export default function DashboardPatient() {
                 color: '#0088ff'
               }].map((doc, idx) => {
                 const Icon = doc.icon;
-                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl">
+                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{
@@ -808,12 +808,12 @@ export default function DashboardPatient() {
                         }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2 mb-0.5">{doc.title}</p>
+                          <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight line-clamp-2 mb-0.5">{doc.title}</p>
                         </div>
                       </div>
                       <div className="ml-10 sm:ml-0 space-y-0.5">
-                        <p className="text-[10px] sm:text-xs text-gray-400 truncate">{doc.date}</p>
-                        <p className="text-[9px] sm:text-xs text-gray-500 truncate">{doc.type}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{doc.date}</p>
+                        <p className="text-[9px] sm:text-xs text-muted-foreground/70 truncate">{doc.type}</p>
                       </div>
                     </div>
                   </div>;
