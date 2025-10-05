@@ -366,7 +366,7 @@ export default function Landing() {
                   <Button 
                     onClick={handleSearch}
                     size="sm"
-                    className="w-full sm:w-auto px-6 py-2.5 text-sm shadow-xl hover:shadow-2xl hover-scale bg-gradient-to-r from-primary via-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
+                    className="w-full sm:w-auto px-6 py-2.5 text-sm shadow-xl hover:shadow-2xl hover-scale bg-blue-600 hover:bg-blue-700 transition-all duration-300"
                   >
                     <Search className="w-4 h-4 sm:mr-2" />
                     <span className="hidden sm:inline">{t('landing.search.button') || "Rechercher"}</span>
