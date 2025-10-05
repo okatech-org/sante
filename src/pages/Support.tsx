@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,10 @@ import {
   Building2,
   Trash2,
   RefreshCw,
-  Send
+  Send,
+  CheckSquare,
+  Square,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -86,6 +90,7 @@ export default function Support() {
   const [replyContent, setReplyContent] = useState("");
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [repliedMessageIds, setRepliedMessageIds] = useState<Set<string>>(new Set());
+  const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -371,6 +376,50 @@ export default function Support() {
     } catch (error) {
       console.error('Error restoring message:', error);
       toast.error("Erreur lors de la restauration du message");
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedMessageIds.size === 0) return;
+    
+    try {
+      const messageIds = Array.from(selectedMessageIds);
+      const { error } = await supabase
+        .from('messages')
+        .update({ deleted_at: new Date().toISOString() })
+        .in('id', messageIds);
+
+      if (error) throw error;
+
+      setMessages(messages.map(msg => 
+        selectedMessageIds.has(msg.id)
+          ? { ...msg, deleted_at: new Date().toISOString() }
+          : msg
+      ));
+
+      setSelectedMessageIds(new Set());
+      toast.success(`${messageIds.length} message(s) déplacé(s) vers la poubelle`);
+    } catch (error) {
+      console.error('Error bulk deleting messages:', error);
+      toast.error("Erreur lors de la suppression des messages");
+    }
+  };
+
+  const toggleMessageSelection = (messageId: string) => {
+    const newSelection = new Set(selectedMessageIds);
+    if (newSelection.has(messageId)) {
+      newSelection.delete(messageId);
+    } else {
+      newSelection.add(messageId);
+    }
+    setSelectedMessageIds(newSelection);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedMessageIds.size === filteredMessages.length) {
+      setSelectedMessageIds(new Set());
+    } else {
+      setSelectedMessageIds(new Set(filteredMessages.map(m => m.id)));
     }
   };
 
@@ -738,6 +787,41 @@ export default function Support() {
 
               {/* Search and Tabs */}
               <div className="flex flex-col gap-3">
+                {/* Bulk Actions Bar */}
+                {selectedMessageIds.size > 0 && (
+                  <div className="flex items-center justify-between bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg p-3">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={selectedMessageIds.size === filteredMessages.length}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                      <span className="text-sm text-white">
+                        {selectedMessageIds.size} message(s) sélectionné(s)
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedMessageIds(new Set())}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Annuler
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleBulkDelete}
+                        className="bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Supprimer
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   <Input
@@ -818,70 +902,94 @@ export default function Support() {
                       {filteredMessages.map((message) => (
                         <div
                           key={message.id}
-                          onClick={() => handleMessageClick(message)}
-                          className={`mx-3 my-3 p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 cursor-pointer transition-all active:bg-white/[0.15] ${
+                          className={`mx-3 my-3 p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all ${
                             selectedMessage?.id === message.id ? 'bg-white/10 border-white/20' : ''
                           } ${!message.is_read ? 'border-l-4 border-l-[#ffaa00]' : ''}`}
                         >
                           <div className="flex items-start gap-2 sm:gap-3">
-                            <div className={`p-2 rounded-lg flex-shrink-0 ${
-                              message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
-                              message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
-                              message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
-                              message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
-                              'bg-gray-500/10 text-gray-400'
-                            }`}>
-                              {getSenderIcon(message.sender_type)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between mb-1">
-                                <p className={`text-xs sm:text-sm font-medium truncate ${
-                                  !message.is_read ? 'text-white' : 'text-gray-300'
-                                }`}>
-                                  {message.sender_name}
-                                </p>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (message.deleted_at) {
-                                      handleRestoreMessage(message.id);
-                                    } else {
-                                      toggleStar(message.id, message.is_starred);
-                                    }
-                                  }}
-                                  className="ml-2 p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
-                                  title={message.deleted_at ? "Restaurer" : "Marquer comme favori"}
-                                >
-                                  {message.deleted_at ? (
-                                    <RefreshCw className="h-4 w-4 text-green-400" />
-                                  ) : (
-                                    <Star className={`h-4 w-4 ${
-                                      message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
-                                    }`} />
-                                  )}
-                                </button>
-                              </div>
-                              <p className={`text-xs sm:text-sm truncate mb-1 ${
-                                !message.is_read ? 'text-white font-medium' : 'text-gray-400'
+                            <Checkbox
+                              checked={selectedMessageIds.has(message.id)}
+                              onCheckedChange={() => toggleMessageSelection(message.id)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="mt-1 flex-shrink-0"
+                            />
+                            <div 
+                              onClick={() => handleMessageClick(message)}
+                              className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0 cursor-pointer"
+                            >
+                              <div className={`p-2 rounded-lg flex-shrink-0 ${
+                                message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
+                                message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
+                                message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
+                                message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
+                                'bg-gray-500/10 text-gray-400'
                               }`}>
-                                {message.subject}
-                              </p>
-                              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
-                                  {getCategoryLabel(message.category)}
-                                </Badge>
-                                {message.priority !== 'normal' && (
-                                  <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
-                                )}
-                                {message.attachments && message.attachments.length > 0 && (
-                                  <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
-                                    <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-                                    {message.attachments.length}
+                                {getSenderIcon(message.sender_type)}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                  <p className={`text-xs sm:text-sm font-medium truncate ${
+                                    !message.is_read ? 'text-white' : 'text-gray-300'
+                                  }`}>
+                                    {message.sender_name}
+                                  </p>
+                                  <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (message.deleted_at) {
+                                          handleRestoreMessage(message.id);
+                                        } else {
+                                          toggleStar(message.id, message.is_starred);
+                                        }
+                                      }}
+                                      className="p-1 hover:bg-white/5 rounded transition-colors"
+                                      title={message.deleted_at ? "Restaurer" : "Marquer comme favori"}
+                                    >
+                                      {message.deleted_at ? (
+                                        <RefreshCw className="h-4 w-4 text-green-400" />
+                                      ) : (
+                                        <Star className={`h-4 w-4 ${
+                                          message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                        }`} />
+                                      )}
+                                    </button>
+                                    {!message.deleted_at && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteMessage(message.id);
+                                        }}
+                                        className="p-1 hover:bg-white/5 rounded transition-colors"
+                                        title="Supprimer"
+                                      >
+                                        <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-400" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                                <p className={`text-xs sm:text-sm truncate mb-1 ${
+                                  !message.is_read ? 'text-white font-medium' : 'text-gray-400'
+                                }`}>
+                                  {message.subject}
+                                </p>
+                                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                  <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
+                                    {getCategoryLabel(message.category)}
                                   </Badge>
-                                )}
-                                <span className="text-[10px] sm:text-xs text-gray-500">
-                                  {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
-                                </span>
+                                  {message.priority !== 'normal' && (
+                                    <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
+                                  )}
+                                  {message.attachments && message.attachments.length > 0 && (
+                                    <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
+                                      <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
+                                      {message.attachments.length}
+                                    </Badge>
+                                  )}
+                                  <span className="text-[10px] sm:text-xs text-gray-500">
+                                    {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
