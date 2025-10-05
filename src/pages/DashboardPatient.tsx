@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Users, Clock } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -58,15 +58,15 @@ export default function DashboardPatient() {
           <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-8">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
-                  <Heart className="w-7 h-7 text-[#00d4ff]" />
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                  <Heart className="w-6 h-6 text-[#00d4ff]" />
                 </div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl font-bold text-white">
                   SANTE.GA
                 </h1>
               </div>
-              <p className="text-xs text-gray-500 ml-1">
+              <p className="text-xs text-gray-500">
                 Votre santé à portée de clic
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function DashboardPatient() {
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-[#00d4ff] text-white shadow-lg shadow-[#00d4ff]/20'
+                        ? 'bg-[#00d4ff]/20 text-[#00d4ff]'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
@@ -94,11 +94,7 @@ export default function DashboardPatient() {
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
-                        isActive 
-                          ? 'bg-white/20 text-white' 
-                          : 'bg-[#00d4ff] text-white'
-                      }`}>
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-[#00d4ff]/20 text-[#00d4ff]">
                         {item.badge}
                       </span>
                     )}
@@ -109,13 +105,13 @@ export default function DashboardPatient() {
 
             {/* User Profile */}
             <div className="mt-auto pt-6 border-t border-white/10">
-              <div className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+              <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-[#00d4ff] shadow-lg shadow-[#00d4ff]/30">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-white truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {fullName.split(' ')[0]} ast...
                     </p>
                     <p className="text-xs text-gray-500">
@@ -244,24 +240,25 @@ export default function DashboardPatient() {
           {/* Stats Grid - avec icônes colorées comme la page d'accueil */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: 'Médecins consultés', value: '8', icon: Users, trend: 'Cette année', color: '#00d4ff', bgColor: 'bg-[#00d4ff]/10' },
-              { label: 'Consultations', value: '12', icon: Activity, trend: 'Total', color: '#0088ff', bgColor: 'bg-[#0088ff]/10' },
-              { label: 'Prochain RDV', value: '2j', icon: Clock, trend: 'Mardi 8 Oct', color: '#ffaa00', bgColor: 'bg-[#ffaa00]/10' },
-              { label: 'Couverture santé', value: '100%', icon: Shield, trend: 'CNAMGS actif', color: '#ff0088', bgColor: 'bg-[#ff0088]/10' }
+              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
+              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
+              { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
+              { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
             ].map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <div
                   key={index}
-                  className="rounded-2xl backdrop-blur-xl p-6 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] group"
+                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
                 >
                   <div 
-                    className={`w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center ${stat.bgColor}`}
+                    className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center"
+                    style={{ backgroundColor: `${stat.color}20` }}
                   >
-                    <Icon className="w-8 h-8" style={{ color: stat.color }} />
+                    <Icon className="w-7 h-7" style={{ color: stat.color }} />
                   </div>
-                  <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
-                  <p className="text-sm mb-1 text-gray-300 font-medium">{stat.label}</p>
+                  <p className="text-xs mb-2 text-gray-400 font-medium">{stat.label}</p>
+                  <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
                   <p className="text-xs text-gray-500">{stat.trend}</p>
                 </div>
               );
