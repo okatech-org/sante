@@ -162,7 +162,9 @@ export default function CartographyMapView({
 
                   <div className="space-y-1 text-xs">
                     <p>📍 {provider.adresse_descriptive}</p>
-                    <p>📞 {provider.telephones[0]}</p>
+                    {provider.telephones && provider.telephones.length > 0 && (
+                      <p>📞 {provider.telephones[0]}</p>
+                    )}
                     {provider.distance && (
                       <p className="text-primary font-semibold">
                         📏 {provider.distance} km de vous
@@ -170,7 +172,7 @@ export default function CartographyMapView({
                     )}
                   </div>
 
-                  {provider.services.length > 0 && (
+                  {provider.services && provider.services.length > 0 && (
                     <div>
                       <p className="text-xs font-semibold mb-1">Services:</p>
                       <p className="text-xs text-muted-foreground">
@@ -181,15 +183,17 @@ export default function CartographyMapView({
                   )}
 
                   <div className="flex gap-2 pt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleCall(provider.telephones[0])}
-                      className="flex-1 text-xs"
-                    >
-                      <Phone className="h-3 w-3 mr-1" />
-                      Appeler
-                    </Button>
+                    {provider.telephones && provider.telephones.length > 0 && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleCall(provider.telephones[0])}
+                        className="flex-1 text-xs"
+                      >
+                        <Phone className="h-3 w-3 mr-1" />
+                        Appeler
+                      </Button>
+                    )}
                     {provider.coordonnees && (
                       <Button
                         size="sm"
