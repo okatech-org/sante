@@ -396,7 +396,7 @@ export default function HealthProvidersMap() {
 
       {/* Contrôles de zoom - Version compacte et transparente */}
       <div className="absolute top-32 left-4 z-[1000]">
-        <div className="bg-black/30 dark:bg-black/40 rounded-2xl shadow-lg border border-border/40 dark:border-white/20 p-2 flex flex-col gap-1 transition-all duration-300">
+        <div className="bg-white/80 dark:bg-black/40 rounded-2xl shadow-lg border border-border/60 dark:border-white/20 p-2 flex flex-col gap-1 transition-all duration-300">
           <Button
             size="icon"
             variant="ghost"
