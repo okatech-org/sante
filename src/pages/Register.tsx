@@ -139,18 +139,18 @@ const Register = () => {
       </nav>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
+      <div className="relative z-10 container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto">
           {/* Title Section */}
-          <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 mb-6">
+          <div className="text-center mb-10 animate-fade-in">
+            <div className="inline-flex items-center gap-2 mb-4">
               <ShieldCheck className="w-5 h-5 text-cyan-400" />
               <span className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-400 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
                 {t('landing.secure') || 'Plateforme E-Santé Nationale du Gabon'}
               </span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <span className="text-white">{t('register.title') || "Rejoignez-nous"} </span>
               <span className="bg-gradient-to-r from-cyan-400 via-green-400 via-yellow-400 via-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent">
                 dès aujourd'hui
@@ -163,25 +163,25 @@ const Register = () => {
           </div>
 
           {/* Registration Options - Glass Cards */}
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-12 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+          <div className="grid md:grid-cols-2 gap-6 mb-8 animate-scale-in" style={{ animationDelay: '0.3s' }}>
             {/* Patient Card */}
             <Card className="hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 hover:-translate-y-2 group border-gray-800/50 bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl relative overflow-hidden">
               {/* Gradient border effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-transparent to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg" />
               
-              <CardHeader className="text-center pb-4 relative z-10">
-                <div className="mx-auto mb-6 w-24 h-24 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/50">
-                  <UserRound className="w-12 h-12 text-white" />
+              <CardHeader className="text-center pb-3 relative z-10">
+                <div className="mx-auto mb-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/50">
+                  <UserRound className="w-10 h-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl mb-2 text-white">
+                <CardTitle className="text-2xl mb-2 text-white">
                   {t('register.patient.title') || "Patient"}
                 </CardTitle>
-                <CardDescription className="text-base text-gray-400">
+                <CardDescription className="text-sm text-gray-400">
                   {t('register.patient.description') || "Gérez votre santé facilement"}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 relative z-10">
-                <ul className="space-y-3 mb-6">
+              <CardContent className="space-y-3 relative z-10">
+                <ul className="space-y-2 mb-5">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-300">
@@ -208,7 +208,7 @@ const Register = () => {
                   </li>
                 </ul>
                 <Link to="/register/patient" className="block">
-                  <Button className="w-full shadow-lg hover:shadow-xl hover-scale bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-base py-6 group/btn border-0">
+                  <Button className="w-full shadow-lg hover:shadow-xl hover-scale bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white text-sm py-5 group/btn border-0">
                     {t('register.patient.cta') || "S'inscrire en tant que Patient"}
                     <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
@@ -221,19 +221,19 @@ const Register = () => {
               {/* Gradient border effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-transparent to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg" />
               
-              <CardHeader className="text-center pb-4 relative z-10">
-                <div className="mx-auto mb-6 w-24 h-24 rounded-2xl bg-gradient-to-br from-pink-500 via-orange-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-pink-500/50">
-                  <Stethoscope className="w-12 h-12 text-white" />
+              <CardHeader className="text-center pb-3 relative z-10">
+                <div className="mx-auto mb-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 via-orange-500 to-yellow-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-pink-500/50">
+                  <Stethoscope className="w-10 h-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl mb-2 text-white">
+                <CardTitle className="text-2xl mb-2 text-white">
                   {t('register.professional.title') || "Professionnel de Santé"}
                 </CardTitle>
-                <CardDescription className="text-base text-gray-400">
+                <CardDescription className="text-sm text-gray-400">
                   {t('register.professional.description') || "Développez votre activité médicale"}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 relative z-10">
-                <ul className="space-y-3 mb-6">
+              <CardContent className="space-y-3 relative z-10">
+                <ul className="space-y-2 mb-5">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
                     <span className="text-gray-300">
@@ -260,7 +260,7 @@ const Register = () => {
                   </li>
                 </ul>
                 <Link to="/register/pro" className="block">
-                  <Button className="w-full shadow-lg hover:shadow-xl hover-scale bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white text-base py-6 group/btn border-0">
+                  <Button className="w-full shadow-lg hover:shadow-xl hover-scale bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white text-sm py-5 group/btn border-0">
                     {t('register.professional.cta') || "S'inscrire en tant que Professionnel"}
                     <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
@@ -270,8 +270,8 @@ const Register = () => {
           </div>
 
           {/* Already have account link */}
-          <div className="text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <p className="text-gray-400 text-base sm:text-lg">
+          <div className="text-center mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <p className="text-gray-400 text-sm sm:text-base">
               {t('register.hasAccount') || "Vous avez déjà un compte ?"}{" "}
               <Link to="/login" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors underline">
                 {t('register.login') || "Se connecter"}
@@ -282,9 +282,9 @@ const Register = () => {
       </div>
 
       {/* Footer */}
-      <footer className="relative py-8 md:py-12 px-4 sm:px-6 lg:px-8 bg-black/30 backdrop-blur-sm border-t border-gray-800/50 z-10">
+      <footer className="relative py-6 md:py-8 px-4 sm:px-6 lg:px-8 bg-black/30 backdrop-blur-sm border-t border-gray-800/50 z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-4 gap-6 mb-6">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
                 <img 
