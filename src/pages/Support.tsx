@@ -423,6 +423,35 @@ export default function Support() {
     }
   };
 
+  const handleEmptyTrash = async () => {
+    const trashedMessages = messages.filter(msg => msg.deleted_at !== null);
+    
+    if (trashedMessages.length === 0) {
+      toast.info("La poubelle est déjà vide");
+      return;
+    }
+
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer définitivement ${trashedMessages.length} message(s) ? Cette action est irréversible.`)) {
+      return;
+    }
+
+    try {
+      const trashedIds = trashedMessages.map(msg => msg.id);
+      const { error } = await supabase
+        .from('messages')
+        .delete()
+        .in('id', trashedIds);
+
+      if (error) throw error;
+
+      setMessages(messages.filter(msg => !trashedIds.includes(msg.id)));
+      toast.success(`${trashedIds.length} message(s) supprimé(s) définitivement`);
+    } catch (error) {
+      console.error('Error emptying trash:', error);
+      toast.error("Erreur lors de la suppression définitive des messages");
+    }
+  };
+
   const filteredMessages = messages.filter(message => {
     const matchesSearch = 
       message.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -778,11 +807,24 @@ export default function Support() {
                     Communications des professionnels de santé
                   </p>
                 </div>
-                {unreadCount > 0 && (
-                  <Badge className="bg-[#ffaa00] text-white px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm flex-shrink-0">
-                    {unreadCount}
-                  </Badge>
-                )}
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <Badge className="bg-[#ffaa00] text-white px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm flex-shrink-0">
+                      {unreadCount}
+                    </Badge>
+                  )}
+                  {selectedTab === "trash" && messages.filter(m => m.deleted_at !== null).length > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleEmptyTrash}
+                      className="bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
+                    >
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                      Vider la poubelle
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* Search and Tabs */}
