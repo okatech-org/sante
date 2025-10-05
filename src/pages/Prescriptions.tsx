@@ -484,74 +484,74 @@ export default function Prescriptions() {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredPrescriptions.map((prescription) => (
-                      <Card key={prescription.id} className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
+                      <Card key={prescription.id} className="p-4 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
                         {/* En-tête */}
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-start gap-4">
-                            <div className="h-12 w-12 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-start gap-3 min-w-0 flex-1">
+                            <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
                               {getStatusIcon(prescription.status)}
                             </div>
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-lg text-white">{prescription.id}</h3>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
                                 {getStatusBadge(prescription.status)}
                               </div>
-                              <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
                                 <div className="flex items-center gap-1">
-                                  <User className="h-4 w-4" />
-                                  {prescription.doctor}
+                                  <User className="h-3 w-3" />
+                                  <span className="truncate">{prescription.doctor}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <Calendar className="h-4 w-4" />
+                                  <Calendar className="h-3 w-3" />
                                   {prescription.date}
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <Clock className="h-4 w-4" />
-                                  Valide jusqu'au {prescription.validUntil}
+                                  <Clock className="h-3 w-3" />
+                                  {prescription.validUntil}
                                 </div>
                               </div>
                             </div>
                           </div>
 
-                          <div className="flex gap-2">
+                          <div className="flex gap-1 flex-shrink-0 ml-2">
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleShare(prescription.id)}
-                              className="text-gray-400 hover:text-white hover:bg-white/10"
+                              className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
                             >
-                              <Share2 className="h-4 w-4" />
+                              <Share2 className="h-3.5 w-3.5" />
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleDownload(prescription.id)}
-                              className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10"
+                              className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
                             >
-                              <Download className="h-4 w-4" />
+                              <Download className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                         </div>
 
                         {/* Médicaments */}
-                        <div className="space-y-3 mb-4">
-                          <h4 className="font-semibold flex items-center gap-2 text-white">
-                            <Pill className="h-4 w-4 text-[#ff0088]" />
-                            Médicaments prescrits ({prescription.medications.length})
+                        <div className="space-y-2 mb-3">
+                          <h4 className="font-semibold flex items-center gap-2 text-sm text-white">
+                            <Pill className="h-3.5 w-3.5 text-[#ff0088]" />
+                            Médicaments ({prescription.medications.length})
                           </h4>
                           {prescription.medications.map((med, index) => (
                             <div 
                               key={index} 
-                              className="border border-white/10 rounded-lg p-4 bg-white/5"
+                              className="border border-white/10 rounded-lg p-3 bg-white/5"
                             >
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
-                                  <p className="font-semibold text-white">{med.name}</p>
-                                  <p className="text-sm text-gray-400">{med.dosage}</p>
+                              <div className="flex items-start justify-between mb-1.5">
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-semibold text-sm text-white truncate">{med.name}</p>
+                                  <p className="text-xs text-gray-400">{med.dosage}</p>
                                 </div>
-                                <Badge variant="outline" className="border-white/10 text-gray-300">{med.duration}</Badge>
+                                <Badge variant="outline" className="border-white/10 text-gray-300 text-xs ml-2 flex-shrink-0">{med.duration}</Badge>
                               </div>
-                              <div className="space-y-1 text-sm">
+                              <div className="space-y-0.5 text-xs">
                                 <p className="text-gray-300"><span className="font-medium">Posologie:</span> {med.frequency}</p>
                                 {med.instructions && (
                                   <p className="text-gray-400">
@@ -566,9 +566,9 @@ export default function Prescriptions() {
 
                         {/* Notes */}
                         {prescription.notes && (
-                          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                            <p className="text-sm text-gray-300">
-                              <span className="font-semibold text-white">Note du médecin:</span>{" "}
+                          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                            <p className="text-xs text-gray-300">
+                              <span className="font-semibold text-white">Note:</span>{" "}
                               {prescription.notes}
                             </p>
                           </div>
