@@ -459,10 +459,10 @@ export default function Profile() {
                       <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
                         <div className="mb-0.5">
                           <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
-                            {fullName.split(' ')[0]}
+                            {fullName.split(' ').slice(1).join(' ')}
                           </h3>
                           <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
-                            {fullName.split(' ').slice(1).join(' ')}
+                            {fullName.split(' ')[0]}
                           </h3>
                         </div>
                         <p className="text-xs sm:text-sm text-gray-400 truncate">{user?.email}</p>
