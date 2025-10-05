@@ -39,14 +39,23 @@ export default function DashboardPatient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background sombre */}
-      <div className="fixed inset-0 bg-[#1a1d29] -z-10" />
+      {/* Background sombre avec étoiles comme la page d'accueil */}
+      <div className="fixed inset-0 bg-[#0f1419] -z-10">
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
+            backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
+          }}
+        />
+      </div>
 
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar */}
         <aside className="w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#2a2d3a]/80 border border-white/10 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
@@ -117,11 +126,16 @@ export default function DashboardPatient() {
 
         {/* Main Content */}
         <main className="flex-1 ml-64 p-6 max-w-7xl">
-          {/* Header Card */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
+          {/* Header Card avec dégradé coloré comme "portée de clic" */}
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
             <h2 className="text-3xl font-bold mb-3">
               <span className="text-white">Bonjour </span>
-              <span className="text-[#00d4ff]">
+              <span 
+                className="bg-gradient-to-r from-[#00d4ff] via-[#00ff88] to-[#ffaa00] bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #00d4ff 0%, #00ff88 25%, #ffdd00 50%, #ff8800 75%, #ff0088 100%)'
+                }}
+              >
                 {userName}
               </span>
               <span className="text-white"> ! 👋</span>
@@ -135,7 +149,7 @@ export default function DashboardPatient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div
               onClick={() => navigate('/appointments')}
-              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#2a2d3a]/60 border border-white/10 hover:bg-[#2a2d3a]/80 shadow-xl"
+              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -155,7 +169,7 @@ export default function DashboardPatient() {
 
             <div
               onClick={() => navigate('/teleconsultation')}
-              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#2a2d3a]/60 border border-white/10 hover:bg-[#2a2d3a]/80 shadow-xl"
+              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -175,7 +189,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Health Overview */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
             <h3 className="text-xl font-semibold mb-6 text-white">
               Aperçu de votre Santé
             </h3>
@@ -223,22 +237,25 @@ export default function DashboardPatient() {
             </div>
           </div>
 
-          {/* Stats Grid */}
+          {/* Stats Grid - avec icônes colorées comme la page d'accueil */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année' },
-              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours' },
-              { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi' },
-              { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026' }
+              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
+              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
+              { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
+              { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
             ].map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <div
                   key={index}
-                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#2a2d3a]/60 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
+                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
                 >
-                  <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-[#00d4ff]/20 flex items-center justify-center">
-                    <Icon className="w-7 h-7 text-[#00d4ff]" />
+                  <div 
+                    className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center"
+                    style={{ backgroundColor: `${stat.color}20` }}
+                  >
+                    <Icon className="w-7 h-7" style={{ color: stat.color }} />
                   </div>
                   <p className="text-xs mb-2 text-gray-400 font-medium">{stat.label}</p>
                   <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
@@ -249,7 +266,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Rappels & Alertes */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
             <h3 className="text-xl font-semibold mb-6 text-white">
               Rappels & Alertes
             </h3>
@@ -306,7 +323,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Dossier Médical Récent */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-white">
                 Dossier Médical Récent
