@@ -199,19 +199,19 @@ export default function ForProfessionals() {
                 <img 
                   src={benefit.image} 
                   alt={benefit.title}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover brightness-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 
                 <div className="relative z-10 p-6 flex flex-col justify-end h-full">
-                  <div className="bg-card/90 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-border/50">
+                  <div className="bg-white/85 dark:bg-black/75 rounded-xl p-4 shadow-xl border border-border/40 dark:border-white/20">
                     <div className="flex items-start gap-3 mb-3">
                       <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <benefit.icon className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="text-lg mb-1">{benefit.title}</CardTitle>
-                        <CardDescription className="text-xs">{benefit.description}</CardDescription>
+                        <CardTitle className="text-lg mb-1 text-foreground dark:text-white">{benefit.title}</CardTitle>
+                        <CardDescription className="text-xs text-foreground/80 dark:text-white/80">{benefit.description}</CardDescription>
                       </div>
                     </div>
                     
@@ -219,7 +219,7 @@ export default function ForProfessionals() {
                       {benefit.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-xs">
                           <div className="w-1 h-1 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                          <span className="text-muted-foreground">{feature}</span>
+                          <span className="text-foreground/70 dark:text-white/70">{feature}</span>
                         </li>
                       ))}
                     </ul>
