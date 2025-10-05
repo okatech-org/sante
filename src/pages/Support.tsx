@@ -640,12 +640,12 @@ export default function Support() {
                       <p className="text-gray-400">Aucun message</p>
                     </div>
                   ) : (
-                    <div className="space-y-3 px-3 pt-3">
+                    <>
                       {filteredMessages.map((message) => (
                         <div
                           key={message.id}
                           onClick={() => handleMessageClick(message)}
-                          className={`p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 cursor-pointer transition-all active:bg-white/[0.15] ${
+                          className={`mx-3 my-3 p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 cursor-pointer transition-all active:bg-white/[0.15] ${
                             selectedMessage?.id === message.id ? 'bg-white/10 border-white/20' : ''
                           } ${!message.is_read ? 'border-l-4 border-l-[#ffaa00]' : ''}`}
                         >
@@ -704,7 +704,7 @@ export default function Support() {
                           </div>
                         </div>
                       ))}
-                    </div>
+                    </>
                   )}
                 </ScrollArea>
               </div>
