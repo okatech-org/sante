@@ -52,7 +52,7 @@ export default function Profile() {
     two_factor_enabled: false,
   });
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProfileFormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
   });
 
@@ -528,8 +528,14 @@ export default function Profile() {
                               </div>
 
                               <div className="space-y-1.5 w-full h-full flex flex-col">
-                                <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
-                                <Select onValueChange={(value) => setValue("gender", value)}>
+                                <Label htmlFor="gender" className="text-gray-300 text-xs flex items-center gap-1.5">
+                                  <User className="h-3 w-3 flex-shrink-0" />
+                                  Genre
+                                </Label>
+                                <Select 
+                                  value={watch("gender")}
+                                  onValueChange={(value) => setValue("gender", value)}
+                                >
                                   <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
                                     <SelectValue placeholder="Sélectionnez votre genre" />
                                   </SelectTrigger>
@@ -552,28 +558,36 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-2 flex-1">
                           <div className="space-y-1.5 w-full">
-                            <Label htmlFor="contact_email" className="text-gray-300 text-xs flex items-center gap-1.5">
+                            <Label htmlFor="email" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Mail className="h-3 w-3 flex-shrink-0" />
                               Email
                             </Label>
                             <Input
-                              id="contact_email"
+                              id="email"
                               type="email"
-                              defaultValue="iasted@me.com"
+                              {...register("email")}
+                              placeholder="exemple@email.com"
                               className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
                             />
+                            {errors.email && (
+                              <p className="text-[10px] text-red-400">{errors.email.message}</p>
+                            )}
                           </div>
 
                           <div className="space-y-1.5 w-full">
-                            <Label htmlFor="contact_phone" className="text-gray-300 text-xs flex items-center gap-1.5">
+                            <Label htmlFor="phone" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Phone className="h-3 w-3 flex-shrink-0" />
                               Téléphone *
                             </Label>
                             <Input
-                              id="contact_phone"
-                              defaultValue="+24111763101"
+                              id="phone"
+                              {...register("phone")}
+                              placeholder="+241 XX XX XX XX"
                               className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
                             />
+                            {errors.phone && (
+                              <p className="text-[10px] text-red-400">{errors.phone.message}</p>
+                            )}
                           </div>
 
                             <div className="grid grid-cols-2 gap-2 items-stretch">
