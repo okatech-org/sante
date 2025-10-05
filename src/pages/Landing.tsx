@@ -322,7 +322,7 @@ export default function Landing() {
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-none sm:leading-tight text-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
               {t('landing.hero.title') || "Votre santé à"}
-              <span className="block mt-2 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
+              <span className="block sm:inline mt-2 sm:mt-0 sm:ml-3 bg-gradient-to-r from-secondary via-warning to-accent bg-clip-text text-transparent animate-scale-in" style={{ animationDelay: '0.2s' }}>
                 {t('landing.hero.titleHighlight') || "portée de clic"}
               </span>
             </h1>
