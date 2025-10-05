@@ -35,18 +35,34 @@ export function Header() {
 
         {/* Navigation Desktop */}
         <nav className="hidden md:flex items-center gap-6">
-          <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors">
-            Services
-          </a>
-          <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
-            À propos
-          </a>
-          <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors">
-            Professionnels
-          </a>
-          <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
-            Sensibilisation
-          </Link>
+          {user ? (
+            <>
+              <Link to="/dashboard/patient" className="text-sm font-medium hover:text-primary transition-colors">
+                Tableau de bord
+              </Link>
+              <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors">
+                Rendez-vous
+              </Link>
+              <Link to="/profile" className="text-sm font-medium hover:text-primary transition-colors">
+                Profil
+              </Link>
+            </>
+          ) : (
+            <>
+              <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors">
+                Services
+              </a>
+              <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
+                À propos
+              </a>
+              <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors">
+                Professionnels
+              </a>
+              <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
+                Sensibilisation
+              </Link>
+            </>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -88,18 +104,34 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <nav className="flex flex-col gap-4 mt-8">
-                <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  Services
-                </a>
-                <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  À propos
-                </a>
-                <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  Professionnels
-                </a>
-                <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
-                  Sensibilisation
-                </Link>
+                {user ? (
+                  <>
+                    <Link to="/dashboard/patient" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Tableau de bord
+                    </Link>
+                    <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Rendez-vous
+                    </Link>
+                    <Link to="/profile" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Profil
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <a href="/#services" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Services
+                    </a>
+                    <a href="/#about" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      À propos
+                    </a>
+                    <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Professionnels
+                    </a>
+                    <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Sensibilisation
+                    </Link>
+                  </>
+                )}
                 
                 <div className="border-t pt-4 mt-4 flex flex-col gap-2">
                   {user ? (
