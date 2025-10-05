@@ -367,7 +367,7 @@ export default function HealthProvidersMap() {
               <span className="hidden sm:inline">Filtrer par type</span>
               <span className="sm:hidden">Filtres</span>
             </h3>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            <div className="flex overflow-x-auto gap-1.5 sm:gap-2 scrollbar-hide flex-nowrap w-full">
               <Button
                 size="sm"
                 variant={selectedType === null ? "default" : "outline"}
@@ -385,7 +385,7 @@ export default function HealthProvidersMap() {
                   className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg flex items-center gap-1 sm:gap-1.5 font-medium"
                   title={type.label}
                 >
-                  <span className="text-sm sm:text-base">{type.icon}</span>
+                  <span className="text-xs sm:text-base">{type.icon}</span>
                   <span className="hidden sm:inline">{type.label}</span>
                 </Button>
               ))}
