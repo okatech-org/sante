@@ -58,15 +58,15 @@ export default function DashboardPatient() {
           <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-8">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
-                  <Heart className="w-6 h-6 text-[#00d4ff]" />
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                  <Heart className="w-7 h-7 text-[#00d4ff]" />
                 </div>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold text-white tracking-tight">
                   SANTE.GA
                 </h1>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 ml-1">
                 Votre santé à portée de clic
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function DashboardPatient() {
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-[#00d4ff]/20 text-[#00d4ff]'
+                        ? 'bg-[#00d4ff] text-white shadow-lg shadow-[#00d4ff]/20'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
@@ -94,7 +94,11 @@ export default function DashboardPatient() {
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="px-2 py-0.5 text-xs rounded-full bg-[#00d4ff]/20 text-[#00d4ff]">
+                      <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
+                        isActive 
+                          ? 'bg-white/20 text-white' 
+                          : 'bg-[#00d4ff] text-white'
+                      }`}>
                         {item.badge}
                       </span>
                     )}
@@ -105,13 +109,13 @@ export default function DashboardPatient() {
 
             {/* User Profile */}
             <div className="mt-auto pt-6 border-t border-white/10">
-              <div className="p-3 rounded-lg bg-white/5">
+              <div className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-[#00d4ff] shadow-lg shadow-[#00d4ff]/30">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-semibold text-white truncate">
                       {fullName.split(' ')[0]} ast...
                     </p>
                     <p className="text-xs text-gray-500">
