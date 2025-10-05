@@ -525,7 +525,7 @@ export default function Prescriptions() {
                             </div>
                           </div>
 
-                          <div className="flex gap-1 flex-shrink-0 ml-2 lg:hidden">
+                          <div className="flex gap-1 flex-shrink-0 ml-2">
                             <Button 
                               variant="ghost" 
                               size="sm"
