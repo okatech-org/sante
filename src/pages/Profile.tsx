@@ -481,7 +481,7 @@ export default function Profile() {
                           Informations personnelles
                         </h2>
                         <div className="space-y-2 flex-1">
-                          <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="first_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
                               Prénom *
@@ -497,7 +497,7 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="last_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
                               Nom *
@@ -513,8 +513,8 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2 items-end">
-                            <div className="space-y-1.5 w-full min-h-[72px] flex flex-col">
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1.5 w-full">
                               <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
                                 <Calendar className="h-3 w-3 flex-shrink-0" />
                                 Date de naissance
@@ -527,11 +527,8 @@ export default function Profile() {
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full min-h-[72px] flex flex-col">
-                              <Label htmlFor="gender" className="text-gray-300 text-xs flex items-center gap-1.5">
-                                <User className="h-3 w-3 flex-shrink-0" />
-                                Genre
-                              </Label>
+                            <div className="space-y-1.5 w-full">
+                              <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
                               <Select onValueChange={(value) => setValue("gender", value)}>
                                 <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
                                   <SelectValue placeholder="Sélectionnez votre genre" />
@@ -554,7 +551,7 @@ export default function Profile() {
                           Adresse
                         </h2>
                         <div className="space-y-2 flex-1">
-                          <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="contact_email" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Mail className="h-3 w-3 flex-shrink-0" />
                               Email
@@ -567,7 +564,7 @@ export default function Profile() {
                             />
                           </div>
 
-                          <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="contact_phone" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Phone className="h-3 w-3 flex-shrink-0" />
                               Téléphone *
@@ -580,7 +577,7 @@ export default function Profile() {
                           </div>
 
                           <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1.5 w-full min-h-[72px]">
+                            <div className="space-y-1.5 w-full">
                               <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
                                 <MapPin className="h-3 w-3 flex-shrink-0" />
                                 Province
@@ -593,7 +590,7 @@ export default function Profile() {
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full min-h-[72px]">
+                            <div className="space-y-1.5 w-full">
                               <Label htmlFor="city" className="text-gray-300 text-xs">Ville</Label>
                               <Input
                                 id="city"
@@ -604,7 +601,7 @@ export default function Profile() {
                             </div>
                           </div>
 
-                          <div className="space-y-1.5 w-full min-h-[72px]">
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="neighborhood" className="text-gray-300 text-xs">Quartier</Label>
                             <Input
                               id="neighborhood"
