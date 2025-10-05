@@ -28,7 +28,7 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
   if (requiredRoles && requiredRoles.length > 0) {
     const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
     if (!hasRequiredRole) {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to="/dashboard/patient" replace />;
     }
   }
 

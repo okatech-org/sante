@@ -19,7 +19,6 @@ import LoginProfessional from "./pages/LoginProfessional";
 import Register from "./pages/Register";
 import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
-import Dashboard from "./pages/Dashboard";
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import DashboardAdmin from "./pages/DashboardAdmin";
@@ -70,11 +69,6 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
             <Route path="/dashboard/patient" element={
               <ProtectedRoute requiredRoles={['patient']}>
                 <DashboardPatient />
