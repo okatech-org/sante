@@ -626,7 +626,7 @@ export default function Profile() {
                       <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                       Sécurité
                     </h2>
-                    <div className="space-y-2.5 sm:space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
                       <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                         <div className="flex items-center gap-2 mb-1">
                           <Lock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0088ff]" />
