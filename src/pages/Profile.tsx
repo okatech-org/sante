@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
 import logoSante from "@/assets/logo_sante.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -37,6 +39,16 @@ export default function Profile() {
   const [activeSection, setActiveSection] = useState("profile");
   const [activeMenu, setActiveMenu] = useState('settings');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [preferences, setPreferences] = useState({
+    notification_email: true,
+    notification_sms: false,
+    notification_push: true,
+    profile_visibility: 'private',
+    language: 'fr',
+    theme: 'system',
+    two_factor_enabled: false,
+  });
 
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -92,6 +104,15 @@ export default function Profile() {
           neighborhood: data.neighborhood || "",
         });
         setAvatarUrl(data.avatar_url || "");
+        setPreferences({
+          notification_email: data.notification_email ?? true,
+          notification_sms: data.notification_sms ?? false,
+          notification_push: data.notification_push ?? true,
+          profile_visibility: data.profile_visibility || 'private',
+          language: data.language || 'fr',
+          theme: data.theme || 'system',
+          two_factor_enabled: data.two_factor_enabled ?? false,
+        });
       } else {
         reset({
           full_name: (user?.user_metadata as any)?.full_name || user?.email || "",
@@ -148,6 +169,31 @@ export default function Profile() {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const updatePreferences = async (updates: Partial<typeof preferences>) => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user?.id);
+
+      if (error) throw error;
+
+      setPreferences({ ...preferences, ...updates });
+      
+      toast({
+        title: "Succès",
+        description: "Préférences mises à jour avec succès",
+      });
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la mise à jour des préférences",
+        variant: "destructive",
+      });
     }
   };
 
@@ -560,28 +606,47 @@ export default function Profile() {
 
               {/* Section Sécurité */}
               {activeSection === "security" && (
-                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <Lock className="w-4 h-4" style={{ color: '#0088ff' }} />
-                    Sécurité
-                  </h2>
-                  <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Changer le mot de passe</h3>
-                      <p className="text-xs text-gray-400 mb-2">Modifiez votre mot de passe pour sécuriser votre compte</p>
-                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-8 text-xs">
-                        Changer le mot de passe
-                      </Button>
-                    </div>
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Authentification à deux facteurs</h3>
-                      <p className="text-xs text-gray-400 mb-2">Ajoutez une couche de sécurité supplémentaire</p>
-                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-8 text-xs">
-                        Activer 2FA
-                      </Button>
+                <>
+                  <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                    <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <Lock className="w-4 h-4" style={{ color: '#0088ff' }} />
+                      Sécurité
+                    </h2>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <h3 className="font-semibold text-white mb-1 text-sm">Changer le mot de passe</h3>
+                        <p className="text-xs text-gray-400 mb-2">Modifiez votre mot de passe pour sécuriser votre compte</p>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setPasswordModalOpen(true)}
+                          className="border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                        >
+                          Changer le mot de passe
+                        </Button>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h3 className="font-semibold text-white text-sm">Authentification à deux facteurs</h3>
+                            <p className="text-xs text-gray-400 mt-1">Ajoutez une couche de sécurité supplémentaire</p>
+                          </div>
+                          <Switch
+                            checked={preferences.two_factor_enabled}
+                            onCheckedChange={(checked) => updatePreferences({ two_factor_enabled: checked })}
+                          />
+                        </div>
+                        {preferences.two_factor_enabled && (
+                          <p className="text-xs text-green-400 mt-2">✓ 2FA activé</p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                  
+                  <ChangePasswordModal 
+                    open={passwordModalOpen} 
+                    onOpenChange={setPasswordModalOpen} 
+                  />
+                </>
               )}
 
               {/* Section Notifications */}
@@ -592,8 +657,37 @@ export default function Profile() {
                     Notifications
                   </h2>
                   <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-xs text-gray-400">Configuration des notifications à venir...</p>
+                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-white text-sm">Notifications par email</h3>
+                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications par email</p>
+                      </div>
+                      <Switch
+                        checked={preferences.notification_email}
+                        onCheckedChange={(checked) => updatePreferences({ notification_email: checked })}
+                      />
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-white text-sm">Notifications SMS</h3>
+                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications par SMS</p>
+                      </div>
+                      <Switch
+                        checked={preferences.notification_sms}
+                        onCheckedChange={(checked) => updatePreferences({ notification_sms: checked })}
+                      />
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-white text-sm">Notifications push</h3>
+                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications dans le navigateur</p>
+                      </div>
+                      <Switch
+                        checked={preferences.notification_push}
+                        onCheckedChange={(checked) => updatePreferences({ notification_push: checked })}
+                      />
                     </div>
                   </div>
                 </div>
@@ -608,7 +702,26 @@ export default function Profile() {
                   </h2>
                   <div className="space-y-3">
                     <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-xs text-gray-400">Paramètres de confidentialité à venir...</p>
+                      <h3 className="font-semibold text-white mb-2 text-sm">Visibilité du profil</h3>
+                      <p className="text-xs text-gray-400 mb-3">Contrôlez qui peut voir votre profil</p>
+                      <Select 
+                        value={preferences.profile_visibility}
+                        onValueChange={(value) => updatePreferences({ profile_visibility: value })}
+                      >
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="public">Public - Visible par tous</SelectItem>
+                          <SelectItem value="private">Privé - Visible uniquement par vous</SelectItem>
+                          <SelectItem value="friends">Amis - Visible par vos contacts</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Données médicales</h3>
+                      <p className="text-xs text-gray-400">Vos données médicales sont toujours protégées et accessibles uniquement par vous et les professionnels de santé autorisés.</p>
                     </div>
                   </div>
                 </div>
@@ -623,7 +736,38 @@ export default function Profile() {
                   </h2>
                   <div className="space-y-3">
                     <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-xs text-gray-400">Préférences de l'application à venir...</p>
+                      <h3 className="font-semibold text-white mb-2 text-sm">Langue</h3>
+                      <p className="text-xs text-gray-400 mb-3">Choisissez votre langue préférée</p>
+                      <Select 
+                        value={preferences.language}
+                        onValueChange={(value) => updatePreferences({ language: value })}
+                      >
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="fr">🇫🇷 Français</SelectItem>
+                          <SelectItem value="en">🇬🇧 English</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-2 text-sm">Thème</h3>
+                      <p className="text-xs text-gray-400 mb-3">Apparence de l'application</p>
+                      <Select 
+                        value={preferences.theme}
+                        onValueChange={(value) => updatePreferences({ theme: value })}
+                      >
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="light">☀️ Clair</SelectItem>
+                          <SelectItem value="dark">🌙 Sombre</SelectItem>
+                          <SelectItem value="system">💻 Système</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>

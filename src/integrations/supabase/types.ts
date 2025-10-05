@@ -233,9 +233,16 @@ export type Database = {
           gender: string | null
           height_m: number | null
           id: string
+          language: string | null
           neighborhood: string | null
+          notification_email: boolean | null
+          notification_push: boolean | null
+          notification_sms: boolean | null
           phone: string
+          profile_visibility: string | null
           province: string | null
+          theme: string | null
+          two_factor_enabled: boolean | null
           updated_at: string
           weight_kg: number | null
         }
@@ -251,9 +258,16 @@ export type Database = {
           gender?: string | null
           height_m?: number | null
           id: string
+          language?: string | null
           neighborhood?: string | null
+          notification_email?: boolean | null
+          notification_push?: boolean | null
+          notification_sms?: boolean | null
           phone: string
+          profile_visibility?: string | null
           province?: string | null
+          theme?: string | null
+          two_factor_enabled?: boolean | null
           updated_at?: string
           weight_kg?: number | null
         }
@@ -269,9 +283,16 @@ export type Database = {
           gender?: string | null
           height_m?: number | null
           id?: string
+          language?: string | null
           neighborhood?: string | null
+          notification_email?: boolean | null
+          notification_push?: boolean | null
+          notification_sms?: boolean | null
           phone?: string
+          profile_visibility?: string | null
           province?: string | null
+          theme?: string | null
+          two_factor_enabled?: boolean | null
           updated_at?: string
           weight_kg?: number | null
         }
