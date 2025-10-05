@@ -95,7 +95,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar Desktop */}
-        <aside className="hidden lg:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
+        <aside className="hidden xl:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
           <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-6">
@@ -136,7 +136,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         </aside>
 
         {/* Mobile Header */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="xl:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
@@ -195,7 +195,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-72 p-4 lg:p-6 max-w-7xl pt-20 lg:pt-6">
+        <main className="flex-1 xl:ml-72 p-4 lg:p-6 max-w-7xl pt-20 xl:pt-6">
           {children}
         </main>
       </div>
