@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Mail, Lock, ArrowLeft } from "lucide-react";
+import { Heart, Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { loginSchema, LoginData } from "@/lib/validation";
@@ -16,6 +16,7 @@ import { sanitizeAuthError, logError } from "@/lib/errorHandler";
 export default function LoginPatient() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -108,11 +109,23 @@ export default function LoginPatient() {
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                         <Input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          className="pl-10 btn-mobile-xxl"
+                          className="pl-10 pr-10 btn-mobile-xxl"
                           {...field}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />
