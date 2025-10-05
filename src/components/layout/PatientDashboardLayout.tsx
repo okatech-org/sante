@@ -31,9 +31,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
   const activeMenu = menuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
 
   const handleMenuClick = (path: string) => {
+    setMobileMenuOpen(false);
     navigate(path);
-    // Fermer le menu mobile avec un léger délai pour la transition
-    setTimeout(() => setMobileMenuOpen(false), 100);
   };
 
   const renderMenu = () => (
