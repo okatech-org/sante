@@ -576,30 +576,30 @@ export default function Profile() {
                             />
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1.5 w-full">
-                              <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
-                                <MapPin className="h-3 w-3 flex-shrink-0" />
-                                Province
-                              </Label>
-                              <Input
-                                id="province"
-                                {...register("province")}
-                                placeholder="Ex: Estuaire"
-                                className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
-                              />
-                            </div>
+                            <div className="grid grid-cols-2 gap-2 items-stretch">
+                              <div className="space-y-1.5 w-full h-full flex flex-col">
+                                <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
+                                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                                  Province
+                                </Label>
+                                <Input
+                                  id="province"
+                                  {...register("province")}
+                                  placeholder="Ex: Estuaire"
+                                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                                />
+                              </div>
 
-                            <div className="space-y-1.5 w-full">
-                              <Label htmlFor="city" className="text-gray-300 text-xs">Ville</Label>
-                              <Input
-                                id="city"
-                                {...register("city")}
-                                placeholder="Ex: Libreville"
-                                className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
-                              />
+                              <div className="space-y-1.5 w-full h-full flex flex-col">
+                                <Label htmlFor="city" className="text-gray-300 text-xs">Ville</Label>
+                                <Input
+                                  id="city"
+                                  {...register("city")}
+                                  placeholder="Ex: Libreville"
+                                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                                />
+                              </div>
                             </div>
-                          </div>
 
                           <div className="space-y-1.5 w-full">
                             <Label htmlFor="neighborhood" className="text-gray-300 text-xs">Quartier</Label>
