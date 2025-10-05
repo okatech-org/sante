@@ -292,7 +292,7 @@ export default function Teleconsultation() {
 
           {/* Available Doctors */}
           <TabsContent value="available" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {mockAvailableDoctors.map((doctor) => (
                 <div key={doctor.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
                   <div className="flex items-start gap-4 mb-4">
