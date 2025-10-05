@@ -494,119 +494,201 @@ export default function Prescriptions() {
                       </p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {filteredPrescriptions.map((prescription) => (
                       <Card key={prescription.id} className="p-4 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
-                        {/* En-tête */}
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-start gap-3 min-w-0 flex-1">
-                            <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
-                              {getStatusIcon(prescription.status)}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
-                                {getStatusBadge(prescription.status)}
-                              </div>
-                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
-                                <div className="flex items-center gap-1">
-                                  <User className="h-3 w-3" />
-                                  <span className="truncate">{prescription.doctor}</span>
+                        <div className="flex flex-col lg:flex-row gap-4">
+                          {/* Colonne gauche - Informations */}
+                          <div className="flex-1 min-w-0">
+                            {/* En-tête */}
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex items-start gap-3 min-w-0 flex-1">
+                                <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
+                                  {getStatusIcon(prescription.status)}
                                 </div>
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="h-3 w-3" />
-                                  {prescription.date}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {prescription.validUntil}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex gap-1 flex-shrink-0 ml-2">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => setPreviewPrescription(prescription)}
-                              className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
-                              title="Visualiser"
-                            >
-                              <Eye className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleShare(prescription.id)}
-                              className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
-                              title="Partager"
-                            >
-                              <Share2 className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleDownload(prescription.id)}
-                              className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
-                              title="Télécharger"
-                            >
-                              <Download className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Médicaments */}
-                        <div className="space-y-2 mb-3">
-                          <h4 className="font-semibold flex items-center gap-2 text-sm text-white">
-                            <Pill className="h-3.5 w-3.5 text-[#ff0088]" />
-                            Médicaments ({prescription.medications.length})
-                          </h4>
-                          {prescription.medications.map((med, index) => (
-                            <div 
-                              key={index} 
-                              className="border border-white/10 rounded-lg p-3 bg-white/5"
-                            >
-                              <div className="flex items-start justify-between mb-1.5">
                                 <div className="min-w-0 flex-1">
-                                  <p className="font-semibold text-sm text-white truncate">{med.name}</p>
-                                  <p className="text-xs text-gray-400">{med.dosage}</p>
+                                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                    <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
+                                    {getStatusBadge(prescription.status)}
+                                  </div>
+                                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
+                                    <div className="flex items-center gap-1">
+                                      <User className="h-3 w-3" />
+                                      <span className="truncate">{prescription.doctor}</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="h-3 w-3" />
+                                      {prescription.date}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      {prescription.validUntil}
+                                    </div>
+                                  </div>
                                 </div>
-                                <Badge variant="outline" className="border-white/10 text-gray-300 text-xs ml-2 flex-shrink-0">{med.duration}</Badge>
                               </div>
-                              <div className="space-y-0.5 text-xs">
-                                <p className="text-gray-300"><span className="font-medium">Posologie:</span> {med.frequency}</p>
-                                {med.instructions && (
-                                  <p className="text-gray-400">
-                                    <AlertCircle className="h-3 w-3 inline mr-1" />
-                                    {med.instructions}
-                                  </p>
-                                )}
+
+                              <div className="flex gap-1 flex-shrink-0 ml-2 lg:hidden">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => setPreviewPrescription(prescription)}
+                                  className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
+                                  title="Visualiser"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleShare(prescription.id)}
+                                  className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
+                                  title="Partager"
+                                >
+                                  <Share2 className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => handleDownload(prescription.id)}
+                                  className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
+                                  title="Télécharger"
+                                >
+                                  <Download className="h-3.5 w-3.5" />
+                                </Button>
                               </div>
                             </div>
-                          ))}
-                        </div>
 
-                        {/* Actions pharmacie */}
-                        <div className="mb-3">
-                          <Button
-                            onClick={() => handleSendToPharmacy(prescription.id)}
-                            className="w-full bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:opacity-90 text-white"
-                          >
-                            <Send className="h-4 w-4 mr-2" />
-                            Envoyer à une pharmacie
-                          </Button>
-                        </div>
+                            {/* Médicaments */}
+                            <div className="space-y-2 mb-3">
+                              <h4 className="font-semibold flex items-center gap-2 text-sm text-white">
+                                <Pill className="h-3.5 w-3.5 text-[#ff0088]" />
+                                Médicaments ({prescription.medications.length})
+                              </h4>
+                              {prescription.medications.map((med, index) => (
+                                <div 
+                                  key={index} 
+                                  className="border border-white/10 rounded-lg p-3 bg-white/5"
+                                >
+                                  <div className="flex items-start justify-between mb-1.5">
+                                    <div className="min-w-0 flex-1">
+                                      <p className="font-semibold text-sm text-white truncate">{med.name}</p>
+                                      <p className="text-xs text-gray-400">{med.dosage}</p>
+                                    </div>
+                                    <Badge variant="outline" className="border-white/10 text-gray-300 text-xs ml-2 flex-shrink-0">{med.duration}</Badge>
+                                  </div>
+                                  <div className="space-y-0.5 text-xs">
+                                    <p className="text-gray-300"><span className="font-medium">Posologie:</span> {med.frequency}</p>
+                                    {med.instructions && (
+                                      <p className="text-gray-400">
+                                        <AlertCircle className="h-3 w-3 inline mr-1" />
+                                        {med.instructions}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
 
-                        {/* Notes */}
-                        {prescription.notes && (
-                          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                            <p className="text-xs text-gray-300">
-                              <span className="font-semibold text-white">Note:</span>{" "}
-                              {prescription.notes}
-                            </p>
+                            {/* Actions pharmacie */}
+                            <div className="mb-3">
+                              <Button
+                                onClick={() => handleSendToPharmacy(prescription.id)}
+                                className="w-full bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:opacity-90 text-white"
+                              >
+                                <Send className="h-4 w-4 mr-2" />
+                                Envoyer à une pharmacie
+                              </Button>
+                            </div>
+
+                            {/* Notes */}
+                            {prescription.notes && (
+                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                                <p className="text-xs text-gray-300">
+                                  <span className="font-semibold text-white">Note:</span>{" "}
+                                  {prescription.notes}
+                                </p>
+                              </div>
+                            )}
                           </div>
-                        )}
+
+                          {/* Colonne droite - Miniature A4 (desktop uniquement) */}
+                          <div className="hidden lg:block w-64 flex-shrink-0">
+                            <div className="bg-white rounded-lg shadow-lg overflow-hidden aspect-[1/1.414] relative">
+                              <div className="absolute inset-0 p-4 overflow-hidden text-[6px] leading-tight">
+                                {/* En-tête */}
+                                <div className="text-center mb-2 pb-1 border-b border-gray-300">
+                                  <h2 className="font-bold text-gray-800 text-[8px]">ORDONNANCE MÉDICALE</h2>
+                                  <p className="text-gray-600 text-[5px]">République Gabonaise</p>
+                                </div>
+
+                                {/* Médecin */}
+                                <div className="mb-2">
+                                  <p className="font-bold text-gray-800 text-[6px]">{prescription.doctor}</p>
+                                  <p className="text-gray-600 text-[5px]">{prescription.specialty}</p>
+                                  <p className="text-gray-600 text-[5px]">N°: {prescription.id}</p>
+                                </div>
+
+                                {/* Dates */}
+                                <div className="flex justify-between text-[5px] mb-2 pb-1 border-b border-gray-200">
+                                  <span className="text-gray-600">Date: {prescription.date}</span>
+                                  <span className="text-gray-600">Valable: {prescription.validUntil}</span>
+                                </div>
+
+                                {/* Médicaments */}
+                                <div className="mb-2">
+                                  <h3 className="font-bold text-gray-800 text-[6px] mb-1">MÉDICAMENTS</h3>
+                                  {prescription.medications.map((med, index) => (
+                                    <div key={index} className="mb-1.5 pl-2 border-l-2 border-[#ff0088]">
+                                      <p className="font-semibold text-gray-800 text-[5px]">{index + 1}. {med.name}</p>
+                                      <p className="text-gray-600 text-[4px]">{med.dosage}</p>
+                                      <p className="text-gray-600 text-[4px]">{med.frequency}</p>
+                                      <p className="text-gray-600 text-[4px]">{med.duration}</p>
+                                    </div>
+                                  ))}
+                                </div>
+
+                                {/* Notes */}
+                                {prescription.notes && (
+                                  <div className="bg-blue-50 p-1 rounded text-[4px] mb-2">
+                                    <p className="text-gray-700">{prescription.notes}</p>
+                                  </div>
+                                )}
+
+                                {/* Actions desktop */}
+                                <div className="absolute bottom-2 right-2 flex gap-1">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => setPreviewPrescription(prescription)}
+                                    className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-6 w-6 p-0"
+                                    title="Agrandir"
+                                  >
+                                    <Eye className="h-3 w-3" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => handleShare(prescription.id)}
+                                    className="text-gray-600 hover:text-gray-800 hover:bg-gray-100 h-6 w-6 p-0"
+                                    title="Partager"
+                                  >
+                                    <Share2 className="h-3 w-3" />
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => handleDownload(prescription.id)}
+                                    className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-6 w-6 p-0"
+                                    title="Télécharger"
+                                  >
+                                    <Download className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </Card>
                       ))}
                     </div>
