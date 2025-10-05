@@ -34,7 +34,7 @@ export default function LoginPatient() {
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur votre espace patient",
       });
-      navigate("/dashboard");
+      navigate("/dashboard/patient");
     } catch (error: any) {
       const sanitized = sanitizeAuthError(error);
       if (sanitized.shouldLog) {

@@ -76,7 +76,7 @@ export default function RegisterPatient() {
       toast.success("Inscription réussie !", {
         description: "Votre compte patient a été créé avec succès.",
       });
-      navigate("/dashboard");
+      navigate("/dashboard/patient");
     } catch (error: any) {
       toast.error("Erreur lors de l'inscription", {
         description: "Une erreur est survenue. Veuillez réessayer.",

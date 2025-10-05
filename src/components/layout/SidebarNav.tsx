@@ -29,7 +29,7 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   ];
 
   const patientNavItems: NavItem[] = [
-    { icon: Home, label: t('nav.home'), href: "/dashboard" },
+    { icon: Home, label: t('nav.home'), href: "/dashboard/patient" },
     { icon: Calendar, label: t('nav.appointments'), href: "/appointments", badge: 2 },
     { icon: FileText, label: t('nav.prescriptions'), href: "/prescriptions", badge: 1 },
     { icon: TestTube, label: t('nav.results'), href: "/results", badge: 2 },
