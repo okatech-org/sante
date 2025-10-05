@@ -6,6 +6,7 @@ import { CartographyProvider, Coordonnees } from "@/types/cartography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Phone, Navigation } from "lucide-react";
+import { useTheme } from "next-themes";
 
 // Fix pour les icônes par défaut de Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -21,23 +22,35 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Icônes colorées par type
-const createColoredIcon = (type: string) => {
-  const colors: Record<string, string> = {
-    hopital: '#E11D48',
-    clinique: '#EC4899',
-    cabinet_medical: '#3B82F6',
-    cabinet_dentaire: '#8B5CF6',
-    pharmacie: '#10B981',
-    laboratoire: '#F59E0B',
-    imagerie: '#6366F1'
+// Icônes colorées par type - Utilisation des tokens du design system
+const createColoredIcon = (type: string, isDark: boolean) => {
+  const lightColors: Record<string, string> = {
+    hopital: 'hsl(338, 80%, 57%)', // accent
+    clinique: 'hsl(338, 80%, 67%)', // accent variant
+    cabinet_medical: 'hsl(202, 100%, 50%)', // secondary
+    cabinet_dentaire: 'hsl(173, 78%, 45%)', // primary
+    pharmacie: 'hsl(173, 78%, 50%)', // success
+    laboratoire: 'hsl(41, 100%, 50%)', // warning
+    imagerie: 'hsl(202, 100%, 60%)' // secondary variant
   };
 
-  const color = colors[type] || '#6B7280';
+  const darkColors: Record<string, string> = {
+    hopital: 'hsl(338, 80%, 62%)', // accent dark
+    clinique: 'hsl(338, 80%, 72%)', // accent variant dark
+    cabinet_medical: 'hsl(202, 100%, 55%)', // secondary dark
+    cabinet_dentaire: 'hsl(173, 78%, 50%)', // primary dark
+    pharmacie: 'hsl(173, 78%, 50%)', // success dark
+    laboratoire: 'hsl(41, 100%, 55%)', // warning dark
+    imagerie: 'hsl(202, 100%, 65%)' // secondary variant dark
+  };
+
+  const colors = isDark ? darkColors : lightColors;
+  const color = colors[type] || (isDark ? 'hsl(215, 20%, 65%)' : 'hsl(215, 16%, 47%)');
+  const borderColor = isDark ? 'hsl(210, 30%, 10%)' : 'hsl(0, 0%, 100%)';
   
   return L.divIcon({
     className: 'custom-marker',
-    html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>`,
+    html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid ${borderColor}; box-shadow: 0 2px 12px ${isDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.3)'};"></div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],
     popupAnchor: [0, -15]
@@ -68,6 +81,8 @@ export default function CartographyMapView({
   userLocation,
   onMarkerClick 
 }: MapViewProps) {
+  const { theme, resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
   const GABON_CENTER: Coordonnees = { lat: 0.4162, lng: 9.4673 };
   const mapCenter = userLocation || GABON_CENTER;
 
@@ -81,7 +96,7 @@ export default function CartographyMapView({
   };
 
   return (
-    <div className="h-full w-full rounded-lg overflow-hidden border">
+    <div className="h-full w-full rounded-lg overflow-hidden border shadow-lg">
       <MapContainer
         center={[mapCenter.lat, mapCenter.lng]}
         zoom={userLocation ? 12 : 6}
@@ -89,8 +104,11 @@ export default function CartographyMapView({
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url={isDark 
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          }
         />
 
         {userLocation && <MapCenter center={userLocation} />}
@@ -101,12 +119,12 @@ export default function CartographyMapView({
             position={[userLocation.lat, userLocation.lng]}
             icon={L.divIcon({
               className: 'user-marker',
-              html: `<div style="background-color: #2563EB; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(37, 99, 235, 0.5); animation: pulse 2s infinite;"></div>`,
+              html: `<div style="background-color: hsl(173, 78%, ${isDark ? '50%' : '45%'}); width: 20px; height: 20px; border-radius: 50%; border: 3px solid ${isDark ? 'hsl(210, 30%, 10%)' : 'hsl(0, 0%, 100%)'}; box-shadow: 0 0 16px hsl(173, 78%, ${isDark ? '50%' : '45%'}, 0.6); animation: pulse 2s infinite;"></div>`,
               iconSize: [20, 20],
               iconAnchor: [10, 10]
             })}
           >
-            <Popup>
+            <Popup className="custom-popup">
               <div className="text-sm font-semibold">Vous êtes ici</div>
             </Popup>
           </Marker>
@@ -119,7 +137,7 @@ export default function CartographyMapView({
             <Marker
               key={provider.id}
               position={[provider.coordonnees!.lat, provider.coordonnees!.lng]}
-              icon={createColoredIcon(provider.type)}
+              icon={createColoredIcon(provider.type, isDark)}
             >
               <Popup maxWidth={320} className="custom-popup">
                 <div className="space-y-2 p-1">
@@ -132,13 +150,13 @@ export default function CartographyMapView({
 
                   <div className="flex flex-wrap gap-1">
                     {provider.ouvert_24_7 && (
-                      <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
+                      <Badge className="text-xs bg-success text-success-foreground">24/7</Badge>
                     )}
                     {provider.conventionnement.cnamgs && (
-                      <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
+                      <Badge className="text-xs bg-secondary text-secondary-foreground">CNAMGS</Badge>
                     )}
                     {provider.equipements_specialises?.some(e => e.includes('IRM') || e.includes('Scanner')) && (
-                      <Badge variant="default" className="text-xs bg-purple-600">Imagerie</Badge>
+                      <Badge className="text-xs bg-accent text-accent-foreground">Imagerie</Badge>
                     )}
                   </div>
 
@@ -211,12 +229,44 @@ export default function CartographyMapView({
         }
         
         .custom-popup .leaflet-popup-content-wrapper {
-          border-radius: 8px;
+          background-color: ${isDark ? 'hsl(210, 30%, 10%)' : 'hsl(0, 0%, 100%)'};
+          color: ${isDark ? 'hsl(210, 40%, 98%)' : 'hsl(210, 20%, 15%)'};
+          border-radius: 12px;
           padding: 0;
+          box-shadow: 0 4px 20px ${isDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.15)'};
+          border: 1px solid ${isDark ? 'hsl(210, 30%, 18%)' : 'hsl(214, 32%, 91%)'};
         }
         
         .custom-popup .leaflet-popup-content {
-          margin: 8px;
+          margin: 12px;
+        }
+
+        .custom-popup .leaflet-popup-tip {
+          background-color: ${isDark ? 'hsl(210, 30%, 10%)' : 'hsl(0, 0%, 100%)'};
+          border: 1px solid ${isDark ? 'hsl(210, 30%, 18%)' : 'hsl(214, 32%, 91%)'};
+        }
+
+        .leaflet-container {
+          background-color: ${isDark ? 'hsl(210, 30%, 8%)' : 'hsl(0, 0%, 98%)'};
+        }
+
+        .leaflet-control-zoom a {
+          background-color: ${isDark ? 'hsl(210, 30%, 10%)' : 'hsl(0, 0%, 100%)'} !important;
+          color: ${isDark ? 'hsl(210, 40%, 98%)' : 'hsl(210, 20%, 15%)'} !important;
+          border-color: ${isDark ? 'hsl(210, 30%, 18%)' : 'hsl(214, 32%, 91%)'} !important;
+        }
+
+        .leaflet-control-zoom a:hover {
+          background-color: ${isDark ? 'hsl(210, 30%, 15%)' : 'hsl(210, 40%, 96%)'} !important;
+        }
+
+        .leaflet-control-attribution {
+          background-color: ${isDark ? 'rgba(16, 22, 35, 0.8)' : 'rgba(255, 255, 255, 0.8)'} !important;
+          color: ${isDark ? 'hsl(215, 20%, 65%)' : 'hsl(215, 16%, 47%)'} !important;
+        }
+
+        .leaflet-control-attribution a {
+          color: ${isDark ? 'hsl(173, 78%, 50%)' : 'hsl(173, 78%, 45%)'} !important;
         }
       `}</style>
     </div>
