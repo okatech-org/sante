@@ -27,6 +27,10 @@ const profileSchema = z.object({
   province: z.string().optional(),
   city: z.string().optional(),
   neighborhood: z.string().optional(),
+  weight_kg: z.string().optional(),
+  height_m: z.string().optional(),
+  blood_group: z.string().optional(),
+  cnamgs_number: z.string().optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -57,6 +61,7 @@ export default function Profile() {
   });
 
   const genderValue = watch("gender");
+  const bloodGroupValue = watch("blood_group");
   const firstName = watch("first_name");
   const lastName = watch("last_name");
   const currentEmail = watch("email");
@@ -115,6 +120,10 @@ export default function Profile() {
           province: data.province || "",
           city: data.city || "",
           neighborhood: data.neighborhood || "",
+          weight_kg: data.weight_kg?.toString() || "",
+          height_m: data.height_m?.toString() || "",
+          blood_group: data.blood_group || "",
+          cnamgs_number: data.cnamgs_number || "",
         });
         setAvatarUrl(data.avatar_url || "");
         setPreferences({
@@ -137,6 +146,10 @@ export default function Profile() {
           province: "",
           city: "",
           neighborhood: "",
+          weight_kg: "",
+          height_m: "",
+          blood_group: "",
+          cnamgs_number: "",
         });
       }
     } catch (error) {
@@ -167,6 +180,10 @@ export default function Profile() {
           province: data.province || null,
           city: data.city || null,
           neighborhood: data.neighborhood || null,
+          weight_kg: data.weight_kg ? parseFloat(data.weight_kg) : null,
+          height_m: data.height_m ? parseFloat(data.height_m) : null,
+          blood_group: data.blood_group || null,
+          cnamgs_number: data.cnamgs_number || null,
         })
         .eq("id", user?.id);
 
@@ -554,6 +571,82 @@ export default function Profile() {
                                     <SelectItem value="other">Autre</SelectItem>
                                   </SelectContent>
                                 </Select>
+                              </div>
+                            </div>
+
+                            {/* Informations médicales */}
+                            <div className="pt-2 mt-2 border-t border-white/10">
+                              <h3 className="text-xs font-semibold text-white mb-2 flex items-center gap-1.5">
+                                <User className="h-3 w-3 flex-shrink-0" />
+                                Informations médicales
+                              </h3>
+                              
+                              <div className="grid grid-cols-2 gap-2 items-stretch">
+                                <div className="space-y-1.5 w-full h-full flex flex-col">
+                                  <Label htmlFor="weight_kg" className="text-gray-300 text-xs">
+                                    Poids (kg)
+                                  </Label>
+                                  <Input
+                                    id="weight_kg"
+                                    type="number"
+                                    step="0.1"
+                                    {...register("weight_kg")}
+                                    placeholder="78"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                                  />
+                                </div>
+
+                                <div className="space-y-1.5 w-full h-full flex flex-col">
+                                  <Label htmlFor="height_m" className="text-gray-300 text-xs">
+                                    Taille (m)
+                                  </Label>
+                                  <Input
+                                    id="height_m"
+                                    type="number"
+                                    step="0.01"
+                                    {...register("height_m")}
+                                    placeholder="1.75"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 items-stretch mt-2">
+                                <div className="space-y-1.5 w-full h-full flex flex-col">
+                                  <Label htmlFor="blood_group" className="text-gray-300 text-xs">
+                                    Groupe sanguin
+                                  </Label>
+                                  <Select 
+                                    value={bloodGroupValue || ""}
+                                    onValueChange={(value) => setValue("blood_group", value)}
+                                  >
+                                    <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
+                                      <SelectValue placeholder="O+" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="A+">A+</SelectItem>
+                                      <SelectItem value="A-">A-</SelectItem>
+                                      <SelectItem value="B+">B+</SelectItem>
+                                      <SelectItem value="B-">B-</SelectItem>
+                                      <SelectItem value="AB+">AB+</SelectItem>
+                                      <SelectItem value="AB-">AB-</SelectItem>
+                                      <SelectItem value="O+">O+</SelectItem>
+                                      <SelectItem value="O-">O-</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <div className="space-y-1.5 w-full h-full flex flex-col">
+                                  <Label htmlFor="cnamgs_number" className="text-gray-300 text-xs">
+                                    N° CNAMGS
+                                  </Label>
+                                  <Input
+                                    id="cnamgs_number"
+                                    {...register("cnamgs_number")}
+                                    placeholder="GA2384567891"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                                  />
+                                </div>
                               </div>
                             </div>
                         </div>
