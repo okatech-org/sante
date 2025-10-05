@@ -242,7 +242,7 @@ export default function Landing() {
                   {t('landing.cta.login') || "Se connecter"}
                 </Button>
               </Link>
-              <Link to="/register/patient">
+              <Link to="/register">
                 <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-accent to-accent/90">
                   {t('landing.hero.patient') || "S'inscrire"}
                 </Button>
@@ -296,7 +296,7 @@ export default function Landing() {
                           {t('landing.cta.login') || "Se connecter"}
                         </Button>
                       </Link>
-                      <Link to="/register/patient" onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
                         <Button className="w-full bg-gradient-to-r from-accent to-accent/90">
                           {t('landing.hero.patient') || "S'inscrire"}
                         </Button>

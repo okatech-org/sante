@@ -16,6 +16,7 @@ import Awareness from "./pages/Awareness";
 import Login from "./pages/Login";
 import LoginPatient from "./pages/LoginPatient";
 import LoginProfessional from "./pages/LoginProfessional";
+import Register from "./pages/Register";
 import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
 import Dashboard from "./pages/Dashboard";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/login/patient" element={<LoginPatient />} />
             <Route path="/login/pro" element={<LoginProfessional />} />
             <Route path="/superadmin" element={<SuperAdminLogin />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
             <Route path="/dashboard" element={
