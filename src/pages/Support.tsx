@@ -640,7 +640,7 @@ export default function Support() {
                       <p className="text-gray-400">Aucun message</p>
                     </div>
                   ) : (
-                    <div className="px-3 pt-3 pb-0 space-y-3">
+                    <div className="space-y-3 px-3 pt-3">
                       {filteredMessages.map((message) => (
                         <div
                           key={message.id}
