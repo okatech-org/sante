@@ -470,7 +470,7 @@ export default function Prescriptions() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value={selectedTab} className="space-y-4 mt-6">
+                <TabsContent value={selectedTab} className="mt-6">
                   {filteredPrescriptions.length === 0 ? (
                     <Card className="p-12 text-center bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
                       <FileText className="h-12 w-12 mx-auto text-gray-500 mb-4" />
@@ -482,7 +482,8 @@ export default function Prescriptions() {
                       </p>
                     </Card>
                   ) : (
-                    filteredPrescriptions.map((prescription) => (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {filteredPrescriptions.map((prescription) => (
                       <Card key={prescription.id} className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
                         {/* En-tête */}
                         <div className="flex items-start justify-between mb-4">
@@ -573,7 +574,8 @@ export default function Prescriptions() {
                           </div>
                         )}
                       </Card>
-                    ))
+                      ))}
+                    </div>
                   )}
                 </TabsContent>
               </Tabs>
