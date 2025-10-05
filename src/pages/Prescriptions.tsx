@@ -482,7 +482,7 @@ export default function Prescriptions() {
                       </p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredPrescriptions.map((prescription) => (
                       <Card key={prescription.id} className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
                         {/* En-tête */}
