@@ -389,108 +389,113 @@ export default function DashboardPatient() {
             })}
           </div>
 
-          {/* Rappels & Alertes */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
-            <h3 className="text-xl font-semibold mb-6 text-white">
-              Rappels & Alertes
-            </h3>
-            
-            <div className="space-y-3">
-              {[
-                { 
-                  time: 'Aujourd\'hui 14h30', 
-                  event: 'Consultation cardiologie - Dr.Ékomi', 
-                  location: 'Cabinet Montagne Sainte',
-                  icon: Calendar,
-                  color: '#00d4ff'
-                },
-                { 
-                  time: 'Dans 3 jours', 
-                  event: 'Résultats d\'analyses disponibles', 
-                  location: 'Laboratoire BIOLAB',
-                  icon: Activity,
-                  color: '#0088ff'
-                },
-                { 
-                  time: 'Cette semaine', 
-                  event: 'Ordonnance à renouveler', 
-                  location: 'Pharmacie de la Grâce',
-                  icon: Pill,
-                  color: '#ffaa00'
-                },
-                { 
-                  time: 'Urgent', 
-                  event: 'Vaccin tétanos recommandé', 
-                  location: 'Tout centre de vaccination',
-                  icon: AlertCircle,
-                  color: '#ff0088'
-                }
-              ].map((reminder, idx) => {
-                const Icon = reminder.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${reminder.color}20` }}
-                      >
-                        <Icon className="w-6 h-6" style={{ color: reminder.color }} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white mb-1">{reminder.event}</p>
-                        <p className="text-xs text-gray-400">
-                          {reminder.time} • {reminder.location}
-                        </p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-500" />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Dossier Médical Récent */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">
-                Dossier Médical Récent
+          {/* Rappels & Alertes et Dossier Médical sur la même ligne */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Rappels & Alertes */}
+            <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
+              <h3 className="text-xl font-semibold mb-6 text-white">
+                Rappels & Alertes
               </h3>
-              <button 
-                onClick={() => navigate('/medical-record')}
-                className="text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                Voir tout
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
-                { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
-                { title: 'Dernière analyse', date: '15 Sept 2025', type: 'Bilan sanguin', icon: Activity, color: '#0088ff' }
-              ].map((doc, idx) => {
-                const Icon = doc.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="p-6 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5"
-                  >
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                      style={{ backgroundColor: `${doc.color}20` }}
+              
+              <div className="space-y-3">
+                {[
+                  { 
+                    time: 'Aujourd\'hui 14h30', 
+                    event: 'Consultation cardiologie - Dr.Ékomi', 
+                    location: 'Cabinet Montagne Sainte',
+                    icon: Calendar,
+                    color: '#00d4ff'
+                  },
+                  { 
+                    time: 'Dans 3 jours', 
+                    event: 'Résultats d\'analyses disponibles', 
+                    location: 'Laboratoire BIOLAB',
+                    icon: Activity,
+                    color: '#0088ff'
+                  },
+                  { 
+                    time: 'Cette semaine', 
+                    event: 'Ordonnance à renouveler', 
+                    location: 'Pharmacie de la Grâce',
+                    icon: Pill,
+                    color: '#ffaa00'
+                  },
+                  { 
+                    time: 'Urgent', 
+                    event: 'Vaccin tétanos recommandé', 
+                    location: 'Tout centre de vaccination',
+                    icon: AlertCircle,
+                    color: '#ff0088'
+                  }
+                ].map((reminder, idx) => {
+                  const Icon = reminder.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5"
                     >
-                      <Icon className="w-6 h-6" style={{ color: doc.color }} />
+                      <div className="flex items-center gap-4">
+                        <div 
+                          className="w-12 h-12 rounded-xl flex items-center justify-center"
+                          style={{ backgroundColor: `${reminder.color}20` }}
+                        >
+                          <Icon className="w-6 h-6" style={{ color: reminder.color }} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white mb-1">{reminder.event}</p>
+                          <p className="text-xs text-gray-400">
+                            {reminder.time} • {reminder.location}
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-500" />
                     </div>
-                    <p className="text-sm font-semibold mb-2 text-white">{doc.title}</p>
-                    <p className="text-xs text-gray-400 mb-1">{doc.date}</p>
-                    <p className="text-xs text-gray-500">{doc.type}</p>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Dossier Médical Récent */}
+            <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-white">
+                  Dossier Médical Récent
+                </h3>
+                <button 
+                  onClick={() => navigate('/medical-record')}
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  Voir tout
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {[
+                  { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
+                  { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
+                  { title: 'Dernière analyse', date: '15 Sept 2025', type: 'Bilan sanguin', icon: Activity, color: '#0088ff' }
+                ].map((doc, idx) => {
+                  const Icon = doc.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10 border border-white/5 flex items-center gap-4"
+                    >
+                      <div 
+                        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: `${doc.color}20` }}
+                      >
+                        <Icon className="w-6 h-6" style={{ color: doc.color }} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-white mb-1">{doc.title}</p>
+                        <p className="text-xs text-gray-400">{doc.date} • {doc.type}</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </main>
