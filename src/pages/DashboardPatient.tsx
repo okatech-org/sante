@@ -474,19 +474,25 @@ export default function DashboardPatient() {
                 return (
                   <div
                     key={idx}
-                    className="p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl flex items-center gap-4"
+                    className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
                   >
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: `${doc.color}20` }}
-                    >
-                      <Icon className="w-6 h-6" style={{ color: doc.color }} />
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: `${doc.color}20` }}
+                        >
+                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: doc.color }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2 mb-0.5">{doc.title}</p>
+                        </div>
+                      </div>
+                      <div className="ml-10 sm:ml-0 space-y-0.5">
+                        <p className="text-[10px] sm:text-xs text-gray-400 truncate">{doc.date}</p>
+                        <p className="text-[9px] sm:text-xs text-gray-500 truncate">{doc.type}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-white mb-1">{doc.title}</p>
-                      <p className="text-xs text-gray-400">{doc.date} • {doc.type}</p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-500 flex-shrink-0" />
                   </div>
                 );
               })}
