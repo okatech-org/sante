@@ -258,8 +258,8 @@ export default function DashboardPatient() {
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               {/* Photo d'identité */}
               <div className="flex-shrink-0 mx-auto sm:mx-0">
-                <div className="w-32 h-40 sm:w-40 sm:h-48 rounded-2xl overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
-                  <div className="w-full h-full rounded-xl bg-[#1a1f2e] flex items-center justify-center">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                  <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center">
                     <span className="text-4xl sm:text-5xl font-bold text-white">
                       {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </span>
