@@ -17,6 +17,11 @@ export default function DashboardPatient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+  
+  // Séparer le nom et le prénom
+  const nameParts = fullName.split(' ');
+  const firstName = nameParts.slice(0, -1).join(' ') || 'Jean-Pierre';
+  const lastName = nameParts[nameParts.length - 1] || 'Mbadinga';
   const menuItems = [{
     id: 'dashboard',
     label: 'Tableau de bord',
@@ -266,8 +271,8 @@ export default function DashboardPatient() {
               <div className="flex-1 space-y-3 sm:space-y-4">
                 {/* Nom complet - Bloc séparé */}
                 <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide">PELLEN-LAKOUMBA</p>
-                  <p className="text-base sm:text-xl font-normal text-white mt-1">Gueylord Asted</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide">{lastName}</p>
+                  <p className="text-base sm:text-xl font-normal text-white mt-1">{firstName}</p>
                 </div>
 
                 {/* Âge et Sexe - sur la même ligne */}
