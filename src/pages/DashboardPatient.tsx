@@ -309,7 +309,6 @@ export default function DashboardPatient() {
                   </div>
                 </div>
                 <AvatarUpload
-                  userId={user?.id || ''}
                   currentAvatarUrl={avatarUrl || undefined}
                   onAvatarUpdate={setAvatarUrl}
                 />

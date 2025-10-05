@@ -11,12 +11,11 @@ import {
 } from "@/components/ui/dialog";
 
 interface AvatarUploadProps {
-  userId: string;
   currentAvatarUrl?: string;
   onAvatarUpdate: (url: string) => void;
 }
 
-export function AvatarUpload({ userId, currentAvatarUrl, onAvatarUpdate }: AvatarUploadProps) {
+export function AvatarUpload({ currentAvatarUrl, onAvatarUpdate }: AvatarUploadProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -86,13 +85,20 @@ export function AvatarUpload({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
 
     setUploading(true);
     try {
+      // Get current user
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        throw new Error("Vous devez être connecté pour uploader une photo");
+      }
+
       // Convert preview URL to blob
       const response = await fetch(previewUrl);
       const blob = await response.blob();
       
       // Generate unique filename
       const fileExt = 'jpg';
-      const fileName = `${userId}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -113,7 +119,7 @@ export function AvatarUpload({ userId, currentAvatarUrl, onAvatarUpdate }: Avata
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: publicUrl })
-        .eq('id', userId);
+        .eq('id', user.id);
 
       if (updateError) throw updateError;
 
