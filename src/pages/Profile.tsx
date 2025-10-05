@@ -461,128 +461,131 @@ export default function Profile() {
 
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                      <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
-                        <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
-                        Informations personnelles
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="full_name" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
-                            Nom complet *
-                          </Label>
-                          <Input
-                            id="full_name"
-                            {...register("full_name")}
-                            placeholder="Votre nom complet"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                          {errors.full_name && (
-                            <p className="text-[10px] sm:text-xs text-red-400">{errors.full_name.message}</p>
-                          )}
-                        </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      {/* Informations personnelles */}
+                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                        <h2 className="text-sm sm:text-base font-bold text-white mb-3 flex items-center gap-2">
+                          <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
+                          Informations personnelles
+                        </h2>
+                        <div className="space-y-2">
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="full_name" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <User className="h-3 w-3 flex-shrink-0" />
+                              Nom complet *
+                            </Label>
+                            <Input
+                              id="full_name"
+                              {...register("full_name")}
+                              placeholder="Votre nom complet"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                            {errors.full_name && (
+                              <p className="text-[10px] text-red-400">{errors.full_name.message}</p>
+                            )}
+                          </div>
 
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="email" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
-                            Email
-                          </Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            {...register("email")}
-                            placeholder="votre@email.com"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                          {errors.email && (
-                            <p className="text-[10px] sm:text-xs text-red-400">{errors.email.message}</p>
-                          )}
-                        </div>
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="email" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <Mail className="h-3 w-3 flex-shrink-0" />
+                              Email
+                            </Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              {...register("email")}
+                              placeholder="votre@email.com"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                            {errors.email && (
+                              <p className="text-[10px] text-red-400">{errors.email.message}</p>
+                            )}
+                          </div>
 
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="phone" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
-                            Téléphone *
-                          </Label>
-                          <Input
-                            id="phone"
-                            {...register("phone")}
-                            placeholder="+241 XX XX XX XX"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                          {errors.phone && (
-                            <p className="text-[10px] sm:text-xs text-red-400">{errors.phone.message}</p>
-                          )}
-                        </div>
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="phone" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <Phone className="h-3 w-3 flex-shrink-0" />
+                              Téléphone *
+                            </Label>
+                            <Input
+                              id="phone"
+                              {...register("phone")}
+                              placeholder="+241 XX XX XX XX"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                            {errors.phone && (
+                              <p className="text-[10px] text-red-400">{errors.phone.message}</p>
+                            )}
+                          </div>
 
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="birth_date" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
-                            Date de naissance
-                          </Label>
-                          <Input
-                            id="birth_date"
-                            type="date"
-                            {...register("birth_date")}
-                            className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                        </div>
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <Calendar className="h-3 w-3 flex-shrink-0" />
+                              Date de naissance
+                            </Label>
+                            <Input
+                              id="birth_date"
+                              type="date"
+                              {...register("birth_date")}
+                              className="bg-white/5 border-white/10 text-white h-8 text-xs w-full"
+                            />
+                          </div>
 
-                        <div className="space-y-1.5 sm:col-span-2 lg:col-span-1 w-full">
-                          <Label htmlFor="gender" className="text-gray-300 text-xs sm:text-sm">Genre</Label>
-                          <Select onValueChange={(value) => setValue("gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm w-full">
-                              <SelectValue placeholder="Sélectionnez votre genre" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="male">Homme</SelectItem>
-                              <SelectItem value="female">Femme</SelectItem>
-                              <SelectItem value="other">Autre</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
+                            <Select onValueChange={(value) => setValue("gender", value)}>
+                              <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
+                                <SelectValue placeholder="Sélectionnez votre genre" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="male">Homme</SelectItem>
+                                <SelectItem value="female">Femme</SelectItem>
+                                <SelectItem value="other">Autre</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Adresse */}
-                    <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mt-3">
-                      <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
-                        Adresse
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="province" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
-                            Province
-                          </Label>
-                          <Input
-                            id="province"
-                            {...register("province")}
-                            placeholder="Ex: Estuaire"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                        </div>
+                      {/* Adresse */}
+                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                        <h2 className="text-sm sm:text-base font-bold text-white mb-3 flex items-center gap-2">
+                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
+                          Adresse
+                        </h2>
+                        <div className="space-y-2">
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <MapPin className="h-3 w-3 flex-shrink-0" />
+                              Province
+                            </Label>
+                            <Input
+                              id="province"
+                              {...register("province")}
+                              placeholder="Ex: Estuaire"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                          </div>
 
-                        <div className="space-y-1.5 w-full">
-                          <Label htmlFor="city" className="text-gray-300 text-xs sm:text-sm">Ville</Label>
-                          <Input
-                            id="city"
-                            {...register("city")}
-                            placeholder="Ex: Libreville"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
-                        </div>
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="city" className="text-gray-300 text-xs">Ville</Label>
+                            <Input
+                              id="city"
+                              {...register("city")}
+                              placeholder="Ex: Libreville"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                          </div>
 
-                        <div className="space-y-1.5 sm:col-span-2 w-full">
-                          <Label htmlFor="neighborhood" className="text-gray-300 text-xs sm:text-sm">Quartier</Label>
-                          <Input
-                            id="neighborhood"
-                            {...register("neighborhood")}
-                            placeholder="Ex: Nombakele"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm w-full"
-                          />
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="neighborhood" className="text-gray-300 text-xs">Quartier</Label>
+                            <Input
+                              id="neighborhood"
+                              {...register("neighborhood")}
+                              placeholder="Ex: Nombakele"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
