@@ -506,31 +506,33 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
-                              <Calendar className="h-3 w-3 flex-shrink-0" />
-                              Date de naissance
-                            </Label>
-                            <Input
-                              id="birth_date"
-                              type="date"
-                              {...register("birth_date")}
-                              className="bg-white/5 border-white/10 text-white h-8 text-xs w-full"
-                            />
-                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1.5 w-full">
+                              <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
+                                <Calendar className="h-3 w-3 flex-shrink-0" />
+                                Date de naissance
+                              </Label>
+                              <Input
+                                id="birth_date"
+                                type="date"
+                                {...register("birth_date")}
+                                className="bg-white/5 border-white/10 text-white h-8 text-xs w-full"
+                              />
+                            </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
-                            <Select onValueChange={(value) => setValue("gender", value)}>
-                              <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
-                                <SelectValue placeholder="Sélectionnez votre genre" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="male">Homme</SelectItem>
-                                <SelectItem value="female">Femme</SelectItem>
-                                <SelectItem value="other">Autre</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <div className="space-y-1.5 w-full">
+                              <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
+                              <Select onValueChange={(value) => setValue("gender", value)}>
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
+                                  <SelectValue placeholder="Sélectionnez votre genre" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="male">Homme</SelectItem>
+                                  <SelectItem value="female">Femme</SelectItem>
+                                  <SelectItem value="other">Autre</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
                         </div>
                       </div>
