@@ -151,8 +151,7 @@ const Register = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <span className="text-white">{t('register.title') || "Rejoignez-nous"}</span>
-              <br />
+              <span className="text-white">{t('register.title') || "Rejoignez-nous"} </span>
               <span className="bg-gradient-to-r from-cyan-400 via-green-400 via-yellow-400 via-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent">
                 dès aujourd'hui
               </span>
