@@ -127,7 +127,7 @@ const App = () => (
                 <MedicalRecord />
               </ProtectedRoute>
             } />
-            <Route path="/support" element={
+            <Route path="/messages" element={
               <ProtectedRoute>
                 <Support />
               </ProtectedRoute>

@@ -144,7 +144,7 @@ export default function DashboardPatient() {
     label: 'Messages',
     icon: Bell,
     badge: '3',
-    path: '/support',
+    path: '/messages',
     color: '#ffaa00'
   }, {
     id: 'settings',
