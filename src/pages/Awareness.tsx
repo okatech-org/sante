@@ -20,7 +20,8 @@ import {
   Droplet,
   Activity,
   Brain,
-  Baby
+  Baby,
+  ChevronRight
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -170,94 +171,106 @@ export default function Awareness() {
   return (
     <MainLayout>
       <div className="min-h-screen">
-        {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        {/* Hero Section - Style Landing */}
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src={awarenessHero} 
             alt="Sensibilisation santé" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-secondary/80 to-accent/90" />
         </div>
         
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-white/10 backdrop-blur-sm border border-white/20 animate-scale-in">
+            <Heart className="w-4 h-4 text-white" />
+            <span className="text-white">Votre santé, notre priorité</span>
+          </div>
+          
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-white animate-fade-in leading-tight">
             Sensibilisation Santé
           </h1>
-          <p className="text-xl lg:text-2xl max-w-3xl mx-auto mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <p className="text-xl sm:text-2xl max-w-3xl mx-auto mb-8 text-white/90 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Actualités, conseils et formations pour prendre soin de votre santé
           </p>
           
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  placeholder="Rechercher un article, tutoriel, conseil..."
-                  className="pl-10 bg-white text-foreground h-12"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+          {/* Search Bar avec glassmorphism */}
+          <div className="max-w-2xl mx-auto animate-scale-in" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-white/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-2">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-5 h-5" />
+                  <Input 
+                    placeholder="Rechercher un article, tutoriel, conseil..."
+                    className="pl-10 bg-white/90 dark:bg-black/40 text-foreground dark:text-white h-12 border-white/40 dark:border-white/20"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Button size="lg" className="shadow-lg hover:shadow-xl hover-scale bg-secondary hover:bg-secondary/90">
+                  Rechercher
+                </Button>
               </div>
-              <Button size="lg" variant="secondary">
-                Rechercher
-              </Button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Main Content Tabs */}
-      <section className="py-16 bg-background">
+      <section className="py-20 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="news" className="w-full">
-            <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-12">
-              <TabsTrigger value="news" className="flex items-center gap-2">
+            <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-12 bg-card/60 backdrop-blur-sm border border-border/40 p-1 h-auto">
+              <TabsTrigger value="news" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-12">
                 <FileText className="w-4 h-4" />
                 <span className="hidden sm:inline">Actualités</span>
               </TabsTrigger>
-              <TabsTrigger value="tutorials" className="flex items-center gap-2">
+              <TabsTrigger value="tutorials" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-12">
                 <Video className="w-4 h-4" />
                 <span className="hidden sm:inline">Tutoriels</span>
               </TabsTrigger>
-              <TabsTrigger value="tips" className="flex items-center gap-2">
+              <TabsTrigger value="tips" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-12">
                 <BookOpen className="w-4 h-4" />
                 <span className="hidden sm:inline">Conseils</span>
               </TabsTrigger>
-              <TabsTrigger value="firstaid" className="flex items-center gap-2">
+              <TabsTrigger value="firstaid" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-12">
                 <AlertCircle className="w-4 h-4" />
                 <span className="hidden sm:inline">Premiers Secours</span>
               </TabsTrigger>
             </TabsList>
 
             {/* News Tab */}
-            <TabsContent value="news">
+            <TabsContent value="news" className="animate-fade-in">
               <div className="space-y-6">
-                {newsArticles.map((article) => (
-                  <Card key={article.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                {newsArticles.map((article, index) => (
+                  <Card 
+                    key={article.id} 
+                    className="hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden border-border/40 hover:-translate-y-1 group animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
                     <div className="grid md:grid-cols-3 gap-0">
-                      <div className="relative h-48 md:h-auto">
+                      <div className="relative h-48 md:h-auto overflow-hidden">
                         <img 
                           src={article.image} 
                           alt={article.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <Badge className="absolute top-4 left-4">{article.badge}</Badge>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <Badge className="absolute top-4 left-4 shadow-lg bg-gradient-to-r from-secondary to-accent">{article.badge}</Badge>
                       </div>
                       <div className="md:col-span-2 p-6">
                         <div className="flex items-center gap-4 mb-3">
-                          <Badge variant="outline">{article.category}</Badge>
+                          <Badge variant="outline" className="border-primary/40">{article.category}</Badge>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="w-4 h-4" />
                             {article.date}
                           </div>
                         </div>
-                        <CardTitle className="text-xl mb-3">{article.title}</CardTitle>
+                        <CardTitle className="text-xl mb-3 group-hover:text-primary transition-colors">{article.title}</CardTitle>
                         <CardDescription className="text-base">{article.excerpt}</CardDescription>
-                        <Button variant="link" className="px-0 mt-4">
-                          Lire la suite →
+                        <Button variant="link" className="px-0 mt-4 group-hover:gap-2 transition-all">
+                          Lire la suite <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
                     </div>
@@ -267,25 +280,29 @@ export default function Awareness() {
             </TabsContent>
 
             {/* Tutorials Tab */}
-            <TabsContent value="tutorials">
+            <TabsContent value="tutorials" className="animate-fade-in">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tutorials.map((tutorial) => (
-                  <Card key={tutorial.id} className="hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
-                    <div className="relative">
+                {tutorials.map((tutorial, index) => (
+                  <Card 
+                    key={tutorial.id} 
+                    className="hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-1 group animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="relative overflow-hidden">
                       <img 
                         src={tutorial.thumbnail} 
                         alt={tutorial.title}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
-                          <Play className="w-8 h-8 text-primary-foreground ml-1" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                          <Play className="w-8 h-8 text-white ml-1" />
                         </div>
                       </div>
-                      <Badge className="absolute top-4 right-4">{tutorial.duration}</Badge>
+                      <Badge className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm border-white/20">{tutorial.duration}</Badge>
                     </div>
                     <CardHeader>
-                      <CardTitle className="text-lg">{tutorial.title}</CardTitle>
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors">{tutorial.title}</CardTitle>
                       <CardDescription className="flex items-center gap-2">
                         <Video className="w-4 h-4" />
                         {tutorial.views}
@@ -297,21 +314,25 @@ export default function Awareness() {
             </TabsContent>
 
             {/* Health Tips Tab */}
-            <TabsContent value="tips">
+            <TabsContent value="tips" className="animate-fade-in">
               <div className="grid md:grid-cols-2 gap-6">
                 {healthTips.map((tip, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={index} 
+                    className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group animate-fade-in border-border/40"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
                     <CardHeader>
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary text-white mb-4 shadow-lg group-hover:scale-110 transition-transform">
                         <tip.icon className="w-6 h-6" />
                       </div>
-                      <CardTitle className="text-xl">{tip.title}</CardTitle>
+                      <CardTitle className="text-xl group-hover:text-primary transition-colors">{tip.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-3">
                         {tip.tips.map((item, idx) => (
                           <li key={idx} className="flex items-start gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-secondary mt-2 flex-shrink-0" />
                             <span className="text-foreground">{item}</span>
                           </li>
                         ))}
@@ -323,9 +344,9 @@ export default function Awareness() {
             </TabsContent>
 
             {/* First Aid Tab */}
-            <TabsContent value="firstaid">
+            <TabsContent value="firstaid" className="animate-fade-in">
               <div className="space-y-6">
-                <Card className="bg-destructive/10 border-destructive/20">
+                <Card className="bg-gradient-to-r from-destructive/10 to-orange-500/10 border-destructive/30 shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
                       <AlertCircle className="w-6 h-6" />
@@ -334,16 +355,16 @@ export default function Awareness() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-3 gap-4 text-center">
-                      <div className="p-4 bg-background rounded-lg">
-                        <div className="text-3xl font-bold text-destructive mb-1">1300</div>
+                      <div className="p-4 bg-card rounded-lg hover:shadow-xl transition-shadow border border-border/40">
+                        <div className="text-3xl font-bold bg-gradient-to-r from-destructive to-orange-500 bg-clip-text text-transparent mb-1">1300</div>
                         <div className="text-sm text-muted-foreground">SAMU</div>
                       </div>
-                      <div className="p-4 bg-background rounded-lg">
-                        <div className="text-3xl font-bold text-destructive mb-1">18</div>
+                      <div className="p-4 bg-card rounded-lg hover:shadow-xl transition-shadow border border-border/40">
+                        <div className="text-3xl font-bold bg-gradient-to-r from-destructive to-orange-500 bg-clip-text text-transparent mb-1">18</div>
                         <div className="text-sm text-muted-foreground">Pompiers</div>
                       </div>
-                      <div className="p-4 bg-background rounded-lg">
-                        <div className="text-3xl font-bold text-destructive mb-1">1730</div>
+                      <div className="p-4 bg-card rounded-lg hover:shadow-xl transition-shadow border border-border/40">
+                        <div className="text-3xl font-bold bg-gradient-to-r from-destructive to-orange-500 bg-clip-text text-transparent mb-1">1730</div>
                         <div className="text-sm text-muted-foreground">Police</div>
                       </div>
                     </div>
@@ -352,12 +373,16 @@ export default function Awareness() {
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {firstAidGuides.map((guide, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                    <Card 
+                      key={index} 
+                      className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group animate-fade-in border-border/40"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
                       <CardHeader>
-                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 ${guide.color} mb-4`}>
-                          <guide.icon className="w-6 h-6" />
+                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary text-white mb-4 shadow-lg group-hover:scale-110 transition-transform ${guide.color}`}>
+                          <guide.icon className="w-6 h-6 text-white" />
                         </div>
-                        <CardTitle className="text-xl">{guide.title}</CardTitle>
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors">{guide.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <ul className="space-y-3">
@@ -377,23 +402,28 @@ export default function Awareness() {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="py-16 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+      {/* Newsletter CTA - Style Landing */}
+      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-accent relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent animate-aurora opacity-75" />
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white drop-shadow-lg">
             Restez informé
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-white/90">
             Inscrivez-vous à notre newsletter pour recevoir nos conseils santé et actualités
           </p>
-          <div className="max-w-md mx-auto flex gap-2">
-            <Input 
-              placeholder="Votre email"
-              className="bg-primary-foreground text-foreground"
-            />
-            <Button variant="secondary" size="lg">
-              S'abonner
-            </Button>
+          <div className="max-w-md mx-auto">
+            <div className="bg-white/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-2">
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="Votre email"
+                  className="bg-white/90 dark:bg-black/40 text-foreground dark:text-white border-white/40 dark:border-white/20"
+                />
+                <Button className="shadow-lg hover:shadow-xl hover-scale bg-white text-primary hover:bg-white/90">
+                  S'abonner
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
