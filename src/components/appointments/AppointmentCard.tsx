@@ -183,6 +183,9 @@ export const AppointmentCard = ({
             </div>
           </div>
           <div>
+            <p className="text-sm text-gray-400 mb-1">
+              {format(appointment.date, "EEEE dd MMMM yyyy", { locale: fr })}
+            </p>
             <p className="font-semibold text-lg text-white">{appointment.timeSlot}</p>
             {appointment.type === "telemedicine" && (
               <Badge variant="outline" className="mt-1 bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
