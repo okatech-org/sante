@@ -555,6 +555,31 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-2">
                           <div className="space-y-1.5 w-full">
+                            <Label htmlFor="contact_email" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <Mail className="h-3 w-3 flex-shrink-0" />
+                              Email
+                            </Label>
+                            <Input
+                              id="contact_email"
+                              type="email"
+                              defaultValue="iasted@me.com"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="contact_phone" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <Phone className="h-3 w-3 flex-shrink-0" />
+                              Téléphone *
+                            </Label>
+                            <Input
+                              id="contact_phone"
+                              defaultValue="+24111763101"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5 w-full">
                             <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <MapPin className="h-3 w-3 flex-shrink-0" />
                               Province
