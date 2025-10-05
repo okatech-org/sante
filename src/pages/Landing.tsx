@@ -342,33 +342,33 @@ export default function Landing() {
             {/* Barre de recherche flottante par-dessus la carte */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-4xl z-[1001]">
               <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-primary/60 dark:hover:border-primary/70 group">
-                    <Stethoscope className="w-4 h-4 mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
+                <div className="flex flex-row gap-2 items-stretch">
+                  <div className="flex-1 min-w-0 flex items-center rounded-lg px-2 sm:px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-primary/60 dark:hover:border-primary/70 group">
+                    <Stethoscope className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
-                      placeholder={t('landing.search.doctor') || "Médecin, spécialité..."}
+                      placeholder={t('landing.search.doctor') || "Médecin..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-sm font-medium"
+                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-xs sm:text-sm font-medium"
                     />
                   </div>
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-secondary/60 dark:hover:border-secondary/70 group">
-                    <MapPin className="w-4 h-4 mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
+                  <div className="flex-1 min-w-0 flex items-center rounded-lg px-2 sm:px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-secondary/60 dark:hover:border-secondary/70 group">
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
-                      placeholder={t('landing.search.location') || "Ville, quartier..."}
+                      placeholder={t('landing.search.location') || "Ville..."}
                       value={searchLocation}
                       onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-sm font-medium"
+                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-xs sm:text-sm font-medium"
                     />
                   </div>
                   <Button 
                     onClick={handleSearch}
                     size="sm"
-                    className="w-full sm:w-auto px-6 py-2.5 text-sm shadow-xl hover:shadow-2xl hover-scale bg-blue-600 hover:bg-blue-700 transition-all duration-300"
+                    className="flex-shrink-0 px-3 sm:px-6 py-2.5 text-xs sm:text-sm shadow-xl hover:shadow-2xl hover-scale bg-blue-600 hover:bg-blue-700 transition-all duration-300"
                   >
-                    <Search className="w-4 h-4 sm:mr-2" />
+                    <Search className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
                     <span className="hidden sm:inline">{t('landing.search.button') || "Rechercher"}</span>
                   </Button>
                 </div>
