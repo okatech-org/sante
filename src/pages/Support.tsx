@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -278,6 +278,12 @@ export default function Support() {
   const handleSendReply = async () => {
     if (!replyContent.trim() || !selectedMessage || !user?.id) {
       toast.error("Veuillez saisir un message");
+      return;
+    }
+
+    // Check if the message has a valid sender_id to reply to
+    if (!selectedMessage.sender_id) {
+      toast.error("Impossible de répondre à ce message système. Veuillez contacter directement le professionnel de santé.");
       return;
     }
 
@@ -890,10 +896,19 @@ export default function Support() {
               <Dialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
                 <DialogContent className="max-w-2xl max-h-[90vh] p-0 bg-[#1a1f2e] border border-white/20 overflow-hidden animate-in fade-in-0 zoom-in-95">
                   {selectedMessage && (
-                    <div className="flex flex-col h-full max-h-[90vh]">
-                      {/* Message Header */}
-                      <div className="p-4 sm:p-6 border-b border-white/10 flex-shrink-0">
-                        <div className="flex items-start gap-3 sm:gap-4">
+                    <>
+                      {/* Accessibility titles - hidden but required for screen readers */}
+                      <DialogHeader className="sr-only">
+                        <DialogTitle>{selectedMessage.subject}</DialogTitle>
+                        <DialogDescription>
+                          Message de {selectedMessage.sender_name} - {getCategoryLabel(selectedMessage.category)}
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="flex flex-col h-full max-h-[90vh]">
+                        {/* Message Header */}
+                        <div className="p-4 sm:p-6 border-b border-white/10 flex-shrink-0">
+                          <div className="flex items-start gap-3 sm:gap-4">
                           <div className={`p-3 rounded-lg flex-shrink-0 ${
                             selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
                             selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
@@ -971,7 +986,7 @@ export default function Support() {
                         )}
 
                         {/* Reply Section */}
-                        {selectedMessage.allow_reply && !selectedMessage.deleted_at && (
+                        {selectedMessage.allow_reply && !selectedMessage.deleted_at && selectedMessage.sender_id && (
                           <div className="mt-6 pt-6 border-t border-white/10">
                             <h4 className="text-sm font-semibold text-white mb-3">Répondre</h4>
                             <div className="space-y-3">
@@ -999,6 +1014,15 @@ export default function Support() {
                                   {isSendingReply ? "Envoi..." : "Envoyer"}
                                 </Button>
                               </div>
+                            </div>
+                          </div>
+                        )}
+                        {selectedMessage.allow_reply && !selectedMessage.deleted_at && !selectedMessage.sender_id && (
+                          <div className="mt-6 pt-6 border-t border-white/10">
+                            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                              <p className="text-yellow-400 text-sm">
+                                ℹ️ Ce message système ne permet pas de réponse directe. Veuillez contacter le professionnel de santé via les coordonnées indiquées dans le message.
+                              </p>
                             </div>
                           </div>
                         )}
@@ -1054,6 +1078,7 @@ export default function Support() {
                         </div>
                       </div>
                     </div>
+                    </>
                   )}
                 </DialogContent>
               </Dialog>
