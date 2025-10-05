@@ -217,35 +217,17 @@ export default function Appointments() {
       );
     }
 
-    const grouped = groupByDate(upcomingAppointments);
-    const today = format(new Date(), "yyyy-MM-dd");
-
     return (
-      <div className="space-y-8">
-        {Object.entries(grouped).map(([dateKey, appointments]) => (
-          <div key={dateKey}>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="h-px flex-1 bg-white/10" />
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-white">
-                {dateKey === today
-                  ? "AUJOURD'HUI"
-                  : format(new Date(dateKey), "EEEE dd MMMM", { locale: fr }).toUpperCase()}
-              </h3>
-              <div className="h-px flex-1 bg-white/10" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {appointments.map((appointment) => (
-                <AppointmentCard
-                  key={appointment.id}
-                  appointment={appointment}
-                  onCancel={() => handleCancelAppointment(appointment)}
-                  onPay={() => handlePay(appointment)}
-                  onCall={() => handleCall(appointment)}
-                  onGetDirections={() => handleGetDirections(appointment)}
-                />
-              ))}
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {upcomingAppointments.map((appointment) => (
+          <AppointmentCard
+            key={appointment.id}
+            appointment={appointment}
+            onCancel={() => handleCancelAppointment(appointment)}
+            onPay={() => handlePay(appointment)}
+            onCall={() => handleCall(appointment)}
+            onGetDirections={() => handleGetDirections(appointment)}
+          />
         ))}
       </div>
     );
@@ -264,23 +246,14 @@ export default function Appointments() {
       );
     }
 
-    const grouped = groupByMonth(pastAppointments);
-
     return (
-      <div className="space-y-8">
-        {Object.entries(grouped).map(([month, appointments]) => (
-          <div key={month}>
-            <h3 className="text-lg font-semibold mb-4 uppercase text-white">{month}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {appointments.map((appointment) => (
-                <AppointmentCard
-                  key={appointment.id}
-                  appointment={appointment}
-                  variant="compact"
-                />
-              ))}
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {pastAppointments.map((appointment) => (
+          <AppointmentCard
+            key={appointment.id}
+            appointment={appointment}
+            variant="compact"
+          />
         ))}
       </div>
     );
