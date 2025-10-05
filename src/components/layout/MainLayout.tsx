@@ -29,7 +29,7 @@ const routeLabels: Record<string, string> = {
   "/cartography": "Cartographie Santé",
   "/medical-record": "Mon Dossier Médical",
   "/reimbursements": "Remboursements CNAMGS",
-  "/support": "Aide & Support",
+  "/messages": "Messages",
   "/profile": "Mon Profil",
   "/admin": "Administration",
   "/admin/dashboard": "Tableau de Bord Admin",

@@ -483,7 +483,7 @@ export default function ForProfessionals() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/support">
+              <Link to="/messages">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-lg hover:shadow-xl hover-scale bg-white/10 hover:bg-white/20 border-2 border-gray-600 text-white text-base px-8 py-6 h-auto">
                   Contacter notre équipe
                 </Button>
@@ -552,9 +552,9 @@ export default function ForProfessionals() {
                 <span>Admin</span>
               </Link>
               <div className="flex space-x-4 text-sm">
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.privacy') || 'Confidentialité'}</Link>
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.terms') || "Conditions d'utilisation"}</Link>
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.helpCenter') || 'Aide'}</Link>
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.privacy') || 'Confidentialité'}</Link>
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.terms') || "Conditions d'utilisation"}</Link>
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">{t('landing.footer.helpCenter') || 'Aide'}</Link>
               </div>
             </div>
           </div>

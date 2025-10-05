@@ -362,13 +362,13 @@ const Register = () => {
               </Link>
               
               <div className="flex space-x-4 text-sm">
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">
                   {t('landing.footer.privacy') || 'Confidentialité'}
                 </Link>
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">
                   {t('landing.footer.terms') || "Conditions d'utilisation"}
                 </Link>
-                <Link to="/support" className="text-gray-500 hover:text-cyan-400 transition-colors">
+                <Link to="/messages" className="text-gray-500 hover:text-cyan-400 transition-colors">
                   {t('landing.footer.helpCenter') || 'Aide'}
                 </Link>
               </div>

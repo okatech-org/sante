@@ -833,13 +833,13 @@ export default function Landing() {
               </Link>
               
               <div className="flex space-x-6 text-sm">
-                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/messages" className="text-muted-foreground hover:text-foreground transition-colors">
                   {t('landing.footer.privacy') || 'Confidentialité'}
                 </Link>
-                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/messages" className="text-muted-foreground hover:text-foreground transition-colors">
                   {t('landing.footer.terms') || "Conditions d'utilisation"}
                 </Link>
-                <Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/messages" className="text-muted-foreground hover:text-foreground transition-colors">
                   {t('landing.footer.helpCenter') || 'Aide'}
                 </Link>
               </div>

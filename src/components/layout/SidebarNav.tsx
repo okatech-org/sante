@@ -36,7 +36,7 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
     { icon: Pill, label: "Mes ordonnances", href: "/prescriptions", badge: 1 },
     { icon: TestTube, label: "Résultats d'analyses", href: "/results" },
     { icon: Shield, label: "Droits CNAMGS", href: "/reimbursements" },
-    { icon: Mail, label: "Messages", href: "/support", badge: 3 },
+    { icon: Mail, label: "Messages", href: "/messages", badge: 3 },
     { icon: Settings, label: "Paramètres", href: "/profile" },
   ];
 
