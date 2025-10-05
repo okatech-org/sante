@@ -399,7 +399,7 @@ export default function DashboardPatient() {
               <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
                 Rappels & Alertes
               </h3>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {[
                 { 
                   time: 'Aujourd\'hui 14h30', 
