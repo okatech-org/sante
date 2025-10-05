@@ -368,32 +368,34 @@ export default function DashboardPatient() {
             </div>
           </div>
 
-          {/* Stats Grid - avec icônes colorées comme la page d'accueil */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            {[
-              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
-              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
-              { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
-              { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
-            ].map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
-                >
-                  <div 
-                    className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center"
-                    style={{ backgroundColor: `${stat.color}20` }}
+          {/* Stats Grid - compact pour mobile */}
+          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mb-6">
+            <div className="grid grid-cols-4 gap-3 sm:gap-4">
+              {[
+                { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
+                { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
+                { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
+                { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
+              ].map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div
+                    key={index}
+                    className="text-center"
                   >
-                    <Icon className="w-7 h-7" style={{ color: stat.color }} />
+                    <div 
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: `${stat.color}20` }}
+                    >
+                      <Icon className="w-5 h-5 sm:w-7 sm:h-7" style={{ color: stat.color }} />
+                    </div>
+                    <p className="text-lg sm:text-3xl font-bold text-white mb-1">{stat.value}</p>
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium">{stat.label}</p>
+                    <p className="text-[9px] sm:text-xs text-gray-500 hidden sm:block">{stat.trend}</p>
                   </div>
-                  <p className="text-xs mb-2 text-gray-400 font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
-                  <p className="text-xs text-gray-500">{stat.trend}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           {/* Rappels & Alertes et Dossier Médical sur la même ligne */}
