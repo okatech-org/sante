@@ -278,7 +278,7 @@ export default function DashboardPatient() {
 
           {/* Quick Actions - compact pour mobile */}
           <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div
                 onClick={() => navigate('/appointments')}
                 className="group rounded-xl p-4 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-white/5 border border-white/10 hover:bg-white/10 shadow-xl"
