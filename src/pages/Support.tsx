@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Menu,
@@ -581,15 +580,48 @@ export default function Support() {
                 )}
               </div>
 
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                <Input
-                  placeholder="Rechercher..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 sm:pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm"
-                />
+              {/* Search and Tabs */}
+              <div className="flex flex-col gap-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                  <Input
+                    placeholder="Rechercher..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 sm:pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm"
+                  />
+                </div>
+
+                {/* Tabs Filter */}
+                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-3 w-full">
+                  <button
+                    onClick={() => setSelectedTab("all")}
+                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                      selectedTab === "all" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Inbox className="h-4 w-4" />
+                    <span className="hidden sm:inline">Tous</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedTab("unread")}
+                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                      selectedTab === "unread" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <MailOpen className="h-4 w-4" />
+                    <span className="hidden sm:inline">Non lus</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedTab("starred")}
+                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                      selectedTab === "starred" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Star className="h-4 w-4" />
+                    <span className="hidden sm:inline">Favoris</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -597,103 +629,84 @@ export default function Support() {
             <div className="flex-1 flex overflow-hidden">
               {/* Messages List */}
               <div className="w-full flex flex-col bg-[#1a1f2e]/30">
-                <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col">
-                  <TabsList className="bg-white/5 border-b border-white/10 rounded-none p-1 grid grid-cols-3 w-full">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
-                      <Inbox className="h-4 w-4" />
-                      <span className="hidden sm:inline">Tous</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="unread" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
-                      <MailOpen className="h-4 w-4" />
-                      <span className="hidden sm:inline">Non lus</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="starred" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
-                      <Star className="h-4 w-4" />
-                      <span className="hidden sm:inline">Favoris</span>
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value={selectedTab} className="flex-1 m-0">
-                    <ScrollArea className="h-full">
-                      {loading ? (
-                        <div className="flex items-center justify-center h-full">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ffaa00]" />
-                        </div>
-                      ) : filteredMessages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                          <Inbox className="h-12 w-12 text-gray-500 mb-3" />
-                          <p className="text-gray-400">Aucun message</p>
-                        </div>
-                      ) : (
-                        <div className="divide-y divide-white/5">
-                          {filteredMessages.map((message) => (
-                            <div
-                              key={message.id}
-                              onClick={() => handleMessageClick(message)}
-                              className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-all active:bg-white/10 ${
-                                selectedMessage?.id === message.id ? 'bg-white/10' : ''
-                              } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
-                            >
-                              <div className="flex items-start gap-2 sm:gap-3">
-                                <div className={`p-2 rounded-lg flex-shrink-0 ${
-                                  message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
-                                  message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
-                                  message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
-                                  message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
-                                  'bg-gray-500/10 text-gray-400'
+                <ScrollArea className="flex-1">
+                  {loading ? (
+                    <div className="flex items-center justify-center h-full py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ffaa00]" />
+                    </div>
+                  ) : filteredMessages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-6 py-12">
+                      <Inbox className="h-12 w-12 text-gray-500 mb-3" />
+                      <p className="text-gray-400">Aucun message</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-white/5">
+                      {filteredMessages.map((message) => (
+                        <div
+                          key={message.id}
+                          onClick={() => handleMessageClick(message)}
+                          className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-all active:bg-white/10 ${
+                            selectedMessage?.id === message.id ? 'bg-white/10' : ''
+                          } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
+                        >
+                          <div className="flex items-start gap-2 sm:gap-3">
+                            <div className={`p-2 rounded-lg flex-shrink-0 ${
+                              message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
+                              message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
+                              message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
+                              message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
+                              'bg-gray-500/10 text-gray-400'
+                            }`}>
+                              {getSenderIcon(message.sender_type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className={`text-xs sm:text-sm font-medium truncate ${
+                                  !message.is_read ? 'text-white' : 'text-gray-300'
                                 }`}>
-                                  {getSenderIcon(message.sender_type)}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <p className={`text-xs sm:text-sm font-medium truncate ${
-                                      !message.is_read ? 'text-white' : 'text-gray-300'
-                                    }`}>
-                                      {message.sender_name}
-                                    </p>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleStar(message.id, message.is_starred);
-                                      }}
-                                      className="ml-2 p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
-                                    >
-                                      <Star className={`h-4 w-4 ${
-                                        message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
-                                      }`} />
-                                    </button>
-                                  </div>
-                                  <p className={`text-xs sm:text-sm truncate mb-1 ${
-                                    !message.is_read ? 'text-white font-medium' : 'text-gray-400'
-                                  }`}>
-                                    {message.subject}
-                                  </p>
-                                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                    <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
-                                      {getCategoryLabel(message.category)}
-                                    </Badge>
-                                    {message.priority !== 'normal' && (
-                                      <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
-                                    )}
-                                    {message.attachments && message.attachments.length > 0 && (
-                                      <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
-                                        <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-                                        {message.attachments.length}
-                                      </Badge>
-                                    )}
-                                    <span className="text-[10px] sm:text-xs text-gray-500">
-                                      {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
-                                    </span>
-                                  </div>
-                                </div>
+                                  {message.sender_name}
+                                </p>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleStar(message.id, message.is_starred);
+                                  }}
+                                  className="ml-2 p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
+                                >
+                                  <Star className={`h-4 w-4 ${
+                                    message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                  }`} />
+                                </button>
+                              </div>
+                              <p className={`text-xs sm:text-sm truncate mb-1 ${
+                                !message.is_read ? 'text-white font-medium' : 'text-gray-400'
+                              }`}>
+                                {message.subject}
+                              </p>
+                              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
+                                  {getCategoryLabel(message.category)}
+                                </Badge>
+                                {message.priority !== 'normal' && (
+                                  <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
+                                )}
+                                {message.attachments && message.attachments.length > 0 && (
+                                  <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
+                                    <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
+                                    {message.attachments.length}
+                                  </Badge>
+                                )}
+                                <span className="text-[10px] sm:text-xs text-gray-500">
+                                  {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
+                                </span>
                               </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
-                      )}
-                    </ScrollArea>
-                  </TabsContent>
-                </Tabs>
+                      ))}
+                    </div>
+                  )}
+                </ScrollArea>
               </div>
 
               {/* Message Detail Dialog - Centered floating modal */}
