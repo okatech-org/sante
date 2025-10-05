@@ -114,25 +114,25 @@ export const AppointmentCard = ({
 
   if (variant === "compact") {
     return (
-      <Card className="p-4 hover:shadow-md transition-shadow">
+      <div className="p-5 rounded-xl backdrop-blur-xl bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               {appointment.status === "past" && (
-                <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-[#00d4ff] flex-shrink-0" />
               )}
               {appointment.status === "cancelled" && (
-                <X className="h-4 w-4 text-destructive flex-shrink-0" />
+                <X className="h-4 w-4 text-[#ff0088] flex-shrink-0" />
               )}
-              <p className="font-medium truncate">
+              <p className="font-medium truncate text-white">
                 {format(appointment.date, "dd/MM", { locale: fr })} - {appointment.timeSlot.split(" - ")[0]} | {appointment.provider.name}
               </p>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               {getTypeLabel()} | {appointment.provider.specialty}
             </p>
             {appointment.cancellation && (
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Annulé le {format(appointment.cancellation.date, "dd/MM", { locale: fr })} ({appointment.cancellation.by === "patient" ? "vous" : "praticien"})
                 {appointment.cancellation.refund && (
                   <span className="block">
@@ -144,37 +144,48 @@ export const AppointmentCard = ({
           </div>
           <div className="flex gap-2 flex-shrink-0">
             {appointment.documents && appointment.documents.length > 0 && (
-              <Button variant="outline" size="sm" onClick={onViewDetails}>
+              <Button variant="outline" size="sm" onClick={onViewDetails} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <FileText className="h-4 w-4" />
                 {appointment.documents.length}
               </Button>
             )}
             {onViewDetails && (
-              <Button variant="ghost" size="sm" onClick={onViewDetails}>
+              <Button variant="ghost" size="sm" onClick={onViewDetails} className="hover:bg-white/10 text-gray-400 hover:text-white">
                 Détails
               </Button>
             )}
           </div>
         </div>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className={cn(
-      "p-6 hover:shadow-lg transition-all",
-      isSoon && appointment.status === "upcoming" && "border-primary shadow-md animate-pulse"
+    <div className={cn(
+      "p-6 rounded-xl backdrop-blur-xl bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl",
+      isSoon && appointment.status === "upcoming" && "border-[#00d4ff]/50 shadow-[#00d4ff]/20 shadow-2xl"
     )}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
-            {getTypeIcon()}
+          <div 
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{ 
+              backgroundColor: appointment.type === "telemedicine" ? "#00d4ff20" : 
+                              appointment.type === "exam" ? "#ffaa0020" : "#0088ff20" 
+            }}
+          >
+            <div style={{ 
+              color: appointment.type === "telemedicine" ? "#00d4ff" : 
+                     appointment.type === "exam" ? "#ffaa00" : "#0088ff" 
+            }}>
+              {getTypeIcon()}
+            </div>
           </div>
           <div>
-            <p className="font-semibold text-lg">{appointment.timeSlot}</p>
+            <p className="font-semibold text-lg text-white">{appointment.timeSlot}</p>
             {appointment.type === "telemedicine" && (
-              <Badge variant="outline" className="mt-1">
+              <Badge variant="outline" className="mt-1 bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
                 <Video className="h-3 w-3 mr-1" />
                 {getTypeLabel()}
               </Badge>
@@ -182,7 +193,7 @@ export const AppointmentCard = ({
           </div>
         </div>
         {isToday && appointment.status === "upcoming" && (
-          <Badge variant="destructive" className="animate-pulse">
+          <Badge className="bg-[#ff0088] text-white animate-pulse">
             AUJOURD'HUI
           </Badge>
         )}
@@ -190,30 +201,30 @@ export const AppointmentCard = ({
 
       {/* Provider Info */}
       <div className="mb-4">
-        <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
+        <h3 className="font-semibold text-lg mb-1 flex items-center gap-2 text-white">
           👨‍⚕️ {appointment.provider.name}
         </h3>
-        <p className="text-muted-foreground ml-6">{appointment.provider.specialty}</p>
+        <p className="text-gray-400 ml-6">{appointment.provider.specialty}</p>
       </div>
 
       {/* Reason */}
       <div className="mb-4 flex items-start gap-2">
-        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
-        <p className="text-sm">{appointment.reason}</p>
+        <FileText className="h-4 w-4 text-gray-400 mt-0.5" />
+        <p className="text-sm text-gray-300">{appointment.reason}</p>
       </div>
 
       {/* Location or Telemedicine */}
       {appointment.location && appointment.type !== "telemedicine" && (
         <div className="mb-4">
           <div className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm">{appointment.location}</p>
+              <p className="text-sm text-gray-300">{appointment.location}</p>
               {onGetDirections && (
                 <Button
                   variant="link"
                   size="sm"
-                  className="h-auto p-0 mt-1"
+                  className="h-auto p-0 mt-1 text-[#00d4ff] hover:text-[#00b8e6]"
                   onClick={onGetDirections}
                 >
                   🗺️ Voir itinéraire
@@ -227,36 +238,36 @@ export const AppointmentCard = ({
       {/* Prescribed By (for exams) */}
       {appointment.prescribedBy && (
         <div className="mb-4 flex items-start gap-2">
-          <Pill className="h-4 w-4 text-muted-foreground mt-0.5" />
-          <p className="text-sm">Prescrit par : {appointment.prescribedBy}</p>
+          <Pill className="h-4 w-4 text-gray-400 mt-0.5" />
+          <p className="text-sm text-gray-300">Prescrit par : {appointment.prescribedBy}</p>
         </div>
       )}
 
       {/* Instructions */}
       {appointment.instructions && (
-        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-warning/10 border border-warning/20">
-          <AlertCircle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-warning-foreground">{appointment.instructions}</p>
+        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#ffaa00]/20 border border-[#ffaa00]/30">
+          <AlertCircle className="h-4 w-4 text-[#ffaa00] mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-[#ffaa00]">{appointment.instructions}</p>
         </div>
       )}
 
       {/* Payment Status */}
       <div className="mb-4">
         {appointment.payment.status === "paid" ? (
-          <div className="flex items-center gap-2 text-success">
+          <div className="flex items-center gap-2 text-[#00d4ff]">
             <CheckCircle2 className="h-4 w-4" />
             <span className="text-sm font-medium">
               Payé : {appointment.payment.amount.toLocaleString()} FCFA
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-warning">
+          <div className="flex items-center gap-2 text-[#ffaa00]">
             <AlertCircle className="h-4 w-4" />
             <span className="text-sm font-medium">
               À payer : {appointment.payment.amount.toLocaleString()} FCFA
             </span>
             {appointment.payment.method && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-gray-400">
                 (Paiement sur place sélectionné)
               </span>
             )}
@@ -268,7 +279,7 @@ export const AppointmentCard = ({
       {timeUntil && appointment.status === "upcoming" && (
         <div className={cn(
           "mb-4 flex items-center gap-2 p-2 rounded-lg",
-          isSoon ? "bg-destructive/10 text-destructive" : "bg-muted"
+          isSoon ? "bg-[#ff0088]/20 text-[#ff0088]" : "bg-white/5 text-gray-300"
         )}>
           <Clock className="h-4 w-4" />
           <span className="text-sm font-medium">{timeUntil}</span>
@@ -276,41 +287,41 @@ export const AppointmentCard = ({
       )}
 
       {/* Actions */}
-      <div className="flex flex-wrap gap-2 pt-4 border-t">
+      <div className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
         {appointment.status === "upcoming" && (
           <>
             {appointment.type === "telemedicine" && isSoon && (
-              <Button size="sm" className="flex-1 sm:flex-none">
+              <Button size="sm" className="flex-1 sm:flex-none bg-[#00d4ff] hover:bg-[#00b8e6] text-white">
                 <Video className="h-4 w-4 mr-2" />
                 Rejoindre
               </Button>
             )}
             {onCall && appointment.type !== "telemedicine" && (
-              <Button variant="outline" size="sm" onClick={onCall}>
+              <Button variant="outline" size="sm" onClick={onCall} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <Phone className="h-4 w-4 mr-2" />
                 Appeler
               </Button>
             )}
             {onGetDirections && appointment.type !== "telemedicine" && (
-              <Button variant="outline" size="sm" onClick={onGetDirections}>
+              <Button variant="outline" size="sm" onClick={onGetDirections} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <Navigation className="h-4 w-4 mr-2" />
                 Itinéraire
               </Button>
             )}
             {appointment.payment.status === "unpaid" && onPay && (
-              <Button variant="default" size="sm" onClick={onPay}>
+              <Button size="sm" onClick={onPay} className="bg-[#00d4ff] hover:bg-[#00b8e6] text-white">
                 <CreditCard className="h-4 w-4 mr-2" />
                 Payer
               </Button>
             )}
             {onModify && (
-              <Button variant="outline" size="sm" onClick={onModify}>
+              <Button variant="outline" size="sm" onClick={onModify} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <Edit className="h-4 w-4 mr-2" />
                 Modifier
               </Button>
             )}
             {onCancel && (
-              <Button variant="destructive" size="sm" onClick={onCancel}>
+              <Button variant="outline" size="sm" onClick={onCancel} className="bg-[#ff0088]/20 border-[#ff0088]/30 hover:bg-[#ff0088]/30 text-[#ff0088]">
                 <X className="h-4 w-4 mr-2" />
                 Annuler
               </Button>
@@ -320,7 +331,7 @@ export const AppointmentCard = ({
         {appointment.status === "past" && appointment.documents && (
           <>
             {appointment.documents.map((doc, idx) => (
-              <Button key={idx} variant="outline" size="sm">
+              <Button key={idx} variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <FileText className="h-4 w-4 mr-2" />
                 {doc.label}
               </Button>
@@ -328,6 +339,6 @@ export const AppointmentCard = ({
           </>
         )}
       </div>
-    </Card>
+    </div>
   );
 };
