@@ -70,19 +70,21 @@ Deno.serve(async (req) => {
         priority: "normal",
         category: "result",
         is_read: false,
-        is_starred: false
+        is_starred: false,
+        allow_reply: true
       },
       {
         recipient_id: user.id,
         sender_name: "CHU de Libreville",
         sender_type: "hospital",
         subject: "Rappel: Rendez-vous demain",
-        content: "Bonjour,\n\nCeci est un rappel pour votre rendez-vous prévu demain à 10h30 au service de cardiologie.\n\nMerci de vous présenter 15 minutes avant l'heure prévue.",
+        content: "Bonjour,\n\nCeci est un rappel automatique pour votre rendez-vous prévu demain à 10h30 au service de cardiologie.\n\nMerci de vous présenter 15 minutes avant l'heure prévue.\n\nCe message est envoyé automatiquement, merci de ne pas répondre.",
         attachments: [],
         priority: "high",
         category: "reminder",
         is_read: true,
         is_starred: false,
+        allow_reply: false,
         created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -101,6 +103,7 @@ Deno.serve(async (req) => {
         category: "prescription",
         is_read: false,
         is_starred: false,
+        allow_reply: true,
         created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -128,6 +131,7 @@ Deno.serve(async (req) => {
         category: "result",
         is_read: false,
         is_starred: false,
+        allow_reply: true,
         created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -156,6 +160,7 @@ Deno.serve(async (req) => {
         category: "reminder",
         is_read: false,
         is_starred: false,
+        allow_reply: true,
         created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 7 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -163,7 +168,7 @@ Deno.serve(async (req) => {
         sender_name: "Laboratoire Central d'Analyses",
         sender_type: "laboratory",
         subject: "Résultats d'analyses biologiques disponibles",
-        content: "Madame, Monsieur,\n\nVos résultats d'analyses biologiques sont maintenant disponibles. Vous trouverez en pièce jointe le rapport complet ainsi qu'un graphique d'évolution par rapport à vos analyses précédentes.\n\nPour toute question, n'hésitez pas à contacter votre médecin traitant.\n\nCordialement,\nLaboratoire Central",
+        content: "Madame, Monsieur,\n\nVos résultats d'analyses biologiques sont maintenant disponibles. Vous trouverez en pièce jointe le rapport complet ainsi qu'un graphique d'évolution par rapport à vos analyses précédentes.\n\nPour toute question, n'hésitez pas à contacter votre médecin traitant.\n\nCe message est automatique, merci de contacter directement le laboratoire au 01 76 XX XX pour toute demande.\n\nCordialement,\nLaboratoire Central",
         attachments: [
           {
             name: "Resultats_Analyses_Completes.pdf",
@@ -183,6 +188,7 @@ Deno.serve(async (req) => {
         category: "result",
         is_read: false,
         is_starred: false,
+        allow_reply: false,
         created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 11 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -218,6 +224,7 @@ Deno.serve(async (req) => {
         category: "result",
         is_read: false,
         is_starred: false,
+        allow_reply: true,
         created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -225,12 +232,13 @@ Deno.serve(async (req) => {
         sender_name: "Service des Urgences - CHU",
         sender_type: "hospital",
         subject: "🚨 IMPORTANT - Rappel vaccinal obligatoire",
-        content: "ALERTE IMPORTANTE\n\nSelon nos dossiers, votre rappel de vaccination contre la fièvre jaune arrive à échéance dans 30 jours. Cette vaccination est obligatoire au Gabon.\n\nMerci de prendre rendez-vous rapidement auprès de votre centre de vaccination.\n\nService de Prévention\nCHU de Libreville",
+        content: "ALERTE IMPORTANTE\n\nSelon nos dossiers, votre rappel de vaccination contre la fièvre jaune arrive à échéance dans 30 jours. Cette vaccination est obligatoire au Gabon.\n\nMerci de prendre rendez-vous rapidement auprès de votre centre de vaccination.\n\nCe message automatique ne nécessite pas de réponse.\n\nService de Prévention\nCHU de Libreville",
         attachments: [],
         priority: "urgent",
         category: "alert",
         is_read: false,
         is_starred: false,
+        allow_reply: false,
         created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
       },
       {
@@ -238,7 +246,7 @@ Deno.serve(async (req) => {
         sender_name: "Cabinet Comptable CNAMGS",
         sender_type: "admin",
         subject: "Facture et remboursement",
-        content: "Bonjour,\n\nVotre dossier de remboursement a été traité. Vous trouverez ci-joint la facture détaillée et l'attestation de remboursement.\n\nLe montant sera crédité sous 5 jours ouvrés.\n\nCordialement,\nService Comptabilité",
+        content: "Bonjour,\n\nVotre dossier de remboursement a été traité. Vous trouverez ci-joint la facture détaillée et l'attestation de remboursement.\n\nLe montant sera crédité sous 5 jours ouvrés.\n\nCe message est généré automatiquement. Pour toute réclamation, veuillez contacter notre service client.\n\nCordialement,\nService Comptabilité",
         attachments: [
           {
             name: "Facture_Consultation.pdf",
@@ -257,6 +265,7 @@ Deno.serve(async (req) => {
         category: "billing",
         is_read: false,
         is_starred: false,
+        allow_reply: false,
         created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString()
       }
     ];
