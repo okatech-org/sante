@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SendToPharmacyModal } from "@/components/prescriptions/SendToPharmacyModal";
 import {
   FileText, 
   Download, 
   Share2,
   Eye,
+  Send,
   Calendar, 
   Clock, 
   User, 
@@ -148,6 +150,8 @@ export default function Prescriptions() {
   const [activeMenu, setActiveMenu] = useState('ordonnances');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [previewPrescription, setPreviewPrescription] = useState<Prescription | null>(null);
+  const [sendToPharmacyOpen, setSendToPharmacyOpen] = useState(false);
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string | null>(null);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -205,6 +209,11 @@ export default function Prescriptions() {
 
   const handleShare = (id: string) => {
     toast.success(`Partage de l'ordonnance ${id}...`);
+  };
+
+  const handleSendToPharmacy = (id: string) => {
+    setSelectedPrescriptionId(id);
+    setSendToPharmacyOpen(true);
   };
 
   const getStatusBadge = (status: string) => {
@@ -578,6 +587,17 @@ export default function Prescriptions() {
                           ))}
                         </div>
 
+                        {/* Actions pharmacie */}
+                        <div className="mb-3">
+                          <Button
+                            onClick={() => handleSendToPharmacy(prescription.id)}
+                            className="w-full bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:opacity-90 text-white"
+                          >
+                            <Send className="h-4 w-4 mr-2" />
+                            Envoyer à une pharmacie
+                          </Button>
+                        </div>
+
                         {/* Notes */}
                         {prescription.notes && (
                           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
@@ -681,6 +701,15 @@ export default function Prescriptions() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Modal envoi pharmacie */}
+      {selectedPrescriptionId && (
+        <SendToPharmacyModal
+          open={sendToPharmacyOpen}
+          onOpenChange={setSendToPharmacyOpen}
+          prescriptionId={selectedPrescriptionId}
+        />
+      )}
     </div>
   );
 }

@@ -89,6 +89,95 @@ export type Database = {
         }
         Relationships: []
       }
+      pharmacies: {
+        Row: {
+          address: string
+          city: string
+          created_at: string | null
+          email: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          opening_hours: Json | null
+          phone: string | null
+          province: string
+          services: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          opening_hours?: Json | null
+          phone?: string | null
+          province: string
+          services?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          province?: string
+          services?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      prescription_pharmacy_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          notes: string | null
+          pharmacy_id: string
+          prescription_id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          pharmacy_id: string
+          prescription_id: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          pharmacy_id?: string
+          prescription_id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_pharmacy_requests_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_change_requests: {
         Row: {
           change_type: string
