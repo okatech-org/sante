@@ -473,14 +473,14 @@ export default function Profile() {
 
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
                       {/* Informations personnelles */}
-                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl h-full flex flex-col">
                         <h2 className="text-sm sm:text-base font-bold text-white mb-3 flex items-center gap-2">
                           <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                           Informations personnelles
                         </h2>
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex-1">
                           <div className="space-y-1.5 w-full">
                             <Label htmlFor="first_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
@@ -545,12 +545,12 @@ export default function Profile() {
                       </div>
 
                       {/* Adresse */}
-                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl h-full flex flex-col">
                         <h2 className="text-sm sm:text-base font-bold text-white mb-3 flex items-center gap-2">
                           <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                           Adresse
                         </h2>
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex-1">
                           <div className="space-y-1.5 w-full">
                             <Label htmlFor="contact_email" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Mail className="h-3 w-3 flex-shrink-0" />
