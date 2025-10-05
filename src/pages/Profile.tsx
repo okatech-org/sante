@@ -481,7 +481,7 @@ export default function Profile() {
                           Informations personnelles
                         </h2>
                         <div className="space-y-2 flex-1">
-                          <div className="space-y-1.5 w-full">
+                          <div className="space-y-1.5 w-full min-h-[72px]">
                             <Label htmlFor="first_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
                               Prénom *
@@ -497,7 +497,7 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="space-y-1.5 w-full">
+                          <div className="space-y-1.5 w-full min-h-[72px]">
                             <Label htmlFor="last_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
                               Nom *
@@ -514,7 +514,7 @@ export default function Profile() {
                           </div>
 
                           <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1.5 w-full">
+                            <div className="space-y-1.5 w-full min-h-[72px]">
                               <Label htmlFor="birth_date" className="text-gray-300 text-xs flex items-center gap-1.5">
                                 <Calendar className="h-3 w-3 flex-shrink-0" />
                                 Date de naissance
@@ -527,7 +527,7 @@ export default function Profile() {
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full">
+                            <div className="space-y-1.5 w-full min-h-[72px]">
                               <Label htmlFor="gender" className="text-gray-300 text-xs">Genre</Label>
                               <Select onValueChange={(value) => setValue("gender", value)}>
                                 <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 text-xs w-full">
@@ -551,7 +551,7 @@ export default function Profile() {
                           Adresse
                         </h2>
                         <div className="space-y-2 flex-1">
-                          <div className="space-y-1.5 w-full">
+                          <div className="space-y-1.5 w-full min-h-[72px]">
                             <Label htmlFor="contact_email" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Mail className="h-3 w-3 flex-shrink-0" />
                               Email
@@ -564,7 +564,7 @@ export default function Profile() {
                             />
                           </div>
 
-                          <div className="space-y-1.5 w-full">
+                          <div className="space-y-1.5 w-full min-h-[72px]">
                             <Label htmlFor="contact_phone" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <Phone className="h-3 w-3 flex-shrink-0" />
                               Téléphone *
@@ -577,7 +577,7 @@ export default function Profile() {
                           </div>
 
                           <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1.5 w-full">
+                            <div className="space-y-1.5 w-full min-h-[72px]">
                               <Label htmlFor="province" className="text-gray-300 text-xs flex items-center gap-1.5">
                                 <MapPin className="h-3 w-3 flex-shrink-0" />
                                 Province
@@ -590,7 +590,7 @@ export default function Profile() {
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full">
+                            <div className="space-y-1.5 w-full min-h-[72px]">
                               <Label htmlFor="city" className="text-gray-300 text-xs">Ville</Label>
                               <Input
                                 id="city"
@@ -601,7 +601,7 @@ export default function Profile() {
                             </div>
                           </div>
 
-                          <div className="space-y-1.5 w-full">
+                          <div className="space-y-1.5 w-full min-h-[72px]">
                             <Label htmlFor="neighborhood" className="text-gray-300 text-xs">Quartier</Label>
                             <Input
                               id="neighborhood"
