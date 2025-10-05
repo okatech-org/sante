@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle, FileHeart, AlertCircle, Home, Bell, Settings, Heart, MapPin, ChevronRight, Users, Clock } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -244,25 +244,24 @@ export default function DashboardPatient() {
           {/* Stats Grid - avec icônes colorées comme la page d'accueil */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
-              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
-              { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
-              { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
+              { label: 'Médecins consultés', value: '8', icon: Users, trend: 'Cette année', color: '#00d4ff', bgColor: 'bg-[#00d4ff]/10' },
+              { label: 'Consultations', value: '12', icon: Activity, trend: 'Total', color: '#0088ff', bgColor: 'bg-[#0088ff]/10' },
+              { label: 'Prochain RDV', value: '2j', icon: Clock, trend: 'Mardi 8 Oct', color: '#ffaa00', bgColor: 'bg-[#ffaa00]/10' },
+              { label: 'Couverture santé', value: '100%', icon: Shield, trend: 'CNAMGS actif', color: '#ff0088', bgColor: 'bg-[#ff0088]/10' }
             ].map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <div
                   key={index}
-                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
+                  className="rounded-2xl backdrop-blur-xl p-6 text-center bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] group"
                 >
                   <div 
-                    className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center"
-                    style={{ backgroundColor: `${stat.color}20` }}
+                    className={`w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center ${stat.bgColor}`}
                   >
-                    <Icon className="w-7 h-7" style={{ color: stat.color }} />
+                    <Icon className="w-8 h-8" style={{ color: stat.color }} />
                   </div>
-                  <p className="text-xs mb-2 text-gray-400 font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+                  <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
+                  <p className="text-sm mb-1 text-gray-300 font-medium">{stat.label}</p>
                   <p className="text-xs text-gray-500">{stat.trend}</p>
                 </div>
               );
