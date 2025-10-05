@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
-
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,11 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Calendar, X, Filter } from "lucide-react";
+import { Plus, Calendar, X, Filter, ChevronRight } from "lucide-react";
 import { AppointmentCard, Appointment } from "@/components/appointments/AppointmentCard";
 import { CancelAppointmentModal } from "@/components/appointments/CancelAppointmentModal";
 import { BookingModal } from "@/components/appointments/BookingModal";
-import { format, addDays, subMonths } from "date-fns";
+import { format, addDays } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "sonner";
 
@@ -204,10 +203,10 @@ export default function Appointments() {
   const renderUpcoming = () => {
     if (upcomingAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Aucun rendez-vous prévu</h3>
-          <p className="text-muted-foreground mb-6">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
+          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-white">Aucun rendez-vous prévu</h3>
+          <p className="text-gray-400 mb-6">
             Vous n'avez aucun rendez-vous à venir pour le moment
           </p>
           <Button onClick={() => setBookingModalOpen(true)}>
@@ -226,13 +225,13 @@ export default function Appointments() {
         {Object.entries(grouped).map(([dateKey, appointments]) => (
           <div key={dateKey}>
             <div className="flex items-center gap-4 mb-4">
-              <div className="h-px flex-1 bg-border" />
-              <h3 className="text-sm font-semibold uppercase tracking-wide">
+              <div className="h-px flex-1 bg-white/10" />
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-white">
                 {dateKey === today
                   ? "AUJOURD'HUI"
                   : format(new Date(dateKey), "EEEE dd MMMM", { locale: fr }).toUpperCase()}
               </h3>
-              <div className="h-px flex-1 bg-border" />
+              <div className="h-px flex-1 bg-white/10" />
             </div>
             <div className="space-y-4">
               {appointments.map((appointment) => (
@@ -255,10 +254,10 @@ export default function Appointments() {
   const renderPast = () => {
     if (pastAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Aucun historique</h3>
-          <p className="text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
+          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-white">Aucun historique</h3>
+          <p className="text-gray-400">
             Vous n'avez aucun rendez-vous passé pour le moment
           </p>
         </div>
@@ -271,7 +270,7 @@ export default function Appointments() {
       <div className="space-y-8">
         {Object.entries(grouped).map(([month, appointments]) => (
           <div key={month}>
-            <h3 className="text-lg font-semibold mb-4 uppercase">{month}</h3>
+            <h3 className="text-lg font-semibold mb-4 uppercase text-white">{month}</h3>
             <div className="space-y-3">
               {appointments.map((appointment) => (
                 <AppointmentCard
@@ -290,10 +289,10 @@ export default function Appointments() {
   const renderCancelled = () => {
     if (cancelledAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <X className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Aucune annulation</h3>
-          <p className="text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
+          <X className="h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-white">Aucune annulation</h3>
+          <p className="text-gray-400">
             Vous n'avez annulé aucun rendez-vous
           </p>
         </div>
@@ -314,16 +313,16 @@ export default function Appointments() {
   };
 
   return (
-    <MainLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8">
+    <PatientDashboardLayout>
+      <div className="space-y-6">
         {/* Header */}
-        <div className="mb-8">
+        <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-3xl font-bold">Mes Rendez-vous</h1>
-              <p className="text-muted-foreground mt-1">Gérez vos consultations médicales</p>
+              <h1 className="text-3xl font-bold text-white">Mes Rendez-vous</h1>
+              <p className="text-gray-400 mt-1">Gérez vos consultations médicales</p>
             </div>
-            <Button size="lg" onClick={() => setBookingModalOpen(true)}>
+            <Button size="lg" onClick={() => setBookingModalOpen(true)} className="bg-[#00d4ff] hover:bg-[#00b8e6] text-white">
               <Plus className="mr-2 h-5 w-5" />
               Nouveau rendez-vous
             </Button>
@@ -331,13 +330,13 @@ export default function Appointments() {
 
           {/* Statistics */}
           <div className="flex flex-wrap gap-3">
-            <Badge variant="outline" className="px-4 py-2">
+            <Badge variant="outline" className="px-4 py-2 bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
               {upcomingAppointments.length} RDV à venir
             </Badge>
-            <Badge variant="outline" className="px-4 py-2">
+            <Badge variant="outline" className="px-4 py-2 bg-[#0088ff]/20 text-[#0088ff] border-[#0088ff]/30">
               {pastAppointments.length} RDV passés ce mois
             </Badge>
-            <Badge variant="outline" className="px-4 py-2">
+            <Badge variant="outline" className="px-4 py-2 bg-[#ff0088]/20 text-[#ff0088] border-[#ff0088]/30">
               {cancelledAppointments.length} annulations
             </Badge>
           </div>
@@ -345,45 +344,47 @@ export default function Appointments() {
 
         {/* Tabs & Filters */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <TabsList>
-              <TabsTrigger value="upcoming" className="relative">
-                À venir
-                {upcomingAppointments.length > 0 && (
-                  <Badge className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {upcomingAppointments.length}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="past">Passés</TabsTrigger>
-              <TabsTrigger value="cancelled">Annulés</TabsTrigger>
-            </TabsList>
+          <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <TabsList className="bg-white/5">
+                <TabsTrigger value="upcoming" className="relative data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">
+                  À venir
+                  {upcomingAppointments.length > 0 && (
+                    <Badge className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-[#00d4ff]">
+                      {upcomingAppointments.length}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+                <TabsTrigger value="past" className="data-[state=active]:bg-[#0088ff]/20 data-[state=active]:text-[#0088ff]">Passés</TabsTrigger>
+                <TabsTrigger value="cancelled" className="data-[state=active]:bg-[#ff0088]/20 data-[state=active]:text-[#ff0088]">Annulés</TabsTrigger>
+              </TabsList>
 
-            <div className="flex flex-wrap gap-2">
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les types</SelectItem>
-                  <SelectItem value="consultation">Consultation</SelectItem>
-                  <SelectItem value="telemedicine">Téléconsultation</SelectItem>
-                  <SelectItem value="exam">Examen</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-2">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les types</SelectItem>
+                    <SelectItem value="consultation">Consultation</SelectItem>
+                    <SelectItem value="telemedicine">Téléconsultation</SelectItem>
+                    <SelectItem value="exam">Examen</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select value={providerFilter} onValueChange={setProviderFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Praticien" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les praticiens</SelectItem>
-                  <SelectItem value="kombila">Dr KOMBILA Pierre</SelectItem>
-                  <SelectItem value="afonso">Dr AFONSO</SelectItem>
-                  <SelectItem value="biolab">BIOLAB Libreville</SelectItem>
-                </SelectContent>
-              </Select>
+                <Select value={providerFilter} onValueChange={setProviderFilter}>
+                  <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-white">
+                    <SelectValue placeholder="Praticien" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les praticiens</SelectItem>
+                    <SelectItem value="kombila">Dr KOMBILA Pierre</SelectItem>
+                    <SelectItem value="afonso">Dr AFONSO</SelectItem>
+                    <SelectItem value="biolab">BIOLAB Libreville</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -412,6 +413,6 @@ export default function Appointments() {
         appointment={selectedAppointment}
         onConfirm={handleConfirmCancel}
       />
-    </MainLayout>
+    </PatientDashboardLayout>
   );
 }
