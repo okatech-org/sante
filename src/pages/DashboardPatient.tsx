@@ -39,34 +39,25 @@ export default function DashboardPatient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background sombre avec étoiles comme la page d'accueil */}
-      <div className="fixed inset-0 bg-[hsl(215,28%,12%)] -z-10">
-        <div 
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-            backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-            backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
-          }}
-        />
-      </div>
+      {/* Background sombre */}
+      <div className="fixed inset-0 bg-[#1a1d29] -z-10" />
 
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar */}
         <aside className="w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-card/40 border border-border/30 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#2a2d3a]/80 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/40 to-secondary/40">
-                  <Heart className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                  <Heart className="w-6 h-6 text-[#00d4ff]" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground">
+                <h1 className="text-2xl font-bold text-white">
                   SANTE.GA
                 </h1>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-gray-500">
                 Votre santé à portée de clic
               </p>
             </div>
@@ -85,8 +76,8 @@ export default function DashboardPatient() {
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-primary/20 text-primary'
-                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                        ? 'bg-[#00d4ff]/20 text-[#00d4ff]'
+                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -94,7 +85,7 @@ export default function DashboardPatient() {
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="px-2 py-0.5 text-xs rounded-full bg-primary/20 text-primary border border-primary/30">
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-[#00d4ff]/20 text-[#00d4ff]">
                         {item.badge}
                       </span>
                     )}
@@ -104,17 +95,17 @@ export default function DashboardPatient() {
             </nav>
 
             {/* User Profile */}
-            <div className="mt-auto pt-6 border-t border-border/30">
-              <div className="p-3 rounded-lg bg-muted/30">
+            <div className="mt-auto pt-6 border-t border-white/10">
+              <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-gradient-to-br from-primary to-secondary">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {fullName}
+                    <p className="text-sm font-medium text-white truncate">
+                      {fullName.split(' ')[0]} ast...
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-500">
                       N° ••••7891
                     </p>
                   </div>
@@ -126,21 +117,16 @@ export default function DashboardPatient() {
 
         {/* Main Content */}
         <main className="flex-1 ml-64 p-6 max-w-7xl">
-          {/* Header Card avec dégradé coloré comme "portée de clic" */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-card/40 border border-border/30 shadow-2xl mb-6">
+          {/* Header Card */}
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
             <h2 className="text-3xl font-bold mb-3">
-              <span className="text-foreground">Bonjour </span>
-              <span 
-                className="bg-gradient-to-r from-[#00d4ff] via-[#00ff88] to-[#ffaa00] bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: 'linear-gradient(90deg, #00d4ff 0%, #00ff88 25%, #ffdd00 50%, #ff8800 75%, #ff0088 100%)'
-                }}
-              >
+              <span className="text-white">Bonjour </span>
+              <span className="text-[#00d4ff]">
                 {userName}
               </span>
-              <span className="text-foreground"> !</span> 👋
+              <span className="text-white"> ! 👋</span>
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-gray-400 text-base">
               Bienvenue sur votre espace santé personnel. Gérez vos rendez-vous et consultations facilement.
             </p>
           </div>
@@ -149,87 +135,87 @@ export default function DashboardPatient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div
               onClick={() => navigate('/appointments')}
-              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/40 border border-border/30 hover:bg-card/60 shadow-xl hover:shadow-2xl"
+              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#2a2d3a]/60 border border-white/10 hover:bg-[#2a2d3a]/80 shadow-xl"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:from-primary/30 group-hover:to-secondary/30 transition-all">
-                    <Calendar className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                    <Calendar className="w-7 h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground text-lg">Prendre rendez-vous</h3>
-                    <span className="inline-block mt-1.5 px-3 py-1 text-xs rounded-full bg-accent/20 text-accent border border-accent/30">
+                    <h3 className="font-semibold text-white text-lg mb-2">Prendre rendez-vous</h3>
+                    <span className="inline-block px-3 py-1 text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
                       Prochain disponible aujourd'hui
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
 
             <div
               onClick={() => navigate('/teleconsultation')}
-              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/40 border border-border/30 hover:bg-card/60 shadow-xl hover:shadow-2xl"
+              className="group rounded-xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#2a2d3a]/60 border border-white/10 hover:bg-[#2a2d3a]/80 shadow-xl"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 group-hover:from-primary/30 group-hover:to-secondary/30 transition-all">
-                    <Video className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                    <Video className="w-7 h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground text-lg">Téléconsultation</h3>
-                    <span className="inline-block mt-1.5 px-3 py-1 text-xs rounded-full bg-accent/20 text-accent border border-accent/30">
+                    <h3 className="font-semibold text-white text-lg mb-2">Téléconsultation</h3>
+                    <span className="inline-block px-3 py-1 text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
                       Médecins disponibles
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </div>
 
           {/* Health Overview */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-card/40 border border-border/30 shadow-2xl mb-6">
-            <h3 className="text-xl font-semibold mb-6 text-foreground">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
+            <h3 className="text-xl font-semibold mb-6 text-white">
               Aperçu de votre Santé
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Prochain RDV */}
-              <div className="p-6 rounded-xl bg-card/40 backdrop-blur-xl border border-border/30 shadow-xl">
+              <div className="p-6 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <p className="text-sm text-muted-foreground font-medium">Prochain Rendez-vous</p>
-                    <p className="text-3xl font-bold mt-2 text-foreground">Mardi 8 Oct - 14h30</p>
-                    <p className="text-sm mt-2 text-muted-foreground font-medium">Dr.Ékomi - Cardiologie</p>
-                    <p className="text-xs text-muted-foreground mt-1">Cabinet Montagne Sainte, Libreville</p>
+                    <p className="text-sm text-gray-400 font-medium">Prochain Rendez-vous</p>
+                    <p className="text-3xl font-bold mt-2 text-white">Mardi 8 Oct - 14h30</p>
+                    <p className="text-sm mt-2 text-gray-400 font-medium">Dr.Ékomi - Cardiologie</p>
+                    <p className="text-xs text-gray-500 mt-1">Cabinet Montagne Sainte, Libreville</p>
                   </div>
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <Stethoscope className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                    <Stethoscope className="w-7 h-7 text-[#00d4ff]" />
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-3 bg-muted/20 px-3 py-2 rounded-lg">
-                  <MapPin className="w-4 h-4 text-primary" />
+                <div className="flex items-center gap-2 text-sm text-gray-400 mt-3 bg-white/5 px-3 py-2 rounded-lg">
+                  <MapPin className="w-4 h-4 text-[#00d4ff]" />
                   <span>3.2 km de votre position</span>
                 </div>
               </div>
 
               {/* Couverture CNAMGS */}
-              <div className="p-6 rounded-xl bg-card/40 backdrop-blur-xl border border-border/30 shadow-xl">
+              <div className="p-6 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <p className="text-sm text-muted-foreground font-medium">Couverture CNAMGS</p>
-                    <p className="text-3xl font-bold mt-2 text-foreground">100%</p>
-                    <p className="text-sm mt-2 text-muted-foreground font-medium">Statut: Actif</p>
-                    <p className="text-xs text-muted-foreground mt-1">N° GA2384567891</p>
+                    <p className="text-sm text-gray-400 font-medium">Couverture CNAMGS</p>
+                    <p className="text-3xl font-bold mt-2 text-white">100%</p>
+                    <p className="text-sm mt-2 text-gray-400 font-medium">Statut: Actif</p>
+                    <p className="text-xs text-gray-500 mt-1">N° GA2384567891</p>
                   </div>
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <Shield className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
+                    <Shield className="w-7 h-7 text-[#00d4ff]" />
                   </div>
                 </div>
-                <div className="h-2.5 rounded-full overflow-hidden bg-muted/30 mt-4">
+                <div className="h-2.5 rounded-full overflow-hidden bg-white/10 mt-4">
                   <div
-                    className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-primary to-secondary"
+                    className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]"
                     style={{ width: '0%' }}
                   />
                 </div>
