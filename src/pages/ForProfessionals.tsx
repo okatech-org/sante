@@ -280,7 +280,7 @@ export default function ForProfessionals() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 container mx-auto px-4 py-12 md:py-20">
+      <section className="relative z-10 container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-6xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 mb-6">
             <ShieldCheck className="w-5 h-5 text-cyan-400" />
@@ -310,7 +310,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Target Audience */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
@@ -342,7 +342,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Main Benefits */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
@@ -388,7 +388,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Additional Features */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {additionalFeatures.map((feature, index) => (
@@ -410,7 +410,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Pricing Section */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
