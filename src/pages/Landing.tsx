@@ -343,7 +343,7 @@ export default function Landing() {
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-4xl z-[1001]">
               <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/20 dark:bg-black/30 hover:bg-black/30 dark:hover:bg-black/40 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-primary/60 dark:hover:border-primary/70 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-primary/60 dark:hover:border-primary/70 group">
                     <Stethoscope className="w-4 h-4 mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
@@ -353,7 +353,7 @@ export default function Landing() {
                       className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-white/80 text-sm font-medium"
                     />
                   </div>
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/20 dark:bg-black/30 hover:bg-black/30 dark:hover:bg-black/40 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-secondary/60 dark:hover:border-secondary/70 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-black/30 dark:bg-black/40 hover:bg-black/40 dark:hover:bg-black/50 transition-all duration-300 border border-border/40 dark:border-white/20 hover:border-secondary/60 dark:hover:border-secondary/70 group">
                     <MapPin className="w-4 h-4 mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
