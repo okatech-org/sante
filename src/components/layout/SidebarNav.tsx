@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,16 +29,15 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   ];
 
   const patientNavItems: NavItem[] = [
-    { icon: Home, label: t('nav.home'), href: "/dashboard/patient" },
-    { icon: Calendar, label: t('nav.appointments'), href: "/appointments", badge: 2 },
-    { icon: FileText, label: t('nav.prescriptions'), href: "/prescriptions", badge: 1 },
-    { icon: TestTube, label: t('nav.results'), href: "/results", badge: 2 },
-    { icon: FileText, label: t('nav.medicalRecord'), href: "/medical-record" },
-    { icon: UserSearch, label: t('nav.providers'), href: "/providers" },
-    { icon: Map, label: t('nav.cartography'), href: "/cartography" },
-    { icon: Heart, label: t('nav.awareness'), href: "/awareness" },
-    { icon: CreditCard, label: t('nav.reimbursements'), href: "/reimbursements" },
-    { icon: HelpCircle, label: t('nav.support'), href: "/support" },
+    { icon: Home, label: "Tableau de bord", href: "/dashboard/patient" },
+    { icon: Calendar, label: "Mes rendez-vous", href: "/appointments", badge: 2 },
+    { icon: Activity, label: "Téléconsultation", href: "/teleconsultation" },
+    { icon: FileText, label: "Dossier Médical", href: "/medical-record" },
+    { icon: Pill, label: "Mes ordonnances", href: "/prescriptions", badge: 1 },
+    { icon: TestTube, label: "Résultats d'analyses", href: "/results" },
+    { icon: Shield, label: "Droits CNAMGS", href: "/reimbursements" },
+    { icon: Mail, label: "Messages", href: "/support", badge: 3 },
+    { icon: Settings, label: "Paramètres", href: "/profile" },
   ];
 
   const superAdminNavItems: NavItem[] = [
