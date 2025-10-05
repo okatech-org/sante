@@ -272,27 +272,20 @@ export default function DashboardPatient() {
               </div>
 
               {/* Informations personnelles */}
-              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                {/* Nom complet - prend toute la largeur sur mobile */}
-                <div className="col-span-2 sm:col-span-3 bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Nom complet</p>
-                  <p className="text-sm sm:text-lg font-bold text-white truncate">{fullName}</p>
+              <div className="flex-1 space-y-3">
+                {/* Nom complet */}
+                <div>
+                  <p className="text-2xl sm:text-3xl font-bold text-white">{fullName}</p>
                 </div>
 
-                {/* Âge */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
-                  <p className="text-base sm:text-xl font-bold text-white">34 ans</p>
+                {/* Âge et Sexe */}
+                <div className="flex gap-6 text-base sm:text-lg text-gray-300">
+                  <span>34 ans</span>
+                  <span>Masculin</span>
                 </div>
 
-                {/* Sexe */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
-                  <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
-                </div>
-
-                {/* Poids, Taille, Groupe sanguin - sur une même ligne */}
-                <div className="col-span-2 sm:col-span-3 grid grid-cols-3 gap-2 sm:gap-3">
+                {/* Poids, Taille, Groupe sanguin */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-2">
                   <div className="bg-white/5 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
                     <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
