@@ -67,8 +67,11 @@ export default function Profile() {
   const currentEmail = watch("email");
 
   const fullName = (user?.user_metadata as any)?.full_name || user?.email || "Utilisateur";
-  const displayFirstName = firstName || fullName.split(' ')[0] || "";
-  const displayLastName = lastName || fullName.split(' ').slice(1).join(' ') || "";
+  const fullNameParts = fullName.split(' ').filter(Boolean);
+  const fallbackFirstNames = fullNameParts.slice(0, -1).join(' ') || fullNameParts[0] || "";
+  const fallbackLastName = fullNameParts.length > 1 ? fullNameParts[fullNameParts.length - 1] : "";
+  const displayFirstName = firstName || fallbackFirstNames;
+  const displayLastName = lastName || fallbackLastName;
   const displayFullName = `${displayFirstName} ${displayLastName}`.trim() || fullName;
   const displayEmail = currentEmail || user?.email || "";
 
@@ -112,13 +115,15 @@ export default function Profile() {
       if (error) throw error;
 
       if (data) {
-        const nameParts = data.full_name?.split(' ') || [];
+        const nameParts = (data.full_name || "").split(' ').filter(Boolean);
+        const firstNames = nameParts.slice(0, -1).join(' ');
+        const lastNameOnly = nameParts.length > 0 ? nameParts[nameParts.length - 1] : "";
         console.log("Full name from DB:", data.full_name);
-        console.log("Name parts:", nameParts);
+        console.log("Parsed -> firstNames:", firstNames, "lastName:", lastNameOnly);
         
         reset({
-          first_name: nameParts[0] || "",
-          last_name: nameParts.slice(1).join(' ') || "",
+          first_name: firstNames || "",
+          last_name: lastNameOnly || "",
           email: data.email || "",
           phone: data.phone || "",
           birth_date: data.birth_date || "",
@@ -143,9 +148,13 @@ export default function Profile() {
         });
       } else {
         console.log("No profile data found, using user metadata");
+        const metaFull = (user?.user_metadata as any)?.full_name || "";
+        const metaParts = metaFull.split(' ').filter(Boolean);
+        const metaFirstNames = metaParts.slice(0, -1).join(' ');
+        const metaLastName = metaParts.length > 0 ? metaParts[metaParts.length - 1] : "";
         reset({
-          first_name: (user?.user_metadata as any)?.first_name || "",
-          last_name: (user?.user_metadata as any)?.last_name || "",
+          first_name: metaFirstNames || (user?.user_metadata as any)?.first_name || "",
+          last_name: metaLastName || (user?.user_metadata as any)?.last_name || "",
           email: user?.email || "",
           phone: (user?.user_metadata as any)?.phone || "",
           birth_date: "",
