@@ -277,7 +277,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
             <div
               onClick={() => navigate('/appointments')}
               className="group rounded-xl backdrop-blur-xl p-4 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
