@@ -320,50 +320,44 @@ export default function DashboardPatient() {
           </div>
 
           {/* Health Overview - compact pour mobile */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-white">
-              Aperçu de votre Santé
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
-              {/* Prochain RDV */}
-              <div className="p-4 sm:p-6 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl">
-                <div className="flex justify-between items-start mb-3 sm:mb-4">
-                  <div className="flex-1">
-                    <p className="text-xs sm:text-sm text-gray-400 font-medium">Prochain Rendez-vous</p>
-                    <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">Mardi 8 Oct - 14h30</p>
-                    <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Dr.Ékomi - Cardiologie</p>
-                    <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Cabinet Montagne Sainte, Libreville</p>
-                  </div>
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Stethoscope className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            {/* Prochain RDV */}
+            <div className="p-4 sm:p-6 rounded-xl bg-[#1a1f2e]/80 backdrop-blur-xl border border-white/10 shadow-xl">
+              <div className="flex justify-between items-start mb-3 sm:mb-4">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium">Prochain Rendez-vous</p>
+                  <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">Mardi 8 Oct - 14h30</p>
+                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Dr.Ékomi - Cardiologie</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Cabinet Montagne Sainte, Libreville</p>
                 </div>
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3 bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
-                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#00d4ff]" />
-                  <span>3.2 km de votre position</span>
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                  <Stethoscope className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
                 </div>
               </div>
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3 bg-white/5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg">
+                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#00d4ff]" />
+                <span>3.2 km de votre position</span>
+              </div>
+            </div>
 
-              {/* Couverture CNAMGS */}
-              <div className="p-4 sm:p-6 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl">
-                <div className="flex justify-between items-start mb-3 sm:mb-4">
-                  <div className="flex-1">
-                    <p className="text-xs sm:text-sm text-gray-400 font-medium">Couverture CNAMGS</p>
-                    <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">100%</p>
-                    <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Statut: Actif</p>
-                    <p className="text-[10px] sm:text-xs text-gray-500 mt-1">N° GA2384567891</p>
-                  </div>
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
-                  </div>
+            {/* Couverture CNAMGS */}
+            <div className="p-4 sm:p-6 rounded-xl bg-[#1a1f2e]/80 backdrop-blur-xl border border-white/10 shadow-xl">
+              <div className="flex justify-between items-start mb-3 sm:mb-4">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-gray-400 font-medium">Couverture CNAMGS</p>
+                  <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">100%</p>
+                  <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Statut: Actif</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-1">N° GA2384567891</p>
                 </div>
-                <div className="h-2 sm:h-2.5 rounded-full overflow-hidden bg-white/10 mt-3 sm:mt-4">
-                  <div
-                    className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]"
-                    style={{ width: '0%' }}
-                  />
+                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                  <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
                 </div>
+              </div>
+              <div className="h-2 sm:h-2.5 rounded-full overflow-hidden bg-white/10 mt-3 sm:mt-4">
+                <div
+                  className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]"
+                  style={{ width: '0%' }}
+                />
               </div>
             </div>
           </div>
