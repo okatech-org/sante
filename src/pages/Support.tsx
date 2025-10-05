@@ -3,32 +3,62 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Phone,
-  Mail,
-  MessageCircle,
-  HelpCircle,
-  Book,
-  Video,
   Menu,
   Home,
   Calendar,
-  Video as VideoIcon,
+  Video,
   Shield,
   Activity,
   Bell,
   Settings,
   FileHeart,
-  Pill
+  Pill,
+  Search,
+  Star,
+  Download,
+  FileText,
+  Image as ImageIcon,
+  Film,
+  Paperclip,
+  Inbox,
+  MailOpen,
+  AlertCircle,
+  Hospital,
+  Stethoscope,
+  FlaskConical,
+  Building2
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import logoSante from "@/assets/logo_sante.png";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+
+interface Message {
+  id: string;
+  sender_name: string;
+  sender_type: 'doctor' | 'hospital' | 'pharmacy' | 'laboratory' | 'admin' | 'system';
+  subject: string;
+  content: string;
+  attachments: Array<{
+    name: string;
+    type: string;
+    size: string;
+    url: string;
+  }>;
+  is_read: boolean;
+  is_starred: boolean;
+  priority: 'low' | 'normal' | 'high' | 'urgent';
+  category: 'general' | 'appointment' | 'result' | 'prescription' | 'billing' | 'reminder' | 'alert';
+  created_at: string;
+  read_at: string | null;
+}
 
 export default function Support() {
   const { user } = useAuth();
@@ -36,13 +66,18 @@ export default function Support() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('messages');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTab, setSelectedTab] = useState("all");
+  const [loading, setLoading] = useState(true);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
   const menuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
     { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: VideoIcon, path: '/teleconsultation', color: '#00d4ff' },
+    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
     { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
     { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
     { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
@@ -53,6 +88,24 @@ export default function Support() {
 
   useEffect(() => {
     loadAvatar();
+    loadMessages();
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('messages-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `recipient_id=eq.${user?.id}`
+      }, () => {
+        loadMessages();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user?.id]);
 
   const loadAvatar = async () => {
@@ -69,9 +122,125 @@ export default function Support() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Votre message a été envoyé avec succès");
+  const loadMessages = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('recipient_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setMessages((data as any) || []);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      toast.error("Erreur lors du chargement des messages");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markAsRead = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ is_read: true })
+        .eq('id', messageId);
+
+      if (error) throw error;
+      
+      setMessages(messages.map(msg => 
+        msg.id === messageId ? { ...msg, is_read: true } : msg
+      ));
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+    }
+  };
+
+  const toggleStar = async (messageId: string, currentStarred: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ is_starred: !currentStarred })
+        .eq('id', messageId);
+
+      if (error) throw error;
+      
+      setMessages(messages.map(msg => 
+        msg.id === messageId ? { ...msg, is_starred: !currentStarred } : msg
+      ));
+
+      if (selectedMessage?.id === messageId) {
+        setSelectedMessage({ ...selectedMessage, is_starred: !currentStarred });
+      }
+    } catch (error) {
+      console.error('Error toggling star:', error);
+    }
+  };
+
+  const handleMessageClick = (message: Message) => {
+    setSelectedMessage(message);
+    if (!message.is_read) {
+      markAsRead(message.id);
+    }
+  };
+
+  const filteredMessages = messages.filter(message => {
+    const matchesSearch = 
+      message.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      message.sender_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      message.content.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesTab = 
+      selectedTab === "all" ||
+      (selectedTab === "unread" && !message.is_read) ||
+      (selectedTab === "starred" && message.is_starred);
+
+    return matchesSearch && matchesTab;
+  });
+
+  const unreadCount = messages.filter(m => !m.is_read).length;
+
+  const getSenderIcon = (type: string) => {
+    switch (type) {
+      case 'doctor': return <Stethoscope className="h-5 w-5" />;
+      case 'hospital': return <Hospital className="h-5 w-5" />;
+      case 'pharmacy': return <Pill className="h-5 w-5" />;
+      case 'laboratory': return <FlaskConical className="h-5 w-5" />;
+      case 'admin': return <Building2 className="h-5 w-5" />;
+      default: return <Bell className="h-5 w-5" />;
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'bg-red-500';
+      case 'high': return 'bg-orange-500';
+      case 'normal': return 'bg-blue-500';
+      case 'low': return 'bg-gray-500';
+      default: return 'bg-blue-500';
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    const labels = {
+      general: 'Général',
+      appointment: 'Rendez-vous',
+      result: 'Résultats',
+      prescription: 'Ordonnance',
+      billing: 'Facturation',
+      reminder: 'Rappel',
+      alert: 'Alerte'
+    };
+    return labels[category as keyof typeof labels] || category;
+  };
+
+  const getAttachmentIcon = (type: string) => {
+    if (type.includes('pdf')) return <FileText className="h-4 w-4" />;
+    if (type.includes('image')) return <ImageIcon className="h-4 w-4" />;
+    if (type.includes('video')) return <Film className="h-4 w-4" />;
+    return <Paperclip className="h-4 w-4" />;
   };
 
   return (
@@ -227,176 +396,244 @@ export default function Support() {
 
         {/* Main Content */}
         <main className="flex-1 md:ml-64 pt-20 md:pt-0">
-          <div className="p-4 sm:p-6 lg:p-8">
-            <div className="space-y-6">
-              {/* Header */}
-              <div>
-                <h1 className="text-3xl font-bold text-white">
-                  <span className="bg-gradient-to-r from-[#ffaa00] via-[#ff8800] to-[#ff6600] bg-clip-text text-transparent">Messages</span> & Support
-                </h1>
-                <p className="text-gray-400 mt-2">
-                  Nous sommes là pour vous aider. Consultez notre FAQ ou contactez-nous directement.
-                </p>
+          <div className="h-screen flex flex-col">
+            {/* Header */}
+            <div className="p-4 sm:p-6 lg:p-8 border-b border-white/10">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-white">
+                    <span className="bg-gradient-to-r from-[#ffaa00] via-[#ff8800] to-[#ff6600] bg-clip-text text-transparent">Messages</span>
+                  </h1>
+                  <p className="text-gray-400 mt-1">
+                    Communications des professionnels de santé
+                  </p>
+                </div>
+                {unreadCount > 0 && (
+                  <Badge className="bg-[#ffaa00] text-white px-3 py-1">
+                    {unreadCount} non lu{unreadCount > 1 ? 's' : ''}
+                  </Badge>
+                )}
               </div>
 
-              <div className="grid gap-6 md:grid-cols-3">
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm text-center hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-                    <Phone className="h-6 w-6 text-green-500" />
-                  </div>
-                  <h3 className="font-semibold mb-2 text-white">Téléphone</h3>
-                  <p className="text-sm text-gray-400 mb-3">Lun-Ven 8h-18h</p>
-                  <a href="tel:+24111234567" className="text-[#00d4ff] hover:underline">
-                    +241 11 23 45 67
-                  </a>
-                </Card>
+              {/* Search and Filters */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Rechercher dans les messages..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                  />
+                </div>
+              </div>
+            </div>
 
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm text-center hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                    <Mail className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <h3 className="font-semibold mb-2 text-white">Email</h3>
-                  <p className="text-sm text-gray-400 mb-3">Réponse sous 24h</p>
-                  <a href="mailto:support@sante.ga" className="text-[#00d4ff] hover:underline">
-                    support@sante.ga
-                  </a>
-                </Card>
+            {/* Messages Layout */}
+            <div className="flex-1 flex overflow-hidden">
+              {/* Messages List */}
+              <div className="w-full lg:w-2/5 xl:w-1/3 border-r border-white/10 flex flex-col bg-[#1a1f2e]/30">
+                <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col">
+                  <TabsList className="bg-white/5 border-b border-white/10 rounded-none p-1">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-white/10">
+                      <Inbox className="h-4 w-4 mr-2" />
+                      Tous
+                    </TabsTrigger>
+                    <TabsTrigger value="unread" className="data-[state=active]:bg-white/10">
+                      <MailOpen className="h-4 w-4 mr-2" />
+                      Non lus
+                    </TabsTrigger>
+                    <TabsTrigger value="starred" className="data-[state=active]:bg-white/10">
+                      <Star className="h-4 w-4 mr-2" />
+                      Favoris
+                    </TabsTrigger>
+                  </TabsList>
 
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm text-center hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="h-12 w-12 rounded-full bg-[#ffaa00]/10 flex items-center justify-center mx-auto mb-4">
-                    <MessageCircle className="h-6 w-6 text-[#ffaa00]" />
-                  </div>
-                  <h3 className="font-semibold mb-2 text-white">Chat en direct</h3>
-                  <p className="text-sm text-gray-400 mb-3">Disponible maintenant</p>
-                  <Button variant="link" className="p-0 text-[#00d4ff] hover:text-[#0088ff]">
-                    Démarrer le chat
-                  </Button>
-                </Card>
+                  <TabsContent value={selectedTab} className="flex-1 m-0">
+                    <ScrollArea className="h-full">
+                      {loading ? (
+                        <div className="flex items-center justify-center h-full">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ffaa00]" />
+                        </div>
+                      ) : filteredMessages.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                          <Inbox className="h-12 w-12 text-gray-500 mb-3" />
+                          <p className="text-gray-400">Aucun message</p>
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-white/5">
+                          {filteredMessages.map((message) => (
+                            <div
+                              key={message.id}
+                              onClick={() => handleMessageClick(message)}
+                              className={`p-4 hover:bg-white/5 cursor-pointer transition-colors ${
+                                selectedMessage?.id === message.id ? 'bg-white/10' : ''
+                              } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className={`p-2 rounded-lg ${
+                                  message.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
+                                  message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
+                                  message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
+                                  message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
+                                  'bg-gray-500/10 text-gray-400'
+                                }`}>
+                                  {getSenderIcon(message.sender_type)}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <p className={`text-sm font-medium truncate ${
+                                      !message.is_read ? 'text-white' : 'text-gray-300'
+                                    }`}>
+                                      {message.sender_name}
+                                    </p>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleStar(message.id, message.is_starred);
+                                      }}
+                                      className="ml-2"
+                                    >
+                                      <Star className={`h-4 w-4 ${
+                                        message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                      }`} />
+                                    </button>
+                                  </div>
+                                  <p className={`text-sm truncate mb-1 ${
+                                    !message.is_read ? 'text-white font-medium' : 'text-gray-400'
+                                  }`}>
+                                    {message.subject}
+                                  </p>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <Badge variant="outline" className="text-xs border-white/20 text-gray-400">
+                                      {getCategoryLabel(message.category)}
+                                    </Badge>
+                                    {message.priority !== 'normal' && (
+                                      <div className={`w-2 h-2 rounded-full ${getPriorityColor(message.priority)}`} />
+                                    )}
+                                    {message.attachments && message.attachments.length > 0 && (
+                                      <Paperclip className="h-3 w-3 text-gray-500" />
+                                    )}
+                                    <span className="text-xs text-gray-500">
+                                      {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </ScrollArea>
+                  </TabsContent>
+                </Tabs>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <HelpCircle className="h-5 w-5 text-[#00d4ff]" />
-                    <h2 className="text-xl font-semibold text-white">Questions Fréquentes (FAQ)</h2>
-                  </div>
-                  
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="item-1" className="border-white/10">
-                      <AccordionTrigger className="text-white hover:text-[#00d4ff]">Comment prendre un rendez-vous ?</AccordionTrigger>
-                      <AccordionContent className="text-gray-400">
-                        Pour prendre rendez-vous, cliquez sur "Mes Rendez-vous" dans le menu, puis "Nouveau rendez-vous". 
-                        Sélectionnez votre prestataire, la date et l'heure souhaitées.
-                      </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="item-2" className="border-white/10">
-                      <AccordionTrigger className="text-white hover:text-[#00d4ff]">Comment utiliser la CNAMGS ?</AccordionTrigger>
-                      <AccordionContent className="text-gray-400">
-                        Présentez votre carte CNAMGS lors de votre consultation. Le prestataire conventionné 
-                        appliquera automatiquement le tiers-payant. Vous pouvez suivre vos remboursements 
-                        dans la section "Remboursements CNAMGS".
-                      </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="item-3" className="border-white/10">
-                      <AccordionTrigger className="text-white hover:text-[#00d4ff]">Comment accéder à mes résultats d'analyses ?</AccordionTrigger>
-                      <AccordionContent className="text-gray-400">
-                        Vos résultats sont disponibles dans la section "Mes Résultats". Vous recevrez également 
-                        une notification par email dès qu'un nouveau résultat est disponible.
-                      </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="item-4" className="border-white/10">
-                      <AccordionTrigger className="text-white hover:text-[#00d4ff]">Puis-je annuler un rendez-vous ?</AccordionTrigger>
-                      <AccordionContent className="text-gray-400">
-                        Oui, vous pouvez annuler un rendez-vous jusqu'à 24h avant l'heure prévue. 
-                        Allez dans "Mes Rendez-vous", sélectionnez le rendez-vous et cliquez sur "Annuler".
-                      </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="item-5" className="border-white/10">
-                      <AccordionTrigger className="text-white hover:text-[#00d4ff]">Comment modifier mes informations personnelles ?</AccordionTrigger>
-                      <AccordionContent className="text-gray-400">
-                        Rendez-vous dans votre profil en cliquant sur l'icône utilisateur. 
-                        Vous pourrez modifier vos informations personnelles, adresse et contacts.
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </Card>
-
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <MessageCircle className="h-5 w-5 text-[#ffaa00]" />
-                    <h2 className="text-xl font-semibold text-white">Contactez-nous</h2>
-                  </div>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="subject" className="text-white">Sujet</Label>
-                      <Input id="subject" placeholder="Objet de votre demande" required className="bg-white/5 border-white/10 text-white" />
+              {/* Message Detail */}
+              <div className="hidden lg:block flex-1 bg-[#0f1419]">
+                {selectedMessage ? (
+                  <div className="h-full flex flex-col">
+                    {/* Message Header */}
+                    <div className="p-6 border-b border-white/10">
+                      <div className="flex items-start gap-4">
+                        <div className={`p-3 rounded-lg ${
+                          selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
+                          selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
+                          selectedMessage.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
+                          selectedMessage.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
+                          'bg-gray-500/10 text-gray-400'
+                        }`}>
+                          {getSenderIcon(selectedMessage.sender_type)}
+                        </div>
+                        <div className="flex-1">
+                          <h2 className="text-xl font-bold text-white mb-1">
+                            {selectedMessage.subject}
+                          </h2>
+                          <p className="text-gray-400 text-sm">
+                            De: {selectedMessage.sender_name} • {format(new Date(selectedMessage.created_at), 'PPp', { locale: fr })}
+                          </p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="outline" className="border-white/20 text-gray-300">
+                              {getCategoryLabel(selectedMessage.category)}
+                            </Badge>
+                            {selectedMessage.priority !== 'normal' && (
+                              <Badge className={getPriorityColor(selectedMessage.priority)}>
+                                {selectedMessage.priority.toUpperCase()}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleStar(selectedMessage.id, selectedMessage.is_starred)}
+                          className="text-gray-400 hover:text-yellow-500"
+                        >
+                          <Star className={`h-5 w-5 ${
+                            selectedMessage.is_starred ? 'fill-yellow-500 text-yellow-500' : ''
+                          }`} />
+                        </Button>
+                      </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="message" className="text-white">Message</Label>
-                      <Textarea 
-                        id="message" 
-                        placeholder="Décrivez votre problème ou question..."
-                        rows={6}
-                        required
-                        className="bg-white/5 border-white/10 text-white"
-                      />
+
+                    {/* Message Content */}
+                    <ScrollArea className="flex-1 p-6">
+                      <div className="prose prose-invert max-w-none">
+                        <p className="text-gray-300 whitespace-pre-wrap">
+                          {selectedMessage.content}
+                        </p>
+                      </div>
+
+                      {/* Attachments */}
+                      {selectedMessage.attachments && selectedMessage.attachments.length > 0 && (
+                        <div className="mt-8">
+                          <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                            <Paperclip className="h-4 w-4" />
+                            Pièces jointes ({selectedMessage.attachments.length})
+                          </h3>
+                          <div className="grid gap-3">
+                            {selectedMessage.attachments.map((attachment, index) => (
+                              <Card key={index} className="p-4 bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 rounded bg-[#ffaa00]/10 text-[#ffaa00]">
+                                    {getAttachmentIcon(attachment.type)}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-white truncate">
+                                      {attachment.name}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      {attachment.size}
+                                    </p>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-[#00d4ff] hover:text-[#0088ff]"
+                                    onClick={() => {
+                                      toast.success("Téléchargement en cours...");
+                                    }}
+                                  >
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </ScrollArea>
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-center p-6">
+                    <div>
+                      <Inbox className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-400 text-lg">
+                        Sélectionnez un message pour le lire
+                      </p>
                     </div>
-                    
-                    <Button type="submit" className="w-full bg-gradient-to-r from-[#ffaa00] to-[#ff6600] hover:opacity-90">
-                      Envoyer le message
-                    </Button>
-                  </form>
-                </Card>
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Book className="h-5 w-5 text-[#0088ff]" />
-                    <h2 className="text-xl font-semibold text-white">Guides & Tutoriels</h2>
                   </div>
-                  <div className="space-y-3">
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Book className="h-4 w-4 mr-2" />
-                      Guide de démarrage
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Book className="h-4 w-4 mr-2" />
-                      Utiliser la cartographie santé
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Book className="h-4 w-4 mr-2" />
-                      Gérer vos ordonnances
-                    </Button>
-                  </div>
-                </Card>
-
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Video className="h-5 w-5 text-[#ff0088]" />
-                    <h2 className="text-xl font-semibold text-white">Vidéos d'aide</h2>
-                  </div>
-                  <div className="space-y-3">
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Video className="h-4 w-4 mr-2" />
-                      Prendre un rendez-vous
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Video className="h-4 w-4 mr-2" />
-                      Consulter vos résultats
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-white/5">
-                      <Video className="h-4 w-4 mr-2" />
-                      Demander un remboursement
-                    </Button>
-                  </div>
-                </Card>
+                )}
               </div>
             </div>
           </div>

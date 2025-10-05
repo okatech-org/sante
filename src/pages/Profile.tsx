@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu } from "lucide-react";
+import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
@@ -74,6 +74,7 @@ export default function Profile() {
     { id: "notifications", label: "Notifications", icon: Bell, color: "#ffaa00" },
     { id: "privacy", label: "Confidentialité", icon: Eye, color: "#ff0088" },
     { id: "preferences", label: "Préférences", icon: Palette, color: "#00d4ff" },
+    { id: "support", label: "Aide & Support", icon: HelpCircle, color: "#0088ff" },
   ];
 
   useEffect(() => {
@@ -768,6 +769,89 @@ export default function Profile() {
                           <SelectItem value="system">💻 Système</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Section Aide & Support */}
+              {activeSection === "support" && (
+                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4" style={{ color: '#0088ff' }} />
+                    Aide & Support
+                  </h2>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Contact Support</h3>
+                      <p className="text-xs text-gray-400 mb-3">Besoin d'aide ? Contactez notre équipe</p>
+                      <div className="grid gap-2">
+                        <Button 
+                          variant="outline" 
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs"
+                        >
+                          <Phone className="h-3 w-3 mr-2" />
+                          +241 11 23 45 67
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs"
+                          onClick={() => window.location.href = 'mailto:support@sante.ga'}
+                        >
+                          <Mail className="h-3 w-3 mr-2" />
+                          support@sante.ga
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Questions Fréquentes</h3>
+                      <p className="text-xs text-gray-400 mb-3">Consultez notre FAQ</p>
+                      <div className="space-y-2 text-xs">
+                        <div className="p-2 bg-white/5 rounded">
+                          <p className="text-white font-medium">Comment prendre un rendez-vous ?</p>
+                          <p className="text-gray-400 mt-1">Cliquez sur "Mes Rendez-vous" puis "Nouveau rendez-vous"</p>
+                        </div>
+                        <div className="p-2 bg-white/5 rounded">
+                          <p className="text-white font-medium">Comment utiliser la CNAMGS ?</p>
+                          <p className="text-gray-400 mt-1">Présentez votre carte lors de votre consultation</p>
+                        </div>
+                        <div className="p-2 bg-white/5 rounded">
+                          <p className="text-white font-medium">Comment accéder à mes résultats ?</p>
+                          <p className="text-gray-400 mt-1">Rendez-vous dans la section "Résultats d'analyses"</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Ressources Utiles</h3>
+                      <p className="text-xs text-gray-400 mb-3">Guides et tutoriels</p>
+                      <div className="grid gap-2">
+                        <Button 
+                          variant="outline" 
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                        >
+                          <Book className="h-3 w-3 mr-2" />
+                          Guide de démarrage
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                        >
+                          <Video className="h-3 w-3 mr-2" />
+                          Vidéos d'aide
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                      <div className="flex items-start gap-2">
+                        <MessageCircle className="h-4 w-4 text-green-400 mt-0.5" />
+                        <div>
+                          <h3 className="font-semibold text-green-400 text-sm">Chat en direct disponible</h3>
+                          <p className="text-xs text-gray-300 mt-1">Notre équipe est là pour vous aider Lun-Ven 8h-18h</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -89,6 +89,57 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          attachments: Json | null
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          is_starred: boolean | null
+          priority: string | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string | null
+          sender_name: string
+          sender_type: string
+          subject: string
+        }
+        Insert: {
+          attachments?: Json | null
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_starred?: boolean | null
+          priority?: string | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id?: string | null
+          sender_name: string
+          sender_type: string
+          subject: string
+        }
+        Update: {
+          attachments?: Json | null
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_starred?: boolean | null
+          priority?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string | null
+          sender_name?: string
+          sender_type?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       pharmacies: {
         Row: {
           address: string
