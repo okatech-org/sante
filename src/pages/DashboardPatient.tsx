@@ -235,22 +235,22 @@ export default function DashboardPatient() {
               return (
                 <div
                   key={index}
-                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-card/40 border border-border/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
+                  className="rounded-xl backdrop-blur-xl p-5 text-center bg-[#2a2d3a]/60 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] group"
                 >
-                  <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:from-primary/30 group-hover:to-secondary/30 transition-all">
-                    <Icon className="w-7 h-7 text-primary group-hover:scale-110 transition-transform" />
+                  <div className="w-12 h-12 rounded-xl mx-auto mb-3 bg-[#00d4ff]/20 flex items-center justify-center">
+                    <Icon className="w-7 h-7 text-[#00d4ff]" />
                   </div>
-                  <p className="text-xs mb-2 text-muted-foreground font-medium">{stat.label}</p>
-                  <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.trend}</p>
+                  <p className="text-xs mb-2 text-gray-400 font-medium">{stat.label}</p>
+                  <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+                  <p className="text-xs text-gray-500">{stat.trend}</p>
                 </div>
               );
             })}
           </div>
 
           {/* Rappels & Alertes */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-card/40 border border-border/30 shadow-2xl mb-6">
-            <h3 className="text-xl font-semibold mb-6 text-foreground">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl mb-6">
+            <h3 className="text-xl font-semibold mb-6 text-white">
               Rappels & Alertes
             </h3>
             
@@ -285,20 +285,20 @@ export default function DashboardPatient() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-4 rounded-lg hover:scale-[1.01] transition-all cursor-pointer bg-muted/30 hover:bg-muted/50"
+                    className="flex items-center justify-between p-4 rounded-lg hover:scale-[1.01] transition-all cursor-pointer bg-white/5 hover:bg-white/10"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-muted/50">
-                        <Icon className="w-5 h-5 text-muted-foreground" />
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10">
+                        <Icon className="w-5 h-5 text-gray-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">{reminder.event}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm font-medium text-white">{reminder.event}</p>
+                        <p className="text-xs text-gray-400">
                           {reminder.time} • {reminder.location}
                         </p>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-gray-500" />
                   </div>
                 );
               })}
@@ -306,14 +306,14 @@ export default function DashboardPatient() {
           </div>
 
           {/* Dossier Médical Récent */}
-          <div className="rounded-2xl backdrop-blur-xl p-8 bg-card/40 border border-border/30 shadow-2xl">
+          <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#2a2d3a]/60 border border-white/10 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-foreground">
+              <h3 className="text-xl font-semibold text-white">
                 Dossier Médical Récent
               </h3>
               <button 
                 onClick={() => navigate('/medical-record')}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 Voir tout
               </button>
@@ -329,12 +329,12 @@ export default function DashboardPatient() {
                 return (
                   <div
                     key={idx}
-                    className="p-4 rounded-lg hover:scale-[1.02] transition-all cursor-pointer bg-muted/30 hover:bg-muted/50"
+                    className="p-4 rounded-lg hover:scale-[1.02] transition-all cursor-pointer bg-white/5 hover:bg-white/10"
                   >
-                    <Icon className="w-6 h-6 mb-3 text-muted-foreground" />
-                    <p className="text-sm font-medium mb-1 text-foreground">{doc.title}</p>
-                    <p className="text-xs text-muted-foreground">{doc.date}</p>
-                    <p className="text-xs mt-1 text-muted-foreground">{doc.type}</p>
+                    <Icon className="w-6 h-6 mb-3 text-gray-400" />
+                    <p className="text-sm font-medium mb-1 text-white">{doc.title}</p>
+                    <p className="text-xs text-gray-400">{doc.date}</p>
+                    <p className="text-xs mt-1 text-gray-500">{doc.type}</p>
                   </div>
                 );
               })}
