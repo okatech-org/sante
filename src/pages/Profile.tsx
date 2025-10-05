@@ -340,12 +340,11 @@ export default function Profile() {
 
         {/* Main Content */}
         <main className="flex-1 md:ml-72 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="space-y-6">
             {/* Menu secondaire des sections */}
-            <div className="lg:col-span-1">
-              <div className="rounded-2xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl sticky top-6">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3 px-4">SECTIONS</h3>
-                <nav className="space-y-2">
+            <div className="lg:col-span-4">
+              <div className="rounded-2xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
+                <nav className="flex gap-2 overflow-x-auto">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -353,7 +352,7 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                        className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
                           isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
                         }`}
                       >
@@ -374,7 +373,7 @@ export default function Profile() {
             </div>
 
             {/* Contenu principal */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="space-y-6">
               {/* Section Profil */}
               {activeSection === "profile" && (
                 <>
