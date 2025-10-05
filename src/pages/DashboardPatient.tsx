@@ -434,23 +434,25 @@ export default function DashboardPatient() {
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
+                    className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
                   >
-                    <div className="flex items-center gap-4">
-                      <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${reminder.color}20` }}
-                      >
-                        <Icon className="w-6 h-6" style={{ color: reminder.color }} />
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: `${reminder.color}20` }}
+                        >
+                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: reminder.color }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] sm:text-xs font-medium text-gray-400 mb-0.5">{reminder.time}</p>
+                          <p className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2">{reminder.event}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white mb-1">{reminder.event}</p>
-                        <p className="text-xs text-gray-400">
-                          {reminder.time} • {reminder.location}
-                        </p>
-                      </div>
+                      <p className="text-[9px] sm:text-xs text-gray-500 ml-10 sm:ml-0 truncate">
+                        {reminder.location}
+                      </p>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-500" />
                   </div>
                 );
               })}
