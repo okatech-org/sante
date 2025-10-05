@@ -233,7 +233,7 @@ export default function Appointments() {
               </h3>
               <div className="h-px flex-1 bg-white/10" />
             </div>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {appointments.map((appointment) => (
                 <AppointmentCard
                   key={appointment.id}
@@ -271,7 +271,7 @@ export default function Appointments() {
         {Object.entries(grouped).map(([month, appointments]) => (
           <div key={month}>
             <h3 className="text-lg font-semibold mb-4 uppercase text-white">{month}</h3>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {appointments.map((appointment) => (
                 <AppointmentCard
                   key={appointment.id}
@@ -300,7 +300,7 @@ export default function Appointments() {
     }
 
     return (
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {cancelledAppointments.map((appointment) => (
           <AppointmentCard
             key={appointment.id}
