@@ -287,29 +287,31 @@ export default function DashboardPatient() {
                     <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                {/* Poids, Taille, Groupe sanguin, N° CNAMGS - sur une même ligne en tablette/desktop */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
-                    <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
-                  </div>
+          {/* Informations médicales - Bloc séparé */}
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+              <div className="bg-white/5 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
+                <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
+              </div>
 
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
-                    <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
-                  </div>
+              <div className="bg-white/5 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Taille</p>
+                <p className="text-base sm:text-xl font-bold text-white">1.75 m</p>
+              </div>
 
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
-                    <p className="text-base sm:text-xl font-bold text-white">O+</p>
-                  </div>
+              <div className="bg-white/5 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
+                <p className="text-base sm:text-xl font-bold text-white">O+</p>
+              </div>
 
-                  <div className="bg-white/5 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
-                    <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
-                  </div>
-                </div>
+              <div className="bg-white/5 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
+                <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
               </div>
             </div>
           </div>
