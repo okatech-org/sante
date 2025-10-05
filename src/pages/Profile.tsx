@@ -339,12 +339,12 @@ export default function Profile() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-72 p-4 lg:p-6 max-w-7xl pt-20 md:pt-6">
-          <div className="space-y-6">
+        <main className="flex-1 md:ml-72 p-3 lg:p-4 max-w-7xl pt-16 md:pt-4">
+          <div className="space-y-3">
             {/* Menu secondaire des sections */}
             <div className="lg:col-span-4">
-              <div className="rounded-2xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mb-6">
-                <nav className="flex gap-2 overflow-x-auto">
+              <div className="rounded-xl backdrop-blur-xl p-2 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                <nav className="flex gap-1 overflow-x-auto scrollbar-hide">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -352,19 +352,19 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap text-sm ${
                           isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
                         }`}
                       >
                         <div
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                          className={`w-7 h-7 rounded-md flex items-center justify-center ${
                             isActive ? '' : 'bg-white/5'
                           }`}
                           style={isActive ? { backgroundColor: `${section.color}20` } : {}}
                         >
-                          <Icon className="w-5 h-5" style={{ color: isActive ? section.color : '' }} />
+                          <Icon className="w-4 h-4" style={{ color: isActive ? section.color : '' }} />
                         </div>
-                        <span className="font-medium">{section.label}</span>
+                        <span className="font-medium hidden sm:inline">{section.label}</span>
                       </button>
                     );
                   })}
@@ -373,24 +373,24 @@ export default function Profile() {
             </div>
 
             {/* Contenu principal */}
-            <div className="space-y-6">
+            <div className="space-y-3">
               {/* Section Profil */}
               {activeSection === "profile" && (
                 <>
                   {/* Avatar et informations principales */}
-                  <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                      <User className="w-5 h-5" style={{ color: '#00d4ff' }} />
+                  <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                    <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <User className="w-4 h-4" style={{ color: '#00d4ff' }} />
                       Photo de profil
                     </h2>
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
                       <div className="relative">
-                        <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
                           <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center overflow-hidden">
                             {avatarUrl ? (
                               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-4xl font-bold text-white">{initials}</span>
+                              <span className="text-2xl sm:text-3xl font-bold text-white">{initials}</span>
                             )}
                           </div>
                         </div>
@@ -400,40 +400,40 @@ export default function Profile() {
                         />
                       </div>
                       <div className="flex-1 text-center sm:text-left">
-                        <h3 className="text-2xl font-bold text-white mb-1">{fullName}</h3>
-                        <p className="text-gray-400">{user?.email}</p>
-                        <p className="text-sm text-gray-500 mt-2">Membre depuis {new Date().getFullYear()}</p>
+                        <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5">{fullName}</h3>
+                        <p className="text-sm text-gray-400">{user?.email}</p>
+                        <p className="text-xs text-gray-500 mt-1">Membre depuis {new Date().getFullYear()}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                      <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <User className="w-5 h-5" style={{ color: '#00d4ff' }} />
+                    <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                      <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <User className="w-4 h-4" style={{ color: '#00d4ff' }} />
                         Informations personnelles
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="full_name" className="text-gray-300">
-                            <User className="inline h-4 w-4 mr-2" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="full_name" className="text-gray-300 text-sm flex items-center gap-1.5">
+                            <User className="h-3.5 w-3.5" />
                             Nom complet *
                           </Label>
                           <Input
                             id="full_name"
                             {...register("full_name")}
                             placeholder="Votre nom complet"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                           {errors.full_name && (
-                            <p className="text-sm text-red-400">{errors.full_name.message}</p>
+                            <p className="text-xs text-red-400">{errors.full_name.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="email" className="text-gray-300">
-                            <Mail className="inline h-4 w-4 mr-2" />
+                        <div className="space-y-1.5">
+                          <Label htmlFor="email" className="text-gray-300 text-sm flex items-center gap-1.5">
+                            <Mail className="h-3.5 w-3.5" />
                             Email
                           </Label>
                           <Input
@@ -441,46 +441,46 @@ export default function Profile() {
                             type="email"
                             {...register("email")}
                             placeholder="votre@email.com"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                           {errors.email && (
-                            <p className="text-sm text-red-400">{errors.email.message}</p>
+                            <p className="text-xs text-red-400">{errors.email.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="phone" className="text-gray-300">
-                            <Phone className="inline h-4 w-4 mr-2" />
+                        <div className="space-y-1.5">
+                          <Label htmlFor="phone" className="text-gray-300 text-sm flex items-center gap-1.5">
+                            <Phone className="h-3.5 w-3.5" />
                             Téléphone *
                           </Label>
                           <Input
                             id="phone"
                             {...register("phone")}
                             placeholder="+241 XX XX XX XX"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                           {errors.phone && (
-                            <p className="text-sm text-red-400">{errors.phone.message}</p>
+                            <p className="text-xs text-red-400">{errors.phone.message}</p>
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="birth_date" className="text-gray-300">
-                            <Calendar className="inline h-4 w-4 mr-2" />
+                        <div className="space-y-1.5">
+                          <Label htmlFor="birth_date" className="text-gray-300 text-sm flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5" />
                             Date de naissance
                           </Label>
                           <Input
                             id="birth_date"
                             type="date"
                             {...register("birth_date")}
-                            className="bg-white/5 border-white/10 text-white"
+                            className="bg-white/5 border-white/10 text-white h-9 text-sm"
                           />
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="gender" className="text-gray-300">Genre</Label>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="gender" className="text-gray-300 text-sm">Genre</Label>
                           <Select onValueChange={(value) => setValue("gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
                               <SelectValue placeholder="Sélectionnez votre genre" />
                             </SelectTrigger>
                             <SelectContent>
@@ -494,61 +494,61 @@ export default function Profile() {
                     </div>
 
                     {/* Adresse */}
-                    <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl mt-6">
-                      <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <MapPin className="w-5 h-5" style={{ color: '#0088ff' }} />
+                    <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mt-3">
+                      <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                        <MapPin className="w-4 h-4" style={{ color: '#0088ff' }} />
                         Adresse
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="province" className="text-gray-300">
-                            <MapPin className="inline h-4 w-4 mr-2" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <Label htmlFor="province" className="text-gray-300 text-sm flex items-center gap-1.5">
+                            <MapPin className="h-3.5 w-3.5" />
                             Province
                           </Label>
                           <Input
                             id="province"
                             {...register("province")}
                             placeholder="Ex: Estuaire"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="city" className="text-gray-300">Ville</Label>
+                        <div className="space-y-1.5">
+                          <Label htmlFor="city" className="text-gray-300 text-sm">Ville</Label>
                           <Input
                             id="city"
                             {...register("city")}
                             placeholder="Ex: Libreville"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                         </div>
 
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="neighborhood" className="text-gray-300">Quartier</Label>
+                        <div className="space-y-1.5 md:col-span-2">
+                          <Label htmlFor="neighborhood" className="text-gray-300 text-sm">Quartier</Label>
                           <Input
                             id="neighborhood"
                             {...register("neighborhood")}
                             placeholder="Ex: Nombakele"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex justify-end mt-6">
+                    <div className="flex justify-end mt-3">
                       <Button
                         type="submit"
                         disabled={saving}
-                        className="bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef] text-white px-8"
+                        className="bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef] text-white px-6 h-9 text-sm"
                       >
                         {saving ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                             Enregistrement...
                           </>
                         ) : (
                           <>
-                            <Save className="mr-2 h-4 w-4" />
+                            <Save className="mr-1.5 h-3.5 w-3.5" />
                             Enregistrer
                           </>
                         )}
@@ -560,23 +560,23 @@ export default function Profile() {
 
               {/* Section Sécurité */}
               {activeSection === "security" && (
-                <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Lock className="w-5 h-5" style={{ color: '#0088ff' }} />
+                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <Lock className="w-4 h-4" style={{ color: '#0088ff' }} />
                     Sécurité
                   </h2>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-white/5 rounded-xl">
-                      <h3 className="font-semibold text-white mb-2">Changer le mot de passe</h3>
-                      <p className="text-sm text-gray-400 mb-4">Modifiez votre mot de passe pour sécuriser votre compte</p>
-                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                  <div className="space-y-3">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Changer le mot de passe</h3>
+                      <p className="text-xs text-gray-400 mb-2">Modifiez votre mot de passe pour sécuriser votre compte</p>
+                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-8 text-xs">
                         Changer le mot de passe
                       </Button>
                     </div>
-                    <div className="p-4 bg-white/5 rounded-xl">
-                      <h3 className="font-semibold text-white mb-2">Authentification à deux facteurs</h3>
-                      <p className="text-sm text-gray-400 mb-4">Ajoutez une couche de sécurité supplémentaire</p>
-                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-sm">Authentification à deux facteurs</h3>
+                      <p className="text-xs text-gray-400 mb-2">Ajoutez une couche de sécurité supplémentaire</p>
+                      <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 h-8 text-xs">
                         Activer 2FA
                       </Button>
                     </div>
@@ -586,14 +586,14 @@ export default function Profile() {
 
               {/* Section Notifications */}
               {activeSection === "notifications" && (
-                <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Bell className="w-5 h-5" style={{ color: '#ffaa00' }} />
+                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <Bell className="w-4 h-4" style={{ color: '#ffaa00' }} />
                     Notifications
                   </h2>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-white/5 rounded-xl">
-                      <p className="text-sm text-gray-400">Configuration des notifications à venir...</p>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <p className="text-xs text-gray-400">Configuration des notifications à venir...</p>
                     </div>
                   </div>
                 </div>
@@ -601,14 +601,14 @@ export default function Profile() {
 
               {/* Section Confidentialité */}
               {activeSection === "privacy" && (
-                <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Eye className="w-5 h-5" style={{ color: '#ff0088' }} />
+                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <Eye className="w-4 h-4" style={{ color: '#ff0088' }} />
                     Confidentialité
                   </h2>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-white/5 rounded-xl">
-                      <p className="text-sm text-gray-400">Paramètres de confidentialité à venir...</p>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <p className="text-xs text-gray-400">Paramètres de confidentialité à venir...</p>
                     </div>
                   </div>
                 </div>
@@ -616,14 +616,14 @@ export default function Profile() {
 
               {/* Section Préférences */}
               {activeSection === "preferences" && (
-                <div className="rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                  <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Palette className="w-5 h-5" style={{ color: '#00d4ff' }} />
+                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <Palette className="w-4 h-4" style={{ color: '#00d4ff' }} />
                     Préférences
                   </h2>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-white/5 rounded-xl">
-                      <p className="text-sm text-gray-400">Préférences de l'application à venir...</p>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <p className="text-xs text-gray-400">Préférences de l'application à venir...</p>
                     </div>
                   </div>
                 </div>
