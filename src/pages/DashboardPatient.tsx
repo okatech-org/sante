@@ -464,7 +464,7 @@ export default function DashboardPatient() {
               <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
                 Dossier Médical Récent
               </h3>
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
               {[
                 { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
                 { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
