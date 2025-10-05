@@ -30,6 +30,12 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
 
   const activeMenu = menuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
 
+  const handleMenuClick = (path: string) => {
+    navigate(path);
+    // Fermer le menu mobile avec un léger délai pour la transition
+    setTimeout(() => setMobileMenuOpen(false), 100);
+  };
+
   const renderMenu = () => (
     <nav className="space-y-1 flex-1 overflow-y-auto">
       {menuItems.map((item) => {
@@ -38,10 +44,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         return (
           <button
             key={item.id}
-            onClick={() => {
-              navigate(item.path);
-              setMobileMenuOpen(false);
-            }}
+            onClick={() => handleMenuClick(item.path)}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
               isActive
                 ? 'bg-white/10 text-white'
