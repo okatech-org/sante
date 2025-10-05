@@ -150,7 +150,7 @@ export default function DashboardPatient() {
     id: 'settings',
     label: 'Paramètres',
     icon: Settings,
-    path: '/profile',
+    path: '/parametres',
     color: '#ff0088'
   }];
   useEffect(() => {

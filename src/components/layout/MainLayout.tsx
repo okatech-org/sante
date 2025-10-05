@@ -30,7 +30,7 @@ const routeLabels: Record<string, string> = {
   "/medical-record": "Mon Dossier Médical",
   "/reimbursements": "Remboursements CNAMGS",
   "/messages": "Messages",
-  "/profile": "Mon Profil",
+  "/parametres": "Mon Profil",
   "/admin": "Administration",
   "/admin/dashboard": "Tableau de Bord Admin",
   "/admin/users": "Utilisateurs",

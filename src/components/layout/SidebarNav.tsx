@@ -37,7 +37,7 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
     { icon: TestTube, label: "Résultats d'analyses", href: "/results" },
     { icon: Shield, label: "Droits CNAMGS", href: "/reimbursements" },
     { icon: Mail, label: "Messages", href: "/messages", badge: 3 },
-    { icon: Settings, label: "Paramètres", href: "/profile" },
+    { icon: Settings, label: "Paramètres", href: "/parametres" },
   ];
 
   const superAdminNavItems: NavItem[] = [

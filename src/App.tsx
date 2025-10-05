@@ -137,7 +137,7 @@ const App = () => (
                 <Teleconsultation />
               </ProtectedRoute>
             } />
-            <Route path="/profile" element={
+            <Route path="/parametres" element={
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>

@@ -7,7 +7,7 @@ const navItems = [
   { icon: Home, label: "Accueil", href: "/dashboard" },
   { icon: Map, label: "Carte", href: "/cartography" },
   { icon: Pill, label: "Ordonnances", href: "/prescriptions" },
-  { icon: User, label: "Profil", href: "/profile" },
+  { icon: User, label: "Profil", href: "/parametres" },
 ];
 
 export const MobileBottomNav = () => {

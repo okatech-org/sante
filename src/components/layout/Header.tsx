@@ -43,7 +43,7 @@ export function Header() {
               <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors">
                 Rendez-vous
               </Link>
-              <Link to="/profile" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to="/parametres" className="text-sm font-medium hover:text-primary transition-colors">
                 Profil
               </Link>
             </>
@@ -112,7 +112,7 @@ export function Header() {
                     <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors py-2">
                       Rendez-vous
                     </Link>
-                    <Link to="/profile" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                    <Link to="/parametres" className="text-sm font-medium hover:text-primary transition-colors py-2">
                       Profil
                     </Link>
                   </>

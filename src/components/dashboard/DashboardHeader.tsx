@@ -104,19 +104,19 @@ export function DashboardHeader() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/profile" className="cursor-pointer">
+                <Link to="/parametres" className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   {t('nav.profile')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/profile?tab=insurance" className="cursor-pointer">
+                <Link to="/parametres?tab=insurance" className="cursor-pointer">
                   <CreditCard className="mr-2 h-4 w-4" />
                   {t('nav.insurance')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/profile?tab=settings" className="cursor-pointer">
+                <Link to="/parametres?tab=settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
                   {t('nav.settings')}
                 </Link>
