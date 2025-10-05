@@ -390,7 +390,7 @@ export default function DashboardPatient() {
           </div>
 
           {/* Rappels & Alertes et Dossier Médical sur la même ligne */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Rappels & Alertes */}
             <div className="rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
               <h3 className="text-xl font-semibold mb-6 text-white">
