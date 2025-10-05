@@ -255,7 +255,7 @@ export default function Prescriptions() {
 
       <div className="relative flex">
         {/* Sidebar Desktop */}
-        <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
+        <aside className="hidden md:block w-80 h-screen fixed left-0 top-0 p-4 z-40">
           <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
@@ -394,7 +394,7 @@ export default function Prescriptions() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64 pt-20 md:pt-0">
+        <main className="flex-1 md:ml-80 pt-20 md:pt-0">
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="space-y-6">
               {/* Header */}
