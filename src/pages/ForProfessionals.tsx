@@ -129,33 +129,42 @@ export default function ForProfessionals() {
   return (
     <MainLayout>
       <div className="min-h-screen">
-        {/* Hero Section */}
-      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src={professionalsHero} 
-            alt="Professionnels de santé" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
-        </div>
+      {/* Hero Section - Aurora Glass */}
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+        {/* Aurora Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-accent animate-aurora" />
+        <div 
+          className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
+          style={{
+            backgroundImage: `url(${professionalsHero})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-background/90" />
         
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
-            Pour les Professionnels de Santé
-          </h1>
-          <p className="text-xl lg:text-2xl max-w-3xl mx-auto mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Modernisez votre pratique et développez votre activité avec SANTE.GA
-          </p>
-          <Link to="/register/professional">
-            <Button size="lg" variant="secondary" className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Rejoindre SANTE.GA
-            </Button>
-          </Link>
+        {/* Glassmorphism Container */}
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <div className="backdrop-blur-2xl bg-white/10 dark:bg-white/5 rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg animate-float">
+              Pour les Professionnels de Santé
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+              Modernisez votre pratique et développez votre activité avec SANTE.GA
+            </p>
+            <Link to="/register/professional">
+              <Button 
+                size="lg" 
+                className="backdrop-blur-xl bg-white/20 hover:bg-white/30 border-2 border-white/40 text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-white/20"
+              >
+                Rejoindre SANTE.GA
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Target Audience */}
+      {/* Target Audience - Glassmorphism Cards */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -167,9 +176,12 @@ export default function ForProfessionals() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {targetAudience.map((target, index) => (
-              <Card key={index} className="text-center hover:shadow-xl transition-shadow">
+              <Card 
+                key={index} 
+                className="text-center backdrop-blur-xl bg-white/5 dark:bg-white/10 border-2 border-white/10 dark:border-white/20 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 hover:scale-105 group"
+              >
                 <CardHeader>
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mx-auto mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary via-secondary to-accent text-white mx-auto mb-4 shadow-lg group-hover:shadow-primary/50 transition-all duration-300 group-hover:scale-110">
                     <target.icon className="w-8 h-8" />
                   </div>
                   <CardTitle className="text-xl">{target.title}</CardTitle>
@@ -204,22 +216,22 @@ export default function ForProfessionals() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 
                 <div className="relative z-10 p-6 flex flex-col justify-end h-full">
-                  <div className="bg-white/85 dark:bg-black/75 rounded-xl p-4 shadow-xl border border-border/40 dark:border-white/20">
+                  <div className="backdrop-blur-2xl bg-white/10 dark:bg-black/20 rounded-xl p-4 shadow-2xl border-2 border-white/20 dark:border-white/30 hover:border-primary/50 transition-all duration-300 group-hover:shadow-primary/20 animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent bg-[length:1000px_100%]">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary flex-shrink-0">
+                      <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary text-white flex-shrink-0 shadow-lg">
                         <benefit.icon className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="text-lg mb-1 text-foreground dark:text-white">{benefit.title}</CardTitle>
-                        <CardDescription className="text-xs text-foreground/80 dark:text-white/80">{benefit.description}</CardDescription>
+                        <CardTitle className="text-lg mb-1 text-white drop-shadow-md">{benefit.title}</CardTitle>
+                        <CardDescription className="text-xs text-white/90">{benefit.description}</CardDescription>
                       </div>
                     </div>
                     
                     <ul className="space-y-1.5 ml-13">
                       {benefit.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-xs">
-                          <div className="w-1 h-1 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                          <span className="text-foreground/70 dark:text-white/70">{feature}</span>
+                          <div className="w-1 h-1 rounded-full bg-primary mt-1.5 flex-shrink-0 shadow-glow" />
+                          <span className="text-white/80">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -231,7 +243,7 @@ export default function ForProfessionals() {
         </div>
       </section>
 
-      {/* Additional Features */}
+      {/* Additional Features - Compact Glass Grid */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -243,9 +255,12 @@ export default function ForProfessionals() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {additionalFeatures.map((feature, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card 
+                key={index} 
+                className="backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/10 dark:from-white/10 dark:to-white/5 border border-white/10 dark:border-white/20 hover:border-secondary/50 hover:shadow-2xl hover:shadow-secondary/20 transition-all duration-300 hover:-translate-y-1 hover:scale-105 group"
+              >
                 <CardHeader>
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-secondary to-accent text-white mb-4 shadow-lg group-hover:shadow-secondary/50 transition-all duration-300 group-hover:scale-110">
                     <feature.icon className="w-6 h-6" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -259,7 +274,7 @@ export default function ForProfessionals() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing - Premium Glass Cards */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -270,10 +285,10 @@ export default function ForProfessionals() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="hover:shadow-xl transition-shadow">
+            <Card className="backdrop-blur-2xl bg-white/5 dark:bg-white/10 border border-white/10 dark:border-white/20 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:scale-105 group">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl mb-2">Essentiel</CardTitle>
-                <div className="text-4xl font-bold text-primary mb-2">Gratuit</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">Gratuit</div>
                 <CardDescription>Pour débuter sur la plateforme</CardDescription>
               </CardHeader>
               <CardContent>
@@ -286,26 +301,32 @@ export default function ForProfessionals() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-xl transition-shadow border-primary">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl mb-2">Professionnel</CardTitle>
-                <div className="text-4xl font-bold text-primary mb-2">50k FCFA<span className="text-lg">/mois</span></div>
-                <CardDescription>Pour une pratique complète</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex gap-2">✓ Tout Essentiel +</li>
-                  <li className="flex gap-2">✓ Téléconsultation illimitée</li>
-                  <li className="flex gap-2">✓ Statistiques avancées</li>
-                  <li className="flex gap-2">✓ Support prioritaire</li>
-                </ul>
-              </CardContent>
+            <Card className="backdrop-blur-2xl bg-white/5 dark:bg-white/10 border-2 hover:shadow-2xl transition-all duration-300 hover:scale-105 relative group animate-aurora-pulse shadow-primary/20">
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary via-secondary to-accent opacity-50 blur-sm group-hover:opacity-75 transition-opacity" />
+              <div className="relative bg-card/95 backdrop-blur-2xl rounded-lg border-2 border-white/20">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary via-secondary to-accent text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg">
+                  Recommandé
+                </div>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl mb-2">Professionnel</CardTitle>
+                  <div className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">50k FCFA<span className="text-lg">/mois</span></div>
+                  <CardDescription>Pour une pratique complète</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    <li className="flex gap-2">✓ Tout Essentiel +</li>
+                    <li className="flex gap-2">✓ Téléconsultation illimitée</li>
+                    <li className="flex gap-2">✓ Statistiques avancées</li>
+                    <li className="flex gap-2">✓ Support prioritaire</li>
+                  </ul>
+                </CardContent>
+              </div>
             </Card>
 
-            <Card className="hover:shadow-xl transition-shadow">
+            <Card className="backdrop-blur-2xl bg-white/5 dark:bg-white/10 border border-white/10 dark:border-white/20 hover:shadow-2xl hover:shadow-accent/10 transition-all duration-300 hover:scale-105 group">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl mb-2">Établissement</CardTitle>
-                <div className="text-4xl font-bold text-primary mb-2">Sur devis</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent mb-2">Sur devis</div>
                 <CardDescription>Pour les structures de santé</CardDescription>
               </CardHeader>
               <CardContent>
@@ -321,23 +342,31 @@ export default function ForProfessionals() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+      {/* CTA Section - Aurora Gradient */}
+      <section className="py-16 bg-gradient-to-r from-primary via-secondary to-accent relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-accent animate-aurora opacity-75" />
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-white drop-shadow-lg">
             Rejoignez SANTE.GA dès aujourd'hui
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-white/90">
             Plus de 500 professionnels nous font déjà confiance
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register/professional">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto backdrop-blur-xl bg-white/20 hover:bg-white/30 border-2 border-white/40 text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-white/30"
+              >
                 Créer mon compte professionnel
               </Button>
             </Link>
             <Link to="/support">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full sm:w-auto backdrop-blur-xl bg-white/10 hover:bg-white/20 border-2 border-white/40 text-white hover:scale-105 transition-all duration-300"
+              >
                 Contacter notre équipe
               </Button>
             </Link>
