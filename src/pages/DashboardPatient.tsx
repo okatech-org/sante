@@ -30,27 +30,38 @@ export default function DashboardPatient() {
   const [editMedicalOpen, setEditMedicalOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [language, setLanguage] = useState('fr');
+  const [profileData, setProfileData] = useState<{
+    full_name: string;
+    birth_date: string | null;
+    gender: string | null;
+  } | null>(null);
   
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
-  const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
 
-  // Charger les préférences depuis la base de données
+  // Charger les préférences et le profil depuis la base de données
   useEffect(() => {
-    const loadPreferences = async () => {
+    const loadProfileAndPreferences = async () => {
       if (user?.id) {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
-          .select('language, theme')
+          .select('full_name, birth_date, gender, language, theme, avatar_url')
           .eq('id', user.id)
           .single();
         
-        if (data) {
+        if (data && !error) {
+          setProfileData({
+            full_name: data.full_name,
+            birth_date: data.birth_date,
+            gender: data.gender,
+          });
           if (data.language) setLanguage(data.language);
           if (data.theme) setTheme(data.theme);
+          if (data.avatar_url) setAvatarUrl(data.avatar_url);
         }
       }
     };
-    loadPreferences();
+    loadProfileAndPreferences();
   }, [user?.id, setTheme]);
 
   // Sauvegarder les préférences
@@ -95,6 +106,34 @@ export default function DashboardPatient() {
   const nameParts = fullName.split(' ');
   const firstName = nameParts.slice(0, -1).join(' ') || 'Jean-Pierre';
   const lastName = nameParts[nameParts.length - 1] || 'Mbadinga';
+
+  // Calculer l'âge à partir de la date de naissance
+  const calculateAge = (birthDate: string | null): number | null => {
+    if (!birthDate) return null;
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = calculateAge(profileData?.birth_date || null);
+
+  // Traduire le genre
+  const getGenderLabel = (gender: string | null): string => {
+    if (!gender) return 'Non renseigné';
+    switch (gender) {
+      case 'male': return 'Masculin';
+      case 'female': return 'Féminin';
+      case 'other': return 'Autre';
+      case 'prefer_not_to_say': return 'Non renseigné';
+      default: return 'Non renseigné';
+    }
+  };
+
   const menuItems = [{
     id: 'dashboard',
     label: 'Tableau de bord',
@@ -541,12 +580,16 @@ export default function DashboardPatient() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-muted/30 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Âge</p>
-                    <p className="text-base sm:text-xl font-bold text-foreground">34 ans</p>
+                    <p className="text-base sm:text-xl font-bold text-foreground">
+                      {age !== null ? `${age} ans` : 'Non renseigné'}
+                    </p>
                   </div>
 
                   <div className="bg-muted/30 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Sexe</p>
-                    <p className="text-base sm:text-xl font-bold text-foreground">Masculin</p>
+                    <p className="text-base sm:text-xl font-bold text-foreground">
+                      {getGenderLabel(profileData?.gender || null)}
+                    </p>
                   </div>
                 </div>
               </div>
