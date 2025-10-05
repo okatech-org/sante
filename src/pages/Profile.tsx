@@ -49,7 +49,7 @@ export default function Profile() {
         .from("profiles")
         .select("*")
         .eq("id", user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -65,6 +65,18 @@ export default function Profile() {
           neighborhood: data.neighborhood || "",
         });
         setAvatarUrl(data.avatar_url || "");
+      } else {
+        // Fallback sur les métadonnées du compte si aucun profil en base
+        reset({
+          full_name: (user?.user_metadata as any)?.full_name || user?.email || "",
+          email: user?.email || "",
+          phone: (user?.user_metadata as any)?.phone || "",
+          birth_date: "",
+          gender: "",
+          province: "",
+          city: "",
+          neighborhood: "",
+        });
       }
     } catch (error) {
       console.error("Error loading profile:", error);
