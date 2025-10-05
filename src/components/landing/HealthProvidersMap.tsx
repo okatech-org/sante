@@ -360,18 +360,19 @@ export default function HealthProvidersMap() {
     <div className="h-[600px] w-full relative">
       {/* Filtres par type - Interface sur toute la largeur */}
       <div className="absolute bottom-4 left-4 right-4 z-[1000]">
-        <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h3 className="text-xs font-bold text-foreground/80 dark:text-foreground/90 flex items-center gap-2 uppercase tracking-wide">
-              <Layers className="h-3 w-3" />
-              Filtrer par type
+        <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-2 sm:p-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <h3 className="text-[10px] sm:text-xs font-bold text-foreground/80 dark:text-foreground/90 flex items-center gap-1 sm:gap-2 uppercase tracking-wide">
+              <Layers className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+              <span className="hidden sm:inline">Filtrer par type</span>
+              <span className="sm:hidden">Filtres</span>
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               <Button
                 size="sm"
                 variant={selectedType === null ? "default" : "outline"}
                 onClick={() => setSelectedType(null)}
-                className="h-7 px-3 text-xs rounded-lg font-medium"
+                className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg font-medium"
               >
                 Tous
               </Button>
@@ -381,10 +382,10 @@ export default function HealthProvidersMap() {
                   size="sm"
                   variant={selectedType === type.id ? "default" : "outline"}
                   onClick={() => setSelectedType(type.id)}
-                  className="h-7 px-3 text-xs rounded-lg flex items-center gap-1.5 font-medium"
+                  className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg flex items-center gap-1 sm:gap-1.5 font-medium"
                   title={type.label}
                 >
-                  <span>{type.icon}</span>
+                  <span className="text-sm sm:text-base">{type.icon}</span>
                   <span className="hidden sm:inline">{type.label}</span>
                 </Button>
               ))}
