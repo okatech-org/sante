@@ -227,11 +227,11 @@ export default function Teleconsultation() {
     <PatientDashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+        <div className="rounded-2xl backdrop-blur-xl p-3 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2">
             Téléconsultation
           </h1>
-          <p className="text-gray-400 text-sm sm:text-base">
+          <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
             Consultez un médecin à distance, en toute sécurité
           </p>
         </div>
