@@ -393,9 +393,13 @@ export default function DashboardPatient() {
           </div>
 
           {/* Rappels & Alertes et Dossier Médical sur la même ligne */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Rappels & Alertes */}
-            <div className="space-y-3">
+            <div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
+                Rappels & Alertes
+              </h3>
+              <div className="space-y-3">
               {[
                 { 
                   time: 'Aujourd\'hui 14h30', 
@@ -450,9 +454,15 @@ export default function DashboardPatient() {
                   </div>
                 );
               })}
+              </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Dossier Médical Récent */}
+            <div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
+                Dossier Médical Récent
+              </h3>
+              <div className="space-y-4">
               {[
                 { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
                 { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
@@ -478,6 +488,7 @@ export default function DashboardPatient() {
                   </div>
                 );
               })}
+              </div>
             </div>
           </div>
         </main>
