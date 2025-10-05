@@ -34,7 +34,8 @@ import {
   FlaskConical,
   Building2,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  Send
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -84,6 +85,7 @@ export default function Support() {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [isSendingReply, setIsSendingReply] = useState(false);
+  const [repliedMessageIds, setRepliedMessageIds] = useState<Set<string>>(new Set());
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -158,6 +160,17 @@ export default function Support() {
         toast.error("Erreur lors du chargement des messages");
       } else {
         setMessages((data as any) || []);
+        
+        // Load replied message IDs
+        const { data: repliedMessages } = await supabase
+          .from('messages')
+          .select('parent_message_id')
+          .eq('sender_id', user?.id)
+          .not('parent_message_id', 'is', null);
+        
+        if (repliedMessages) {
+          setRepliedMessageIds(new Set(repliedMessages.map(m => m.parent_message_id).filter(Boolean)));
+        }
       }
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -201,6 +214,30 @@ export default function Support() {
       ));
     } catch (error) {
       console.error('Error marking message as read:', error);
+    }
+  };
+
+  const markAsUnread = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ is_read: false })
+        .eq('id', messageId);
+
+      if (error) throw error;
+      
+      setMessages(messages.map(msg => 
+        msg.id === messageId ? { ...msg, is_read: false } : msg
+      ));
+
+      if (selectedMessage?.id === messageId) {
+        setSelectedMessage({ ...selectedMessage, is_read: false });
+      }
+
+      toast.success("Message marqué comme non lu");
+    } catch (error) {
+      console.error('Error marking message as unread:', error);
+      toast.error("Erreur lors du marquage comme non lu");
     }
   };
 
@@ -273,6 +310,11 @@ export default function Support() {
       toast.success("Réponse envoyée avec succès");
       setReplyContent("");
       handleCloseDialog();
+
+      // Add to replied message IDs
+      if (selectedMessage?.id) {
+        setRepliedMessageIds(prev => new Set([...prev, selectedMessage.id]));
+      }
     } catch (error) {
       console.error('Error sending reply:', error);
       toast.error("Erreur lors de l'envoi de la réponse");
@@ -341,6 +383,8 @@ export default function Support() {
         return !message.is_read && !message.deleted_at;
       case 'starred':
         return message.is_starred && !message.deleted_at;
+      case 'replied':
+        return repliedMessageIds.has(message.id) && !message.deleted_at;
       case 'trash':
         return message.deleted_at !== null;
       default:
@@ -699,42 +743,51 @@ export default function Support() {
                 </div>
 
                 {/* Tabs Filter */}
-                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-4 w-full">
+                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-5 w-full">
                   <button
                     onClick={() => setSelectedTab("all")}
-                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "all" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Inbox className="h-4 w-4" />
-                    <span className="hidden sm:inline">Tous</span>
+                    <span className="hidden lg:inline">Tous</span>
                   </button>
                   <button
                     onClick={() => setSelectedTab("unread")}
-                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "unread" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <MailOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">Non lus</span>
+                    <span className="hidden lg:inline">Non lus</span>
                   </button>
                   <button
                     onClick={() => setSelectedTab("starred")}
-                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "starred" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Star className="h-4 w-4" />
-                    <span className="hidden sm:inline">Favoris</span>
+                    <span className="hidden lg:inline">Favoris</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedTab("replied")}
+                    className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                      selectedTab === "replied" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Send className="h-4 w-4" />
+                    <span className="hidden lg:inline">Répondus</span>
                   </button>
                   <button
                     onClick={() => setSelectedTab("trash")}
-                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "trash" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span className="hidden sm:inline">Poubelle</span>
+                    <span className="hidden lg:inline">Poubelle</span>
                   </button>
                 </div>
               </div>
@@ -953,17 +1006,30 @@ export default function Support() {
 
                       {/* Footer with action buttons */}
                       <div className="p-4 sm:p-6 border-t border-white/10 flex-shrink-0">
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 flex-wrap">
                           {selectedMessage && !selectedMessage.deleted_at && (
-                            <Button
-                              onClick={() => handleDeleteMessage(selectedMessage.id)}
-                              variant="outline"
-                              size="sm"
-                              className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Supprimer
-                            </Button>
+                            <>
+                              <Button
+                                onClick={() => handleDeleteMessage(selectedMessage.id)}
+                                variant="outline"
+                                size="sm"
+                                className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Supprimer
+                              </Button>
+                              {selectedMessage.is_read && (
+                                <Button
+                                  onClick={() => markAsUnread(selectedMessage.id)}
+                                  variant="outline"
+                                  size="sm"
+                                  className="bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20"
+                                >
+                                  <MailOpen className="h-4 w-4 mr-2" />
+                                  Marquer comme non lu
+                                </Button>
+                              )}
+                            </>
                           )}
                           {selectedMessage && selectedMessage.deleted_at && (
                             <Button
