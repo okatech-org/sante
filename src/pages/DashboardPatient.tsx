@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logoSante from "@/assets/logo_sante.png";
 
 export default function DashboardPatient() {
   const { user } = useAuth();
@@ -61,9 +62,11 @@ export default function DashboardPatient() {
             {/* Logo */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
-                  <Heart className="w-6 h-6 text-[#00d4ff]" />
-                </div>
+                <img 
+                  src={logoSante} 
+                  alt="SANTE.GA Logo" 
+                  className="h-12 w-auto object-contain"
+                />
                 <h1 className="text-2xl font-bold text-white">
                   SANTE.GA
                 </h1>
@@ -145,9 +148,11 @@ export default function DashboardPatient() {
         <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
-                <Heart className="w-6 h-6 text-[#00d4ff]" />
-              </div>
+              <img 
+                src={logoSante} 
+                alt="SANTE.GA Logo" 
+                className="h-10 w-auto object-contain"
+              />
               <h1 className="text-xl font-bold text-white tracking-tight">
                 SANTE.GA
               </h1>
@@ -164,9 +169,11 @@ export default function DashboardPatient() {
                   {/* Logo */}
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
-                        <Heart className="w-6 h-6 text-[#00d4ff]" />
-                      </div>
+                      <img 
+                        src={logoSante} 
+                        alt="SANTE.GA Logo" 
+                        className="h-10 w-auto object-contain"
+                      />
                       <h1 className="text-2xl font-bold text-white tracking-tight">
                         SANTE.GA
                       </h1>
