@@ -5,29 +5,76 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logoSante from "@/assets/logo_sante.png";
-
 export default function DashboardPatient() {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const {
+    theme
+  } = useTheme();
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
-  
-  const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/support', color: '#ffaa00' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/profile', color: '#ff0088' }
-  ];
-  
+  const menuItems = [{
+    id: 'dashboard',
+    label: 'Tableau de bord',
+    icon: Home,
+    path: '/dashboard/patient',
+    color: '#00d4ff'
+  }, {
+    id: 'appointments',
+    label: 'Mes rendez-vous',
+    icon: Calendar,
+    badge: '2',
+    path: '/appointments',
+    color: '#0088ff'
+  }, {
+    id: 'teleconsult',
+    label: 'Téléconsultation',
+    icon: Video,
+    path: '/teleconsultation',
+    color: '#00d4ff'
+  }, {
+    id: 'dossier',
+    label: 'Dossier Médical',
+    icon: FileHeart,
+    path: '/medical-record',
+    color: '#ffaa00'
+  }, {
+    id: 'ordonnances',
+    label: 'Mes ordonnances',
+    icon: Pill,
+    badge: '1',
+    path: '/prescriptions',
+    color: '#ff0088'
+  }, {
+    id: 'resultats',
+    label: 'Résultats d\'analyses',
+    icon: Activity,
+    path: '/results',
+    color: '#0088ff'
+  }, {
+    id: 'cnamgs',
+    label: 'Droits CNAMGS',
+    icon: Shield,
+    path: '/reimbursements',
+    color: '#00d4ff'
+  }, {
+    id: 'messages',
+    label: 'Messages',
+    icon: Bell,
+    badge: '3',
+    path: '/support',
+    color: '#ffaa00'
+  }, {
+    id: 'settings',
+    label: 'Paramètres',
+    icon: Settings,
+    path: '/profile',
+    color: '#ff0088'
+  }];
   useEffect(() => {
     // Animation des progress bars au chargement
     setTimeout(() => {
@@ -37,21 +84,15 @@ export default function DashboardPatient() {
       }
     }, 100);
   }, []);
-
   const isDark = theme === 'dark';
-
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  return <div className="min-h-screen relative overflow-hidden">
       {/* Background sombre avec étoiles comme la page d'accueil */}
       <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div 
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-            backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-            backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
-          }}
-        />
+        <div className="absolute inset-0 opacity-40" style={{
+        backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
+        backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
+        backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
+      }} />
       </div>
 
       {/* Container avec sidebar */}
@@ -62,11 +103,7 @@ export default function DashboardPatient() {
             {/* Logo */}
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
-                <img 
-                  src={logoSante} 
-                  alt="SANTE.GA Logo" 
-                  className="h-12 w-auto object-contain"
-                />
+                <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
                 <h1 className="text-2xl font-bold text-white">
                   SANTE.GA
                 </h1>
@@ -78,49 +115,30 @@ export default function DashboardPatient() {
 
             {/* Menu */}
             <nav className="space-y-1 flex-1 overflow-y-auto">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeMenu === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveMenu(item.id);
-                      if (item.path) navigate(item.path);
-                    }}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive
-                        ? 'bg-white/10 text-white'
-                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                    }`}
-                  >
+              {menuItems.map(item => {
+              const Icon = item.icon;
+              const isActive = activeMenu === item.id;
+              return <button key={item.id} onClick={() => {
+                setActiveMenu(item.id);
+                if (item.path) navigate(item.path);
+              }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
                     <div className="flex items-center gap-3">
-                      <div 
-                        className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-white/5'
-                        }`}
-                        style={isActive ? {
-                          backgroundColor: `${item.color}20`
-                        } : {}}
-                      >
-                        <Icon 
-                          className="w-5 h-5" 
-                          style={{ color: isActive ? item.color : '' }}
-                        />
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-white/5'}`} style={isActive ? {
+                    backgroundColor: `${item.color}20`
+                  } : {}}>
+                        <Icon className="w-5 h-5" style={{
+                      color: isActive ? item.color : ''
+                    }} />
                       </div>
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
-                    {item.badge && (
-                      <span 
-                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                        style={{ backgroundColor: item.color }}
-                      >
+                    {item.badge && <span className="px-2.5 py-1 text-xs font-semibold rounded-full text-white" style={{
+                  backgroundColor: item.color
+                }}>
                         {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+                      </span>}
+                  </button>;
+            })}
             </nav>
 
             {/* User Profile */}
@@ -148,11 +166,7 @@ export default function DashboardPatient() {
         <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <img 
-                src={logoSante} 
-                alt="SANTE.GA Logo" 
-                className="h-10 w-auto object-contain"
-              />
+              <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
               <h1 className="text-xl font-bold text-white tracking-tight">
                 SANTE.GA
               </h1>
@@ -169,11 +183,7 @@ export default function DashboardPatient() {
                   {/* Logo */}
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
-                      <img 
-                        src={logoSante} 
-                        alt="SANTE.GA Logo" 
-                        className="h-10 w-auto object-contain"
-                      />
+                      <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
                       <h1 className="text-2xl font-bold text-white tracking-tight">
                         SANTE.GA
                       </h1>
@@ -185,50 +195,31 @@ export default function DashboardPatient() {
 
                   {/* Menu Mobile */}
                   <nav className="space-y-1 flex-1 overflow-y-auto">
-                    {menuItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = activeMenu === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            setActiveMenu(item.id);
-                            if (item.path) navigate(item.path);
-                            setMobileMenuOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive
-                              ? 'bg-white/10 text-white'
-                              : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                          }`}
-                        >
+                    {menuItems.map(item => {
+                    const Icon = item.icon;
+                    const isActive = activeMenu === item.id;
+                    return <button key={item.id} onClick={() => {
+                      setActiveMenu(item.id);
+                      if (item.path) navigate(item.path);
+                      setMobileMenuOpen(false);
+                    }} className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
                           <div className="flex items-center gap-3">
-                            <div 
-                              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-white/5'
-                              }`}
-                              style={isActive ? {
-                                backgroundColor: `${item.color}20`
-                              } : {}}
-                            >
-                              <Icon 
-                                className="w-5 h-5" 
-                                style={{ color: isActive ? item.color : '' }}
-                              />
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isActive ? '' : 'bg-white/5'}`} style={isActive ? {
+                          backgroundColor: `${item.color}20`
+                        } : {}}>
+                              <Icon className="w-5 h-5" style={{
+                            color: isActive ? item.color : ''
+                          }} />
                             </div>
                             <span className="text-sm font-medium">{item.label}</span>
                           </div>
-                          {item.badge && (
-                            <span 
-                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                              style={{ backgroundColor: item.color }}
-                            >
+                          {item.badge && <span className="px-2.5 py-1 text-xs font-semibold rounded-full text-white" style={{
+                        backgroundColor: item.color
+                      }}>
                               {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                            </span>}
+                        </button>;
+                  })}
                   </nav>
 
                   {/* User Profile Mobile */}
@@ -272,29 +263,27 @@ export default function DashboardPatient() {
               </div>
 
               {/* Informations personnelles */}
-              <div className="flex-1 space-y-2 sm:space-y-3">
-                {/* Nom de famille en gros */}
-                <div>
-                  <p className="text-2xl sm:text-4xl font-bold text-white uppercase tracking-wide">
-                    {fullName.split(' ').slice(1).join(' ') || 'PELLEN-LAKOUMBA'}
-                  </p>
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                {/* Nom complet - prend toute la largeur sur mobile */}
+                <div className="col-span-2 sm:col-span-3 bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">PELLEN-LAKOUMBA</p>
+                  <p className="text-sm sm:text-lg font-bold text-white truncate">{fullName}</p>
                 </div>
 
-                {/* Prénom en dessous */}
-                <div>
-                  <p className="text-xl sm:text-3xl font-normal text-white">
-                    {fullName.split(' ')[0] || 'Gueylord'} {fullName.split(' ')[1] || 'Asted'}
-                  </p>
+                {/* Âge */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
+                  <p className="text-base sm:text-xl font-bold text-white">Gueylord Asted</p>
                 </div>
 
-                {/* Âge et Sexe sur la même ligne */}
-                <div className="flex gap-8 sm:gap-12 text-base sm:text-xl text-gray-300">
-                  <span>34 ans</span>
-                  <span>Masculin</span>
+                {/* Sexe */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
+                  <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
                 </div>
 
-                {/* Poids, Taille, Groupe sanguin */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-2">
+                {/* Poids, Taille, Groupe sanguin - sur une même ligne */}
+                <div className="col-span-2 sm:col-span-3 grid grid-cols-3 gap-2 sm:gap-3">
                   <div className="bg-white/5 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
                     <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
@@ -322,10 +311,7 @@ export default function DashboardPatient() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div
-              onClick={() => navigate('/appointments')}
-              className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
-            >
+            <div onClick={() => navigate('/appointments')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
@@ -342,10 +328,7 @@ export default function DashboardPatient() {
               </div>
             </div>
 
-            <div
-              onClick={() => navigate('/teleconsultation')}
-              className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
-            >
+            <div onClick={() => navigate('/teleconsultation')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-2 sm:gap-4">
                   <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
@@ -398,10 +381,9 @@ export default function DashboardPatient() {
                 </div>
               </div>
               <div className="h-2 sm:h-2.5 rounded-full overflow-hidden bg-white/10 mt-3 sm:mt-4">
-                <div
-                  className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]"
-                  style={{ width: '0%' }}
-                />
+                <div className="progress-fill h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-[#00d4ff] to-[#0088ff]" style={{
+                width: '0%'
+              }} />
               </div>
             </div>
           </div>
@@ -409,30 +391,45 @@ export default function DashboardPatient() {
           {/* Stats Grid - compact pour mobile */}
           <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mb-6">
             <div className="grid grid-cols-4 gap-3 sm:gap-4">
-              {[
-                { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
-                { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
-                { label: 'Analyses en attente', value: '1', icon: Activity, trend: 'Résultat prévu lundi', color: '#ffaa00' },
-                { label: 'Vaccins à jour', value: '100%', icon: CheckCircle, trend: 'Prochain: 2026', color: '#ff0088' }
-              ].map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={index}
-                    className="text-center"
-                  >
-                    <div 
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center"
-                      style={{ backgroundColor: `${stat.color}20` }}
-                    >
-                      <Icon className="w-5 h-5 sm:w-7 sm:h-7" style={{ color: stat.color }} />
+              {[{
+              label: 'Consultations',
+              value: '8',
+              icon: Stethoscope,
+              trend: 'Cette année',
+              color: '#00d4ff'
+            }, {
+              label: 'Ordonnances actives',
+              value: '3',
+              icon: Pill,
+              trend: 'En cours',
+              color: '#0088ff'
+            }, {
+              label: 'Analyses en attente',
+              value: '1',
+              icon: Activity,
+              trend: 'Résultat prévu lundi',
+              color: '#ffaa00'
+            }, {
+              label: 'Vaccins à jour',
+              value: '100%',
+              icon: CheckCircle,
+              trend: 'Prochain: 2026',
+              color: '#ff0088'
+            }].map((stat, index) => {
+              const Icon = stat.icon;
+              return <div key={index} className="text-center">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{
+                  backgroundColor: `${stat.color}20`
+                }}>
+                      <Icon className="w-5 h-5 sm:w-7 sm:h-7" style={{
+                    color: stat.color
+                  }} />
                     </div>
                     <p className="text-lg sm:text-3xl font-bold text-white mb-1">{stat.value}</p>
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium">{stat.label}</p>
                     <p className="text-[9px] sm:text-xs text-gray-500 hidden sm:block">{stat.trend}</p>
-                  </div>
-                );
-              })}
+                  </div>;
+            })}
             </div>
           </div>
 
@@ -444,49 +441,41 @@ export default function DashboardPatient() {
                 Rappels & Alertes
               </h3>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
-              {[
-                { 
-                  time: 'Aujourd\'hui 14h30', 
-                  event: 'Consultation cardiologie - Dr.Ékomi', 
-                  location: 'Cabinet Montagne Sainte',
-                  icon: Calendar,
-                  color: '#00d4ff'
-                },
-                { 
-                  time: 'Dans 3 jours', 
-                  event: 'Résultats d\'analyses disponibles', 
-                  location: 'Laboratoire BIOLAB',
-                  icon: Activity,
-                  color: '#0088ff'
-                },
-                { 
-                  time: 'Cette semaine', 
-                  event: 'Ordonnance à renouveler', 
-                  location: 'Pharmacie de la Grâce',
-                  icon: Pill,
-                  color: '#ffaa00'
-                },
-                { 
-                  time: 'Urgent', 
-                  event: 'Vaccin tétanos recommandé', 
-                  location: 'Tout centre de vaccination',
-                  icon: AlertCircle,
-                  color: '#ff0088'
-                }
-              ].map((reminder, idx) => {
+              {[{
+                time: 'Aujourd\'hui 14h30',
+                event: 'Consultation cardiologie - Dr.Ékomi',
+                location: 'Cabinet Montagne Sainte',
+                icon: Calendar,
+                color: '#00d4ff'
+              }, {
+                time: 'Dans 3 jours',
+                event: 'Résultats d\'analyses disponibles',
+                location: 'Laboratoire BIOLAB',
+                icon: Activity,
+                color: '#0088ff'
+              }, {
+                time: 'Cette semaine',
+                event: 'Ordonnance à renouveler',
+                location: 'Pharmacie de la Grâce',
+                icon: Pill,
+                color: '#ffaa00'
+              }, {
+                time: 'Urgent',
+                event: 'Vaccin tétanos recommandé',
+                location: 'Tout centre de vaccination',
+                icon: AlertCircle,
+                color: '#ff0088'
+              }].map((reminder, idx) => {
                 const Icon = reminder.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
-                  >
+                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
-                        <div 
-                          className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${reminder.color}20` }}
-                        >
-                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: reminder.color }} />
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+                        backgroundColor: `${reminder.color}20`
+                      }}>
+                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{
+                          color: reminder.color
+                        }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-[10px] sm:text-xs font-medium text-gray-400 mb-0.5">{reminder.time}</p>
@@ -497,8 +486,7 @@ export default function DashboardPatient() {
                         {reminder.location}
                       </p>
                     </div>
-                  </div>
-                );
+                  </div>;
               })}
               </div>
             </div>
@@ -509,24 +497,35 @@ export default function DashboardPatient() {
                 Dossier Médical Récent
               </h3>
               <div className="grid grid-cols-2 gap-2 sm:gap-4">
-              {[
-                { title: 'Dernière consultation', date: '28 Sept 2025', type: 'Cardiologie', icon: FileHeart, color: '#00d4ff' },
-                { title: 'Dernière ordonnance', date: '28 Sept 2025', type: '3 médicaments', icon: Pill, color: '#ffaa00' },
-                { title: 'Dernière analyse', date: '15 Sept 2025', type: 'Bilan sanguin', icon: Activity, color: '#0088ff' }
-              ].map((doc, idx) => {
+              {[{
+                title: 'Dernière consultation',
+                date: '28 Sept 2025',
+                type: 'Cardiologie',
+                icon: FileHeart,
+                color: '#00d4ff'
+              }, {
+                title: 'Dernière ordonnance',
+                date: '28 Sept 2025',
+                type: '3 médicaments',
+                icon: Pill,
+                color: '#ffaa00'
+              }, {
+                title: 'Dernière analyse',
+                date: '15 Sept 2025',
+                type: 'Bilan sanguin',
+                icon: Activity,
+                color: '#0088ff'
+              }].map((doc, idx) => {
                 const Icon = doc.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl"
-                  >
+                return <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-[#1a1f2e]/80 hover:bg-[#1a1f2e]/90 border border-white/10 shadow-xl backdrop-blur-xl">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
-                        <div 
-                          className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${doc.color}20` }}
-                        >
-                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: doc.color }} />
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{
+                        backgroundColor: `${doc.color}20`
+                      }}>
+                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{
+                          color: doc.color
+                        }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs sm:text-sm font-semibold text-white leading-tight line-clamp-2 mb-0.5">{doc.title}</p>
@@ -537,14 +536,12 @@ export default function DashboardPatient() {
                         <p className="text-[9px] sm:text-xs text-gray-500 truncate">{doc.type}</p>
                       </div>
                     </div>
-                  </div>
-                );
+                  </div>;
               })}
               </div>
             </div>
           </div>
         </main>
       </div>
-    </div>
-  );
+    </div>;
 }
