@@ -457,7 +457,14 @@ export default function Profile() {
                         />
                       </div>
                       <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
-                        <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white mb-0.5 truncate">{fullName}</h3>
+                        <div className="mb-0.5">
+                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
+                            {fullName.split(' ')[0]}
+                          </h3>
+                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white truncate">
+                            {fullName.split(' ').slice(1).join(' ')}
+                          </h3>
+                        </div>
                         <p className="text-xs sm:text-sm text-gray-400 truncate">{user?.email}</p>
                         <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Membre depuis {new Date().getFullYear()}</p>
                       </div>
