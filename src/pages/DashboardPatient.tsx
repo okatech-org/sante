@@ -263,27 +263,28 @@ export default function DashboardPatient() {
               </div>
 
               {/* Informations personnelles */}
-              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                {/* Nom complet - prend toute la largeur sur mobile */}
-                <div className="col-span-2 sm:col-span-3 bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">PELLEN-LAKOUMBA</p>
-                  <p className="text-sm sm:text-lg font-bold text-white truncate">{fullName}</p>
+              <div className="flex-1 space-y-3 sm:space-y-4">
+                {/* Nom complet - Bloc séparé */}
+                <div className="bg-white/5 rounded-xl p-3">
+                  <p className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide">PELLEN-LAKOUMBA</p>
+                  <p className="text-base sm:text-xl font-normal text-white mt-1">Gueylord Asted</p>
                 </div>
 
-                {/* Âge */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
-                  <p className="text-base sm:text-xl font-bold text-white">Gueylord Asted</p>
-                </div>
+                {/* Âge et Sexe - sur la même ligne */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Âge</p>
+                    <p className="text-base sm:text-xl font-bold text-white">34 ans</p>
+                  </div>
 
-                {/* Sexe */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
-                  <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Sexe</p>
+                    <p className="text-base sm:text-xl font-bold text-white">Masculin</p>
+                  </div>
                 </div>
 
                 {/* Poids, Taille, Groupe sanguin - sur une même ligne */}
-                <div className="col-span-2 sm:col-span-3 grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   <div className="bg-white/5 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
                     <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
