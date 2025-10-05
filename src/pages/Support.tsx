@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -74,7 +75,7 @@ export default function Support() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -218,10 +219,14 @@ export default function Support() {
 
   const handleMessageClick = (message: Message) => {
     setSelectedMessage(message);
-    setIsMobileDetailOpen(true);
+    setIsMessageDialogOpen(true);
     if (!message.is_read) {
       markAsRead(message.id);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setIsMessageDialogOpen(false);
   };
 
   const filteredMessages = messages.filter(message => {
@@ -590,8 +595,8 @@ export default function Support() {
 
             {/* Messages Layout */}
             <div className="flex-1 flex overflow-hidden">
-              {/* Messages List - Always visible on desktop, hidden when detail open on mobile */}
-              <div className={`w-full lg:w-2/5 xl:w-1/3 border-r border-white/10 flex flex-col bg-[#1a1f2e]/30 ${isMobileDetailOpen ? 'hidden lg:flex' : 'flex'}`}>
+              {/* Messages List */}
+              <div className="w-full flex flex-col bg-[#1a1f2e]/30">
                 <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex-1 flex flex-col">
                   <TabsList className="bg-white/5 border-b border-white/10 rounded-none p-1 grid grid-cols-3 w-full">
                     <TabsTrigger value="all" className="data-[state=active]:bg-white/10 flex items-center justify-center gap-1 text-xs sm:text-sm">
@@ -625,7 +630,7 @@ export default function Support() {
                             <div
                               key={message.id}
                               onClick={() => handleMessageClick(message)}
-                              className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-colors active:bg-white/10 ${
+                              className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-all active:bg-white/10 ${
                                 selectedMessage?.id === message.id ? 'bg-white/10' : ''
                               } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
                             >
@@ -691,17 +696,14 @@ export default function Support() {
                 </Tabs>
               </div>
 
-              {/* Message Detail - Sheet on mobile, fixed panel on desktop */}
-              <Sheet open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
-                <SheetContent 
-                  side="right" 
-                  className="w-full p-0 bg-[#0f1419] border-white/10 lg:hidden"
-                >
+              {/* Message Detail Dialog - Centered floating modal */}
+              <Dialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[90vh] p-0 bg-[#1a1f2e] border border-white/20 overflow-hidden animate-in fade-in-0 zoom-in-95">
                   {selectedMessage && (
-                    <div className="h-full flex flex-col">
-                      {/* Mobile Message Header */}
-                      <div className="p-4 border-b border-white/10">
-                        <div className="flex items-start gap-4">
+                    <div className="flex flex-col h-full max-h-[90vh]">
+                      {/* Message Header */}
+                      <div className="p-4 sm:p-6 border-b border-white/10 flex-shrink-0">
+                        <div className="flex items-start gap-3 sm:gap-4">
                           <div className={`p-3 rounded-lg flex-shrink-0 ${
                             selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
                             selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
@@ -714,10 +716,10 @@ export default function Support() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
-                                <h2 className="font-semibold text-white text-lg truncate">
+                                <h2 className="font-semibold text-white text-lg sm:text-xl">
                                   {selectedMessage.sender_name}
                                 </h2>
-                                <p className="text-sm text-gray-400 mt-1">
+                                <p className="text-xs sm:text-sm text-gray-400 mt-1">
                                   {format(new Date(selectedMessage.created_at), 'dd MMMM yyyy à HH:mm', { locale: fr })}
                                 </p>
                               </div>
@@ -733,37 +735,37 @@ export default function Support() {
                                 }`} />
                               </button>
                             </div>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3">
-                          <h3 className="text-xl font-semibold text-white mb-2">
-                            {selectedMessage.subject}
-                          </h3>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="outline" className="border-white/20 text-gray-400">
-                              {getCategoryLabel(selectedMessage.category)}
-                            </Badge>
-                            {selectedMessage.priority !== 'normal' && (
-                              <Badge className={`${getPriorityColor(selectedMessage.priority)} text-white border-0`}>
-                                {selectedMessage.priority === 'urgent' ? 'Urgent' :
-                                 selectedMessage.priority === 'high' ? 'Haute' :
-                                 selectedMessage.priority === 'low' ? 'Basse' : 'Normal'}
-                              </Badge>
-                            )}
+                            
+                            <div className="mt-3">
+                              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
+                                {selectedMessage.subject}
+                              </h3>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <Badge variant="outline" className="text-xs border-white/20 text-gray-400">
+                                  {getCategoryLabel(selectedMessage.category)}
+                                </Badge>
+                                {selectedMessage.priority !== 'normal' && (
+                                  <Badge className={`${getPriorityColor(selectedMessage.priority)} text-white border-0 text-xs`}>
+                                    {selectedMessage.priority === 'urgent' ? 'Urgent' :
+                                     selectedMessage.priority === 'high' ? 'Haute' :
+                                     selectedMessage.priority === 'low' ? 'Basse' : 'Normal'}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Mobile Message Content */}
-                      <ScrollArea className="flex-1 p-4">
+                      {/* Message Content */}
+                      <ScrollArea className="flex-1 p-4 sm:p-6">
                         <div className="prose prose-invert max-w-none">
-                          <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                          <p className="text-sm sm:text-base text-gray-300 whitespace-pre-wrap leading-relaxed">
                             {selectedMessage.content}
                           </p>
                         </div>
 
-                        {/* Mobile Attachments */}
+                        {/* Attachments */}
                         {selectedMessage.attachments && selectedMessage.attachments.length > 0 && (
                           <div className="mt-6">
                             <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
@@ -780,89 +782,8 @@ export default function Support() {
                       </ScrollArea>
                     </div>
                   )}
-                </SheetContent>
-              </Sheet>
-
-              {/* Desktop Message Detail */}
-              <div className="hidden lg:block flex-1 bg-[#0f1419]">
-                {selectedMessage ? (
-                  <div className="h-full flex flex-col">
-                    {/* Message Header */}
-                    <div className="p-6 border-b border-white/10">
-                      <div className="flex items-start gap-4">
-                        <div className={`p-3 rounded-lg ${
-                          selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
-                          selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
-                          selectedMessage.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
-                          selectedMessage.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
-                          'bg-gray-500/10 text-gray-400'
-                        }`}>
-                          {getSenderIcon(selectedMessage.sender_type)}
-                        </div>
-                        <div className="flex-1">
-                          <h2 className="text-xl font-bold text-white mb-1">
-                            {selectedMessage.subject}
-                          </h2>
-                          <p className="text-gray-400 text-sm">
-                            De: {selectedMessage.sender_name} • {format(new Date(selectedMessage.created_at), 'PPp', { locale: fr })}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className="border-white/20 text-gray-300">
-                              {getCategoryLabel(selectedMessage.category)}
-                            </Badge>
-                            {selectedMessage.priority !== 'normal' && (
-                              <Badge className={getPriorityColor(selectedMessage.priority)}>
-                                {selectedMessage.priority.toUpperCase()}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => toggleStar(selectedMessage.id, selectedMessage.is_starred)}
-                          className="text-gray-400 hover:text-yellow-500"
-                        >
-                          <Star className={`h-5 w-5 ${
-                            selectedMessage.is_starred ? 'fill-yellow-500 text-yellow-500' : ''
-                          }`} />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Message Content */}
-                    <ScrollArea className="flex-1 p-6">
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 whitespace-pre-wrap">
-                          {selectedMessage.content}
-                        </p>
-                      </div>
-
-                      {/* Attachments */}
-                      {selectedMessage.attachments && selectedMessage.attachments.length > 0 && (
-                        <div className="mt-8">
-                          <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                            <Paperclip className="h-4 w-4" />
-                            Pièces jointes ({selectedMessage.attachments.length})
-                          </h3>
-                          <div className="grid gap-4 md:grid-cols-2">
-                            {selectedMessage.attachments.map((attachment, index) => renderAttachment(attachment, index))}
-                          </div>
-                        </div>
-                      )}
-                    </ScrollArea>
-                  </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-center p-6">
-                    <div>
-                      <Inbox className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                      <p className="text-gray-400 text-lg">
-                        Sélectionnez un message pour le lire
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </main>
