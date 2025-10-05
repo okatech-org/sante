@@ -34,7 +34,8 @@ export default function RegisterPatient() {
   const form = useForm<PatientRegistrationData>({
     resolver: zodResolver(patientRegistrationSchema),
     defaultValues: {
-      fullName: "",
+      lastName: "",
+      firstName: "",
       gender: undefined,
       phone: "+241 ",
       email: "",
@@ -57,7 +58,7 @@ export default function RegisterPatient() {
   const onSubmit = async (data: PatientRegistrationData) => {
     try {
       const { error } = await signUp(data.email || data.phone, data.password, {
-        full_name: data.fullName,
+        full_name: `${data.firstName} ${data.lastName}`,
         phone: data.phone,
       });
 
@@ -88,7 +89,7 @@ export default function RegisterPatient() {
 
     switch (currentStep) {
       case 1:
-        fieldsToValidate = ["fullName", "birthDate", "gender", "phone", "email"];
+        fieldsToValidate = ["lastName", "firstName", "birthDate", "gender", "phone", "email"];
         break;
       case 2:
         fieldsToValidate = ["province", "city", "neighborhood"];

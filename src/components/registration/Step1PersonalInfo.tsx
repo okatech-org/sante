@@ -29,15 +29,37 @@ export const Step1PersonalInfo = ({ form }: Step1PersonalInfoProps) => {
 
       <FormField
         control={form.control}
-        name="fullName"
+        name="lastName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nom complet *</FormLabel>
+            <FormLabel>Nom *</FormLabel>
             <FormControl>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Jean Dupont"
+                  placeholder="DUPONT"
+                  className="pl-10 btn-mobile-xxl uppercase"
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                />
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="firstName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Prénom *</FormLabel>
+            <FormControl>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Jean"
                   className="pl-10 btn-mobile-xxl"
                   {...field}
                 />
