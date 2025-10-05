@@ -418,7 +418,7 @@ export default function DashboardPatient() {
               <div className="flex justify-between items-start mb-3 sm:mb-4">
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm text-gray-400 font-medium">Prochain Rendez-vous</p>
-                  <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-white">Mardi 8 Oct - 14h30</p>
+                  <p className="text-base sm:text-xl font-bold mt-0.5 sm:mt-1 text-white">Mardi 8 Oct - 14h30</p>
                   <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400 font-medium">Dr.Ékomi - Cardiologie</p>
                   <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Cabinet Montagne Sainte, Libreville</p>
                 </div>
