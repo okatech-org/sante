@@ -497,68 +497,68 @@ export default function Prescriptions() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {filteredPrescriptions.map((prescription) => (
                       <Card key={prescription.id} className="p-4 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
+                        {/* En-tête */}
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-start gap-3 min-w-0 flex-1">
+                            <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
+                              {getStatusIcon(prescription.status)}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
+                                {getStatusBadge(prescription.status)}
+                              </div>
+                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
+                                <div className="flex items-center gap-1">
+                                  <User className="h-3 w-3" />
+                                  <span className="truncate">{prescription.doctor}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {prescription.date}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {prescription.validUntil}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-1 flex-shrink-0 ml-2 lg:hidden">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setPreviewPrescription(prescription)}
+                              className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
+                              title="Visualiser"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleShare(prescription.id)}
+                              className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
+                              title="Partager"
+                            >
+                              <Share2 className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleDownload(prescription.id)}
+                              className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
+                              title="Télécharger"
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
                         <div className="flex flex-col lg:flex-row gap-4">
                           {/* Colonne gauche - Informations */}
                           <div className="flex-1 min-w-0">
-                            {/* En-tête */}
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-start gap-3 min-w-0 flex-1">
-                                <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
-                                  {getStatusIcon(prescription.status)}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
-                                    {getStatusBadge(prescription.status)}
-                                  </div>
-                                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
-                                    <div className="flex items-center gap-1">
-                                      <User className="h-3 w-3" />
-                                      <span className="truncate">{prescription.doctor}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="h-3 w-3" />
-                                      {prescription.date}
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
-                                      {prescription.validUntil}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex gap-1 flex-shrink-0 ml-2 lg:hidden">
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm"
-                                  onClick={() => setPreviewPrescription(prescription)}
-                                  className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
-                                  title="Visualiser"
-                                >
-                                  <Eye className="h-3.5 w-3.5" />
-                                </Button>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm"
-                                  onClick={() => handleShare(prescription.id)}
-                                  className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
-                                  title="Partager"
-                                >
-                                  <Share2 className="h-3.5 w-3.5" />
-                                </Button>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm"
-                                  onClick={() => handleDownload(prescription.id)}
-                                  className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
-                                  title="Télécharger"
-                                >
-                                  <Download className="h-3.5 w-3.5" />
-                                </Button>
-                              </div>
-                            </div>
-
                             {/* Médicaments */}
                             <div className="space-y-2 mb-3">
                               <h4 className="font-semibold flex items-center gap-2 text-sm text-white">
