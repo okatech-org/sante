@@ -18,7 +18,8 @@ import logoSante from "@/assets/logo_sante.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const profileSchema = z.object({
-  full_name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  first_name: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+  last_name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   email: z.string().email("Email invalide").optional().or(z.literal("")),
   phone: z.string().min(8, "Numéro de téléphone invalide"),
   birth_date: z.string().optional(),
@@ -94,8 +95,10 @@ export default function Profile() {
       if (error) throw error;
 
       if (data) {
+        const nameParts = data.full_name?.split(' ') || [];
         reset({
-          full_name: data.full_name || "",
+          first_name: nameParts[0] || "",
+          last_name: nameParts.slice(1).join(' ') || "",
           email: data.email || "",
           phone: data.phone || "",
           birth_date: data.birth_date || "",
@@ -116,7 +119,8 @@ export default function Profile() {
         });
       } else {
         reset({
-          full_name: (user?.user_metadata as any)?.full_name || user?.email || "",
+          first_name: (user?.user_metadata as any)?.first_name || "",
+          last_name: (user?.user_metadata as any)?.last_name || "",
           email: user?.email || "",
           phone: (user?.user_metadata as any)?.phone || "",
           birth_date: "",
@@ -142,10 +146,11 @@ export default function Profile() {
     setSaving(true);
     setSaveSuccess(false);
     try {
+      const fullName = `${data.first_name} ${data.last_name}`.trim();
       const { error } = await supabase
         .from("profiles")
         .update({
-          full_name: data.full_name,
+          full_name: fullName,
           email: data.email || null,
           phone: data.phone,
           birth_date: data.birth_date || null,
@@ -470,18 +475,34 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-2">
                           <div className="space-y-1.5 w-full">
-                            <Label htmlFor="full_name" className="text-gray-300 text-xs flex items-center gap-1.5">
+                            <Label htmlFor="first_name" className="text-gray-300 text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
-                              Nom complet *
+                              Prénom *
                             </Label>
                             <Input
-                              id="full_name"
-                              {...register("full_name")}
-                              placeholder="Votre nom complet"
+                              id="first_name"
+                              {...register("first_name")}
+                              placeholder="Votre prénom"
                               className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
                             />
-                            {errors.full_name && (
-                              <p className="text-[10px] text-red-400">{errors.full_name.message}</p>
+                            {errors.first_name && (
+                              <p className="text-[10px] text-red-400">{errors.first_name.message}</p>
+                            )}
+                          </div>
+
+                          <div className="space-y-1.5 w-full">
+                            <Label htmlFor="last_name" className="text-gray-300 text-xs flex items-center gap-1.5">
+                              <User className="h-3 w-3 flex-shrink-0" />
+                              Nom *
+                            </Label>
+                            <Input
+                              id="last_name"
+                              {...register("last_name")}
+                              placeholder="Votre nom"
+                              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 text-xs w-full"
+                            />
+                            {errors.last_name && (
+                              <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
                             )}
                           </div>
 
