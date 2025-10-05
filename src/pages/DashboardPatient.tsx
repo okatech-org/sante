@@ -280,41 +280,41 @@ export default function DashboardPatient() {
           <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
             <div
               onClick={() => navigate('/appointments')}
-              className="group rounded-xl backdrop-blur-xl p-4 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
+              className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Calendar className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                    <Calendar className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-sm sm:text-lg mb-1 sm:mb-2">Prendre rendez-vous</h3>
-                    <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
-                      Prochain disponible aujourd'hui
+                    <h3 className="font-semibold text-white text-xs sm:text-lg mb-0.5 sm:mb-2">Prendre RDV</h3>
+                    <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
+                      Disponible aujourd'hui
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                <ChevronRight className="hidden sm:block w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </div>
             </div>
 
             <div
               onClick={() => navigate('/teleconsultation')}
-              className="group rounded-xl backdrop-blur-xl p-4 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
+              className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 shadow-xl"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Video className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                    <Video className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white text-sm sm:text-lg mb-1 sm:mb-2">Téléconsultation</h3>
-                    <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
+                    <h3 className="font-semibold text-white text-xs sm:text-lg mb-0.5 sm:mb-2">Téléconsultation</h3>
+                    <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
                       Médecins disponibles
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                <ChevronRight className="hidden sm:block w-6 h-6 text-gray-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </div>
             </div>
           </div>
