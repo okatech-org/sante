@@ -288,8 +288,8 @@ export default function DashboardPatient() {
                   </div>
                 </div>
 
-                {/* Poids, Taille, Groupe sanguin - sur une même ligne */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                {/* Poids, Taille, Groupe sanguin, N° CNAMGS - sur une même ligne en tablette/desktop */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
                   <div className="bg-white/5 rounded-xl p-3">
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Poids</p>
                     <p className="text-base sm:text-xl font-bold text-white">78 kg</p>
@@ -304,12 +304,11 @@ export default function DashboardPatient() {
                     <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">Groupe</p>
                     <p className="text-base sm:text-xl font-bold text-white">O+</p>
                   </div>
-                </div>
 
-                {/* N° CNAMGS */}
-                <div className="bg-white/5 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
-                  <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
+                  <div className="bg-white/5 rounded-xl p-3">
+                    <p className="text-[10px] sm:text-xs text-gray-400 font-medium mb-1">N° CNAMGS</p>
+                    <p className="text-xs sm:text-sm font-bold text-white">GA2384567891</p>
+                  </div>
                 </div>
               </div>
             </div>
