@@ -341,26 +341,26 @@ export default function Landing() {
 
             {/* Barre de recherche flottante par-dessus la carte */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-4xl z-[1001]">
-              <div className="rounded-xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] p-3 backdrop-blur-2xl bg-card/98 border border-border/80 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.4)] transition-all duration-500">
+              <div className="rounded-xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.5)] dark:shadow-[0_20px_70px_-15px_rgba(0,0,0,0.9)] p-3 backdrop-blur-2xl bg-white/95 dark:bg-black/70 border border-border/60 dark:border-white/20 hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_25px_80px_-15px_rgba(0,0,0,0.95)] transition-all duration-500">
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/40 hover:bg-muted/60 transition-all duration-300 border border-transparent hover:border-primary/30 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/50 dark:bg-white/10 hover:bg-muted/70 dark:hover:bg-white/15 transition-all duration-300 border border-transparent hover:border-primary/40 dark:hover:border-primary/60 group">
                     <Stethoscope className="w-4 h-4 mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.doctor') || "Médecin, spécialité..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground text-sm"
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground dark:placeholder:text-white/60 text-sm font-medium"
                     />
                   </div>
-                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/40 hover:bg-muted/60 transition-all duration-300 border border-transparent hover:border-secondary/30 group">
+                  <div className="flex-1 flex items-center rounded-lg px-3 py-2.5 bg-muted/50 dark:bg-white/10 hover:bg-muted/70 dark:hover:bg-white/15 transition-all duration-300 border border-transparent hover:border-secondary/40 dark:hover:border-secondary/60 group">
                     <MapPin className="w-4 h-4 mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
                     <input 
                       type="text" 
                       placeholder={t('landing.search.location') || "Ville, quartier..."}
                       value={searchLocation}
                       onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground text-sm"
+                      className="bg-transparent outline-none w-full text-foreground placeholder:text-muted-foreground dark:placeholder:text-white/60 text-sm font-medium"
                     />
                   </div>
                   <Button 
