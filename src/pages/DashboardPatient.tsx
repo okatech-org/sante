@@ -7,6 +7,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { EditMedicalInfoModal } from "@/components/profile/EditMedicalInfoModal";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { supabase } from "@/integrations/supabase/client";
 import logoSante from "@/assets/logo_sante.png";
 export default function DashboardPatient() {
   const {
@@ -20,6 +22,7 @@ export default function DashboardPatient() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [editMedicalOpen, setEditMedicalOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
   
@@ -93,7 +96,23 @@ export default function DashboardPatient() {
         (progressBar as HTMLElement).style.width = '100%';
       }
     }, 100);
-  }, []);
+
+    // Charger l'avatar depuis le profil
+    const loadAvatar = async () => {
+      if (user?.id) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .single();
+        
+        if (data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+      }
+    };
+    loadAvatar();
+  }, [user?.id]);
   const isDark = theme === 'dark';
   return <div className="min-h-screen relative overflow-hidden">
       {/* Background sombre avec étoiles comme la page d'accueil */}
@@ -273,14 +292,27 @@ export default function DashboardPatient() {
 
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
               {/* Photo d'identité */}
-              <div className="flex-shrink-0 mx-auto sm:mx-0">
+              <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
-                  <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center">
-                    <span className="text-4xl sm:text-5xl font-bold text-white">
-                      {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </span>
+                  <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center overflow-hidden">
+                    {avatarUrl ? (
+                      <img 
+                        src={avatarUrl} 
+                        alt="Photo de profil" 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-4xl sm:text-5xl font-bold text-white">
+                        {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
+                    )}
                   </div>
                 </div>
+                <AvatarUpload
+                  userId={user?.id || ''}
+                  currentAvatarUrl={avatarUrl || undefined}
+                  onAvatarUpdate={setAvatarUrl}
+                />
               </div>
 
               {/* Informations personnelles */}
