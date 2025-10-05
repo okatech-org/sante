@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book } from "lucide-react";
+import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
@@ -40,6 +40,7 @@ export default function Profile() {
   const [activeMenu, setActiveMenu] = useState('settings');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [preferences, setPreferences] = useState({
     notification_email: true,
     notification_sms: false,
@@ -140,6 +141,7 @@ export default function Profile() {
 
   const onSubmit = async (data: ProfileFormData) => {
     setSaving(true);
+    setSaveSuccess(false);
     try {
       const { error } = await supabase
         .from("profiles")
@@ -157,15 +159,19 @@ export default function Profile() {
 
       if (error) throw error;
 
+      setSaveSuccess(true);
       toast({
-        title: "Succès",
-        description: "Profil mis à jour avec succès"
+        title: "✓ Succès",
+        description: "Votre profil a été mis à jour avec succès"
       });
+
+      // Reset success state after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error("Error updating profile:", error);
       toast({
         title: "Erreur",
-        description: "Erreur lors de la mise à jour du profil",
+        description: "Impossible de mettre à jour le profil. Veuillez réessayer.",
         variant: "destructive"
       });
     } finally {
@@ -585,18 +591,27 @@ export default function Profile() {
                     <div className="flex justify-end mt-3">
                       <Button
                         type="submit"
-                        disabled={saving}
-                        className="bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef] text-white px-6 h-9 text-sm"
+                        disabled={saving || saveSuccess}
+                        className={`px-6 h-9 text-sm transition-all ${
+                          saveSuccess 
+                            ? 'bg-green-500 hover:bg-green-600' 
+                            : 'bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef]'
+                        } text-white`}
                       >
                         {saving ? (
                           <>
                             <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                             Enregistrement...
                           </>
+                        ) : saveSuccess ? (
+                          <>
+                            <Check className="mr-1.5 h-3.5 w-3.5" />
+                            Sauvegardé !
+                          </>
                         ) : (
                           <>
                             <Save className="mr-1.5 h-3.5 w-3.5" />
-                            Enregistrer
+                            Enregistrer les modifications
                           </>
                         )}
                       </Button>
@@ -614,22 +629,29 @@ export default function Profile() {
                       Sécurité
                     </h2>
                     <div className="space-y-3">
-                      <div className="p-3 bg-white/5 rounded-lg">
-                        <h3 className="font-semibold text-white mb-1 text-sm">Changer le mot de passe</h3>
-                        <p className="text-xs text-gray-400 mb-2">Modifiez votre mot de passe pour sécuriser votre compte</p>
+                      <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Lock className="h-3.5 w-3.5 text-[#0088ff]" />
+                          <h3 className="font-semibold text-white text-sm">Changer le mot de passe</h3>
+                        </div>
+                        <p className="text-xs text-gray-400 mb-3">Modifiez votre mot de passe pour sécuriser votre compte</p>
                         <Button 
                           variant="outline" 
                           onClick={() => setPasswordModalOpen(true)}
-                          className="border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                          className="border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
                         >
+                          <Lock className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
                           Changer le mot de passe
                         </Button>
                       </div>
-                      <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                         <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h3 className="font-semibold text-white text-sm">Authentification à deux facteurs</h3>
-                            <p className="text-xs text-gray-400 mt-1">Ajoutez une couche de sécurité supplémentaire</p>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-3.5 w-3.5 text-[#ffaa00]" />
+                              <h3 className="font-semibold text-white text-sm">Authentification à deux facteurs</h3>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-1">Protection renforcée de votre compte</p>
                           </div>
                           <Switch
                             checked={preferences.two_factor_enabled}
@@ -637,7 +659,10 @@ export default function Profile() {
                           />
                         </div>
                         {preferences.two_factor_enabled && (
-                          <p className="text-xs text-green-400 mt-2">✓ 2FA activé</p>
+                          <div className="flex items-center gap-1 mt-2 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded">
+                            <Check className="h-3 w-3" />
+                            2FA activé - Votre compte est protégé
+                          </div>
                         )}
                       </div>
                     </div>
@@ -658,38 +683,47 @@ export default function Profile() {
                     Notifications
                   </h2>
                   <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-white text-sm">Notifications par email</h3>
-                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications par email</p>
+                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-3.5 w-3.5 text-[#ffaa00]" />
+                            <h3 className="font-semibold text-white text-sm">Notifications par email</h3>
+                          </div>
+                          <p className="text-xs text-gray-400 mt-0.5">Recevez des alertes par email pour vos rendez-vous</p>
+                        </div>
+                        <Switch
+                          checked={preferences.notification_email}
+                          onCheckedChange={(checked) => updatePreferences({ notification_email: checked })}
+                        />
                       </div>
-                      <Switch
-                        checked={preferences.notification_email}
-                        onCheckedChange={(checked) => updatePreferences({ notification_email: checked })}
-                      />
-                    </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-white text-sm">Notifications SMS</h3>
-                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications par SMS</p>
+                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-3.5 w-3.5 text-[#0088ff]" />
+                            <h3 className="font-semibold text-white text-sm">Notifications SMS</h3>
+                          </div>
+                          <p className="text-xs text-gray-400 mt-0.5">Recevez des rappels par SMS</p>
+                        </div>
+                        <Switch
+                          checked={preferences.notification_sms}
+                          onCheckedChange={(checked) => updatePreferences({ notification_sms: checked })}
+                        />
                       </div>
-                      <Switch
-                        checked={preferences.notification_sms}
-                        onCheckedChange={(checked) => updatePreferences({ notification_sms: checked })}
-                      />
-                    </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-white text-sm">Notifications push</h3>
-                        <p className="text-xs text-gray-400 mt-0.5">Recevez des notifications dans le navigateur</p>
+                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Bell className="h-3.5 w-3.5 text-[#00d4ff]" />
+                            <h3 className="font-semibold text-white text-sm">Notifications push</h3>
+                          </div>
+                          <p className="text-xs text-gray-400 mt-0.5">Notifications instantanées dans le navigateur</p>
+                        </div>
+                        <Switch
+                          checked={preferences.notification_push}
+                          onCheckedChange={(checked) => updatePreferences({ notification_push: checked })}
+                        />
                       </div>
-                      <Switch
-                        checked={preferences.notification_push}
-                        onCheckedChange={(checked) => updatePreferences({ notification_push: checked })}
-                      />
-                    </div>
                   </div>
                 </div>
               )}
@@ -702,9 +736,12 @@ export default function Profile() {
                     Confidentialité
                   </h2>
                   <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-2 text-sm">Visibilité du profil</h3>
-                      <p className="text-xs text-gray-400 mb-3">Contrôlez qui peut voir votre profil</p>
+                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Eye className="h-3.5 w-3.5 text-[#ff0088]" />
+                        <h3 className="font-semibold text-white text-sm">Visibilité du profil</h3>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-3">Contrôlez qui peut voir vos informations personnelles</p>
                       <Select 
                         value={preferences.profile_visibility}
                         onValueChange={(value) => updatePreferences({ profile_visibility: value })}
@@ -713,16 +750,51 @@ export default function Profile() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="public">Public - Visible par tous</SelectItem>
-                          <SelectItem value="private">Privé - Visible uniquement par vous</SelectItem>
-                          <SelectItem value="friends">Amis - Visible par vos contacts</SelectItem>
+                          <SelectItem value="public">
+                            <div className="flex items-center gap-2">
+                              <Eye className="h-3 w-3" />
+                              Public - Visible par tous
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="private">
+                            <div className="flex items-center gap-2">
+                              <Lock className="h-3 w-3" />
+                              Privé - Visible uniquement par vous
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="friends">
+                            <div className="flex items-center gap-2">
+                              <Shield className="h-3 w-3" />
+                              Contacts - Visible par vos contacts
+                            </div>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Shield className="h-4 w-4 text-blue-400 mt-0.5" />
+                        <div>
+                          <h3 className="font-semibold text-blue-400 text-sm">Données médicales protégées</h3>
+                          <p className="text-xs text-gray-300 mt-1">
+                            Vos données médicales sont cryptées et accessibles uniquement par vous et les professionnels de santé autorisés. Conformité RGPD garantie.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Données médicales</h3>
-                      <p className="text-xs text-gray-400">Vos données médicales sont toujours protégées et accessibles uniquement par vous et les professionnels de santé autorisés.</p>
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-[#ffaa00]" />
+                        <h3 className="font-semibold text-white text-sm">Vos droits</h3>
+                      </div>
+                      <ul className="text-xs text-gray-400 space-y-1.5 ml-5 list-disc">
+                        <li>Droit d'accès à vos données personnelles</li>
+                        <li>Droit de rectification de vos informations</li>
+                        <li>Droit à l'effacement (droit à l'oubli)</li>
+                        <li>Droit à la portabilité de vos données</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -736,9 +808,12 @@ export default function Profile() {
                     Préférences
                   </h2>
                   <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-2 text-sm">Langue</h3>
-                      <p className="text-xs text-gray-400 mb-3">Choisissez votre langue préférée</p>
+                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-2 mb-2">
+                        <MessageCircle className="h-3.5 w-3.5 text-[#00d4ff]" />
+                        <h3 className="font-semibold text-white text-sm">Langue de l'application</h3>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-3">Sélectionnez votre langue préférée pour l'interface</p>
                       <Select 
                         value={preferences.language}
                         onValueChange={(value) => updatePreferences({ language: value })}
@@ -747,15 +822,26 @@ export default function Profile() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="fr">🇫🇷 Français</SelectItem>
-                          <SelectItem value="en">🇬🇧 English</SelectItem>
+                          <SelectItem value="fr">
+                            <div className="flex items-center gap-2">
+                              🇫🇷 Français
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="en">
+                            <div className="flex items-center gap-2">
+                              🇬🇧 English
+                            </div>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-2 text-sm">Thème</h3>
-                      <p className="text-xs text-gray-400 mb-3">Apparence de l'application</p>
+                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Palette className="h-3.5 w-3.5 text-[#ff0088]" />
+                        <h3 className="font-semibold text-white text-sm">Thème de l'interface</h3>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-3">Choisissez l'apparence qui vous convient</p>
                       <Select 
                         value={preferences.theme}
                         onValueChange={(value) => updatePreferences({ theme: value })}
@@ -764,11 +850,23 @@ export default function Profile() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="light">☀️ Clair</SelectItem>
-                          <SelectItem value="dark">🌙 Sombre</SelectItem>
-                          <SelectItem value="system">💻 Système</SelectItem>
+                          <SelectItem value="light">☀️ Mode Clair</SelectItem>
+                          <SelectItem value="dark">🌙 Mode Sombre</SelectItem>
+                          <SelectItem value="system">💻 Automatique (Système)</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+
+                    <div className="p-3 bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-[#ffaa00] mt-0.5" />
+                        <div>
+                          <h3 className="font-semibold text-[#ffaa00] text-sm">Note</h3>
+                          <p className="text-xs text-gray-300 mt-1">
+                            Les changements de préférences sont enregistrés automatiquement et prendront effet immédiatement.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -788,18 +886,38 @@ export default function Profile() {
                       <div className="grid gap-2">
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          onClick={() => {
+                            navigator.clipboard.writeText('+241 11 23 45 67');
+                            toast({
+                              title: "✓ Copié",
+                              description: "Numéro copié dans le presse-papiers"
+                            });
+                          }}
                         >
-                          <Phone className="h-3 w-3 mr-2" />
+                          <Phone className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
                           +241 11 23 45 67
+                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs"
-                          onClick={() => window.location.href = 'mailto:support@sante.ga'}
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          onClick={() => {
+                            window.location.href = 'mailto:support@sante.ga';
+                          }}
                         >
-                          <Mail className="h-3 w-3 mr-2" />
+                          <Mail className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
                           support@sante.ga
+                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          onClick={() => navigate('/messages')}
+                        >
+                          <MessageCircle className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
+                          Envoyer un message
+                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
                         </Button>
                       </div>
                     </div>
@@ -808,18 +926,39 @@ export default function Profile() {
                       <h3 className="font-semibold text-white mb-1 text-sm">Questions Fréquentes</h3>
                       <p className="text-xs text-gray-400 mb-3">Consultez notre FAQ</p>
                       <div className="space-y-2 text-xs">
-                        <div className="p-2 bg-white/5 rounded">
-                          <p className="text-white font-medium">Comment prendre un rendez-vous ?</p>
-                          <p className="text-gray-400 mt-1">Cliquez sur "Mes Rendez-vous" puis "Nouveau rendez-vous"</p>
-                        </div>
-                        <div className="p-2 bg-white/5 rounded">
-                          <p className="text-white font-medium">Comment utiliser la CNAMGS ?</p>
-                          <p className="text-gray-400 mt-1">Présentez votre carte lors de votre consultation</p>
-                        </div>
-                        <div className="p-2 bg-white/5 rounded">
-                          <p className="text-white font-medium">Comment accéder à mes résultats ?</p>
-                          <p className="text-gray-400 mt-1">Rendez-vous dans la section "Résultats d'analyses"</p>
-                        </div>
+                        <button 
+                          onClick={() => navigate('/appointments')}
+                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                        >
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                            Comment prendre un rendez-vous ?
+                          </p>
+                          <p className="text-gray-400 mt-1">
+                            Cliquez sur "Mes Rendez-vous" puis "Nouveau rendez-vous"
+                          </p>
+                        </button>
+                        <button 
+                          onClick={() => navigate('/reimbursements')}
+                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                        >
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                            Comment utiliser la CNAMGS ?
+                          </p>
+                          <p className="text-gray-400 mt-1">
+                            Présentez votre carte lors de votre consultation
+                          </p>
+                        </button>
+                        <button 
+                          onClick={() => navigate('/results')}
+                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                        >
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                            Comment accéder à mes résultats ?
+                          </p>
+                          <p className="text-gray-400 mt-1">
+                            Rendez-vous dans la section "Résultats d'analyses"
+                          </p>
+                        </button>
                       </div>
                     </div>
 
@@ -829,30 +968,38 @@ export default function Profile() {
                       <div className="grid gap-2">
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
+                          onClick={() => navigate('/how-it-works')}
                         >
-                          <Book className="h-3 w-3 mr-2" />
+                          <Book className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
                           Guide de démarrage
+                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
+                          onClick={() => navigate('/awareness')}
                         >
-                          <Video className="h-3 w-3 mr-2" />
-                          Vidéos d'aide
+                          <Video className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
+                          Tutoriels vidéos
+                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                    <button 
+                      onClick={() => navigate('/messages')}
+                      className="w-full p-3 bg-green-500/10 hover:bg-green-500/20 rounded-lg border border-green-500/20 hover:border-green-500/30 transition-all group"
+                    >
                       <div className="flex items-start gap-2">
-                        <MessageCircle className="h-4 w-4 text-green-400 mt-0.5" />
-                        <div>
+                        <MessageCircle className="h-4 w-4 text-green-400 mt-0.5 group-hover:scale-110 transition-transform" />
+                        <div className="flex-1 text-left">
                           <h3 className="font-semibold text-green-400 text-sm">Chat en direct disponible</h3>
                           <p className="text-xs text-gray-300 mt-1">Notre équipe est là pour vous aider Lun-Ven 8h-18h</p>
                         </div>
+                        <ExternalLink className="h-3 w-3 text-green-400 opacity-50 group-hover:opacity-100 transition-opacity" />
                       </div>
-                    </div>
+                    </button>
                   </div>
                 </div>
               )}
