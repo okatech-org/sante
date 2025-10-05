@@ -51,6 +51,9 @@ interface Message {
     type: string;
     size: string;
     url: string;
+    preview?: string;
+    thumbnail?: string;
+    duration?: string;
   }>;
   is_read: boolean;
   is_starred: boolean;
@@ -73,18 +76,6 @@ export default function Support() {
   const [loading, setLoading] = useState(true);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
-
-  const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/support', color: '#ffaa00' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/profile', color: '#ff0088' }
-  ];
 
   useEffect(() => {
     loadAvatar();
@@ -202,6 +193,18 @@ export default function Support() {
 
   const unreadCount = messages.filter(m => !m.is_read).length;
 
+  const menuItems = [
+    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
+    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
+    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
+    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
+    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
+    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
+    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
+    { id: 'messages', label: 'Messages', icon: Bell, badge: unreadCount > 0 ? unreadCount.toString() : undefined, path: '/support', color: '#ffaa00' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/profile', color: '#ff0088' }
+  ];
+
   const getSenderIcon = (type: string) => {
     switch (type) {
       case 'doctor': return <Stethoscope className="h-5 w-5" />;
@@ -241,6 +244,117 @@ export default function Support() {
     if (type.includes('image')) return <ImageIcon className="h-4 w-4" />;
     if (type.includes('video')) return <Film className="h-4 w-4" />;
     return <Paperclip className="h-4 w-4" />;
+  };
+
+  const renderAttachment = (attachment: any, index: number) => {
+    // Image attachment
+    if (attachment.type.includes('image')) {
+      return (
+        <div key={index} className="relative group overflow-hidden rounded-lg">
+          <img 
+            src={attachment.preview || attachment.url} 
+            alt={attachment.name}
+            className="w-full h-48 object-cover cursor-pointer transition-transform group-hover:scale-105"
+            onClick={() => window.open(attachment.url, '_blank')}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <p className="text-white text-sm font-medium truncate">{attachment.name}</p>
+              <p className="text-white/80 text-xs">{attachment.size}</p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              toast.success("Téléchargement en cours...");
+            }}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    }
+
+    // Video attachment
+    if (attachment.type.includes('video')) {
+      return (
+        <div key={index} className="relative rounded-lg overflow-hidden bg-black group">
+          {attachment.url.includes('youtube') || attachment.url.includes('youtu.be') ? (
+            <div className="aspect-video">
+              <iframe
+                src={attachment.url}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : attachment.thumbnail ? (
+            <div className="aspect-video relative cursor-pointer" onClick={() => window.open(attachment.url, '_blank')}>
+              <img 
+                src={attachment.thumbnail} 
+                alt={attachment.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
+                  <Film className="h-8 w-8 text-[#ff0088]" />
+                </div>
+              </div>
+              {attachment.duration && (
+                <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                  {attachment.duration}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="aspect-video bg-gray-800 flex items-center justify-center">
+              <Film className="h-12 w-12 text-gray-600" />
+            </div>
+          )}
+          <div className="p-3 bg-[#1a1f2e]">
+            <p className="text-white text-sm font-medium truncate">{attachment.name}</p>
+            <div className="flex items-center justify-between mt-1">
+              <p className="text-gray-400 text-xs">{attachment.size}</p>
+              {attachment.duration && (
+                <p className="text-gray-400 text-xs">⏱ {attachment.duration}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // PDF and other documents
+    return (
+      <Card key={index} className="p-4 bg-white/5 border-white/10 hover:bg-white/10 transition-colors cursor-pointer group">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-lg bg-red-500/10 text-red-400">
+            {getAttachmentIcon(attachment.type)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-white truncate group-hover:text-[#00d4ff] transition-colors">
+              {attachment.name}
+            </p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {attachment.size}
+            </p>
+          </div>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-[#00d4ff] hover:text-[#0088ff] hover:bg-white/5"
+            onClick={() => {
+              toast.success("Téléchargement en cours...");
+            }}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
+      </Card>
+    );
   };
 
   return (
@@ -512,7 +626,10 @@ export default function Support() {
                                       <div className={`w-2 h-2 rounded-full ${getPriorityColor(message.priority)}`} />
                                     )}
                                     {message.attachments && message.attachments.length > 0 && (
-                                      <Paperclip className="h-3 w-3 text-gray-500" />
+                                      <Badge variant="secondary" className="text-xs bg-white/5">
+                                        <Paperclip className="h-3 w-3 mr-1" />
+                                        {message.attachments.length}
+                                      </Badge>
                                     )}
                                     <span className="text-xs text-gray-500">
                                       {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
@@ -591,34 +708,8 @@ export default function Support() {
                             <Paperclip className="h-4 w-4" />
                             Pièces jointes ({selectedMessage.attachments.length})
                           </h3>
-                          <div className="grid gap-3">
-                            {selectedMessage.attachments.map((attachment, index) => (
-                              <Card key={index} className="p-4 bg-white/5 border-white/10 hover:bg-white/10 transition-colors">
-                                <div className="flex items-center gap-3">
-                                  <div className="p-2 rounded bg-[#ffaa00]/10 text-[#ffaa00]">
-                                    {getAttachmentIcon(attachment.type)}
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-white truncate">
-                                      {attachment.name}
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                      {attachment.size}
-                                    </p>
-                                  </div>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="text-[#00d4ff] hover:text-[#0088ff]"
-                                    onClick={() => {
-                                      toast.success("Téléchargement en cours...");
-                                    }}
-                                  >
-                                    <Download className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </Card>
-                            ))}
+                          <div className="grid gap-4 md:grid-cols-2">
+                            {selectedMessage.attachments.map((attachment, index) => renderAttachment(attachment, index))}
                           </div>
                         </div>
                       )}
