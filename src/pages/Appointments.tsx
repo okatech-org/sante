@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { PatientSidebar } from "@/components/layout/PatientSidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -286,9 +286,11 @@ export default function Appointments() {
   };
 
   return (
-    <PatientDashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
+    <div className="flex min-h-screen bg-background">
+      <PatientSidebar />
+      <main className="flex-1 md:ml-0 pt-20 md:pt-0">
+        <div className="container mx-auto p-4 md:p-6 space-y-6">
+          {/* Header */}
         <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
             <div>
@@ -377,19 +379,20 @@ export default function Appointments() {
             {renderCancelled()}
           </TabsContent>
         </Tabs>
-      </div>
-
-      {/* Modals */}
-      <BookingModal open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
-      <CancelAppointmentModal
-        open={cancelModalOpen}
-        onClose={() => {
-          setCancelModalOpen(false);
-          setSelectedAppointment(null);
-        }}
-        appointment={selectedAppointment}
-        onConfirm={handleConfirmCancel}
-      />
-    </PatientDashboardLayout>
+        
+        {/* Modals */}
+        <BookingModal open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
+        <CancelAppointmentModal
+          open={cancelModalOpen}
+          onClose={() => {
+            setCancelModalOpen(false);
+            setSelectedAppointment(null);
+          }}
+          appointment={selectedAppointment}
+          onConfirm={handleConfirmCancel}
+        />
+        </div>
+      </main>
+    </div>
   );
 }
