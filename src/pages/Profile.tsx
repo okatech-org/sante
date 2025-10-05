@@ -431,19 +431,19 @@ export default function Profile() {
               {activeSection === "profile" && (
                 <>
                   {/* Avatar et informations principales */}
-                  <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                    <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                      <User className="w-4 h-4" style={{ color: '#00d4ff' }} />
+                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                    <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                       Photo de profil
                     </h2>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="relative">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                    <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                      <div className="relative flex-shrink-0">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
                           <div className="w-full h-full rounded-full bg-[#1a1f2e] flex items-center justify-center overflow-hidden">
                             {avatarUrl ? (
                               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-2xl sm:text-3xl font-bold text-white">{initials}</span>
+                              <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{initials}</span>
                             )}
                           </div>
                         </div>
@@ -452,41 +452,41 @@ export default function Profile() {
                           onAvatarUpdate={setAvatarUrl}
                         />
                       </div>
-                      <div className="flex-1 text-center sm:text-left">
-                        <h3 className="text-lg sm:text-xl font-bold text-white mb-0.5">{fullName}</h3>
-                        <p className="text-sm text-gray-400">{user?.email}</p>
-                        <p className="text-xs text-gray-500 mt-1">Membre depuis {new Date().getFullYear()}</p>
+                      <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
+                        <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white mb-0.5 truncate">{fullName}</h3>
+                        <p className="text-xs sm:text-sm text-gray-400 truncate">{user?.email}</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500 mt-1">Membre depuis {new Date().getFullYear()}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                      <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <User className="w-4 h-4" style={{ color: '#00d4ff' }} />
+                    <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                      <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                        <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                         Informations personnelles
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
                         <div className="space-y-1.5">
-                          <Label htmlFor="full_name" className="text-gray-300 text-sm flex items-center gap-1.5">
-                            <User className="h-3.5 w-3.5" />
+                          <Label htmlFor="full_name" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
+                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Nom complet *
                           </Label>
                           <Input
                             id="full_name"
                             {...register("full_name")}
                             placeholder="Votre nom complet"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                           {errors.full_name && (
-                            <p className="text-xs text-red-400">{errors.full_name.message}</p>
+                            <p className="text-[10px] sm:text-xs text-red-400">{errors.full_name.message}</p>
                           )}
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label htmlFor="email" className="text-gray-300 text-sm flex items-center gap-1.5">
-                            <Mail className="h-3.5 w-3.5" />
+                          <Label htmlFor="email" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
+                            <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Email
                           </Label>
                           <Input
@@ -494,46 +494,46 @@ export default function Profile() {
                             type="email"
                             {...register("email")}
                             placeholder="votre@email.com"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                           {errors.email && (
-                            <p className="text-xs text-red-400">{errors.email.message}</p>
+                            <p className="text-[10px] sm:text-xs text-red-400">{errors.email.message}</p>
                           )}
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label htmlFor="phone" className="text-gray-300 text-sm flex items-center gap-1.5">
-                            <Phone className="h-3.5 w-3.5" />
+                          <Label htmlFor="phone" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
+                            <Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Téléphone *
                           </Label>
                           <Input
                             id="phone"
                             {...register("phone")}
                             placeholder="+241 XX XX XX XX"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                           {errors.phone && (
-                            <p className="text-xs text-red-400">{errors.phone.message}</p>
+                            <p className="text-[10px] sm:text-xs text-red-400">{errors.phone.message}</p>
                           )}
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label htmlFor="birth_date" className="text-gray-300 text-sm flex items-center gap-1.5">
-                            <Calendar className="h-3.5 w-3.5" />
+                          <Label htmlFor="birth_date" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
+                            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Date de naissance
                           </Label>
                           <Input
                             id="birth_date"
                             type="date"
                             {...register("birth_date")}
-                            className="bg-white/5 border-white/10 text-white h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm"
                           />
                         </div>
 
-                        <div className="space-y-1.5">
-                          <Label htmlFor="gender" className="text-gray-300 text-sm">Genre</Label>
+                        <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
+                          <Label htmlFor="gender" className="text-gray-300 text-xs sm:text-sm">Genre</Label>
                           <Select onValueChange={(value) => setValue("gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
                               <SelectValue placeholder="Sélectionnez votre genre" />
                             </SelectTrigger>
                             <SelectContent>
@@ -547,42 +547,42 @@ export default function Profile() {
                     </div>
 
                     {/* Adresse */}
-                    <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mt-3">
-                      <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                        <MapPin className="w-4 h-4" style={{ color: '#0088ff' }} />
+                    <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mt-3">
+                      <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                        <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                         Adresse
                       </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4">
                         <div className="space-y-1.5">
-                          <Label htmlFor="province" className="text-gray-300 text-sm flex items-center gap-1.5">
-                            <MapPin className="h-3.5 w-3.5" />
+                          <Label htmlFor="province" className="text-gray-300 text-xs sm:text-sm flex items-center gap-1.5">
+                            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Province
                           </Label>
                           <Input
                             id="province"
                             {...register("province")}
                             placeholder="Ex: Estuaire"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label htmlFor="city" className="text-gray-300 text-sm">Ville</Label>
+                          <Label htmlFor="city" className="text-gray-300 text-xs sm:text-sm">Ville</Label>
                           <Input
                             id="city"
                             {...register("city")}
                             placeholder="Ex: Libreville"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                         </div>
 
-                        <div className="space-y-1.5 md:col-span-2">
-                          <Label htmlFor="neighborhood" className="text-gray-300 text-sm">Quartier</Label>
+                        <div className="space-y-1.5 sm:col-span-2">
+                          <Label htmlFor="neighborhood" className="text-gray-300 text-xs sm:text-sm">Quartier</Label>
                           <Input
                             id="neighborhood"
                             {...register("neighborhood")}
                             placeholder="Ex: Nombakele"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 text-sm"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-8 sm:h-9 text-xs sm:text-sm"
                           />
                         </div>
                       </div>
@@ -592,7 +592,7 @@ export default function Profile() {
                       <Button
                         type="submit"
                         disabled={saving || saveSuccess}
-                        className={`px-6 h-9 text-sm transition-all ${
+                        className={`w-full sm:w-auto px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm transition-all ${
                           saveSuccess 
                             ? 'bg-green-500 hover:bg-green-600' 
                             : 'bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef]'
@@ -600,17 +600,17 @@ export default function Profile() {
                       >
                         {saving ? (
                           <>
-                            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                            <Loader2 className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5 animate-spin" />
                             Enregistrement...
                           </>
                         ) : saveSuccess ? (
                           <>
-                            <Check className="mr-1.5 h-3.5 w-3.5" />
+                            <Check className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Sauvegardé !
                           </>
                         ) : (
                           <>
-                            <Save className="mr-1.5 h-3.5 w-3.5" />
+                            <Save className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             Enregistrer les modifications
                           </>
                         )}
@@ -623,45 +623,46 @@ export default function Profile() {
               {/* Section Sécurité */}
               {activeSection === "security" && (
                 <>
-                  <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                    <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                      <Lock className="w-4 h-4" style={{ color: '#0088ff' }} />
+                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                    <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                      <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                       Sécurité
                     </h2>
-                    <div className="space-y-3">
-                      <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                    <div className="space-y-2.5 sm:space-y-3">
+                      <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                         <div className="flex items-center gap-2 mb-1">
-                          <Lock className="h-3.5 w-3.5 text-[#0088ff]" />
-                          <h3 className="font-semibold text-white text-sm">Changer le mot de passe</h3>
+                          <Lock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0088ff]" />
+                          <h3 className="font-semibold text-white text-xs sm:text-sm">Changer le mot de passe</h3>
                         </div>
-                        <p className="text-xs text-gray-400 mb-3">Modifiez votre mot de passe pour sécuriser votre compte</p>
+                        <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Modifiez votre mot de passe pour sécuriser votre compte</p>
                         <Button 
                           variant="outline" 
                           onClick={() => setPasswordModalOpen(true)}
-                          className="border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
+                          className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 h-7 sm:h-8 text-[10px] sm:text-xs group"
                         >
-                          <Lock className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
+                          <Lock className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform" />
                           Changer le mot de passe
                         </Button>
                       </div>
-                      <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex-1">
+                      <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <Shield className="h-3.5 w-3.5 text-[#ffaa00]" />
-                              <h3 className="font-semibold text-white text-sm">Authentification à deux facteurs</h3>
+                              <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ffaa00] flex-shrink-0" />
+                              <h3 className="font-semibold text-white text-xs sm:text-sm truncate">Authentification à deux facteurs</h3>
                             </div>
-                            <p className="text-xs text-gray-400 mt-1">Protection renforcée de votre compte</p>
+                            <p className="text-[10px] sm:text-xs text-gray-400 mt-1">Protection renforcée de votre compte</p>
                           </div>
                           <Switch
                             checked={preferences.two_factor_enabled}
                             onCheckedChange={(checked) => updatePreferences({ two_factor_enabled: checked })}
+                            className="flex-shrink-0"
                           />
                         </div>
                         {preferences.two_factor_enabled && (
-                          <div className="flex items-center gap-1 mt-2 text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded">
-                            <Check className="h-3 w-3" />
-                            2FA activé - Votre compte est protégé
+                          <div className="flex items-center gap-1 mt-2 text-[10px] sm:text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded">
+                            <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
+                            <span className="truncate">2FA activé - Votre compte est protégé</span>
                           </div>
                         )}
                       </div>
@@ -677,76 +678,79 @@ export default function Profile() {
 
               {/* Section Notifications */}
               {activeSection === "notifications" && (
-                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <Bell className="w-4 h-4" style={{ color: '#ffaa00' }} />
+                <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                    <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#ffaa00' }} />
                     Notifications
                   </h2>
-                  <div className="space-y-3">
-                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-3.5 w-3.5 text-[#ffaa00]" />
-                            <h3 className="font-semibold text-white text-sm">Notifications par email</h3>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-0.5">Recevez des alertes par email pour vos rendez-vous</p>
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ffaa00] flex-shrink-0" />
+                          <h3 className="font-semibold text-white text-xs sm:text-sm truncate">Notifications par email</h3>
                         </div>
-                        <Switch
-                          checked={preferences.notification_email}
-                          onCheckedChange={(checked) => updatePreferences({ notification_email: checked })}
-                        />
+                        <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Recevez des alertes par email pour vos rendez-vous</p>
                       </div>
+                      <Switch
+                        checked={preferences.notification_email}
+                        onCheckedChange={(checked) => updatePreferences({ notification_email: checked })}
+                        className="flex-shrink-0"
+                      />
+                    </div>
 
-                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-3.5 w-3.5 text-[#0088ff]" />
-                            <h3 className="font-semibold text-white text-sm">Notifications SMS</h3>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-0.5">Recevez des rappels par SMS</p>
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#0088ff] flex-shrink-0" />
+                          <h3 className="font-semibold text-white text-xs sm:text-sm truncate">Notifications SMS</h3>
                         </div>
-                        <Switch
-                          checked={preferences.notification_sms}
-                          onCheckedChange={(checked) => updatePreferences({ notification_sms: checked })}
-                        />
+                        <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Recevez des rappels par SMS</p>
                       </div>
+                      <Switch
+                        checked={preferences.notification_sms}
+                        onCheckedChange={(checked) => updatePreferences({ notification_sms: checked })}
+                        className="flex-shrink-0"
+                      />
+                    </div>
 
-                      <div className="p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Bell className="h-3.5 w-3.5 text-[#00d4ff]" />
-                            <h3 className="font-semibold text-white text-sm">Notifications push</h3>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-0.5">Notifications instantanées dans le navigateur</p>
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10 transition-colors gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Bell className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#00d4ff] flex-shrink-0" />
+                          <h3 className="font-semibold text-white text-xs sm:text-sm truncate">Notifications push</h3>
                         </div>
-                        <Switch
-                          checked={preferences.notification_push}
-                          onCheckedChange={(checked) => updatePreferences({ notification_push: checked })}
-                        />
+                        <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">Notifications instantanées dans le navigateur</p>
                       </div>
+                      <Switch
+                        checked={preferences.notification_push}
+                        onCheckedChange={(checked) => updatePreferences({ notification_push: checked })}
+                        className="flex-shrink-0"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
               {/* Section Confidentialité */}
               {activeSection === "privacy" && (
-                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <Eye className="w-4 h-4" style={{ color: '#ff0088' }} />
+                <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                    <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#ff0088' }} />
                     Confidentialité
                   </h2>
-                  <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                       <div className="flex items-center gap-2 mb-2">
-                        <Eye className="h-3.5 w-3.5 text-[#ff0088]" />
-                        <h3 className="font-semibold text-white text-sm">Visibilité du profil</h3>
+                        <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088]" />
+                        <h3 className="font-semibold text-white text-xs sm:text-sm">Visibilité du profil</h3>
                       </div>
-                      <p className="text-xs text-gray-400 mb-3">Contrôlez qui peut voir vos informations personnelles</p>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Contrôlez qui peut voir vos informations personnelles</p>
                       <Select 
                         value={preferences.profile_visibility}
                         onValueChange={(value) => updatePreferences({ profile_visibility: value })}
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -772,24 +776,24 @@ export default function Profile() {
                       </Select>
                     </div>
 
-                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="p-2.5 sm:p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                       <div className="flex items-start gap-2">
-                        <Shield className="h-4 w-4 text-blue-400 mt-0.5" />
-                        <div>
-                          <h3 className="font-semibold text-blue-400 text-sm">Données médicales protégées</h3>
-                          <p className="text-xs text-gray-300 mt-1">
+                        <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-blue-400 text-xs sm:text-sm">Données médicales protégées</h3>
+                          <p className="text-[10px] sm:text-xs text-gray-300 mt-1">
                             Vos données médicales sont cryptées et accessibles uniquement par vous et les professionnels de santé autorisés. Conformité RGPD garantie.
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <AlertCircle className="h-3.5 w-3.5 text-[#ffaa00]" />
-                        <h3 className="font-semibold text-white text-sm">Vos droits</h3>
+                        <AlertCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ffaa00]" />
+                        <h3 className="font-semibold text-white text-xs sm:text-sm">Vos droits</h3>
                       </div>
-                      <ul className="text-xs text-gray-400 space-y-1.5 ml-5 list-disc">
+                      <ul className="text-[10px] sm:text-xs text-gray-400 space-y-1 sm:space-y-1.5 ml-4 sm:ml-5 list-disc">
                         <li>Droit d'accès à vos données personnelles</li>
                         <li>Droit de rectification de vos informations</li>
                         <li>Droit à l'effacement (droit à l'oubli)</li>
@@ -802,23 +806,23 @@ export default function Profile() {
 
               {/* Section Préférences */}
               {activeSection === "preferences" && (
-                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <Palette className="w-4 h-4" style={{ color: '#00d4ff' }} />
+                <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                    <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                     Préférences
                   </h2>
-                  <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                       <div className="flex items-center gap-2 mb-2">
-                        <MessageCircle className="h-3.5 w-3.5 text-[#00d4ff]" />
-                        <h3 className="font-semibold text-white text-sm">Langue de l'application</h3>
+                        <MessageCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#00d4ff]" />
+                        <h3 className="font-semibold text-white text-xs sm:text-sm">Langue de l'application</h3>
                       </div>
-                      <p className="text-xs text-gray-400 mb-3">Sélectionnez votre langue préférée pour l'interface</p>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Sélectionnez votre langue préférée pour l'interface</p>
                       <Select 
                         value={preferences.language}
                         onValueChange={(value) => updatePreferences({ language: value })}
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -836,17 +840,17 @@ export default function Profile() {
                       </Select>
                     </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                       <div className="flex items-center gap-2 mb-2">
-                        <Palette className="h-3.5 w-3.5 text-[#ff0088]" />
-                        <h3 className="font-semibold text-white text-sm">Thème de l'interface</h3>
+                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088]" />
+                        <h3 className="font-semibold text-white text-xs sm:text-sm">Thème de l'interface</h3>
                       </div>
-                      <p className="text-xs text-gray-400 mb-3">Choisissez l'apparence qui vous convient</p>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Choisissez l'apparence qui vous convient</p>
                       <Select 
                         value={preferences.theme}
                         onValueChange={(value) => updatePreferences({ theme: value })}
                       >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-9 text-sm">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-8 sm:h-9 text-xs sm:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -857,12 +861,12 @@ export default function Profile() {
                       </Select>
                     </div>
 
-                    <div className="p-3 bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg">
+                    <div className="p-2.5 sm:p-3 bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg">
                       <div className="flex items-start gap-2">
-                        <AlertCircle className="h-4 w-4 text-[#ffaa00] mt-0.5" />
-                        <div>
-                          <h3 className="font-semibold text-[#ffaa00] text-sm">Note</h3>
-                          <p className="text-xs text-gray-300 mt-1">
+                        <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#ffaa00] mt-0.5 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-[#ffaa00] text-xs sm:text-sm">Note</h3>
+                          <p className="text-[10px] sm:text-xs text-gray-300 mt-1">
                             Les changements de préférences sont enregistrés automatiquement et prendront effet immédiatement.
                           </p>
                         </div>
@@ -874,19 +878,19 @@ export default function Profile() {
 
               {/* Section Aide & Support */}
               {activeSection === "support" && (
-                <div className="rounded-xl backdrop-blur-xl p-4 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
-                  <h2 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                    <HelpCircle className="w-4 h-4" style={{ color: '#0088ff' }} />
+                <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+                    <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                     Aide & Support
                   </h2>
-                  <div className="space-y-3">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Contact Support</h3>
-                      <p className="text-xs text-gray-400 mb-3">Besoin d'aide ? Contactez notre équipe</p>
-                      <div className="grid gap-2">
+                  <div className="space-y-2.5 sm:space-y-3">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-xs sm:text-sm">Contact Support</h3>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Besoin d'aide ? Contactez notre équipe</p>
+                      <div className="grid gap-1.5 sm:gap-2">
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 sm:h-9 text-[10px] sm:text-xs group"
                           onClick={() => {
                             navigator.clipboard.writeText('+241 11 23 45 67');
                             toast({
@@ -895,109 +899,109 @@ export default function Profile() {
                             });
                           }}
                         >
-                          <Phone className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
-                          +241 11 23 45 67
-                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                          <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform flex-shrink-0" />
+                          <span className="truncate">+241 11 23 45 67</span>
+                          <ExternalLink className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-auto opacity-50 flex-shrink-0" />
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 sm:h-9 text-[10px] sm:text-xs group"
                           onClick={() => {
                             window.location.href = 'mailto:support@sante.ga';
                           }}
                         >
-                          <Mail className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
-                          support@sante.ga
-                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                          <Mail className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform flex-shrink-0" />
+                          <span className="truncate">support@sante.ga</span>
+                          <ExternalLink className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-auto opacity-50 flex-shrink-0" />
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-9 text-xs group"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 sm:h-9 text-[10px] sm:text-xs group"
                           onClick={() => navigate('/messages')}
                         >
-                          <MessageCircle className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
-                          Envoyer un message
-                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                          <MessageCircle className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform flex-shrink-0" />
+                          <span className="truncate">Envoyer un message</span>
+                          <ExternalLink className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-auto opacity-50 flex-shrink-0" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Questions Fréquentes</h3>
-                      <p className="text-xs text-gray-400 mb-3">Consultez notre FAQ</p>
-                      <div className="space-y-2 text-xs">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-xs sm:text-sm">Questions Fréquentes</h3>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Consultez notre FAQ</p>
+                      <div className="space-y-1.5 sm:space-y-2 text-xs">
                         <button 
                           onClick={() => navigate('/appointments')}
-                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                          className="w-full p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
                         >
-                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors text-[10px] sm:text-xs">
                             Comment prendre un rendez-vous ?
                           </p>
-                          <p className="text-gray-400 mt-1">
+                          <p className="text-gray-400 mt-0.5 sm:mt-1 text-[9px] sm:text-[10px]">
                             Cliquez sur "Mes Rendez-vous" puis "Nouveau rendez-vous"
                           </p>
                         </button>
                         <button 
                           onClick={() => navigate('/reimbursements')}
-                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                          className="w-full p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
                         >
-                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors text-[10px] sm:text-xs">
                             Comment utiliser la CNAMGS ?
                           </p>
-                          <p className="text-gray-400 mt-1">
+                          <p className="text-gray-400 mt-0.5 sm:mt-1 text-[9px] sm:text-[10px]">
                             Présentez votre carte lors de votre consultation
                           </p>
                         </button>
                         <button 
                           onClick={() => navigate('/results')}
-                          className="w-full p-2 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
+                          className="w-full p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 rounded transition-all text-left group"
                         >
-                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors">
+                          <p className="text-white font-medium group-hover:text-[#00d4ff] transition-colors text-[10px] sm:text-xs">
                             Comment accéder à mes résultats ?
                           </p>
-                          <p className="text-gray-400 mt-1">
+                          <p className="text-gray-400 mt-0.5 sm:mt-1 text-[9px] sm:text-[10px]">
                             Rendez-vous dans la section "Résultats d'analyses"
                           </p>
                         </button>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <h3 className="font-semibold text-white mb-1 text-sm">Ressources Utiles</h3>
-                      <p className="text-xs text-gray-400 mb-3">Guides et tutoriels</p>
-                      <div className="grid gap-2">
+                    <div className="p-2.5 sm:p-3 bg-white/5 rounded-lg">
+                      <h3 className="font-semibold text-white mb-1 text-xs sm:text-sm">Ressources Utiles</h3>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">Guides et tutoriels</p>
+                      <div className="grid gap-1.5 sm:gap-2">
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-7 sm:h-8 text-[10px] sm:text-xs group"
                           onClick={() => navigate('/how-it-works')}
                         >
-                          <Book className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
-                          Guide de démarrage
-                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                          <Book className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform flex-shrink-0" />
+                          <span className="truncate">Guide de démarrage</span>
+                          <ExternalLink className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-auto opacity-50 flex-shrink-0" />
                         </Button>
                         <Button 
                           variant="outline" 
-                          className="justify-start border-white/20 text-white hover:bg-white/10 h-8 text-xs group"
+                          className="justify-start border-white/20 text-white hover:bg-white/10 h-7 sm:h-8 text-[10px] sm:text-xs group"
                           onClick={() => navigate('/awareness')}
                         >
-                          <Video className="h-3 w-3 mr-2 group-hover:scale-110 transition-transform" />
-                          Tutoriels vidéos
-                          <ExternalLink className="h-2.5 w-2.5 ml-auto opacity-50" />
+                          <Video className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform flex-shrink-0" />
+                          <span className="truncate">Tutoriels vidéos</span>
+                          <ExternalLink className="h-2 w-2 sm:h-2.5 sm:w-2.5 ml-auto opacity-50 flex-shrink-0" />
                         </Button>
                       </div>
                     </div>
 
                     <button 
                       onClick={() => navigate('/messages')}
-                      className="w-full p-3 bg-green-500/10 hover:bg-green-500/20 rounded-lg border border-green-500/20 hover:border-green-500/30 transition-all group"
+                      className="w-full p-2.5 sm:p-3 bg-green-500/10 hover:bg-green-500/20 rounded-lg border border-green-500/20 hover:border-green-500/30 transition-all group"
                     >
                       <div className="flex items-start gap-2">
-                        <MessageCircle className="h-4 w-4 text-green-400 mt-0.5 group-hover:scale-110 transition-transform" />
-                        <div className="flex-1 text-left">
-                          <h3 className="font-semibold text-green-400 text-sm">Chat en direct disponible</h3>
-                          <p className="text-xs text-gray-300 mt-1">Notre équipe est là pour vous aider Lun-Ven 8h-18h</p>
+                        <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-400 mt-0.5 group-hover:scale-110 transition-transform flex-shrink-0" />
+                        <div className="flex-1 text-left min-w-0">
+                          <h3 className="font-semibold text-green-400 text-xs sm:text-sm">Chat en direct disponible</h3>
+                          <p className="text-[10px] sm:text-xs text-gray-300 mt-1">Notre équipe est là pour vous aider Lun-Ven 8h-18h</p>
                         </div>
-                        <ExternalLink className="h-3 w-3 text-green-400 opacity-50 group-hover:opacity-100 transition-opacity" />
+                        <ExternalLink className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-green-400 opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                       </div>
                     </button>
                   </div>
