@@ -36,7 +36,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
-  const [activeSection, setActiveSection] = useState("profile");
+  const [activeSection, setActiveSection] = useState("account");
   const [activeMenu, setActiveMenu] = useState('settings');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
@@ -70,8 +70,7 @@ export default function Profile() {
   ];
 
   const settingsSections = [
-    { id: "profile", label: "Profil", icon: User, color: "#00d4ff" },
-    { id: "security", label: "Sécurité", icon: Lock, color: "#0088ff" },
+    { id: "account", label: "Compte", icon: User, color: "#00d4ff" },
     { id: "notifications", label: "Notifications", icon: Bell, color: "#ffaa00" },
     { id: "privacy", label: "Confidentialité", icon: Eye, color: "#ff0088" },
     { id: "preferences", label: "Préférences", icon: Palette, color: "#00d4ff" },
@@ -427,8 +426,8 @@ export default function Profile() {
 
             {/* Contenu principal */}
             <div className="space-y-3">
-              {/* Section Profil */}
-              {activeSection === "profile" && (
+              {/* Section Compte (Profil + Sécurité) */}
+              {activeSection === "account" && (
                 <>
                   {/* Avatar et informations principales */}
                   <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
@@ -617,13 +616,9 @@ export default function Profile() {
                       </Button>
                     </div>
                   </form>
-                </>
-              )}
 
-              {/* Section Sécurité */}
-              {activeSection === "security" && (
-                <>
-                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+                  {/* Section Sécurité */}
+                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl mt-3">
                     <h2 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
                       <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
                       Sécurité
