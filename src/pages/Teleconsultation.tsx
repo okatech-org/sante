@@ -237,40 +237,30 @@ export default function Teleconsultation() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="rounded-xl backdrop-blur-xl p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Médecins disponibles</p>
-                <p className="text-3xl font-bold text-white">24</p>
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#00d4ff]/20 flex items-center justify-center mb-2">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[#00d4ff]" />
               </div>
-              <div className="h-12 w-12 rounded-xl bg-[#00d4ff]/20 flex items-center justify-center">
-                <Users className="h-6 w-6 text-[#00d4ff]" />
-              </div>
+              <p className="text-xl sm:text-3xl font-bold text-white mb-1">24</p>
+              <p className="text-[10px] sm:text-sm text-gray-400">Médecins disponibles</p>
             </div>
-          </div>
 
-          <div className="rounded-xl backdrop-blur-xl p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Temps d'attente moyen</p>
-                <p className="text-3xl font-bold text-white">~5 min</p>
+            <div className="flex flex-col items-center text-center">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#0088ff]/20 flex items-center justify-center mb-2">
+                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-[#0088ff]" />
               </div>
-              <div className="h-12 w-12 rounded-xl bg-[#0088ff]/20 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-[#0088ff]" />
-              </div>
+              <p className="text-xl sm:text-3xl font-bold text-white mb-1">~5 min</p>
+              <p className="text-[10px] sm:text-sm text-gray-400">Temps d'attente moyen</p>
             </div>
-          </div>
 
-          <div className="rounded-xl backdrop-blur-xl p-5 bg-[#1a1f2e]/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400 mb-1">Consultations ce mois</p>
-                <p className="text-3xl font-bold text-white">3</p>
+            <div className="flex flex-col items-center text-center">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#ffaa00]/20 flex items-center justify-center mb-2">
+                <Video className="h-5 w-5 sm:h-6 sm:w-6 text-[#ffaa00]" />
               </div>
-              <div className="h-12 w-12 rounded-xl bg-[#ffaa00]/20 flex items-center justify-center">
-                <Video className="h-6 w-6 text-[#ffaa00]" />
-              </div>
+              <p className="text-xl sm:text-3xl font-bold text-white mb-1">3</p>
+              <p className="text-[10px] sm:text-sm text-gray-400">Consultations ce mois</p>
             </div>
           </div>
         </div>
