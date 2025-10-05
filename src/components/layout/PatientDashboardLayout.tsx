@@ -97,10 +97,10 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar Desktop */}
-        <aside className="hidden xl:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+        <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
             {/* Logo */}
-            <div className="mb-6">
+            <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
                   <Heart className="w-6 h-6 text-[#00d4ff]" />
@@ -117,19 +117,15 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
             {renderMenu()}
 
             {/* User Profile */}
-            <div className="mt-auto pt-4 border-t border-white/10">
+            <div className="mt-auto pt-6 border-t border-white/10">
               <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
-                      {fullName.split(' ')[0]} {fullName.split(' ')[1]?.charAt(0)}.
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      N° ••••7891
-                    </p>
+                    <p className="text-sm font-medium text-white truncate">{fullName.split(' ')[0]}</p>
+                    <p className="text-xs text-gray-500">Patient</p>
                   </div>
                 </div>
               </div>
@@ -138,7 +134,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         </aside>
 
         {/* Mobile Header */}
-        <div className="xl:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#00d4ff]/20">
@@ -180,12 +176,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">
-                            {fullName}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            N° ••••7891
-                          </p>
+                          <p className="text-sm font-semibold text-white truncate">{fullName.split(' ')[0]}</p>
+                          <p className="text-xs text-gray-500">Patient</p>
                         </div>
                       </div>
                     </div>
@@ -197,8 +189,10 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 xl:ml-72 p-4 lg:p-6 max-w-7xl pt-20 xl:pt-6">
-          {children}
+        <main className="flex-1 md:ml-64 pt-20 md:pt-0">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl">
+            {children}
+          </div>
         </main>
       </div>
     </div>
