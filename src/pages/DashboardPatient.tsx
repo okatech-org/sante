@@ -14,15 +14,15 @@ export default function DashboardPatient() {
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
   
   const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/support' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/profile' }
+    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
+    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
+    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
+    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
+    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
+    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
+    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
+    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/support', color: '#ffaa00' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/profile', color: '#ff0088' }
   ];
   
   useEffect(() => {
@@ -83,18 +83,36 @@ export default function DashboardPatient() {
                       setActiveMenu(item.id);
                       if (item.path) navigate(item.path);
                     }}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
                       isActive
-                        ? 'bg-[#00d4ff]/20 text-[#00d4ff]'
+                        ? 'bg-white/10 text-white shadow-lg'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
+                    style={isActive ? {
+                      boxShadow: `0 4px 20px ${item.color}40`
+                    } : {}}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5" />
+                      <div 
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                          isActive ? '' : 'bg-white/5'
+                        }`}
+                        style={isActive ? {
+                          backgroundColor: `${item.color}20`
+                        } : {}}
+                      >
+                        <Icon 
+                          className="w-5 h-5" 
+                          style={{ color: isActive ? item.color : '' }}
+                        />
+                      </div>
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
                     {item.badge && (
-                      <span className="px-2 py-0.5 text-xs rounded-full bg-[#00d4ff]/20 text-[#00d4ff]">
+                      <span 
+                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                        style={{ backgroundColor: item.color }}
+                      >
                         {item.badge}
                       </span>
                     )}
