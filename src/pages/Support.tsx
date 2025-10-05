@@ -640,14 +640,14 @@ export default function Support() {
                       <p className="text-gray-400">Aucun message</p>
                     </div>
                   ) : (
-                    <div className="divide-y divide-white/5">
+                    <div className="p-3 space-y-3">
                       {filteredMessages.map((message) => (
                         <div
                           key={message.id}
                           onClick={() => handleMessageClick(message)}
-                          className={`p-3 sm:p-4 hover:bg-white/5 cursor-pointer transition-all active:bg-white/10 ${
-                            selectedMessage?.id === message.id ? 'bg-white/10' : ''
-                          } ${!message.is_read ? 'border-l-4 border-[#ffaa00]' : ''}`}
+                          className={`p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 cursor-pointer transition-all active:bg-white/[0.15] ${
+                            selectedMessage?.id === message.id ? 'bg-white/10 border-white/20' : ''
+                          } ${!message.is_read ? 'border-l-4 border-l-[#ffaa00]' : ''}`}
                         >
                           <div className="flex items-start gap-2 sm:gap-3">
                             <div className={`p-2 rounded-lg flex-shrink-0 ${
