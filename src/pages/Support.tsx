@@ -32,7 +32,9 @@ import {
   Hospital,
   Stethoscope,
   FlaskConical,
-  Building2
+  Building2,
+  Trash2,
+  RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -65,6 +67,7 @@ interface Message {
   read_at: string | null;
   allow_reply: boolean;
   parent_message_id: string | null;
+  deleted_at: string | null;
 }
 
 export default function Support() {
@@ -278,18 +281,71 @@ export default function Support() {
     }
   };
 
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', messageId);
+
+      if (error) throw error;
+
+      setMessages(messages.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, deleted_at: new Date().toISOString() }
+          : msg
+      ));
+
+      toast.success("Message déplacé vers la poubelle");
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast.error("Erreur lors de la suppression du message");
+    }
+  };
+
+  const handleRestoreMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ deleted_at: null })
+        .eq('id', messageId);
+
+      if (error) throw error;
+
+      setMessages(messages.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, deleted_at: null }
+          : msg
+      ));
+
+      toast.success("Message restauré");
+    } catch (error) {
+      console.error('Error restoring message:', error);
+      toast.error("Erreur lors de la restauration du message");
+    }
+  };
+
   const filteredMessages = messages.filter(message => {
     const matchesSearch = 
       message.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       message.sender_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       message.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesTab = 
-      selectedTab === "all" ||
-      (selectedTab === "unread" && !message.is_read) ||
-      (selectedTab === "starred" && message.is_starred);
+    if (!matchesSearch) return false;
 
-    return matchesSearch && matchesTab;
+    switch (selectedTab) {
+      case 'all':
+        return !message.deleted_at;
+      case 'unread':
+        return !message.is_read && !message.deleted_at;
+      case 'starred':
+        return message.is_starred && !message.deleted_at;
+      case 'trash':
+        return message.deleted_at !== null;
+      default:
+        return !message.deleted_at;
+    }
   });
 
   const unreadCount = messages.filter(m => !m.is_read).length;
@@ -643,10 +699,10 @@ export default function Support() {
                 </div>
 
                 {/* Tabs Filter */}
-                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-3 w-full">
+                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-4 w-full">
                   <button
                     onClick={() => setSelectedTab("all")}
-                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "all" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
@@ -655,7 +711,7 @@ export default function Support() {
                   </button>
                   <button
                     onClick={() => setSelectedTab("unread")}
-                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "unread" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
@@ -664,12 +720,21 @@ export default function Support() {
                   </button>
                   <button
                     onClick={() => setSelectedTab("starred")}
-                    className={`flex items-center justify-center gap-1 px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
                       selectedTab === "starred" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     <Star className="h-4 w-4" />
                     <span className="hidden sm:inline">Favoris</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedTab("trash")}
+                    className={`flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                      selectedTab === "trash" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Poubelle</span>
                   </button>
                 </div>
               </div>
@@ -719,13 +784,22 @@ export default function Support() {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    toggleStar(message.id, message.is_starred);
+                                    if (message.deleted_at) {
+                                      handleRestoreMessage(message.id);
+                                    } else {
+                                      toggleStar(message.id, message.is_starred);
+                                    }
                                   }}
                                   className="ml-2 p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
+                                  title={message.deleted_at ? "Restaurer" : "Marquer comme favori"}
                                 >
-                                  <Star className={`h-4 w-4 ${
-                                    message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
-                                  }`} />
+                                  {message.deleted_at ? (
+                                    <RefreshCw className="h-4 w-4 text-green-400" />
+                                  ) : (
+                                    <Star className={`h-4 w-4 ${
+                                      message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                    }`} />
+                                  )}
                                 </button>
                               </div>
                               <p className={`text-xs sm:text-sm truncate mb-1 ${
@@ -844,7 +918,7 @@ export default function Support() {
                         )}
 
                         {/* Reply Section */}
-                        {selectedMessage.allow_reply && (
+                        {selectedMessage.allow_reply && !selectedMessage.deleted_at && (
                           <div className="mt-6 pt-6 border-t border-white/10">
                             <h4 className="text-sm font-semibold text-white mb-3">Répondre</h4>
                             <div className="space-y-3">
@@ -876,6 +950,43 @@ export default function Support() {
                           </div>
                         )}
                       </ScrollArea>
+
+                      {/* Footer with action buttons */}
+                      <div className="p-4 sm:p-6 border-t border-white/10 flex-shrink-0">
+                        <div className="flex items-center justify-between gap-3">
+                          {selectedMessage && !selectedMessage.deleted_at && (
+                            <Button
+                              onClick={() => handleDeleteMessage(selectedMessage.id)}
+                              variant="outline"
+                              size="sm"
+                              className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Supprimer
+                            </Button>
+                          )}
+                          {selectedMessage && selectedMessage.deleted_at && (
+                            <Button
+                              onClick={() => handleRestoreMessage(selectedMessage.id)}
+                              variant="outline"
+                              size="sm"
+                              className="bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20"
+                            >
+                              <RefreshCw className="h-4 w-4 mr-2" />
+                              Restaurer
+                            </Button>
+                          )}
+                          <div className="flex-1" />
+                          <Button
+                            onClick={handleCloseDialog}
+                            variant="outline"
+                            size="sm"
+                            className="border-white/10 text-gray-400 hover:text-white hover:bg-white/5"
+                          >
+                            Fermer
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </DialogContent>

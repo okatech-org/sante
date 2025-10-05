@@ -96,6 +96,7 @@ export type Database = {
           category: string | null
           content: string
           created_at: string | null
+          deleted_at: string | null
           id: string
           is_read: boolean | null
           is_starred: boolean | null
@@ -114,6 +115,7 @@ export type Database = {
           category?: string | null
           content: string
           created_at?: string | null
+          deleted_at?: string | null
           id?: string
           is_read?: boolean | null
           is_starred?: boolean | null
@@ -132,6 +134,7 @@ export type Database = {
           category?: string | null
           content?: string
           created_at?: string | null
+          deleted_at?: string | null
           id?: string
           is_read?: boolean | null
           is_starred?: boolean | null
