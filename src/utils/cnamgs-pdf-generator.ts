@@ -73,6 +73,49 @@ const loadImageAsDataUrl = (src: string): Promise<string> =>
     img.src = src;
   });
 
+// Charge une image et la découpe en cercle (comme dans l'application)
+const loadCircularImageAsDataUrl = (src: string, size: number = 400): Promise<string> =>
+  new Promise((resolve) => {
+    if (!src) return resolve("");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        // Activer l'anti-aliasing pour un cercle lisse
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Créer un clip circulaire
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        
+        // Dessiner l'image centrée et couvrant tout le cercle
+        const scale = Math.max(size / img.width, size / img.height);
+        const x = (size - img.width * scale) / 2;
+        const y = (size - img.height * scale) / 2;
+        
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        
+        try {
+          const data = canvas.toDataURL("image/png");
+          resolve(data);
+        } catch {
+          resolve("");
+        }
+      } else {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = src;
+  });
+
 const drawCutMarks = (
   doc: jsPDF,
   x: number,
@@ -222,8 +265,9 @@ export const generateCNAMGSPdf = async (
   const logoData = assets?.cnamgsLogoUrl
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
+  // Charger la photo et la découper en cercle (comme dans l'application)
   const photoData = assets?.photoUrl
-    ? await loadImageAsDataUrl(assets.photoUrl)
+    ? await loadCircularImageAsDataUrl(assets.photoUrl, 600)
     : "";
 
   // Capturer le SVG de la carte comme image ultra haute résolution
@@ -247,8 +291,13 @@ export const generateCNAMGSPdf = async (
       doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
-    // La photo est déjà circulaire dans le SVG capturé grâce au clipPath
-    // Pas besoin de la superposer, elle est correctement rendue dans la capture SVG
+    // Photo du titulaire (bas droite) - circulaire
+    if (photoData) {
+      const photoSize = 18;
+      const photoX = CARD_X + CARD.w - photoSize - 6;
+      const photoY = CARD_Y + 31;
+      doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+    }
   } else {
     // Fallback: rendu vectoriel si la capture échoue
     // Fond carte (vert clair)
