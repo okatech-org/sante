@@ -286,10 +286,10 @@ export const generateCNAMGSPdf = async (
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
-    // Emblème des armoiries (haut gauche) - rapproché du texte
+    // Emblème des armoiries (haut gauche) - 1 mm de plus d'espace avec le texte
     if (armoiriesData) {
       const emblemSize = 10;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
+      doc.addImage(armoiriesData, "PNG", CARD_X + 6.5, CARD_Y + 3, emblemSize, emblemSize);
     }
 
     // Logo CNAMGS (haut droite) - proportions naturelles du logo (ratio ~4:1)
@@ -301,10 +301,10 @@ export const generateCNAMGSPdf = async (
 
     // Photo du titulaire (bas droite) - circulaire découpée
     if (photoData) {
-      // Dimensions et position identiques à celles du SVG
-      const photoSize = 17; // Diamètre du cercle en mm
-      const photoX = CARD_X + CARD.w - photoSize - 5.5; // Position droite
-      const photoY = CARD_Y + 31.5; // Position verticale
+      // Dimensions et position agrandies pour correspondre à l'espace prévu
+      const photoSize = 20; // Diamètre du cercle en mm (agrandi)
+      const photoX = CARD_X + CARD.w - photoSize - 4; // Position droite ajustée
+      const photoY = CARD_Y + 30; // Position verticale ajustée
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   } else {
@@ -394,7 +394,7 @@ export const generateCNAMGSPdf = async (
     // Fallback: Superposer les images sources
     if (armoiriesData) {
       const emblemSize = 10;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
+      doc.addImage(armoiriesData, "PNG", CARD_X + 6.5, CARD_Y + 3, emblemSize, emblemSize);
     }
 
     if (logoData) {
@@ -404,9 +404,9 @@ export const generateCNAMGSPdf = async (
     }
 
     if (photoData) {
-      const photoSize = 17; // Même dimension que dans la version principale
-      const photoX = CARD_X + CARD.w - photoSize - 5.5;
-      const photoY = CARD_Y + 31.5;
+      const photoSize = 20; // Même dimension que dans la version principale
+      const photoX = CARD_X + CARD.w - photoSize - 4;
+      const photoY = CARD_Y + 30;
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   }
