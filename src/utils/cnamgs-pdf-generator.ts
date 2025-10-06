@@ -73,34 +73,36 @@ const loadImageAsDataUrl = (src: string): Promise<string> =>
     img.src = src;
   });
 
-// Charge une image et la découpe en cercle (comme dans l'application)
-const loadCircularImageAsDataUrl = (src: string, size: number = 400): Promise<string> =>
+// Charge une image et la découpe en ellipse (comme dans l'application)
+const loadEllipticalImageAsDataUrl = (src: string, width: number = 260, height: number = 320): Promise<string> =>
   new Promise((resolve) => {
     if (!src) return resolve("");
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        // Activer l'anti-aliasing pour un cercle lisse
+        // Activer l'anti-aliasing pour une ellipse lisse
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         
-        // Créer un clip circulaire
+        // Créer un clip elliptique
+        ctx.save();
         ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+        ctx.ellipse(width / 2, height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
         ctx.closePath();
         ctx.clip();
         
-        // Dessiner l'image centrée et couvrant tout le cercle
-        const scale = Math.max(size / img.width, size / img.height);
-        const x = (size - img.width * scale) / 2;
-        const y = (size - img.height * scale) / 2;
+        // Dessiner l'image centrée et couvrant toute l'ellipse
+        const scale = Math.max(width / img.width, height / img.height);
+        const x = (width - img.width * scale) / 2;
+        const y = (height - img.height * scale) / 2;
         
         ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        ctx.restore();
         
         try {
           const data = canvas.toDataURL("image/png");
@@ -151,7 +153,7 @@ const drawGrid = (doc: jsPDF, step = 10) => {
 };
 
 // Fonction principale ---------------------------------------------------------
-// Helper to capture SVG as high-res image
+// Helper to capture SVG as high-res image, excluding emblem and photo
 const captureSVGAsImage = async (): Promise<string> => {
   const svgContainer = document.querySelector('.cnamgs-card-svg');
   if (!svgContainer) return "";
@@ -162,26 +164,42 @@ const captureSVGAsImage = async (): Promise<string> => {
   // Clone the SVG to avoid modifying the original
   const clonedSvg = svgElement.cloneNode(true) as SVGElement;
   
-  // Masquer l'emblème des armoiries
+  // Masquer l'emblème des armoiries (on le superposera après)
   const emblemImage = clonedSvg.querySelector('#img-coat-of-arms');
   if (emblemImage) {
     emblemImage.setAttribute('opacity', '0');
   }
   
-  // Masquer la photo d'identité dans le SVG cloné
-  const photoImage = clonedSvg.querySelector('image[href*="placeholder"]') || 
-                     clonedSvg.querySelector('image[href*="photo"]') ||
-                     clonedSvg.querySelector('image:last-of-type');
-  if (photoImage) {
-    photoImage.setAttribute('opacity', '0');
+  // Masquer le logo CNAMGS (on le superposera après pour meilleure qualité)
+  const logoImage = clonedSvg.querySelector('#img-cnamgs-logo');
+  if (logoImage) {
+    logoImage.setAttribute('opacity', '0');
   }
   
-  // Get computed styles to ensure colors and fonts are preserved
-  const computedStyle = window.getComputedStyle(svgElement);
+  // Masquer la puce (on la superposera après pour meilleure qualité)
+  const chipImage = clonedSvg.querySelector('#chip');
+  if (chipImage) {
+    chipImage.setAttribute('opacity', '0');
+  }
+  
+  // Masquer la photo d'identité (on la superposera après avec clip ellipse)
+  const photoPlaceholder = clonedSvg.querySelector('#photo-placeholder');
+  if (photoPlaceholder) {
+    photoPlaceholder.setAttribute('opacity', '0');
+  }
+  
+  // Masquer toutes les images dynamiques
+  const allImages = clonedSvg.querySelectorAll('image');
+  allImages.forEach(img => {
+    const href = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
+    if (href.includes('http') || href.includes('blob:') || href.includes('data:')) {
+      img.setAttribute('opacity', '0');
+    }
+  });
   
   // Set explicit width and height for high resolution
-  const svgWidth = svgElement.getBoundingClientRect().width;
-  const svgHeight = svgElement.getBoundingClientRect().height;
+  const svgWidth = 1050; // Dimensions du template
+  const svgHeight = 650;
   
   clonedSvg.setAttribute('width', svgWidth.toString());
   clonedSvg.setAttribute('height', svgHeight.toString());
@@ -279,9 +297,11 @@ export const generateCNAMGSPdf = async (
   const logoData = assets?.cnamgsLogoUrl
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
-  // Charger la photo et la découper en cercle (comme dans l'application)
+  const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
+  
+  // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
-    ? await loadCircularImageAsDataUrl(assets.photoUrl, 600)
+    ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
 
   // Capturer le SVG de la carte comme image ultra haute résolution
@@ -409,11 +429,24 @@ export const generateCNAMGSPdf = async (
       doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
+    if (chipData) {
+      const chipW = CARD.w * 0.1543;
+      const chipH = CARD.h * 0.1923;
+      const chipX = CARD_X + CARD.w * 0.0886;
+      const chipY = CARD_Y + CARD.h * 0.3431;
+      doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
+    }
+
     if (photoData) {
-      const photoSize = 25; // Même dimension que dans la version principale
-      const photoX = CARD_X + CARD.w - photoSize - 3;
-      const photoY = CARD_Y + 24;
-      doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+      const photoRx = CARD.w * 0.1238;
+      const photoRy = CARD.h * 0.2462;
+      const photoCx = CARD_X + CARD.w * 0.8067;
+      const photoCy = CARD_Y + CARD.h * 0.6877;
+      const photoX = photoCx - photoRx;
+      const photoY = photoCy - photoRy;
+      const photoW = photoRx * 2;
+      const photoH = photoRy * 2;
+      doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
     }
   }
 
