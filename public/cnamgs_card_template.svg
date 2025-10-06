@@ -44,7 +44,7 @@
   <text id="label-nom" x="62" y="410" style="font:400 26px Arial;fill:#666">Nom</text>
   <text id="label-prenoms" x="62" y="492" style="font:400 26px Arial;fill:#666">Prénoms</text>
   <text id="label-dob" x="62" y="574" style="font:400 26px Arial;fill:#666">Date de naissance</text>
-  <text id="label-sex" x="511" y="512" style="font:400 26px Arial;fill:#666">Sexe</text>
+  <text id="label-sex" x="511" y="574" style="font:400 26px Arial;fill:#666">Sexe</text>
 
   <!-- CHAMPS dynamiques -->
   <text id="field-card-number" x="485" y="300" text-anchor="start" style="font:700 32px 'Courier New',monospace;fill:#111"></text>
