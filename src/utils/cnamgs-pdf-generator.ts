@@ -317,11 +317,8 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // Ajouter l'image capturée de la carte en haute qualité
-    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
-    
-    // Ajouter l'image en filigrane avec 57% d'opacité dans la partie basse
-    // La partie basse commence après la ligne verte (y=173 sur 650, soit ~30.55% de la hauteur)
+    // Ajouter l'image en filigrane AVANT la carte (arrière-plan)
+    // avec 57% d'opacité dans la partie basse sous la ligne verte
     if (watermarkData) {
       doc.saveGraphicsState();
       const gs = new (doc as any).GState({ opacity: 0.57 });
@@ -333,6 +330,9 @@ export const generateCNAMGSPdf = async (
       doc.addImage(watermarkData, "JPEG", CARD_X, watermarkY, CARD.w, watermarkH);
       doc.restoreGraphicsState();
     }
+    
+    // Ajouter l'image capturée de la carte PAR-DESSUS le filigrane
+    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
     // Emblème des armoiries (haut gauche) - position exacte du SVG
