@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Calendar, User, Heart, Activity, Pill, Download, Share2, Loader2, Menu } from "lucide-react";
+import { FileText, Calendar, User, Heart, Activity, Pill, Download, Share2, Loader2, Menu, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,8 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { LanguageToggle } from "@/components/language/LanguageToggle";
 import logoSante from "@/assets/logo_sante.png";
 import { 
   Home, 
@@ -170,6 +172,16 @@ export default function MedicalRecord() {
     setModalOpen(true);
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/');
+      toast.success("Déconnexion réussie");
+    } catch (error) {
+      toast.error("Erreur lors de la déconnexion");
+    }
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background sombre avec étoiles */}
@@ -233,7 +245,20 @@ export default function MedicalRecord() {
               })}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/10">
+            <div className="mt-auto pt-6 border-t border-white/10 space-y-4">
+              <div className="flex items-center justify-center gap-2">
+                <ThemeToggle />
+                <LanguageToggle />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleLogout}
+                  className="text-white hover:bg-white/10"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </div>
+
               <div className="p-3 rounded-lg bg-white/5">
                 <div className="flex items-center gap-3">
                   {avatarUrl ? (
@@ -316,6 +341,24 @@ export default function MedicalRecord() {
                       );
                     })}
                   </nav>
+
+                  <div className="mt-auto pt-6 border-t border-white/10 space-y-4">
+                    <div className="flex items-center justify-center gap-2">
+                      <ThemeToggle />
+                      <LanguageToggle />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="text-white hover:bg-white/10"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
