@@ -3,6 +3,19 @@
     <clipPath id="clip-photo">
       <ellipse cx="847" cy="447" rx="130" ry="160"/>
     </clipPath>
+    
+    <!-- Dégradés pour la puce -->
+    <linearGradient id="chipGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f4e4a6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#d4af37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b8941e;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="chipContactGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b7355;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6b5639;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a3f2a;stop-opacity:1" />
+    </linearGradient>
   </defs>
 
   <!-- fond beige clair -->
@@ -24,16 +37,35 @@
   <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 34px Arial;fill:#111">Carte d'Assurance Maladie</text>
 
   <!-- puce SIM dorée -->
-  <g id="chip" transform="translate(121,235)">
-    <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="#efd389" stroke="#1a1a1a" stroke-width="1.5"/>
-    <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="none" stroke="#2a2821" stroke-width="1.5"/>
-    <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="none" stroke="#2a2821" stroke-width="1.5"/>
-    <g stroke="#2a2821" stroke-width="1.3" fill="none">
+  <g id="chip" transform="translate(117,231)">
+    <!-- Ombre de la puce -->
+    <rect x="2" y="2" width="162" height="125" rx="18" ry="18" fill="#000" opacity="0.15"/>
+    
+    <!-- Corps principal de la puce avec dégradé -->
+    <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="url(#chipGradient)" stroke="#1a1a1a" stroke-width="1.8"/>
+    
+    <!-- Reflet supérieur -->
+    <rect x="8" y="8" width="146" height="30" rx="12" ry="12" fill="#fff" opacity="0.2"/>
+    
+    <!-- Cadre interne des contacts -->
+    <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="url(#chipContactGradient)" stroke="#1a1a1a" stroke-width="1.8"/>
+    
+    <!-- Zone centrale des contacts -->
+    <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="#3a2f1f" stroke="#1a1a1a" stroke-width="1.5"/>
+    
+    <!-- Contacts électriques avec détails -->
+    <g stroke="#1a1a1a" stroke-width="1.5" fill="#5a4729">
       <path d="M81,0 v34"/><path d="M81,92 v33"/><path d="M0,62.5 h18"/><path d="M144,62.5 h18"/>
       <path d="M64,34 h-28 a10,10 0 0 0 -10,10 v18"/>
       <path d="M98,34 h28 a10,10 0 0 1 10,10 v18"/>
       <path d="M64,92 h-28 a10,10 0 0 1 -10,-10 v-18"/>
       <path d="M98,92 h28 a10,10 0 0 0 10,-10 v-18"/>
+    </g>
+    
+    <!-- Micro-reflets sur les contacts -->
+    <g stroke="#8b7355" stroke-width="1" fill="none" opacity="0.5">
+      <path d="M81,5 v25"/><path d="M81,95 v25"/>
+      <path d="M5,62.5 h10"/><path d="M147,62.5 h10"/>
     </g>
   </g>
 
