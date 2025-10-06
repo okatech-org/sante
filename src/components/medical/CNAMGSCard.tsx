@@ -163,7 +163,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       cardNumberNode.setAttribute('y', '280');
       cardNumberNode.setAttribute('text-anchor', 'middle');
       cardNumberNode.setAttribute('font-size', '32');
-      cardNumberNode.setAttribute('font-weight', 'bold');
+      cardNumberNode.setAttribute('font-weight', '900');
     }
 
     // 2) Champs SOUS les libellés
