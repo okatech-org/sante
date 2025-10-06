@@ -203,10 +203,10 @@ export default function Appointments() {
   const renderUpcoming = () => {
     if (upcomingAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucun rendez-vous prévu</h3>
-          <p className="text-gray-400 mb-6">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucun rendez-vous prévu</h3>
+          <p className="text-muted-foreground mb-6">
             Vous n'avez aucun rendez-vous à venir pour le moment
           </p>
           <Button onClick={() => setBookingModalOpen(true)}>
@@ -218,17 +218,40 @@ export default function Appointments() {
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {upcomingAppointments.map((appointment) => (
+      <div className="space-y-4">
+        {/* Prochain rendez-vous */}
+        <div className="rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30 border border-cyan-200 dark:border-cyan-800 p-6 shadow-md">
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+            <h3 className="text-sm font-semibold text-cyan-900 dark:text-cyan-100">Prochain Rendez-vous</h3>
+          </div>
           <AppointmentCard
-            key={appointment.id}
-            appointment={appointment}
-            onCancel={() => handleCancelAppointment(appointment)}
-            onPay={() => handlePay(appointment)}
-            onCall={() => handleCall(appointment)}
-            onGetDirections={() => handleGetDirections(appointment)}
+            appointment={upcomingAppointments[0]}
+            onCancel={() => handleCancelAppointment(upcomingAppointments[0])}
+            onPay={() => handlePay(upcomingAppointments[0])}
+            onCall={() => handleCall(upcomingAppointments[0])}
+            onGetDirections={() => handleGetDirections(upcomingAppointments[0])}
           />
-        ))}
+        </div>
+
+        {/* Autres rendez-vous */}
+        {upcomingAppointments.length > 1 && (
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground">Autres rendez-vous à venir</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {upcomingAppointments.slice(1).map((appointment) => (
+                <AppointmentCard
+                  key={appointment.id}
+                  appointment={appointment}
+                  onCancel={() => handleCancelAppointment(appointment)}
+                  onPay={() => handlePay(appointment)}
+                  onCall={() => handleCall(appointment)}
+                  onGetDirections={() => handleGetDirections(appointment)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -236,10 +259,10 @@ export default function Appointments() {
   const renderPast = () => {
     if (pastAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucun historique</h3>
-          <p className="text-gray-400">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucun historique</h3>
+          <p className="text-muted-foreground">
             Vous n'avez aucun rendez-vous passé pour le moment
           </p>
         </div>
@@ -262,10 +285,10 @@ export default function Appointments() {
   const renderCancelled = () => {
     if (cancelledAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <X className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucune annulation</h3>
-          <p className="text-gray-400">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <X className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucune annulation</h3>
+          <p className="text-muted-foreground">
             Vous n'avez annulé aucun rendez-vous
           </p>
         </div>
@@ -289,16 +312,16 @@ export default function Appointments() {
     <PatientDashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
+        <div className="rounded-2xl bg-card border border-border shadow-sm p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">Mes Rendez-vous</h1>
-              <p className="text-gray-400 mt-1 text-sm sm:text-base">Gérez vos consultations médicales</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Mes Rendez-vous</h1>
+              <p className="text-muted-foreground mt-1 text-sm sm:text-base">Gérez vos consultations médicales</p>
             </div>
             <Button 
               size="sm" 
               onClick={() => setBookingModalOpen(true)} 
-              className="bg-[#00d4ff] hover:bg-[#00b8e6] text-white w-full sm:w-auto"
+              className="w-full sm:w-auto"
             >
               <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               <span className="sm:inline">Nouveau RDV</span>
@@ -307,13 +330,13 @@ export default function Appointments() {
 
           {/* Statistics */}
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
+            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800">
               {upcomingAppointments.length} à venir
             </Badge>
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#0088ff]/20 text-[#0088ff] border-[#0088ff]/30">
+            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800">
               {pastAppointments.length} passés
             </Badge>
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#ff0088]/20 text-[#ff0088] border-[#ff0088]/30">
+            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-950/30 dark:text-pink-400 dark:border-pink-800">
               {cancelledAppointments.length} annulés
             </Badge>
           </div>
@@ -321,24 +344,24 @@ export default function Appointments() {
 
         {/* Tabs & Filters */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-              <TabsList className="bg-white/5 w-full sm:w-auto">
-                <TabsTrigger value="upcoming" className="relative flex-1 sm:flex-none data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff] text-xs sm:text-sm">
+              <TabsList className="bg-muted w-full sm:w-auto">
+                <TabsTrigger value="upcoming" className="relative flex-1 sm:flex-none text-xs sm:text-sm">
                   À venir
                   {upcomingAppointments.length > 0 && (
-                    <Badge className="ml-1 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-[10px] sm:text-xs bg-[#00d4ff]">
+                    <Badge className="ml-1 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-[10px] sm:text-xs">
                       {upcomingAppointments.length}
                     </Badge>
                   )}
                 </TabsTrigger>
-                <TabsTrigger value="past" className="flex-1 sm:flex-none data-[state=active]:bg-[#0088ff]/20 data-[state=active]:text-[#0088ff] text-xs sm:text-sm">Passés</TabsTrigger>
-                <TabsTrigger value="cancelled" className="flex-1 sm:flex-none data-[state=active]:bg-[#ff0088]/20 data-[state=active]:text-[#ff0088] text-xs sm:text-sm">Annulés</TabsTrigger>
+                <TabsTrigger value="past" className="flex-1 sm:flex-none text-xs sm:text-sm">Passés</TabsTrigger>
+                <TabsTrigger value="cancelled" className="flex-1 sm:flex-none text-xs sm:text-sm">Annulés</TabsTrigger>
               </TabsList>
 
               <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-white/5 border-white/10 text-white text-xs sm:text-sm">
+                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-background border-input text-xs sm:text-sm">
                     <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
@@ -351,7 +374,7 @@ export default function Appointments() {
                 </Select>
 
                 <Select value={providerFilter} onValueChange={setProviderFilter}>
-                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-white/5 border-white/10 text-white text-xs sm:text-sm">
+                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-background border-input text-xs sm:text-sm">
                     <SelectValue placeholder="Praticien" />
                   </SelectTrigger>
                   <SelectContent>
