@@ -7,7 +7,6 @@ import jsPDF from "jspdf";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
 
 interface CNAMGSCardProps {
   profile: any;
@@ -15,48 +14,81 @@ interface CNAMGSCardProps {
 
 export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   
+  const generateCardSVG = () => {
+    const nom = profile?.full_name?.split(' ')[0]?.toUpperCase() || 'NOM';
+    const prenoms = profile?.full_name?.split(' ').slice(1).join(' ')?.toUpperCase() || 'PRENOMS';
+    const dateNaissance = profile?.birth_date 
+      ? new Date(profile.birth_date).toLocaleDateString('fr-FR')
+      : '01/01/1990';
+    const sexe = profile?.gender === 'male' ? 'M' : profile?.gender === 'female' ? 'F' : 'M';
+    const numeroCard = profile?.cnamgs_number || '000-000-000-0';
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="650" viewBox="0 0 1050 650">
+      <rect width="1050" height="650" fill="#F5F5DC"/>
+      <rect x="40" y="150" width="970" height="6" fill="#28A745"/>
+      
+      <rect x="64" y="42" width="120" height="86" fill="#FFFFFF" stroke="#000000" stroke-width="1"/>
+      <text x="124" y="90" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">ARMOIRIES</text>
+      
+      <text x="280" y="80" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">RÉPUBLIQUE</text>
+      <text x="280" y="120" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">GABONAISE</text>
+      
+      <rect x="740" y="42" width="250" height="86" fill="#FFFFFF" stroke="#28A745" stroke-width="2"/>
+      <text x="865" y="90" text-anchor="middle" font-family="Arial" font-size="36" font-weight="bold" fill="#28A745">CNAMGS</text>
+      
+      <text x="525" y="245" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#000000">Secteur Privé</text>
+      <text x="525" y="285" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">Carte d'Assurance Maladie</text>
+      
+      <rect x="380" y="130" width="320" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
+      <text x="540" y="160" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#000000">${numeroCard}</text>
+      
+      <rect x="120" y="200" width="150" height="110" fill="#FFD700" stroke="#000000" stroke-width="2" rx="8"/>
+      <rect x="135" y="215" width="50" height="40" fill="#C0C0C0" rx="4"/>
+      <rect x="195" y="215" width="60" height="40" fill="#C0C0C0" rx="4"/>
+      <rect x="135" y="260" width="120" height="40" fill="#C0C0C0" rx="4"/>
+      
+      <text x="120" y="345" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Nom</text>
+      <rect x="120" y="352" width="430" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
+      <text x="335" y="382" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#000000">${nom}</text>
+      
+      <text x="120" y="429" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Prénoms</text>
+      <rect x="120" y="436" width="430" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
+      <text x="335" y="466" text-anchor="middle" font-family="Arial" font-size="28" fill="#000000">${prenoms}</text>
+      
+      <text x="120" y="513" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Date de naissance</text>
+      <rect x="120" y="520" width="220" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
+      <text x="230" y="550" text-anchor="middle" font-family="Arial" font-size="24" fill="#000000">${dateNaissance}</text>
+      
+      <text x="380" y="513" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Sexe</text>
+      <rect x="380" y="520" width="80" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
+      <text x="420" y="550" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#000000">${sexe}</text>
+      
+      <rect x="720" y="320" width="200" height="250" fill="#FFFFFF" stroke="#000000" stroke-width="2" rx="8"/>
+      ${profile?.avatar_url 
+        ? `<image x="720" y="320" width="200" height="250" href="${profile.avatar_url}" preserveAspectRatio="xMidYMid slice"/>`
+        : `<ellipse cx="820" cy="400" rx="60" ry="70" fill="#CCCCCC"/>
+           <path d="M 760 500 Q 820 450 880 500" fill="#CCCCCC"/>
+           <text x="820" y="480" text-anchor="middle" font-family="Arial" font-size="14" fill="#666">PHOTO</text>`
+      }
+    </svg>`;
+  };
+
   const handleExportPDF = async () => {
     try {
-      // Generate card via edge function
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Session expirée");
-        return;
-      }
-
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-cnamgs-card`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la génération');
-      }
-
-      const result = await response.json();
-      
-      // Convert SVG to PDF
+      const svgString = generateCardSVG();
       const doc = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
         format: [1050, 650],
       });
       
-      // Create a temporary canvas to render SVG
       const canvas = document.createElement('canvas');
       canvas.width = 1050;
       canvas.height = 650;
       const ctx = canvas.getContext('2d');
       
-      // Create image from SVG
       const img = new Image();
-      const svgBlob = new Blob([result.svg], { type: 'image/svg+xml;charset=utf-8' });
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(svgBlob);
       
       img.onload = () => {
@@ -74,7 +106,6 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       };
       
       img.src = url;
-      
     } catch (error) {
       console.error("Error generating card:", error);
       toast.error("Erreur lors de la génération de la carte");
