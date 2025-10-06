@@ -162,6 +162,14 @@ const captureSVGAsImage = async (): Promise<string> => {
   // Clone the SVG to avoid modifying the original
   const clonedSvg = svgElement.cloneNode(true) as SVGElement;
   
+  // Masquer la photo d'identité dans le SVG cloné
+  const photoImage = clonedSvg.querySelector('image[href*="placeholder"]') || 
+                     clonedSvg.querySelector('image[href*="photo"]') ||
+                     clonedSvg.querySelector('image:last-of-type');
+  if (photoImage) {
+    photoImage.setAttribute('opacity', '0');
+  }
+  
   // Get computed styles to ensure colors and fonts are preserved
   const computedStyle = window.getComputedStyle(svgElement);
   
@@ -291,11 +299,12 @@ export const generateCNAMGSPdf = async (
       doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
-    // Photo du titulaire (bas droite) - circulaire
+    // Photo du titulaire (bas droite) - circulaire découpée
     if (photoData) {
-      const photoSize = 18;
-      const photoX = CARD_X + CARD.w - photoSize - 6;
-      const photoY = CARD_Y + 31;
+      // Dimensions et position identiques à celles du SVG
+      const photoSize = 17; // Diamètre du cercle en mm
+      const photoX = CARD_X + CARD.w - photoSize - 5.5; // Position droite
+      const photoY = CARD_Y + 31.5; // Position verticale
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   } else {
@@ -395,9 +404,9 @@ export const generateCNAMGSPdf = async (
     }
 
     if (photoData) {
-      const photoSize = 18;
-      const photoX = CARD_X + CARD.w - photoSize - 6;
-      const photoY = CARD_Y + 31;
+      const photoSize = 17; // Même dimension que dans la version principale
+      const photoX = CARD_X + CARD.w - photoSize - 5.5;
+      const photoY = CARD_Y + 31.5;
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   }
