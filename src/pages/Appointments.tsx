@@ -310,9 +310,9 @@ export default function Appointments() {
 
   return (
     <PatientDashboardLayout>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl bg-card border border-border shadow-sm p-4 sm:p-6 lg:p-8">
+        <div className="rounded-2xl bg-card border border-border shadow-sm p-4 sm:p-8 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Mes Rendez-vous</h1>
@@ -343,8 +343,8 @@ export default function Appointments() {
         </div>
 
         {/* Tabs & Filters */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <div className="rounded-2xl bg-card border border-border p-4 sm:p-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-6 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
               <TabsList className="bg-muted w-full sm:w-auto">
                 <TabsTrigger value="upcoming" className="relative flex-1 sm:flex-none text-xs sm:text-sm">
