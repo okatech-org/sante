@@ -49,37 +49,37 @@
   <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial;fill:#111">Secteur Privé</text>
   <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 34px Arial;fill:#111">Carte d'Assurance Maladie</text>
 
-  <!-- puce SIM dorée ovale -->
+  <!-- puce SIM dorée -->
   <g id="chip" transform="translate(117,231)" filter="url(#chipShadow)">
-    <!-- Fond principal ovale avec dégradé doré -->
-    <ellipse cx="81" cy="62.5" rx="81" ry="62.5" fill="url(#chipGradient)" stroke="#1a1a1a" stroke-width="1.5"/>
+    <!-- Fond principal avec dégradé doré -->
+    <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="url(#chipGradient)" stroke="#1a1a1a" stroke-width="1.5"/>
     
-    <!-- Reflet supérieur ovale -->
-    <ellipse cx="81" cy="30" rx="73" ry="20" fill="#ffffff" opacity="0.25"/>
+    <!-- Reflet supérieur -->
+    <rect x="8" y="8" width="146" height="25" rx="12" ry="12" fill="#ffffff" opacity="0.25"/>
     
-    <!-- Cadre intérieur ovale avec dégradé -->
-    <ellipse cx="81" cy="62.5" rx="63" ry="44.5" fill="none" stroke="url(#chipContactGradient)" stroke-width="1.8"/>
+    <!-- Cadre intérieur avec dégradé -->
+    <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="none" stroke="url(#chipContactGradient)" stroke-width="1.8"/>
     
-    <!-- Zone centrale des contacts ovale -->
-    <ellipse cx="81" cy="62.5" rx="17" ry="29" fill="url(#chipContactGradient)" stroke="#1a1a1a" stroke-width="1.2"/>
+    <!-- Zone centrale des contacts -->
+    <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="url(#chipContactGradient)" stroke="#1a1a1a" stroke-width="1.2"/>
     
     <!-- Contacts métalliques -->
-    <g stroke="#3a3420" fill="none">
-      <line x1="81" y1="0" x2="81" y2="34" stroke-width="1.8"/>
-      <line x1="81" y1="91" x2="81" y2="125" stroke-width="1.8"/>
-      <line x1="0" y1="62.5" x2="18" y2="62.5" stroke-width="1.8"/>
-      <line x1="144" y1="62.5" x2="162" y2="62.5" stroke-width="1.8"/>
-      <path d="M64,34 Q50,34 40,44 L40,62" stroke-width="1.6"/>
-      <path d="M98,34 Q112,34 122,44 L122,62" stroke-width="1.6"/>
-      <path d="M64,91 Q50,91 40,81 L40,63" stroke-width="1.6"/>
-      <path d="M98,91 Q112,91 122,81 L122,63" stroke-width="1.6"/>
+    <g stroke="url(#chipContactGradient)" stroke-width="1.5" fill="none">
+      <path d="M81,0 v34" stroke="#3a3420" stroke-width="1.8"/>
+      <path d="M81,92 v33" stroke="#3a3420" stroke-width="1.8"/>
+      <path d="M0,62.5 h18" stroke="#3a3420" stroke-width="1.8"/>
+      <path d="M144,62.5 h18" stroke="#3a3420" stroke-width="1.8"/>
+      <path d="M64,34 h-28 a10,10 0 0 0 -10,10 v18" stroke="#3a3420" stroke-width="1.6"/>
+      <path d="M98,34 h28 a10,10 0 0 1 10,10 v18" stroke="#3a3420" stroke-width="1.6"/>
+      <path d="M64,92 h-28 a10,10 0 0 1 -10,-10 v-18" stroke="#3a3420" stroke-width="1.6"/>
+      <path d="M98,92 h28 a10,10 0 0 0 10,-10 v-18" stroke="#3a3420" stroke-width="1.6"/>
     </g>
     
     <!-- Micro-reflets sur les contacts -->
     <g fill="#ffffff" opacity="0.15">
-      <ellipse cx="81" cy="50" rx="15" ry="2"/>
-      <ellipse cx="81" cy="60" rx="15" ry="1.5"/>
-      <ellipse cx="81" cy="68" rx="15" ry="1.5"/>
+      <rect x="66" y="36" width="30" height="2" rx="1"/>
+      <rect x="66" y="45" width="30" height="1.5" rx="0.75"/>
+      <rect x="66" y="52" width="30" height="1.5" rx="0.75"/>
     </g>
   </g>
 
