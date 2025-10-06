@@ -1,4 +1,5 @@
 // Coordonnées des champs sur la carte CNAMGS (1050 × 650 px)
+// Utilisation des coordonnées exactes fournies dans la documentation
 export const CARD_FIELDS = {
   canvas: { width: 1050, height: 650 },
   fields: {
@@ -68,88 +69,73 @@ export const generateCNAMGSCard = async (
   ctx.fillStyle = '#000000';
   ctx.textBaseline = 'middle';
 
-  // 3. Dessiner le numéro de carte (centré, en rouge)
+  // 3. Dessiner le numéro de carte (centré, rouge, taille plus grande)
   const cardNumberField = CARD_FIELDS.fields.card_number.px;
-  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.font = 'bold 40px Arial, sans-serif';
   ctx.fillStyle = '#DC2626'; // Rouge
   ctx.textAlign = 'center';
   const cardNumberText = data.numero_carte;
   ctx.fillText(
     cardNumberText,
     cardNumberField.x + cardNumberField.width / 2,
-    cardNumberField.y + cardNumberField.height / 2
+    cardNumberField.y + cardNumberField.height / 2 + 20 // Décalage vers le bas
   );
-  console.log('generateCNAMGSCard: Card number drawn:', cardNumberText, 'at', {
-    x: cardNumberField.x + cardNumberField.width / 2,
-    y: cardNumberField.y + cardNumberField.height / 2
-  });
-  ctx.fillStyle = '#000000'; // Retour au noir
+  console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
+  ctx.fillStyle = '#000000';
 
-  // 4. Dessiner le nom (aligné à gauche, majuscules, en rouge)
+  // 4. Dessiner le nom (aligné à gauche, rouge, taille plus grande)
   const nomField = CARD_FIELDS.fields.field_nom_rect.px;
   const nomText = data.nom.substring(0, 28).toUpperCase();
-  ctx.font = 'bold 32px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.font = 'bold 36px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     nomText,
     nomField.x,
-    nomField.y + nomField.height / 2
+    nomField.y + nomField.height / 2 + 10 // Décalage vers le bas
   );
-  console.log('generateCNAMGSCard: Nom drawn:', nomText, 'at', {
-    x: nomField.x,
-    y: nomField.y + nomField.height / 2
-  });
-  ctx.fillStyle = '#000000'; // Retour au noir
+  console.log('generateCNAMGSCard: Nom drawn:', nomText);
+  ctx.fillStyle = '#000000';
 
-  // 5. Dessiner les prénoms (aligné à gauche, majuscules, en rouge)
+  // 5. Dessiner les prénoms (aligné à gauche, rouge, taille plus grande)
   const prenomsField = CARD_FIELDS.fields.field_prenoms_rect.px;
   const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
-  ctx.font = 'bold 32px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.font = 'bold 36px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     prenomsText,
     prenomsField.x,
-    prenomsField.y + prenomsField.height / 2
+    prenomsField.y + prenomsField.height / 2 + 10 // Décalage vers le bas
   );
-  console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText, 'at', {
-    x: prenomsField.x,
-    y: prenomsField.y + prenomsField.height / 2
-  });
-  ctx.fillStyle = '#000000'; // Retour au noir
+  console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
+  ctx.fillStyle = '#000000';
 
-  // 6. Dessiner la date de naissance (aligné à gauche, en rouge)
+  // 6. Dessiner la date de naissance (aligné à gauche, rouge, taille plus grande)
   const dobField = CARD_FIELDS.fields.field_dob_rect.px;
-  ctx.font = 'bold 28px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     data.date_naissance,
     dobField.x,
-    dobField.y + dobField.height / 2
+    dobField.y + dobField.height / 2 + 10 // Décalage vers le bas
   );
-  console.log('generateCNAMGSCard: Date drawn:', data.date_naissance, 'at', {
-    x: dobField.x,
-    y: dobField.y + dobField.height / 2
-  });
-  ctx.fillStyle = '#000000'; // Retour au noir
+  console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
+  ctx.fillStyle = '#000000';
 
-  // 7. Dessiner le sexe (centré, en rouge)
+  // 7. Dessiner le sexe (centré, rouge, taille plus grande)
   const sexField = CARD_FIELDS.fields.field_sex_rect.px;
-  ctx.font = 'bold 36px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.font = 'bold 40px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'center';
   ctx.fillText(
     data.sexe,
     sexField.x + sexField.width / 2,
-    sexField.y + sexField.height / 2
+    sexField.y + sexField.height / 2 + 10 // Décalage vers le bas
   );
-  console.log('generateCNAMGSCard: Sexe drawn:', data.sexe, 'at', {
-    x: sexField.x + sexField.width / 2,
-    y: sexField.y + sexField.height / 2
-  });
-  ctx.fillStyle = '#000000'; // Retour au noir
+  console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
+  ctx.fillStyle = '#000000';
 
   // 8. Ajouter la photo si disponible (forme ovale)
   if (data.photo_url) {
