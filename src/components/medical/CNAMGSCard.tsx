@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import cnamgsCardImage from "@/assets/carte_cnamgs.png";
+const cnamgsCardImage = "/cnamgs_card_template.svg";
 import { generateCNAMGSCard, validateCardData } from "@/utils/cnamgs-card-generator";
 import { useState, useEffect } from "react";
 
