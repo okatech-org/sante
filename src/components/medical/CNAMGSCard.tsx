@@ -51,8 +51,9 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       console.log('CNAMGSCard: Starting card generation for profile:', profile);
 
       try {
-        // Charger le template SVG
-        const templateResponse = await fetch(`/cnamgs_card_template.svg?v=${Date.now()}`);
+        // Charger le template SVG avec cache-busting agressif
+        const cacheBuster = `v2_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+        const templateResponse = await fetch(`/cnamgs_card_template.svg?${cacheBuster}`);
         const templateText = await templateResponse.text();
         
         // Charger le layout JSON
