@@ -41,10 +41,10 @@
   <circle id="photo-placeholder" cx="853" cy="435" r="145" fill="#d9d9d9"/>
 
   <!-- libellés des champs -->
-  <text id="label-nom" x="99" y="432" style="font:700 26px Arial;fill:#111">Nom</text>
-  <text id="label-prenoms" x="99" y="514" style="font:700 26px Arial;fill:#111">Prénoms</text>
-  <text id="label-dob" x="99" y="596" style="font:700 26px Arial;fill:#111">Date de naissance</text>
-  <text id="label-sex" x="548" y="534" style="font:700 26px Arial;fill:#111">Sexe</text>
+  <text id="label-nom" x="62" y="410" style="font:700 26px Arial;fill:#111">Nom</text>
+  <text id="label-prenoms" x="62" y="492" style="font:700 26px Arial;fill:#111">Prénoms</text>
+  <text id="label-dob" x="62" y="574" style="font:700 26px Arial;fill:#111">Date de naissance</text>
+  <text id="label-sex" x="511" y="512" style="font:700 26px Arial;fill:#111">Sexe</text>
 
   <!-- CHAMPS dynamiques -->
   <text id="field-card-number" x="485" y="300" text-anchor="start" style="font:700 32px 'Courier New',monospace;fill:#111"></text>
