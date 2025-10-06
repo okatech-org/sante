@@ -584,12 +584,19 @@ export default function DashboardPatient() {
                   <p className="text-base sm:text-xl font-normal text-foreground mt-1">{firstName}</p>
                 </div>
 
-                {/* Âge et Sexe - sur la même ligne */}
+                {/* Date de naissance et Sexe - sur la même ligne */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-muted/30 rounded-xl p-3">
-                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Âge</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Date de naissance</p>
                     <p className="text-base sm:text-xl font-bold text-foreground">
-                      {age !== null ? `${age} ans` : 'Non renseigné'}
+                      {profileData?.birth_date 
+                        ? new Date(profileData.birth_date).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })
+                        : 'Non renseigné'
+                      }
                     </p>
                   </div>
 
@@ -599,6 +606,14 @@ export default function DashboardPatient() {
                       {getGenderLabel(profileData?.gender || null)}
                     </p>
                   </div>
+                </div>
+
+                {/* Numéro CNAMGS */}
+                <div className="bg-muted/30 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Numéro CNAMGS</p>
+                  <p className="text-base sm:text-xl font-bold text-foreground font-mono">
+                    {profileData?.cnamgs_number || 'Non renseigné'}
+                  </p>
                 </div>
               </div>
             </div>
