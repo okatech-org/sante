@@ -180,7 +180,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     setFieldBelowLabel('field-name', 62, 442);
     setFieldBelowLabel('field-given-names', 62, 524);
     setFieldBelowLabel('field-birthdate', 62, 606);
-    setFieldBelowLabel('field-sex', 511, 606);
+    setFieldBelowLabel('field-sex', 511, 544);
 
     // 3) Injecter les données texte
     setText('field-card-number', data.cardNumber);
