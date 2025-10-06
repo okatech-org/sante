@@ -190,7 +190,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
 
         {/* Main Content */}
         <main className="flex-1 md:ml-72 pt-20 md:pt-0">
-          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl md:ml-2">
+          <div className="p-4 sm:p-5 lg:p-6 max-w-7xl md:ml-2">
             {children}
           </div>
         </main>
