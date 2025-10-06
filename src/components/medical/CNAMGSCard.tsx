@@ -157,16 +157,18 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
 
     // 1) Numéro de carte
     const fCard = layout.fields.find(f => f.id === 'field-card-number');
+    const cardNumberNode = $(esc('field-card-number'));
+    if (cardNumberNode) {
+      cardNumberNode.setAttribute('font-size', '36');
+      cardNumberNode.setAttribute('font-weight', 'bold');
+    }
     if (fCard && fCard.bbox && fCard.bbox.some(v => v !== 0)) {
-      const newFontSize = fCard.fontSize ? fCard.fontSize * 1.5 : 32;
-      placeText('field-card-number', fCard.bbox, { anchor: 'start', fontSize: newFontSize });
+      placeText('field-card-number', fCard.bbox, { anchor: 'start', fontSize: 36 });
     } else {
-      const node = $('#field-card-number');
-      if (node) {
-        node.setAttribute('x', '485');
-        node.setAttribute('y', '300');
-        node.setAttribute('text-anchor', 'start');
-        node.setAttribute('font-size', '32');
+      if (cardNumberNode) {
+        cardNumberNode.setAttribute('x', '485');
+        cardNumberNode.setAttribute('y', '300');
+        cardNumberNode.setAttribute('text-anchor', 'start');
       }
     }
 
