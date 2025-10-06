@@ -209,11 +209,22 @@ export const generateCNAMGSPdf = async (
   doc.text("CNAMGS", A4.w / 2, 26, { align: "center" });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // CARTE CNAMGS - Capture SVG haute résolution
+  // CARTE CNAMGS - Capture SVG haute résolution + images superposées
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Traits de coupe
   drawCutMarks(doc, CARD_X, CARD_Y, CARD.w, CARD.h, 3);
+
+  // Charger les images directement depuis les fichiers
+  const armoiriesData = assets?.armoiriesUrl
+    ? await loadImageAsDataUrl(assets.armoiriesUrl)
+    : "";
+  const logoData = assets?.cnamgsLogoUrl
+    ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
+    : "";
+  const photoData = assets?.photoUrl
+    ? await loadImageAsDataUrl(assets.photoUrl)
+    : "";
 
   // Capturer le SVG de la carte comme image ultra haute résolution
   const cardImageData = await captureSVGAsImage();
@@ -221,17 +232,31 @@ export const generateCNAMGSPdf = async (
   if (cardImageData) {
     // Ajouter l'image capturée de la carte en haute qualité
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
+    
+    // Superposer les images sources pour une qualité optimale
+    // Emblème des armoiries (haut gauche) - conserve les proportions
+    if (armoiriesData) {
+      const emblemSize = 12; // Taille en mm
+      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3.5, emblemSize, emblemSize);
+    }
+
+    // Logo CNAMGS (haut droite) - conserve les proportions du logo
+    if (logoData) {
+      const logoWidth = 30;
+      const logoHeight = 8.5;
+      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
+    }
+
+    // Photo du titulaire (bas droite) - circulaire
+    if (photoData) {
+      const photoSize = 18;
+      const photoX = CARD_X + CARD.w - photoSize - 6;
+      const photoY = CARD_Y + 31;
+      
+      // Ajouter la photo
+      doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+    }
   } else {
-    // Charger les images directement depuis les fichiers pour le fallback
-    const armoiriesData = assets?.armoiriesUrl
-      ? await loadImageAsDataUrl(assets.armoiriesUrl)
-      : "";
-    const logoData = assets?.cnamgsLogoUrl
-      ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
-      : "";
-    const photoData = assets?.photoUrl
-      ? await loadImageAsDataUrl(assets.photoUrl)
-      : "";
     // Fallback: rendu vectoriel si la capture échoue
     // Fond carte (vert clair)
     doc.setFillColor(233, 242, 233);
@@ -314,9 +339,28 @@ export const generateCNAMGSPdf = async (
     doc.text("Sexe", sexeX, labelStartY + 7);
     doc.setFontSize(7);
     doc.text(data.sexe || "M", sexeX, labelStartY + 10);
+    
+    // Fallback: Superposer les images sources
+    if (armoiriesData) {
+      const emblemSize = 12;
+      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3.5, emblemSize, emblemSize);
+    }
+
+    if (logoData) {
+      const logoWidth = 30;
+      const logoHeight = 8.5;
+      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
+    }
+
+    if (photoData) {
+      const photoSize = 18;
+      const photoX = CARD_X + CARD.w - photoSize - 6;
+      const photoY = CARD_Y + 31;
+      doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+    }
   }
 
-  // Cadre carte (uniquement si capture réussie)
+  // Cadre carte
   doc.setLineWidth(0.5);
   doc.setDrawColor(200, 200, 200);
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
