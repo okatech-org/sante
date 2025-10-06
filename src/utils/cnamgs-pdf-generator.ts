@@ -305,6 +305,9 @@ export const generateCNAMGSPdf = async (
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
   
+  // Charger l'image en filigrane
+  const watermarkData = await loadImageAsDataUrl('/watermark_waves.jpg');
+  
   // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
@@ -316,6 +319,19 @@ export const generateCNAMGSPdf = async (
   if (cardImageData) {
     // Ajouter l'image capturée de la carte en haute qualité
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
+    
+    // Ajouter l'image en filigrane avec 57% d'opacité dans la partie basse
+    // La partie basse commence après la ligne verte (y=173 sur 650, soit ~30.55% de la hauteur)
+    if (watermarkData) {
+      doc.saveGraphicsState();
+      doc.setGState({ opacity: 0.57 });
+      
+      const watermarkY = CARD_Y + CARD.h * 0.3055; // Position après la ligne verte
+      const watermarkH = CARD.h * 0.6945; // Hauteur de la partie basse
+      
+      doc.addImage(watermarkData, "JPEG", CARD_X, watermarkY, CARD.w, watermarkH);
+      doc.restoreGraphicsState();
+    }
     
     // Superposer les images sources pour une qualité optimale
     // Emblème des armoiries (haut gauche) - position exacte du SVG
