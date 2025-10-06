@@ -108,6 +108,43 @@ const drawGrid = (doc: jsPDF, step = 10) => {
 };
 
 // Fonction principale ---------------------------------------------------------
+// Helper to capture SVG as high-res image
+const captureSVGAsImage = async (): Promise<string> => {
+  const svgElement = document.querySelector('.cnamgs-card-svg');
+  if (!svgElement) return "";
+  
+  const svgString = new XMLSerializer().serializeToString(svgElement);
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+  
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // High resolution: 300 DPI equivalent
+      const scale = 3;
+      canvas.width = 856 * scale; // 85.6mm at ~10px/mm * scale
+      canvas.height = 540 * scale; // 53.98mm at ~10px/mm * scale
+      
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0, 856, 540);
+        const dataUrl = canvas.toDataURL('image/png');
+        URL.revokeObjectURL(url);
+        resolve(dataUrl);
+      } else {
+        resolve("");
+      }
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve("");
+    };
+    img.src = url;
+  });
+};
+
 export const generateCNAMGSPdf = async (
   data: CNAMGSData,
   assets?: CNAMGSAssets,
@@ -140,24 +177,13 @@ export const generateCNAMGSPdf = async (
   doc.text("CNAMGS", A4.w / 2, 26, { align: "center" });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // CARTE CNAMGS (vectorielle + images)
+  // CARTE CNAMGS - Capture SVG haute résolution
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Traits de coupe
   drawCutMarks(doc, CARD_X, CARD_Y, CARD.w, CARD.h, 3);
 
-  // Fond carte (vert clair)
-  doc.setFillColor(233, 242, 233);
-  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-
-  // Bande verte horizontale
-  const bandY = CARD_Y + 13.4;
-  doc.setFillColor(42, 168, 74);
-  doc.rect(CARD_X, bandY, CARD.w, 0.65, "F");
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Images (armoiries, logo CNAMGS, photo)
-  // ─────────────────────────────────────────────────────────────────────────
+  // Charger les images directement depuis les fichiers
   const armoiriesData = assets?.armoiriesUrl
     ? await loadImageAsDataUrl(assets.armoiriesUrl)
     : "";
@@ -168,132 +194,111 @@ export const generateCNAMGSPdf = async (
     ? await loadImageAsDataUrl(assets.photoUrl)
     : "";
 
-  // Armoiries (haut gauche)
+  // Capturer le SVG de la carte comme image haute résolution
+  const cardImageData = await captureSVGAsImage();
+  
+  if (cardImageData) {
+    // Ajouter l'image capturée de la carte
+    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h);
+  } else {
+    // Fallback: rendu vectoriel si la capture échoue
+    // Fond carte (vert clair)
+    doc.setFillColor(233, 242, 233);
+    doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+
+    // Bande verte horizontale
+    const bandY = CARD_Y + 19.5;
+    doc.setFillColor(42, 168, 74);
+    doc.rect(CARD_X, bandY, CARD.w, 2, "F");
+
+    // Textes en-tête carte
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("RÉPUBLIQUE", CARD_X + 18, CARD_Y + 8);
+    doc.text("GABONAISE", CARD_X + 18, CARD_Y + 13);
+
+    // "Secteur Privé" centré
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Secteur Privé", CARD_X + CARD.w / 2, CARD_Y + 24.5, { align: "center" });
+    
+    // "Carte d'Assurance Maladie" centré
+    doc.setFontSize(8);
+    doc.text("Carte d'Assurance Maladie", CARD_X + CARD.w / 2, CARD_Y + 29, {
+      align: "center",
+    });
+
+    // Numéro de carte
+    doc.setFontSize(7);
+    doc.setFont("courier", "bold");
+    doc.text(data.numero, CARD_X + CARD.w / 2, CARD_Y + 34, { align: "center" });
+
+    // Puce (chip)
+    const chipX = CARD_X + 13;
+    const chipY = CARD_Y + 23;
+    const chipW = 15;
+    const chipH = 11;
+    doc.setFillColor(239, 211, 137);
+    doc.setDrawColor(26, 26, 26);
+    doc.setLineWidth(0.2);
+    doc.roundedRect(chipX, chipY, chipW, chipH, 2, 2, "FD");
+
+    // Détails chip
+    doc.setLineWidth(0.15);
+    const innerMargin = 1.5;
+    doc.roundedRect(chipX + innerMargin, chipY + innerMargin, chipW - 2*innerMargin, chipH - 2*innerMargin, 1, 1, "D");
+    
+    const cellW = (chipW - 2*innerMargin) / 3;
+    const cellH = (chipH - 2*innerMargin) / 3;
+    
+    for (let i = 1; i < 3; i++) {
+      doc.line(chipX + innerMargin + i * cellW, chipY + innerMargin, chipX + innerMargin + i * cellW, chipY + chipH - innerMargin);
+      doc.line(chipX + innerMargin, chipY + innerMargin + i * cellH, chipX + chipW - innerMargin, chipY + innerMargin + i * cellH);
+    }
+
+    // Champs identité
+    const labelStartX = CARD_X + 13;
+    const labelStartY = CARD_Y + 38;
+
+    doc.setFontSize(5);
+    doc.setFont("helvetica", "bold");
+    doc.text("Nom", labelStartX, labelStartY);
+    doc.setFontSize(7);
+    doc.text(data.nom, labelStartX, labelStartY + 3);
+
+    doc.setFontSize(5);
+    doc.text("Prénoms", labelStartX, labelStartY + 7);
+    doc.setFontSize(7);
+    doc.text(data.prenoms, labelStartX, labelStartY + 10);
+
+    doc.setFontSize(5);
+    doc.text("Date de naissance", labelStartX, labelStartY + 14);
+    doc.setFontSize(7);
+    doc.text(data.dateNaissance, labelStartX, labelStartY + 17);
+
+    // Sexe
+    const sexeX = CARD_X + 55;
+    doc.setFontSize(5);
+    doc.text("Sexe", sexeX, labelStartY + 7);
+    doc.setFontSize(7);
+    doc.text(data.sexe || "M", sexeX, labelStartY + 10);
+  }
+
+  // Superposer les images sources (toujours en haute qualité)
   if (armoiriesData) {
-    doc.addImage(armoiriesData, "PNG", CARD_X + 4.9, CARD_Y + 2.8, 9.8, 9.8);
+    doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3.5, 12, 12);
   }
 
-  // Logo CNAMGS (centre haut)
   if (logoData) {
-    doc.addImage(logoData, "PNG", CARD_X + 32, CARD_Y + 3.7, 32.6, 9);
+    doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, 30, 8.5);
   }
 
-  // Textes en-tête carte - "RÉPUBLIQUE GABONAISE" en grand
-  doc.setFontSize(7);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(0, 0, 0);
-  doc.text("RÉPUBLIQUE", CARD_X + 17, CARD_Y + 7);
-  doc.text("GABONAISE", CARD_X + 17, CARD_Y + 11);
-
-  // "Secteur Privé" et "Carte d'Assurance Maladie" en grand et centré
-  doc.setFontSize(5.5);
-  doc.setFont("helvetica", "bold");
-  doc.text("Secteur Privé", CARD_X + CARD.w / 2, CARD_Y + 17.5, { align: "center" });
-  
-  doc.setFontSize(5);
-  doc.text("Carte d'Assurance Maladie", CARD_X + CARD.w / 2, CARD_Y + 22.5, {
-    align: "center",
-  });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Puce (chip) vectorielle avec lignes internes plus détaillées
-  // ─────────────────────────────────────────────────────────────────────────
-  const chipX = CARD_X + 12;
-  const chipY = CARD_Y + 22;
-  const chipW = 14;
-  const chipH = 11;
-  doc.setFillColor(239, 211, 137);
-  doc.setDrawColor(26, 26, 26);
-  doc.setLineWidth(0.15);
-  doc.roundedRect(chipX, chipY, chipW, chipH, 1.5, 1.5, "FD");
-
-  // Lignes internes puce - motif de circuit intégré
-  doc.setLineWidth(0.1);
-  doc.setDrawColor(26, 26, 26);
-  
-  // Grille 3x3
-  const cellW = chipW / 3;
-  const cellH = chipH / 3;
-  
-  // Lignes verticales
-  doc.line(chipX + cellW, chipY + 1, chipX + cellW, chipY + chipH - 1);
-  doc.line(chipX + 2 * cellW, chipY + 1, chipX + 2 * cellW, chipY + chipH - 1);
-  
-  // Lignes horizontales
-  doc.line(chipX + 1, chipY + cellH, chipX + chipW - 1, chipY + cellH);
-  doc.line(chipX + 1, chipY + 2 * cellH, chipX + chipW - 1, chipY + 2 * cellH);
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Numéro de carte - en grand et gras
-  // ─────────────────────────────────────────────────────────────────────────
-  doc.setFontSize(5.5);
-  doc.setFont("courier", "bold");
-  doc.setTextColor(0, 0, 0);
-  doc.text(data.numero, CARD_X + CARD.w / 2, CARD_Y + 28, { align: "center" });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Champs identité (labels + valeurs) - en grand et gras
-  // ─────────────────────────────────────────────────────────────────────────
-  const labelStartX = CARD_X + 12;
-  const labelStartY = CARD_Y + 36;
-  const valueOffsetY = 3.5;
-  const lineSpacing = 8;
-
-  // Nom
-  doc.setFontSize(3.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(0, 0, 0);
-  doc.text("Nom", labelStartX, labelStartY);
-  
-  doc.setFontSize(5);
-  doc.text(data.nom, labelStartX, labelStartY + valueOffsetY);
-
-  // Prénoms
-  doc.setFontSize(3.5);
-  doc.text("Prénoms", labelStartX, labelStartY + lineSpacing);
-  
-  doc.setFontSize(5);
-  doc.text(data.prenoms, labelStartX, labelStartY + lineSpacing + valueOffsetY);
-
-  // Date de naissance
-  doc.setFontSize(3.5);
-  doc.text("Date de naissance", labelStartX, labelStartY + 2 * lineSpacing);
-  
-  doc.setFontSize(5);
-  doc.text(data.dateNaissance, labelStartX, labelStartY + 2 * lineSpacing + valueOffsetY);
-
-  // Sexe (à droite)
-  const sexeX = CARD_X + 50;
-  const sexeY = labelStartY + lineSpacing + 4;
-  
-  doc.setFontSize(3.5);
-  doc.text("Sexe", sexeX, sexeY);
-  
-  doc.setFontSize(5);
-  doc.text(data.sexe || "M", sexeX, sexeY + valueOffsetY);
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Photo titulaire (circulaire)
-  // ─────────────────────────────────────────────────────────────────────────
   if (photoData) {
-    const photoSize = 15;
-    const photoX = CARD_X + CARD.w - photoSize - 7;
-    const photoY = CARD_Y + 32;
-    const photoCenterX = photoX + photoSize / 2;
-    const photoCenterY = photoY + photoSize / 2;
-    const photoRadius = photoSize / 2;
-    
-    // Créer un clipping circulaire
-    doc.circle(photoCenterX, photoCenterY, photoRadius, "S");
-    
-    // Ajouter l'image (elle sera clippée par le cercle visuellement)
-    // Note: jsPDF ne supporte pas le vrai clipping, donc on ajoute juste l'image
+    const photoSize = 18;
+    const photoX = CARD_X + CARD.w - photoSize - 6;
+    const photoY = CARD_Y + 31;
     doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
-    
-    // Dessiner le cercle par-dessus pour le contour
-    doc.setLineWidth(0.3);
-    doc.setDrawColor(200, 200, 200);
-    doc.circle(photoCenterX, photoCenterY, photoRadius);
   }
 
   // Cadre carte

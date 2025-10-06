@@ -312,7 +312,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
         style={{ aspectRatio: '1050 / 650' }}
       >
         <div 
-          className="w-full h-full [&>svg]:w-full [&>svg]:h-auto"
+          className="w-full h-full cnamgs-card-svg [&>svg]:w-full [&>svg]:h-auto"
           dangerouslySetInnerHTML={{ __html: svgContent }}
         />
       </div>
