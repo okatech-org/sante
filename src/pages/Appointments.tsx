@@ -288,84 +288,91 @@ export default function Appointments() {
   return (
     <div className="flex min-h-screen bg-background">
       <PatientSidebar />
-      <main className="flex-1 md:ml-0 pt-20 md:pt-0">
-        <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <main className="flex-1 md:ml-0 pt-20 md:pt-6 p-4 lg:p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">Mes Rendez-vous</h1>
-              <p className="text-gray-400 mt-1 text-sm sm:text-base">Gérez vos consultations médicales</p>
+          <div className="rounded-2xl bg-card border border-border shadow-sm p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Mes Rendez-vous</h1>
+                <p className="text-muted-foreground mt-1">Gérez vos consultations médicales</p>
+              </div>
+              <Button 
+                size="default"
+                onClick={() => setBookingModalOpen(true)} 
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                Nouveau RDV
+              </Button>
             </div>
-            <Button 
-              size="sm" 
-              onClick={() => setBookingModalOpen(true)} 
-              className="bg-[#00d4ff] hover:bg-[#00b8e6] text-white w-full sm:w-auto"
-            >
-              <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="sm:inline">Nouveau RDV</span>
-            </Button>
+
+            {/* Statistics */}
+            <div className="flex flex-wrap gap-3">
+              <Badge variant="secondary" className="px-4 py-2 bg-cyan-100 text-cyan-700 hover:bg-cyan-200 border-0">
+                <Calendar className="mr-2 h-4 w-4" />
+                {upcomingAppointments.length} à venir
+              </Badge>
+              <Badge variant="secondary" className="px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 border-0">
+                <Calendar className="mr-2 h-4 w-4" />
+                {pastAppointments.length} passés
+              </Badge>
+              <Badge variant="secondary" className="px-4 py-2 bg-pink-100 text-pink-700 hover:bg-pink-200 border-0">
+                <X className="mr-2 h-4 w-4" />
+                {cancelledAppointments.length} annulés
+              </Badge>
+            </div>
           </div>
 
-          {/* Statistics */}
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
-              {upcomingAppointments.length} à venir
-            </Badge>
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#0088ff]/20 text-[#0088ff] border-[#0088ff]/30">
-              {pastAppointments.length} passés
-            </Badge>
-            <Badge variant="outline" className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm bg-[#ff0088]/20 text-[#ff0088] border-[#ff0088]/30">
-              {cancelledAppointments.length} annulés
-            </Badge>
-          </div>
-        </div>
+          {/* Tabs & Filters */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <div className="rounded-2xl bg-card border border-border shadow-sm p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <TabsList className="bg-muted w-full sm:w-auto">
+                  <TabsTrigger value="upcoming" className="relative flex-1 sm:flex-none data-[state=active]:bg-background data-[state=active]:text-foreground">
+                    À venir
+                    {upcomingAppointments.length > 0 && (
+                      <Badge className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-cyan-500 text-white hover:bg-cyan-600">
+                        {upcomingAppointments.length}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger value="past" className="flex-1 sm:flex-none data-[state=active]:bg-background data-[state=active]:text-foreground">
+                    Passés
+                  </TabsTrigger>
+                  <TabsTrigger value="cancelled" className="flex-1 sm:flex-none data-[state=active]:bg-background data-[state=active]:text-foreground">
+                    Annulés
+                  </TabsTrigger>
+                </TabsList>
 
-        {/* Tabs & Filters */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-              <TabsList className="bg-white/5 w-full sm:w-auto">
-                <TabsTrigger value="upcoming" className="relative flex-1 sm:flex-none data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff] text-xs sm:text-sm">
-                  À venir
-                  {upcomingAppointments.length > 0 && (
-                    <Badge className="ml-1 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-[10px] sm:text-xs bg-[#00d4ff]">
-                      {upcomingAppointments.length}
-                    </Badge>
-                  )}
-                </TabsTrigger>
-                <TabsTrigger value="past" className="flex-1 sm:flex-none data-[state=active]:bg-[#0088ff]/20 data-[state=active]:text-[#0088ff] text-xs sm:text-sm">Passés</TabsTrigger>
-                <TabsTrigger value="cancelled" className="flex-1 sm:flex-none data-[state=active]:bg-[#ff0088]/20 data-[state=active]:text-[#ff0088] text-xs sm:text-sm">Annulés</TabsTrigger>
-              </TabsList>
-
-              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-white/5 border-white/10 text-white text-xs sm:text-sm">
-                    <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les types</SelectItem>
-                    <SelectItem value="consultation">Consultation</SelectItem>
-                    <SelectItem value="telemedicine">Téléconsultation</SelectItem>
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                  <Select value={typeFilter} onValueChange={setTypeFilter}>
+                    <SelectTrigger className="flex-1 sm:w-[180px] bg-background border-input">
+                      <Filter className="h-4 w-4 mr-2" />
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les types</SelectItem>
+                      <SelectItem value="consultation">Consultation</SelectItem>
+                      <SelectItem value="telemedicine">Téléconsultation</SelectItem>
                     <SelectItem value="exam">Examen</SelectItem>
                   </SelectContent>
                 </Select>
 
-                <Select value={providerFilter} onValueChange={setProviderFilter}>
-                  <SelectTrigger className="flex-1 sm:w-[150px] lg:w-[180px] bg-white/5 border-white/10 text-white text-xs sm:text-sm">
-                    <SelectValue placeholder="Praticien" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les praticiens</SelectItem>
-                    <SelectItem value="kombila">Dr KOMBILA Pierre</SelectItem>
-                    <SelectItem value="afonso">Dr AFONSO</SelectItem>
-                    <SelectItem value="biolab">BIOLAB Libreville</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Select value={providerFilter} onValueChange={setProviderFilter}>
+                    <SelectTrigger className="flex-1 sm:w-[180px] bg-background border-input">
+                      <SelectValue placeholder="Praticien" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les praticiens</SelectItem>
+                      <SelectItem value="kombila">Dr KOMBILA Pierre</SelectItem>
+                      <SelectItem value="afonso">Dr AFONSO</SelectItem>
+                      <SelectItem value="biolab">BIOLAB Libreville</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
-          </div>
 
           <TabsContent value="upcoming" className="space-y-6">
             {renderUpcoming()}
