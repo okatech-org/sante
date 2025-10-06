@@ -4,18 +4,18 @@
       <ellipse cx="847" cy="447" rx="130" ry="160"/>
     </clipPath>
     
-    <!-- Dégradés pour la puce -->
+    <!-- Dégradés pour la puce bronze/or -->
     <linearGradient id="chipGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#f4e4b3;stop-opacity:1" />
-      <stop offset="45%" style="stop-color:#d4af37;stop-opacity:1" />
-      <stop offset="55%" style="stop-color:#b8941e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8b7220;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#d4a76a;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#cd7f32;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#b87333;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5a2b;stop-opacity:1" />
     </linearGradient>
     
     <linearGradient id="chipContactGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#3a3420;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#554d2e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2a2418;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#3d2f1f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6b4423;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d1f14;stop-opacity:1" />
     </linearGradient>
     
     <filter id="chipShadow">
@@ -49,37 +49,41 @@
   <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial;fill:#111">Secteur Privé</text>
   <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 34px Arial;fill:#111">Carte d'Assurance Maladie</text>
 
-  <!-- puce SIM dorée -->
+  <!-- puce bronze/or avec bords arrondis -->
   <g id="chip" transform="translate(117,231)" filter="url(#chipShadow)">
-    <!-- Fond principal avec dégradé doré -->
-    <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="url(#chipGradient)" stroke="#1a1a1a" stroke-width="1.5"/>
+    <!-- Fond principal avec dégradé bronze/or et bords très arrondis -->
+    <rect x="0" y="0" width="162" height="125" rx="32" ry="32" fill="url(#chipGradient)" stroke="#5a3e28" stroke-width="1.5"/>
     
     <!-- Reflet supérieur -->
-    <rect x="8" y="8" width="146" height="25" rx="12" ry="12" fill="#ffffff" opacity="0.25"/>
+    <rect x="8" y="8" width="146" height="25" rx="18" ry="18" fill="#ffffff" opacity="0.2"/>
     
     <!-- Cadre intérieur avec dégradé -->
-    <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="none" stroke="url(#chipContactGradient)" stroke-width="1.8"/>
+    <rect x="18" y="18" width="126" height="89" rx="16" ry="16" fill="none" stroke="url(#chipContactGradient)" stroke-width="1.8"/>
     
     <!-- Zone centrale des contacts -->
-    <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="url(#chipContactGradient)" stroke="#1a1a1a" stroke-width="1.2"/>
+    <rect x="64" y="34" width="34" height="58" rx="8" ry="8" fill="url(#chipContactGradient)" stroke="#5a3e28" stroke-width="1.2"/>
     
-    <!-- Contacts métalliques -->
-    <g stroke="url(#chipContactGradient)" stroke-width="1.5" fill="none">
-      <path d="M81,0 v34" stroke="#3a3420" stroke-width="1.8"/>
-      <path d="M81,92 v33" stroke="#3a3420" stroke-width="1.8"/>
-      <path d="M0,62.5 h18" stroke="#3a3420" stroke-width="1.8"/>
-      <path d="M144,62.5 h18" stroke="#3a3420" stroke-width="1.8"/>
-      <path d="M64,34 h-28 a10,10 0 0 0 -10,10 v18" stroke="#3a3420" stroke-width="1.6"/>
-      <path d="M98,34 h28 a10,10 0 0 1 10,10 v18" stroke="#3a3420" stroke-width="1.6"/>
-      <path d="M64,92 h-28 a10,10 0 0 1 -10,-10 v-18" stroke="#3a3420" stroke-width="1.6"/>
-      <path d="M98,92 h28 a10,10 0 0 0 10,-10 v-18" stroke="#3a3420" stroke-width="1.6"/>
+    <!-- Contacts métalliques horizontaux -->
+    <g stroke="#6b4423" stroke-width="2.5" fill="none" opacity="0.9">
+      <!-- Lignes horizontales caractéristiques -->
+      <line x1="26" y1="42" x2="62" y2="42"/>
+      <line x1="26" y1="52" x2="62" y2="52"/>
+      <line x1="26" y1="62" x2="62" y2="62"/>
+      <line x1="26" y1="72" x2="62" y2="72"/>
+      <line x1="26" y1="82" x2="62" y2="82"/>
+      
+      <line x1="100" y1="42" x2="136" y2="42"/>
+      <line x1="100" y1="52" x2="136" y2="52"/>
+      <line x1="100" y1="62" x2="136" y2="62"/>
+      <line x1="100" y1="72" x2="136" y2="72"/>
+      <line x1="100" y1="82" x2="136" y2="82"/>
     </g>
     
     <!-- Micro-reflets sur les contacts -->
-    <g fill="#ffffff" opacity="0.15">
-      <rect x="66" y="36" width="30" height="2" rx="1"/>
-      <rect x="66" y="45" width="30" height="1.5" rx="0.75"/>
-      <rect x="66" y="52" width="30" height="1.5" rx="0.75"/>
+    <g fill="#d4a76a" opacity="0.3">
+      <rect x="66" y="36" width="30" height="1.5" rx="0.75"/>
+      <rect x="66" y="46" width="30" height="1.5" rx="0.75"/>
+      <rect x="66" y="56" width="30" height="1.5" rx="0.75"/>
     </g>
   </g>
 
