@@ -227,99 +227,151 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   
   const handleExportPDF = async () => {
     try {
-      if (!svgContainerRef.current) {
-        toast.error("Erreur lors de l'export PDF");
-        return;
-      }
+      toast.info("Génération de l'attestation...");
 
-      const svgElement = svgContainerRef.current.querySelector('svg');
-      if (!svgElement) {
-        toast.error("SVG non trouvé");
-        return;
-      }
+      // Créer le PDF au format A4 (210mm × 297mm)
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
 
-      // Créer un canvas temporaire pour la carte
-      const canvas = document.createElement('canvas');
-      const cardWidthPx = 1050;
-      const cardHeightPx = 650;
-      canvas.width = cardWidthPx;
-      canvas.height = cardHeightPx;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      // Dimensions A4 en mm
+      const pageWidth = 210;
+      const pageHeight = 297;
 
-      // Convertir SVG en image
-      const svgData = new XMLSerializer().serializeToString(svgElement);
-      const img = new Image();
-      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(svgBlob);
+      // Ajouter le titre
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.text('RÉPUBLIQUE GABONAISE', pageWidth / 2, 30, { align: 'center' });
+      
+      doc.setFontSize(18);
+      doc.text('ATTESTATION D\'ASSURANCE MALADIE', pageWidth / 2, 45, { align: 'center' });
+      
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'normal');
+      doc.text('CNAMGS', pageWidth / 2, 55, { align: 'center' });
 
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0);
-        URL.revokeObjectURL(url);
+      // Dimensions standard d'une carte bancaire : 85.6mm × 53.98mm
+      const cardWidthMm = 85.6;
+      const cardHeightMm = 53.98;
+      
+      // Centrer la carte horizontalement et la positionner après le titre
+      const cardX = (pageWidth - cardWidthMm) / 2;
+      const cardY = 80;
 
-        // Créer le PDF au format A4 (210mm × 297mm)
-        const doc = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
+      // Préparer les données
+      const fullNameParts = profile?.full_name?.split(' ') || [];
+      const nom = fullNameParts.length > 0 ? fullNameParts[fullNameParts.length - 1].toUpperCase() : 'NOM';
+      const prenoms = fullNameParts.length > 1 ? fullNameParts.slice(0, -1).join(' ').toUpperCase() : 'PRENOMS';
+      const dateNaissance = profile?.birth_date 
+        ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr })
+        : '01/01/1990';
+      const sexe = profile?.gender === 'male' ? 'M' : profile?.gender === 'female' ? 'F' : 'M';
+      const numeroCard = profile?.cnamgs_number || '000-000-000-0';
+
+      // Fond de la carte
+      doc.setFillColor(233, 242, 233);
+      doc.roundedRect(cardX, cardY, cardWidthMm, cardHeightMm, 2, 2, 'F');
+
+      // Bande verte
+      doc.setFillColor(42, 168, 74);
+      doc.rect(cardX, cardY + 13.4, cardWidthMm, 0.65, 'F');
+
+      // Charger et ajouter les logos
+      const loadAndAddImage = async (src: string, x: number, y: number, w: number, h: number) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0);
+              const imgData = canvas.toDataURL('image/png');
+              doc.addImage(imgData, 'PNG', cardX + x, cardY + y, w, h);
+            }
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = src;
         });
-
-        // Dimensions A4 en mm
-        const pageWidth = 210;
-        const pageHeight = 297;
-
-        // Ajouter le titre
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text('RÉPUBLIQUE GABONAISE', pageWidth / 2, 30, { align: 'center' });
-        
-        doc.setFontSize(18);
-        doc.text('ATTESTATION D\'ASSURANCE MALADIE', pageWidth / 2, 45, { align: 'center' });
-        
-        doc.setFontSize(16);
-        doc.setFont('helvetica', 'normal');
-        doc.text('CNAMGS', pageWidth / 2, 55, { align: 'center' });
-
-        // Dimensions standard d'une carte bancaire : 85.6mm × 53.98mm
-        const cardWidthMm = 85.6;
-        const cardHeightMm = 53.98;
-        
-        // Centrer la carte horizontalement et la positionner après le titre
-        const cardX = (pageWidth - cardWidthMm) / 2;
-        const cardY = 80;
-
-        // Ajouter la carte au PDF
-        const imgData = canvas.toDataURL('image/png');
-        doc.addImage(imgData, 'PNG', cardX, cardY, cardWidthMm, cardHeightMm);
-
-        // Ajouter un cadre autour de la carte
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(200, 200, 200);
-        doc.rect(cardX, cardY, cardWidthMm, cardHeightMm);
-
-        // Ajouter des informations en bas
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'italic');
-        const footerY = cardY + cardHeightMm + 30;
-        doc.text('Cette attestation certifie que le titulaire bénéficie d\'une couverture', pageWidth / 2, footerY, { align: 'center' });
-        doc.text('d\'assurance maladie auprès de la CNAMGS.', pageWidth / 2, footerY + 5, { align: 'center' });
-        
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, pageWidth / 2, footerY + 15, { align: 'center' });
-
-        // Sauvegarder le PDF
-        const fileName = `attestation-cnamgs-${profile?.full_name?.replace(/\s+/g, '-') || 'patient'}.pdf`;
-        doc.save(fileName);
-
-        toast.success("Attestation CNAMGS téléchargée");
       };
 
-      img.onerror = () => {
-        toast.error("Erreur lors du chargement de l'image");
-      };
+      // Ajouter les logos
+      await loadAndAddImage('/emblem_gabon.png', 4.9, 2.8, 9.8, 9.8);
+      await loadAndAddImage('/cnamgs_logo.png', 49.7, 3.7, 32.6, 9);
 
-      img.src = url;
+      // Titres
+      doc.setFontSize(3);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(17, 17, 17);
+      doc.text('RÉPUBLIQUE', cardX + 15.5, cardY + 7.3);
+      doc.text('GABONAISE', cardX + 15.5, cardY + 10.6);
+
+      doc.setFontSize(2.8);
+      doc.text('Secteur Privé', cardX + 57, cardY + 17.1, { align: 'center' });
+      doc.text('Carte d\'Assurance Maladie', cardX + 57, cardY + 20.5, { align: 'center' });
+
+      // Dessiner la puce
+      const chipX = cardX + 9.9;
+      const chipY = cardY + 19.1;
+      doc.setFillColor(239, 211, 137);
+      doc.setDrawColor(26, 26, 26);
+      doc.setLineWidth(0.12);
+      doc.roundedRect(chipX, chipY, 13.2, 10.2, 1.5, 1.5, 'FD');
+
+      // Numéro de carte
+      doc.setFontSize(3.2);
+      doc.setFont('courier', 'bold');
+      doc.text(numeroCard, cardX + 39.5, cardY + 24.4);
+
+      // Labels et valeurs
+      doc.setFontSize(2.1);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Nom', cardX + 8.1, cardY + 35.2);
+      doc.text('Prénoms', cardX + 8.1, cardY + 41.9);
+      doc.text('Date de naissance', cardX + 8, cardY + 48.6);
+      doc.text('Sexe', cardX + 44.7, cardY + 43.5);
+
+      // Valeurs
+      doc.setFontSize(2.4);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text(nom, cardX + 8.1, cardY + 38.1);
+      doc.text(prenoms, cardX + 8.1, cardY + 44.8);
+      doc.text(dateNaissance, cardX + 8.1, cardY + 51.5);
+      doc.text(sexe, cardX + 44.7, cardY + 46.4);
+
+      // Photo (si disponible)
+      if (profile?.avatar_url) {
+        await loadAndAddImage(profile.avatar_url, 59.5, 26.6, 11.8, 11.8);
+      }
+
+      // Cadre autour de la carte
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(cardX, cardY, cardWidthMm, cardHeightMm);
+
+      // Ajouter des informations en bas
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(0, 0, 0);
+      const footerY = cardY + cardHeightMm + 30;
+      doc.text('Cette attestation certifie que le titulaire bénéficie d\'une couverture', pageWidth / 2, footerY, { align: 'center' });
+      doc.text('d\'assurance maladie auprès de la CNAMGS.', pageWidth / 2, footerY + 5, { align: 'center' });
+      
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Document généré le ${new Date().toLocaleDateString('fr-FR')}`, pageWidth / 2, footerY + 15, { align: 'center' });
+
+      // Sauvegarder le PDF
+      const fileName = `attestation-cnamgs-${profile?.full_name?.replace(/\s+/g, '-') || 'patient'}.pdf`;
+      doc.save(fileName);
+
+      toast.success("Attestation CNAMGS téléchargée");
     } catch (error) {
       console.error("Error in PDF export:", error);
       toast.error("Erreur lors de l'export PDF");
