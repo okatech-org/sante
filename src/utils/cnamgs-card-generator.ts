@@ -5,18 +5,18 @@ export const CARD_TEXT_POSITIONS = {
   
   // Numéro de carte (centré, en haut)
   numero_carte: {
-    x: 645,      // Position horizontale (centré sur la partie droite)
-    y: 225,      // Position verticale
-    fontSize: 38,
+    x: 700,      // Position horizontale (centré)
+    y: 300,      // Position verticale
+    fontSize: 28,
     fontWeight: 'bold',
     align: 'center' as CanvasTextAlign
   },
   
   // Nom (aligné avec le label "Nom" du template)
   nom: {
-    x: 76,       // Position horizontale (aligné à gauche)
-    y: 400,      // Position verticale - AJUSTER pour aligner avec le label "Nom"
-    fontSize: 34,
+    x: 120,      // Position horizontale (aligné à gauche)
+    y: 472,      // Position verticale - aligné avec le champ du template
+    fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign,
     maxLength: 28
@@ -24,9 +24,9 @@ export const CARD_TEXT_POSITIONS = {
   
   // Prénoms (aligné avec le label "Prénoms" du template)
   prenoms: {
-    x: 76,       // Position horizontale (aligné à gauche)
-    y: 512,      // Position verticale - AJUSTER pour aligner avec le label "Prénoms"
-    fontSize: 34,
+    x: 120,      // Position horizontale (aligné à gauche)
+    y: 564,      // Position verticale - aligné avec le champ du template
+    fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign,
     maxLength: 34
@@ -34,28 +34,28 @@ export const CARD_TEXT_POSITIONS = {
   
   // Date de naissance
   date_naissance: {
-    x: 76,       // Position horizontale
-    y: 638,      // Position verticale - AJUSTER pour aligner avec le label
-    fontSize: 32,
+    x: 120,      // Position horizontale
+    y: 656,      // Position verticale - aligné avec le champ du template
+    fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign
   },
   
   // Sexe
   sexe: {
-    x: 632,      // Position horizontale
-    y: 575,      // Position verticale - AJUSTER pour aligner avec le label
-    fontSize: 38,
+    x: 603,      // Position horizontale
+    y: 552,      // Position verticale - aligné avec le champ du template
+    fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign
   },
   
-  // Photo (forme ovale à droite)
+  // Photo (cercle à droite)
   photo: {
-    centerX: 1000,
-    centerY: 405,
-    radiusX: 140,
-    radiusY: 165
+    centerX: 865,
+    centerY: 435,
+    radiusX: 145,
+    radiusY: 145
   }
 };
 

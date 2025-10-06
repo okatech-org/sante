@@ -1,59 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="650" viewBox="0 0 1050 650">
-  <!-- Background -->
-  <rect width="1050" height="650" fill="#F5F5DC"/>
-  
-  <!-- Green separator top -->
-  <rect x="40" y="150" width="970" height="6" fill="#28A745"/>
-  
-  <!-- Coat of Arms placeholder -->
-  <rect x="64" y="42" width="120" height="86" fill="#FFFFFF" stroke="#000000" stroke-width="1"/>
-  <text x="124" y="90" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">ARMOIRIES</text>
-  
-  <!-- République Gabonaise text -->
-  <text x="280" y="80" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">RÉPUBLIQUE</text>
-  <text x="280" y="120" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">GABONAISE</text>
-  
-  <!-- Logo CNAMGS placeholder -->
-  <rect x="740" y="42" width="250" height="86" fill="#FFFFFF" stroke="#28A745" stroke-width="2"/>
-  <text x="865" y="90" text-anchor="middle" font-family="Arial" font-size="36" font-weight="bold" fill="#28A745">CNAMGS</text>
-  
-  <!-- Secteur Privé title -->
-  <text x="525" y="245" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#000000">Secteur Privé</text>
-  <text x="525" y="285" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold" fill="#000000">Carte d'Assurance Maladie</text>
-  
-  <!-- Card Number -->
-  <rect x="380" y="130" width="320" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
-  <text id="card_number" x="540" y="160" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#000000">[NUM_CARTE]</text>
-  
-  <!-- Chip -->
-  <rect x="120" y="200" width="150" height="110" fill="#FFD700" stroke="#000000" stroke-width="2" rx="8"/>
-  <rect x="135" y="215" width="50" height="40" fill="#C0C0C0" rx="4"/>
-  <rect x="195" y="215" width="60" height="40" fill="#C0C0C0" rx="4"/>
-  <rect x="135" y="260" width="120" height="40" fill="#C0C0C0" rx="4"/>
-  
-  <!-- Nom field -->
-  <text x="120" y="345" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Nom</text>
-  <rect x="120" y="352" width="430" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
-  <text id="field_nom" x="335" y="382" text-anchor="middle" font-family="Arial" font-size="28" font-weight="bold" fill="#000000">[NOM_FAMILLE]</text>
-  
-  <!-- Prénoms field -->
-  <text x="120" y="429" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Prénoms</text>
-  <rect x="120" y="436" width="430" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
-  <text id="field_prenoms" x="335" y="466" text-anchor="middle" font-family="Arial" font-size="28" fill="#000000">[PRENOMS]</text>
-  
-  <!-- Date de naissance field -->
-  <text x="120" y="513" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Date de naissance</text>
-  <rect x="120" y="520" width="220" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
-  <text id="field_dob" x="230" y="550" text-anchor="middle" font-family="Arial" font-size="24" fill="#000000">[JJ/MM/AAAA]</text>
-  
-  <!-- Sexe field -->
-  <text x="380" y="513" font-family="Arial" font-size="18" font-weight="bold" fill="#000000">Sexe</text>
-  <rect x="380" y="520" width="80" height="48" fill="#FFFFFF" stroke="#000000" stroke-width="1" rx="4"/>
-  <text id="field_sex" x="420" y="550" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold" fill="#000000">[M/F]</text>
-  
-  <!-- Photo placeholder -->
-  <rect x="720" y="320" width="200" height="250" fill="#FFFFFF" stroke="#000000" stroke-width="2" rx="8"/>
-  <ellipse cx="820" cy="400" rx="60" ry="70" fill="#CCCCCC"/>
-  <path d="M 760 500 Q 820 450 880 500" fill="#CCCCCC"/>
-  <text x="820" y="480" text-anchor="middle" font-family="Arial" font-size="14" fill="#666">PHOTO</text>
+<svg id="cnamgs-card" xmlns="http://www.w3.org/2000/svg" width="1050" height="650" viewBox="0 0 1050 650">
+  <defs>
+    <radialGradient id="photoGloss" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dcdcdc"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Fond et séparateur -->
+  <rect id="bg" x="0" y="0" width="1050" height="650" rx="28" ry="28" fill="#e9f2e9"/>
+  <rect id="sepTop" x="0" y="165" width="1050" height="8" fill="#2aa84a"/>
+
+  <!-- Logos (à remplacer si besoin) -->
+  <image id="img-coat-of-arms" x="48" y="26" width="120" height="120" href="" preserveAspectRatio="xMidYMid meet"/>
+  <image id="img-cnamgs-logo" x="610" y="22" width="400" height="110" href="" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Titres -->
+  <text id="txt-republique" x="190" y="70" style="font:700 36px Arial; fill:#111">RÉPUBLIQUE</text>
+  <text id="txt-gabonaise"  x="190" y="110" style="font:700 36px Arial; fill:#111">GABONAISE</text>
+  <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial; fill:#111">Secteur Privé</text>
+  <text id="txt-carte"   x="700" y="252" text-anchor="middle" style="font:700 34px Arial; fill:#111">Carte d'Assurance Maladie</text>
+
+  <!-- Puce (groupe) -->
+  <g id="chip" transform="translate(126,258)">
+    <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="#efd389" stroke="#1a1a1a" stroke-width="1.5"/>
+    <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="none" stroke="#2a2821" stroke-width="1.5"/>
+    <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="none" stroke="#2a2821" stroke-width="1.5"/>
+    <g stroke="#2a2821" stroke-width="1.3" fill="none">
+      <path d="M81,0 v34"/><path d="M81,92 v33"/><path d="M0,62.5 h18"/><path d="M144,62.5 h18"/>
+      <path d="M64,34 h-28 a10,10 0 0 0 -10,10 v18"/>
+      <path d="M98,34 h28 a10,10 0 0 1 10,10 v18"/>
+      <path d="M64,92 h-28 a10,10 0 0 1 -10,-10 v-18"/>
+      <path d="M98,92 h28 a10,10 0 0 0 10,-10 v-18"/>
+    </g>
+  </g>
+
+  <!-- Zone PHOTO (réservée) -->
+  <circle id="photo-placeholder" cx="865" cy="435" r="145" fill="url(#photoGloss)"/>
+
+  <!-- Libellés -->
+  <text x="120" y="430" style="font:700 26px Arial; fill:#111">Nom</text>
+  <text x="120" y="522" style="font:700 26px Arial; fill:#111">Prénoms</text>
+  <text x="120" y="614" style="font:700 26px Arial; fill:#111">Date de naissance</text>
+  <text x="565" y="510" style="font:700 26px Arial; fill:#111">Sexe</text>
+
+  <!-- CHAMPS À REMPLIR PAR L'APP -->
+  <text id="field-name"         x="120" y="472" style="font:700 30px Arial; fill:#000"></text>
+  <text id="field-given-names"  x="120" y="564" style="font:700 30px Arial; fill:#000"></text>
+  <text id="field-birthdate"    x="120" y="656" style="font:700 30px Arial; fill:#000"></text>
+  <text id="field-sex"          x="603" y="552" style="font:700 30px Arial; fill:#000"></text>
+  <text id="field-card-number"  x="700" y="300" text-anchor="middle" style="font:700 28px 'Courier New', monospace; fill:#111"></text>
 </svg>
