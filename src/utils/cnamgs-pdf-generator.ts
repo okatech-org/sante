@@ -162,6 +162,12 @@ const captureSVGAsImage = async (): Promise<string> => {
   // Clone the SVG to avoid modifying the original
   const clonedSvg = svgElement.cloneNode(true) as SVGElement;
   
+  // Masquer l'emblème des armoiries
+  const emblemImage = clonedSvg.querySelector('#img-coat-of-arms');
+  if (emblemImage) {
+    emblemImage.setAttribute('opacity', '0');
+  }
+  
   // Masquer la photo d'identité dans le SVG cloné
   const photoImage = clonedSvg.querySelector('image[href*="placeholder"]') || 
                      clonedSvg.querySelector('image[href*="photo"]') ||
