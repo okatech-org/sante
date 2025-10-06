@@ -92,6 +92,10 @@ export const generateCNAMGSCard = async (
     nomField.x + nomField.width / 2,
     nomField.y + nomField.height / 2
   );
+  console.log('generateCNAMGSCard: Nom drawn:', nomText, 'at', {
+    x: nomField.x + nomField.width / 2,
+    y: nomField.y + nomField.height / 2
+  });
 
   // 5. Dessiner les prénoms
   const prenomsField = CARD_FIELDS.fields.field_prenoms_rect.px;
@@ -102,6 +106,10 @@ export const generateCNAMGSCard = async (
     prenomsField.x + prenomsField.width / 2,
     prenomsField.y + prenomsField.height / 2
   );
+  console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText, 'at', {
+    x: prenomsField.x + prenomsField.width / 2,
+    y: prenomsField.y + prenomsField.height / 2
+  });
 
   // 6. Dessiner la date de naissance
   const dobField = CARD_FIELDS.fields.field_dob_rect.px;
@@ -111,6 +119,10 @@ export const generateCNAMGSCard = async (
     dobField.x + dobField.width / 2,
     dobField.y + dobField.height / 2
   );
+  console.log('generateCNAMGSCard: Date drawn:', data.date_naissance, 'at', {
+    x: dobField.x + dobField.width / 2,
+    y: dobField.y + dobField.height / 2
+  });
 
   // 7. Dessiner le sexe
   const sexField = CARD_FIELDS.fields.field_sex_rect.px;
@@ -120,15 +132,21 @@ export const generateCNAMGSCard = async (
     sexField.x + sexField.width / 2,
     sexField.y + sexField.height / 2
   );
+  console.log('generateCNAMGSCard: Sexe drawn:', data.sexe, 'at', {
+    x: sexField.x + sexField.width / 2,
+    y: sexField.y + sexField.height / 2
+  });
 
   // 8. Ajouter la photo si disponible
   if (data.photo_url) {
+    console.log('generateCNAMGSCard: Loading photo from:', data.photo_url);
     try {
       const photoImg = new Image();
       photoImg.crossOrigin = 'anonymous';
       
       await new Promise<void>((resolve, reject) => {
         photoImg.onload = () => {
+          console.log('generateCNAMGSCard: Photo loaded successfully');
           const photoField = CARD_FIELDS.fields.photo.px;
           
           // Dessiner la photo en respectant le ratio et en remplissant la zone
@@ -157,15 +175,21 @@ export const generateCNAMGSCard = async (
           );
           
           ctx.restore();
+          console.log('generateCNAMGSCard: Photo drawn successfully');
           resolve();
         };
-        photoImg.onerror = () => resolve(); // Continue même si la photo échoue
+        photoImg.onerror = (error) => {
+          console.error('generateCNAMGSCard: Error loading photo:', error);
+          resolve(); // Continue même si la photo échoue
+        };
+        
+        photoImg.src = data.photo_url;
       });
-      
-      photoImg.src = data.photo_url;
     } catch (error) {
-      console.error('generateCNAMGSCard: Error loading photo:', error);
+      console.error('generateCNAMGSCard: Error in photo loading:', error);
     }
+  } else {
+    console.log('generateCNAMGSCard: No photo URL provided');
   }
 
   console.log('generateCNAMGSCard: Card generation complete');
