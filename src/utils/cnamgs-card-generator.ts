@@ -69,70 +69,65 @@ export const generateCNAMGSCard = async (
   ctx.fillStyle = '#000000';
   ctx.textBaseline = 'middle';
 
-  // 3. Dessiner le numéro de carte (centré, rouge, taille plus grande)
-  const cardNumberField = CARD_FIELDS.fields.card_number.px;
-  ctx.font = 'bold 40px Arial, sans-serif';
+  // 3. Dessiner le numéro de carte (centré, rouge, sous le titre)
+  ctx.font = 'bold 36px Arial, sans-serif';
   ctx.fillStyle = '#DC2626'; // Rouge
   ctx.textAlign = 'center';
   const cardNumberText = data.numero_carte;
   ctx.fillText(
     cardNumberText,
-    cardNumberField.x + cardNumberField.width / 2,
-    cardNumberField.y + cardNumberField.height / 2 + 20 // Décalage vers le bas
+    canvas.width / 2,
+    340 // Position sous "Carte d'Assurance Maladie"
   );
   console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
   ctx.fillStyle = '#000000';
 
-  // 4. Dessiner le nom (aligné à gauche, rouge, taille plus grande)
-  const nomField = CARD_FIELDS.fields.field_nom_rect.px;
+  // 4. Dessiner le nom (aligné à gauche, rouge, sous le label "Nom")
   const nomText = data.nom.substring(0, 28).toUpperCase();
-  ctx.font = 'bold 36px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    nomText,
-    nomField.x,
-    nomField.y + nomField.height / 2 + 10 // Décalage vers le bas
-  );
-  console.log('generateCNAMGSCard: Nom drawn:', nomText);
-  ctx.fillStyle = '#000000';
-
-  // 5. Dessiner les prénoms (aligné à gauche, rouge, taille plus grande)
-  const prenomsField = CARD_FIELDS.fields.field_prenoms_rect.px;
-  const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
-  ctx.font = 'bold 36px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    prenomsText,
-    prenomsField.x,
-    prenomsField.y + prenomsField.height / 2 + 10 // Décalage vers le bas
-  );
-  console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
-  ctx.fillStyle = '#000000';
-
-  // 6. Dessiner la date de naissance (aligné à gauche, rouge, taille plus grande)
-  const dobField = CARD_FIELDS.fields.field_dob_rect.px;
   ctx.font = 'bold 32px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
+    nomText,
+    120,
+    530 // Position sous le label "Nom"
+  );
+  console.log('generateCNAMGSCard: Nom drawn:', nomText);
+  ctx.fillStyle = '#000000';
+
+  // 5. Dessiner les prénoms (aligné à gauche, rouge, sous le label "Prénoms")
+  const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
+  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
+  ctx.textAlign = 'left';
+  ctx.fillText(
+    prenomsText,
+    120,
+    640 // Position sous le label "Prénoms"
+  );
+  console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
+  ctx.fillStyle = '#000000';
+
+  // 6. Dessiner la date de naissance (aligné à gauche, rouge, sous le label "Date de naissance")
+  ctx.font = 'bold 28px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626';
+  ctx.textAlign = 'left';
+  ctx.fillText(
     data.date_naissance,
-    dobField.x,
-    dobField.y + dobField.height / 2 + 10 // Décalage vers le bas
+    120,
+    760 // Position sous le label "Date de naissance"
   );
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
   ctx.fillStyle = '#000000';
 
-  // 7. Dessiner le sexe (centré, rouge, taille plus grande)
-  const sexField = CARD_FIELDS.fields.field_sex_rect.px;
-  ctx.font = 'bold 40px Arial, sans-serif';
+  // 7. Dessiner le sexe (aligné à gauche, rouge, sous le label "Sexe")
+  ctx.font = 'bold 36px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
-  ctx.textAlign = 'center';
+  ctx.textAlign = 'left';
   ctx.fillText(
     data.sexe,
-    sexField.x + sexField.width / 2,
-    sexField.y + sexField.height / 2 + 10 // Décalage vers le bas
+    635,
+    705 // Position sous le label "Sexe"
   );
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
   ctx.fillStyle = '#000000';
