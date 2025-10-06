@@ -189,28 +189,29 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     setText('field-birthdate', data.naissance || '');
     setText('field-sex', (data.sexe || '').toUpperCase());
 
-    // 4) Photo dans le cercle
+    // 4) Photo dans l'ellipse
     if (data.photo) {
       const ph = $(esc('photo-placeholder'));
       if (ph) {
         const cx = +(ph.getAttribute('cx') || 847);
-        const cy = +(ph.getAttribute('cy') || 441);
-        const r = +(ph.getAttribute('r') || 145);
+        const cy = +(ph.getAttribute('cy') || 447);
+        const rx = +(ph.getAttribute('rx') || 130);
+        const ry = +(ph.getAttribute('ry') || 160);
 
         // Créer l'élément image SVG
         const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
         img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', data.photo);
-        img.setAttribute('x', String(cx - r));
-        img.setAttribute('y', String(cy - r));
-        img.setAttribute('width', String(2 * r));
-        img.setAttribute('height', String(2 * r));
+        img.setAttribute('x', String(cx - rx));
+        img.setAttribute('y', String(cy - ry));
+        img.setAttribute('width', String(2 * rx));
+        img.setAttribute('height', String(2 * ry));
         img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
         img.setAttribute('clip-path', 'url(#clip-photo)');
         
-        // Insérer l'image avant le cercle placeholder
+        // Insérer l'image avant l'ellipse placeholder
         ph.parentNode?.insertBefore(img, ph);
         
-        // Masquer le cercle placeholder
+        // Masquer l'ellipse placeholder
         ph.setAttribute('opacity', '0');
       }
     }
