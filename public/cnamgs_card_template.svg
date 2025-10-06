@@ -39,7 +39,7 @@
 
   <!-- logos -->
   <image id="img-coat-of-arms" x="37" y="15" width="138" height="138" href="/emblem_gabon.png" preserveAspectRatio="xMidYMid meet"/>
-  <image id="img-cnamgs-logo" x="610" y="45" width="400" height="110" href="/cnamgs_logo.png" preserveAspectRatio="xMidYMid meet"/>
+  <image id="img-cnamgs-logo" x="610" y="37" width="400" height="110" href="/cnamgs_logo.png" preserveAspectRatio="xMidYMid meet"/>
 
   <!-- titres en haut gauche -->
   <text id="txt-republique" x="198" y="80" style="font:700 30px Arial;fill:#111;letter-spacing:-1px">RÉPUBLIQUE</text>
