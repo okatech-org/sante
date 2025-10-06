@@ -280,9 +280,14 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       {/* SVG de la carte CNAMGS personnalisée */}
       <div 
         ref={svgContainerRef}
-        className="mb-3 rounded-lg overflow-hidden border border-border/50"
-        dangerouslySetInnerHTML={{ __html: svgContent }}
-      />
+        className="mb-3 rounded-lg overflow-hidden border border-border/50 w-full"
+        style={{ aspectRatio: '1050 / 650' }}
+      >
+        <div 
+          className="w-full h-full [&>svg]:w-full [&>svg]:h-auto"
+          dangerouslySetInnerHTML={{ __html: svgContent }}
+        />
+      </div>
 
       {/* Informations de couverture compactes */}
       <div className="grid grid-cols-2 gap-2 mb-3">
