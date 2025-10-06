@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CNAMGSCardProps {
   profile: any;
@@ -14,95 +15,69 @@ interface CNAMGSCardProps {
 
 export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     try {
-      const doc = new jsPDF();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      let yPos = 20;
+      // Generate card via edge function
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Session expirée");
+        return;
+      }
 
-      // Titre avec logo CNAMGS (simulé)
-      doc.setFontSize(24);
-      doc.setTextColor(0, 136, 255);
-      doc.text("CNAMGS", pageWidth / 2, yPos, { align: "center" });
-      yPos += 8;
-      doc.setFontSize(14);
-      doc.text("Caisse Nationale d'Assurance Maladie", pageWidth / 2, yPos, { align: "center" });
-      yPos += 6;
-      doc.text("et de Garantie Sociale", pageWidth / 2, yPos, { align: "center" });
-      yPos += 20;
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-cnamgs-card`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      // Carte d'assuré
-      doc.setFillColor(0, 136, 255);
-      doc.rect(20, yPos, pageWidth - 40, 80, 'F');
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération');
+      }
+
+      const result = await response.json();
       
-      yPos += 15;
-      doc.setFontSize(16);
-      doc.setTextColor(255, 255, 255);
-      doc.text("CARTE D'ASSURÉ SOCIAL", pageWidth / 2, yPos, { align: "center" });
+      // Convert SVG to PDF
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [1050, 650],
+      });
       
-      yPos += 15;
-      doc.setFontSize(12);
-      doc.text(`N° ${profile?.cnamgs_number || 'Non attribué'}`, pageWidth / 2, yPos, { align: "center" });
+      // Create a temporary canvas to render SVG
+      const canvas = document.createElement('canvas');
+      canvas.width = 1050;
+      canvas.height = 650;
+      const ctx = canvas.getContext('2d');
       
-      yPos += 15;
-      doc.setFontSize(14);
-      doc.text(profile?.full_name || 'N/A', pageWidth / 2, yPos, { align: "center" });
+      // Create image from SVG
+      const img = new Image();
+      const svgBlob = new Blob([result.svg], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
       
-      yPos += 10;
-      doc.setFontSize(10);
-      doc.text(`Né(e) le: ${profile?.birth_date ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr }) : 'N/A'}`, pageWidth / 2, yPos, { align: "center" });
+      img.onload = () => {
+        ctx?.drawImage(img, 0, 0);
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 0, 0, 1050, 650);
+        doc.save(`carte-cnamgs-${profile?.full_name || 'patient'}.pdf`);
+        URL.revokeObjectURL(url);
+        toast.success("Carte CNAMGS téléchargée");
+      };
       
-      yPos += 10;
-      doc.text(`Groupe sanguin: ${profile?.blood_group || 'N/A'}`, pageWidth / 2, yPos, { align: "center" });
-
-      yPos += 35;
-
-      // Informations complémentaires
-      doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0);
-      doc.text("Droits et Couverture", 20, yPos);
-      yPos += 10;
-
-      doc.setFontSize(10);
-      doc.text("• Couverture: 80% des frais médicaux", 25, yPos);
-      yPos += 8;
-      doc.text("• Plafond annuel: 5 000 000 FCFA", 25, yPos);
-      yPos += 8;
-      doc.text("• Validité: En cours", 25, yPos);
-      yPos += 8;
-      doc.text("• Statut: Actif", 25, yPos);
-      yPos += 15;
-
-      // Établissements conventionnés
-      doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0);
-      doc.text("Établissements Conventionnés", 20, yPos);
-      yPos += 10;
-
-      doc.setFontSize(10);
-      doc.text("Consultez la liste complète sur www.cnamgs.ga", 25, yPos);
-      yPos += 8;
-      doc.text("ou via l'application SANTE.GA", 25, yPos);
-
-      yPos += 20;
-
-      // Avertissement
-      doc.setFontSize(8);
-      doc.setTextColor(128, 128, 128);
-      const warningText = "Cette carte est personnelle et incessible. Elle doit être présentée lors de chaque consultation médicale. En cas de perte ou de vol, contactez immédiatement le +241 01 76 24 24.";
-      const splitText = doc.splitTextToSize(warningText, pageWidth - 40);
-      doc.text(splitText, 20, yPos);
-
-      // Pied de page
-      doc.setFontSize(8);
-      doc.setTextColor(128, 128, 128);
-      doc.text(`Document généré le ${format(new Date(), "dd/MM/yyyy à HH:mm", { locale: fr })} - SANTE.GA`, pageWidth / 2, 285, { align: "center" });
-
-      doc.save(`carte-cnamgs-${profile?.full_name || 'patient'}.pdf`);
-      toast.success("Carte CNAMGS téléchargée");
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        toast.error("Erreur lors du rendu de la carte");
+      };
+      
+      img.src = url;
+      
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      toast.error("Erreur lors de la génération du PDF");
+      console.error("Error generating card:", error);
+      toast.error("Erreur lors de la génération de la carte");
     }
   };
 
