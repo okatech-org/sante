@@ -1,7 +1,7 @@
 <svg id="cnamgs-card" width="1050" height="650" viewBox="0 0 1050 650" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <clipPath id="clip-photo">
-      <circle cx="853" cy="435" r="145"/>
+      <circle cx="847" cy="441" r="145"/>
     </clipPath>
   </defs>
 
@@ -38,7 +38,7 @@
   </g>
 
   <!-- zone photo circulaire -->
-  <circle id="photo-placeholder" cx="853" cy="435" r="145" fill="#d9d9d9"/>
+  <circle id="photo-placeholder" cx="847" cy="441" r="145" fill="#d9d9d9"/>
 
   <!-- libellés des champs -->
   <text id="label-nom" x="62" y="410" style="font:400 26px Arial;fill:#666">Nom</text>

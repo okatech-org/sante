@@ -193,8 +193,8 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     if (data.photo) {
       const ph = $(esc('photo-placeholder'));
       if (ph) {
-        const cx = +(ph.getAttribute('cx') || 853);
-        const cy = +(ph.getAttribute('cy') || 435);
+        const cx = +(ph.getAttribute('cx') || 847);
+        const cy = +(ph.getAttribute('cy') || 441);
         const r = +(ph.getAttribute('r') || 145);
 
         // Créer l'élément image SVG
