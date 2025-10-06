@@ -46,8 +46,8 @@
   <text id="txt-gabonaise" x="190" y="130" style="font:700 36px Arial;fill:#111">GABONAISE</text>
   
   <!-- titres centrés -->
-  <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial;fill:#111">Secteur Privé</text>
-  <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 34px Arial;fill:#111">Carte d'Assurance Maladie</text>
+  <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 33px Arial;fill:#444">Secteur Privé</text>
+  <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 33px Arial;fill:#444">Carte d'Assurance Maladie</text>
 
   <!-- puce SIM image -->
   <image id="chip" x="93" y="223" width="162" height="125" href="/puce_cnamgs.png" preserveAspectRatio="xMidYMid meet"/>
