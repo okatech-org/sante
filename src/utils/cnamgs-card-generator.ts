@@ -76,7 +76,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     cardNumberText,
     645, // Centré sur la partie droite
-    345  // Position sous "Carte d'Assurance Maladie"
+    225  // Position sous "Carte d'Assurance Maladie"
   );
   console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
 
@@ -87,7 +87,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     nomText,
     76,
-    520
+    400
   );
   console.log('generateCNAMGSCard: Nom drawn:', nomText);
 
@@ -98,7 +98,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     prenomsText,
     76,
-    632
+    512
   );
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
 
@@ -108,7 +108,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     data.date_naissance,
     76,
-    758
+    638
   );
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
 
@@ -118,7 +118,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     data.sexe,
     632,
-    695
+    575
   );
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
 
@@ -135,7 +135,7 @@ export const generateCNAMGSCard = async (
           
           // Position et dimensions de la zone photo (ovale sur la droite)
           const centerX = 1000;
-          const centerY = 525;
+          const centerY = 405;
           const radiusX = 140;
           const radiusY = 165;
           
