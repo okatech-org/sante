@@ -52,11 +52,11 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
 
       try {
         // Charger le template SVG
-        const templateResponse = await fetch('/cnamgs_card_template.svg');
+        const templateResponse = await fetch(`/cnamgs_card_template.svg?v=${Date.now()}`);
         const templateText = await templateResponse.text();
         
         // Charger le layout JSON
-        const layoutResponse = await fetch('/cnamgs_layout.json');
+        const layoutResponse = await fetch(`/cnamgs_layout.json?v=${Date.now()}`);
         const layout: CardLayout = await layoutResponse.json();
 
         // Parser le SVG
