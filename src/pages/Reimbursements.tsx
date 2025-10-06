@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoSante from "@/assets/logo_sante.png";
+import { CNAMGSCard } from "@/components/medical/CNAMGSCard";
 
 export default function Reimbursements() {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ export default function Reimbursements() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('cnamgs');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [profileData, setProfileData] = useState<any>(null);
 
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
@@ -48,6 +50,7 @@ export default function Reimbursements() {
 
   useEffect(() => {
     loadAvatar();
+    loadProfile();
   }, [user?.id]);
 
   const loadAvatar = async () => {
@@ -60,6 +63,20 @@ export default function Reimbursements() {
       
       if (data?.avatar_url) {
         setAvatarUrl(data.avatar_url);
+      }
+    }
+  };
+
+  const loadProfile = async () => {
+    if (user?.id) {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (data) {
+        setProfileData(data);
       }
     }
   };
@@ -262,37 +279,13 @@ export default function Reimbursements() {
                 </div>
               </div>
 
-              {/* Carte de droits */}
+              {/* Carte CNAMGS */}
               <div className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10">
                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                   <Shield className="h-5 w-5 text-[#00d4ff]" />
                   Votre carte d'assuré CNAMGS
                 </h2>
-                <div className="bg-gradient-to-br from-[#00d4ff]/20 to-[#0088ff]/20 border border-[#00d4ff]/30 rounded-lg p-6">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm text-gray-400">N° d'assuré</p>
-                        <p className="text-xl font-bold text-white">CNAM-2024-7891</p>
-                      </div>
-                      <Badge className="bg-green-600">Actif</Badge>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-400">Nom complet</p>
-                        <p className="text-white font-medium">{fullName}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">Date d'expiration</p>
-                        <p className="text-white font-medium">31/12/2025</p>
-                      </div>
-                    </div>
-                    <div className="pt-4 border-t border-white/10">
-                      <p className="text-sm text-gray-400 mb-2">Ayants droit</p>
-                      <p className="text-white">3 personnes couvertes</p>
-                    </div>
-                  </div>
-                </div>
+                {profileData && <CNAMGSCard profile={profileData} />}
               </div>
 
               {/* Demandes de remboursement */}
