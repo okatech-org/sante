@@ -9,12 +9,57 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import cnamgsCardImage from "@/assets/carte_cnamgs.png";
 import { generateCNAMGSCard, validateCardData } from "@/utils/cnamgs-card-generator";
+import { useState, useEffect } from "react";
 
 interface CNAMGSCardProps {
   profile: any;
 }
 
 export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
+  const [generatedCardUrl, setGeneratedCardUrl] = useState<string | null>(null);
+
+  // Générer la carte au chargement
+  useEffect(() => {
+    const generateCard = async () => {
+      if (!profile) return;
+
+      try {
+        const nom = profile?.full_name?.split(' ')[0] || 'NOM';
+        const prenoms = profile?.full_name?.split(' ').slice(1).join(' ') || 'PRENOMS';
+        const dateNaissance = profile?.birth_date 
+          ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr })
+          : '01/01/1990';
+        const sexe = profile?.gender === 'male' ? 'M' : profile?.gender === 'female' ? 'F' : 'M';
+        const numeroCard = profile?.cnamgs_number || '000-000-000-0';
+
+        const cardData = {
+          numero_carte: numeroCard,
+          nom: nom,
+          prenoms: prenoms,
+          date_naissance: dateNaissance,
+          sexe: sexe,
+          photo_url: profile?.avatar_url,
+        };
+
+        const templateImg = new Image();
+        templateImg.src = cnamgsCardImage;
+
+        templateImg.onload = async () => {
+          try {
+            const canvas = await generateCNAMGSCard(templateImg, cardData);
+            const dataUrl = canvas.toDataURL('image/png');
+            setGeneratedCardUrl(dataUrl);
+          } catch (error) {
+            console.error("Error generating card preview:", error);
+          }
+        };
+      } catch (error) {
+        console.error("Error in card generation:", error);
+      }
+    };
+
+    generateCard();
+  }, [profile]);
   
   const handleExportPDF = async () => {
     try {
@@ -99,10 +144,10 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       
       <Separator className="mb-3" />
       
-      {/* Image de la carte CNAMGS */}
+      {/* Image de la carte CNAMGS personnalisée */}
       <div className="mb-3 rounded-lg overflow-hidden border border-border/50">
         <img 
-          src={cnamgsCardImage} 
+          src={generatedCardUrl || cnamgsCardImage} 
           alt="Carte CNAMGS" 
           className="w-full h-auto"
         />
