@@ -156,12 +156,12 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       if (node) node.textContent = value ?? '';
     };
 
-    // 1) Numéro de carte - aligné à gauche au niveau de "Carte d'Assurance Maladie"
+    // 1) Numéro de carte - centré juste sous "Carte d'Assurance Maladie"
     const cardNumberNode = $(esc('field-card-number'));
     if (cardNumberNode) {
-      cardNumberNode.setAttribute('x', '485');
-      cardNumberNode.setAttribute('y', '300');
-      cardNumberNode.setAttribute('text-anchor', 'start');
+      cardNumberNode.setAttribute('x', '700');
+      cardNumberNode.setAttribute('y', '275');
+      cardNumberNode.setAttribute('text-anchor', 'middle');
       cardNumberNode.setAttribute('font-size', '32');
       cardNumberNode.setAttribute('font-weight', 'bold');
     }
