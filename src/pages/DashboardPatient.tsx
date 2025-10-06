@@ -34,6 +34,10 @@ export default function DashboardPatient() {
     full_name: string;
     birth_date: string | null;
     gender: string | null;
+    weight_kg: number | null;
+    height_m: number | null;
+    blood_group: string | null;
+    cnamgs_number: string | null;
   } | null>(null);
   
   const userName = (user?.user_metadata as any)?.full_name?.split(' ')[0] || 'Jean-Pierre';
@@ -45,7 +49,7 @@ export default function DashboardPatient() {
       if (user?.id) {
         const { data, error } = await supabase
           .from('profiles')
-          .select('full_name, birth_date, gender, language, theme, avatar_url')
+          .select('full_name, birth_date, gender, language, theme, avatar_url, weight_kg, height_m, blood_group, cnamgs_number')
           .eq('id', user.id)
           .single();
         
@@ -54,6 +58,10 @@ export default function DashboardPatient() {
             full_name: data.full_name,
             birth_date: data.birth_date,
             gender: data.gender,
+            weight_kg: data.weight_kg,
+            height_m: data.height_m,
+            blood_group: data.blood_group,
+            cnamgs_number: data.cnamgs_number,
           });
           if (data.language) setLanguage(data.language);
           if (data.theme) setTheme(data.theme);
@@ -612,22 +620,30 @@ export default function DashboardPatient() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
               <div className="bg-muted/30 rounded-xl p-3">
                 <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Poids</p>
-                <p className="text-base sm:text-xl font-bold text-foreground">78 kg</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">
+                  {profileData?.weight_kg ? `${profileData.weight_kg} kg` : '-'}
+                </p>
               </div>
 
               <div className="bg-muted/30 rounded-xl p-3">
                 <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Taille</p>
-                <p className="text-base sm:text-xl font-bold text-foreground">1.75 m</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">
+                  {profileData?.height_m ? `${profileData.height_m} m` : '-'}
+                </p>
               </div>
 
               <div className="bg-muted/30 rounded-xl p-3">
                 <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Groupe</p>
-                <p className="text-base sm:text-xl font-bold text-foreground">O+</p>
+                <p className="text-base sm:text-xl font-bold text-foreground">
+                  {profileData?.blood_group || '-'}
+                </p>
               </div>
 
               <div className="bg-muted/30 rounded-xl p-3">
                 <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">N° CNAMGS</p>
-                <p className="text-xs sm:text-sm font-bold text-foreground">GA2384567891</p>
+                <p className="text-xs sm:text-sm font-bold text-foreground">
+                  {profileData?.cnamgs_number || '-'}
+                </p>
               </div>
             </div>
           </div>
