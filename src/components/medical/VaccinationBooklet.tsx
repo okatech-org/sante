@@ -100,45 +100,53 @@ export const VaccinationBooklet = ({ profile }: VaccinationBookletProps) => {
   };
 
   return (
-    <Card className="p-6 bg-card/50 border backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="p-4 sm:p-6 bg-card/50 border backdrop-blur-sm flex flex-col h-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <Syringe className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">Carnet de Vaccination</h2>
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Syringe className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">Vaccinations</h2>
+            <p className="text-xs text-muted-foreground">Complété par le médecin</p>
+          </div>
         </div>
-        <Button onClick={handleExportPDF} size="sm" variant="outline">
-          <Download className="h-4 w-4 mr-2" />
-          Exporter PDF
+        <Button onClick={handleExportPDF} size="sm" variant="outline" className="self-start sm:self-auto">
+          <Download className="h-3 w-3 mr-1.5" />
+          <span className="text-xs">PDF</span>
         </Button>
       </div>
-      <Separator className="mb-4" />
       
-      <div className="space-y-3 max-h-[400px] overflow-y-auto">
-        {RECOMMENDED_VACCINES.map((vaccine, index) => (
-          <div key={index} className="p-3 rounded-lg bg-muted/30 border border-border hover:bg-muted/50 transition-colors">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-medium text-foreground">{vaccine.name}</p>
-                  <Badge variant="outline" className="text-xs">
-                    <AlertCircle className="h-3 w-3 mr-1" />
-                    À compléter
-                  </Badge>
+      <Separator className="mb-3" />
+      
+      <div className="flex-1 overflow-hidden">
+        <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
+          {RECOMMENDED_VACCINES.map((vaccine, index) => (
+            <div key={index} className="p-2.5 rounded-lg bg-muted/20 border border-border/50 hover:bg-muted/40 hover:border-border transition-all">
+              <div className="flex items-start gap-2">
+                <div className="mt-0.5 h-4 w-4 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <p className="font-medium text-sm text-foreground truncate">{vaccine.name}</p>
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 flex-shrink-0">
+                      À faire
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-1">{vaccine.description}</p>
+                  <p className="text-[10px] text-muted-foreground/80 mt-0.5">
+                    {vaccine.ageRecommended}
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground">{vaccine.description}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Âge recommandé: {vaccine.ageRecommended}
-                </p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-        <p className="text-xs text-blue-600 dark:text-blue-400">
-          <AlertCircle className="h-3 w-3 inline mr-1" />
-          Ce carnet doit être complété par un professionnel de santé lors de chaque vaccination.
+      <div className="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+        <p className="text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 flex items-start gap-1.5">
+          <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
+          <span>Seul un professionnel de santé peut valider les vaccinations dans ce carnet.</span>
         </p>
       </div>
     </Card>

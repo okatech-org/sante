@@ -113,64 +113,77 @@ export const HealthBooklet = ({ profile, medicalHistory, treatments, consultatio
   };
 
   return (
-    <Card className="p-6 bg-card/50 border backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="p-4 sm:p-6 bg-card/50 border backdrop-blur-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">Carnet de Santé</h2>
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <BookOpen className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">Carnet de Santé</h2>
+            <p className="text-xs text-muted-foreground">Suivi médical complet</p>
+          </div>
         </div>
-        <Button onClick={handleExportPDF} size="sm" variant="outline">
-          <Download className="h-4 w-4 mr-2" />
-          Exporter PDF
+        <Button onClick={handleExportPDF} size="sm" variant="outline" className="self-start sm:self-auto">
+          <Download className="h-3 w-3 mr-1.5" />
+          <span className="text-xs">PDF</span>
         </Button>
       </div>
       <Separator className="mb-4" />
       
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 rounded-lg bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground font-medium">Patient</p>
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+            <div className="flex items-center gap-1.5 mb-1">
+              <User className="h-3 w-3 text-muted-foreground" />
+              <p className="text-[10px] text-muted-foreground font-medium">Patient</p>
             </div>
-            <p className="text-sm font-bold text-foreground">{profile?.full_name || 'N/A'}</p>
+            <p className="text-xs font-bold text-foreground truncate">{profile?.full_name || 'N/A'}</p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground font-medium">Naissance</p>
+          <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Calendar className="h-3 w-3 text-muted-foreground" />
+              <p className="text-[10px] text-muted-foreground font-medium">Naissance</p>
             </div>
-            <p className="text-sm font-bold text-foreground">
+            <p className="text-xs font-bold text-foreground">
               {profile?.birth_date ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr }) : 'N/A'}
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground font-medium">Groupe Sanguin</p>
+          <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Activity className="h-3 w-3 text-muted-foreground" />
+              <p className="text-[10px] text-muted-foreground font-medium">Groupe</p>
             </div>
-            <p className="text-sm font-bold text-foreground">{profile?.blood_group || 'N/A'}</p>
+            <p className="text-xs font-bold text-foreground">{profile?.blood_group || 'N/A'}</p>
           </div>
 
-          <div className="p-3 rounded-lg bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground font-medium">Consultations</p>
+          <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Activity className="h-3 w-3 text-muted-foreground" />
+              <p className="text-[10px] text-muted-foreground font-medium">Consultations</p>
             </div>
-            <p className="text-sm font-bold text-foreground">{consultations.length}</p>
+            <p className="text-xs font-bold text-foreground">{consultations.length}</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-lg bg-muted/20 border border-border">
-          <p className="text-xs text-muted-foreground mb-2">Antécédents médicaux</p>
-          <p className="text-sm font-medium text-foreground">{medicalHistory.length} enregistré(s)</p>
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+              Antécédents médicaux
+            </p>
+            <p className="text-sm font-bold text-foreground">{medicalHistory.length} enregistré(s)</p>
+          </div>
 
-        <div className="p-4 rounded-lg bg-muted/20 border border-border">
-          <p className="text-xs text-muted-foreground mb-2">Traitements actifs</p>
-          <p className="text-sm font-medium text-foreground">{treatments.length} en cours</p>
+          <div className="p-3 rounded-lg bg-muted/20 border border-border/50">
+            <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+              Traitements actifs
+            </p>
+            <p className="text-sm font-bold text-foreground">{treatments.length} en cours</p>
+          </div>
         </div>
       </div>
     </Card>

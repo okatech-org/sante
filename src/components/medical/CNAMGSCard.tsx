@@ -107,87 +107,89 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   };
 
   return (
-    <Card className="p-6 bg-card/50 border backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="p-4 sm:p-6 bg-card/50 border backdrop-blur-sm flex flex-col h-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">Carte CNAMGS</h2>
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Shield className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">CNAMGS</h2>
+            <p className="text-xs text-muted-foreground">Carte d'assuré</p>
+          </div>
         </div>
-        <Button onClick={handleExportPDF} size="sm" variant="outline">
-          <Download className="h-4 w-4 mr-2" />
-          Exporter PDF
+        <Button onClick={handleExportPDF} size="sm" variant="outline" className="self-start sm:self-auto">
+          <Download className="h-3 w-3 mr-1.5" />
+          <span className="text-xs">PDF</span>
         </Button>
       </div>
-      <Separator className="mb-4" />
       
-      {/* Carte visuelle */}
-      <div className="relative mb-4">
-        <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg">
-          <div className="flex items-start justify-between mb-4">
+      <Separator className="mb-3" />
+      
+      {/* Carte visuelle compacte */}
+      <div className="mb-3">
+        <div className="rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 p-4 text-white shadow-lg">
+          <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-xs opacity-80 mb-1">CNAMGS</p>
-              <p className="text-sm font-medium">Carte d'Assuré Social</p>
+              <p className="text-[10px] opacity-70 mb-0.5">CNAMGS</p>
+              <p className="text-xs font-medium">Assuré Social</p>
             </div>
-            <Shield className="h-8 w-8 opacity-80" />
+            <Shield className="h-6 w-6 opacity-70" />
           </div>
           
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4 opacity-80" />
-              <p className="text-lg font-bold">{profile?.cnamgs_number || 'Non attribué'}</p>
+          <div className="mb-3">
+            <div className="flex items-center gap-1.5">
+              <CreditCard className="h-3 w-3 opacity-70" />
+              <p className="text-sm font-bold truncate">{profile?.cnamgs_number || 'Non attribué'}</p>
             </div>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <User className="h-3 w-3 opacity-80" />
-              <p className="text-sm font-medium">{profile?.full_name || 'N/A'}</p>
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-1.5">
+              <User className="h-2.5 w-2.5 opacity-70" />
+              <p className="text-xs font-medium truncate">{profile?.full_name || 'N/A'}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3 w-3 opacity-80" />
-              <p className="text-xs opacity-80">
-                Né(e) le: {profile?.birth_date ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr }) : 'N/A'}
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-2.5 w-2.5 opacity-70" />
+              <p className="text-[10px] opacity-80">
+                {profile?.birth_date ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr }) : 'N/A'}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-3 w-3 opacity-80" />
-              <p className="text-xs opacity-80">Groupe: {profile?.blood_group || 'N/A'}</p>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Informations de couverture */}
-      <div className="space-y-3">
-        <div className="p-3 rounded-lg bg-muted/30">
-          <p className="text-xs text-muted-foreground mb-1">Couverture</p>
-          <p className="text-sm font-bold text-foreground">80% des frais médicaux</p>
+      {/* Informations de couverture compactes */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+          <p className="text-[10px] text-muted-foreground mb-0.5">Couverture</p>
+          <p className="text-xs font-bold text-foreground">80%</p>
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/30">
-          <p className="text-xs text-muted-foreground mb-1">Plafond annuel</p>
-          <p className="text-sm font-bold text-foreground">5 000 000 FCFA</p>
-        </div>
-
-        <div className="p-3 rounded-lg bg-muted/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">Statut</p>
-              <p className="text-sm font-bold text-foreground">Actif</p>
-            </div>
-            <Badge className="bg-green-600">
-              <CheckCircle className="h-3 w-3 mr-1" />
-              Valide
-            </Badge>
-          </div>
+        <div className="p-2.5 rounded-lg bg-muted/20 border border-border/50">
+          <p className="text-[10px] text-muted-foreground mb-0.5">Plafond</p>
+          <p className="text-xs font-bold text-foreground">5M FCFA</p>
         </div>
       </div>
 
-      <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-        <p className="text-xs text-blue-600 dark:text-blue-400">
-          <Shield className="h-3 w-3 inline mr-1" />
-          Présentez cette carte lors de chaque consultation dans un établissement conventionné.
-        </p>
+      <div className="p-2.5 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-between">
+        <div>
+          <p className="text-[10px] text-muted-foreground mb-0.5">Statut</p>
+          <p className="text-xs font-bold text-foreground">Actif</p>
+        </div>
+        <Badge className="bg-green-600 h-6 text-[10px] px-2">
+          <CheckCircle className="h-2.5 w-2.5 mr-1" />
+          Valide
+        </Badge>
+      </div>
+
+      <div className="mt-auto pt-3">
+        <div className="p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/20">
+          <p className="text-[10px] sm:text-xs text-blue-600 dark:text-blue-400 flex items-start gap-1.5">
+            <Shield className="h-3 w-3 flex-shrink-0 mt-0.5" />
+            <span>Présentez cette carte dans les établissements conventionnés.</span>
+          </p>
+        </div>
       </div>
     </Card>
   );
