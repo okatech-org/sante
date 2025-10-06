@@ -178,76 +178,122 @@ export const generateCNAMGSPdf = async (
     doc.addImage(logoData, "PNG", CARD_X + 32, CARD_Y + 3.7, 32.6, 9);
   }
 
-  // Textes en-tête carte
-  doc.setFontSize(3);
+  // Textes en-tête carte - "RÉPUBLIQUE GABONAISE" en grand
+  doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(17, 17, 17);
-  doc.text("RÉPUBLIQUE", CARD_X + 15.5, CARD_Y + 7.3);
-  doc.text("GABONAISE", CARD_X + 15.5, CARD_Y + 10.6);
+  doc.setTextColor(0, 0, 0);
+  doc.text("RÉPUBLIQUE", CARD_X + 17, CARD_Y + 7);
+  doc.text("GABONAISE", CARD_X + 17, CARD_Y + 11);
 
-  doc.setFontSize(2.8);
-  doc.text(data.regime, CARD_X + CARD.w / 2, CARD_Y + 17.1, { align: "center" });
-  doc.text("Carte d'Assurance Maladie", CARD_X + CARD.w / 2, CARD_Y + 20.5, {
+  // "Secteur Privé" et "Carte d'Assurance Maladie" en grand et centré
+  doc.setFontSize(5.5);
+  doc.setFont("helvetica", "bold");
+  doc.text("Secteur Privé", CARD_X + CARD.w / 2, CARD_Y + 17.5, { align: "center" });
+  
+  doc.setFontSize(5);
+  doc.text("Carte d'Assurance Maladie", CARD_X + CARD.w / 2, CARD_Y + 22.5, {
     align: "center",
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Puce (chip) vectorielle
+  // Puce (chip) vectorielle avec lignes internes plus détaillées
   // ─────────────────────────────────────────────────────────────────────────
-  const chipX = CARD_X + 9.9;
-  const chipY = CARD_Y + 19.1;
+  const chipX = CARD_X + 12;
+  const chipY = CARD_Y + 22;
+  const chipW = 14;
+  const chipH = 11;
   doc.setFillColor(239, 211, 137);
   doc.setDrawColor(26, 26, 26);
-  doc.setLineWidth(0.12);
-  doc.roundedRect(chipX, chipY, 13.2, 10.2, 1.5, 1.5, "FD");
+  doc.setLineWidth(0.15);
+  doc.roundedRect(chipX, chipY, chipW, chipH, 1.5, 1.5, "FD");
 
-  // Lignes internes puce
-  doc.setLineWidth(0.08);
+  // Lignes internes puce - motif de circuit intégré
+  doc.setLineWidth(0.1);
   doc.setDrawColor(26, 26, 26);
-  const chipLines = [
-    [chipX + 2, chipY + 2.5, chipX + 11.2, chipY + 2.5],
-    [chipX + 2, chipY + 5, chipX + 11.2, chipY + 5],
-    [chipX + 2, chipY + 7.5, chipX + 11.2, chipY + 7.5],
-    [chipX + 6.6, chipY + 2.5, chipX + 6.6, chipY + 7.7],
-  ];
-  chipLines.forEach(([x1, y1, x2, y2]) => doc.line(x1, y1, x2, y2));
+  
+  // Grille 3x3
+  const cellW = chipW / 3;
+  const cellH = chipH / 3;
+  
+  // Lignes verticales
+  doc.line(chipX + cellW, chipY + 1, chipX + cellW, chipY + chipH - 1);
+  doc.line(chipX + 2 * cellW, chipY + 1, chipX + 2 * cellW, chipY + chipH - 1);
+  
+  // Lignes horizontales
+  doc.line(chipX + 1, chipY + cellH, chipX + chipW - 1, chipY + cellH);
+  doc.line(chipX + 1, chipY + 2 * cellH, chipX + chipW - 1, chipY + 2 * cellH);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Numéro de carte
+  // Numéro de carte - en grand et gras
   // ─────────────────────────────────────────────────────────────────────────
-  doc.setFontSize(3.2);
+  doc.setFontSize(5.5);
   doc.setFont("courier", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text(data.numero, CARD_X + 39.5, CARD_Y + 24.4);
+  doc.text(data.numero, CARD_X + CARD.w / 2, CARD_Y + 28, { align: "center" });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Champs identité (labels + valeurs)
+  // Champs identité (labels + valeurs) - en grand et gras
   // ─────────────────────────────────────────────────────────────────────────
-  doc.setFontSize(2.1);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(17, 17, 17);
-  doc.text("Nom", CARD_X + 8.1, CARD_Y + 35.2);
-  doc.text("Prénoms", CARD_X + 8.1, CARD_Y + 41.9);
-  doc.text("Date de naissance", CARD_X + 8, CARD_Y + 48.6);
-  doc.text("Sexe", CARD_X + 44.7, CARD_Y + 43.5);
+  const labelStartX = CARD_X + 12;
+  const labelStartY = CARD_Y + 36;
+  const valueOffsetY = 3.5;
+  const lineSpacing = 8;
 
-  // Valeurs
-  doc.setFontSize(2.4);
+  // Nom
+  doc.setFontSize(3.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(0, 0, 0);
-  doc.text(data.nom, CARD_X + 8.1, CARD_Y + 38.1);
-  doc.text(data.prenoms, CARD_X + 8.1, CARD_Y + 44.8);
-  doc.text(data.dateNaissance, CARD_X + 8.1, CARD_Y + 51.5);
-  doc.text(data.sexe || "M", CARD_X + 44.7, CARD_Y + 46.4);
+  doc.text("Nom", labelStartX, labelStartY);
+  
+  doc.setFontSize(5);
+  doc.text(data.nom, labelStartX, labelStartY + valueOffsetY);
+
+  // Prénoms
+  doc.setFontSize(3.5);
+  doc.text("Prénoms", labelStartX, labelStartY + lineSpacing);
+  
+  doc.setFontSize(5);
+  doc.text(data.prenoms, labelStartX, labelStartY + lineSpacing + valueOffsetY);
+
+  // Date de naissance
+  doc.setFontSize(3.5);
+  doc.text("Date de naissance", labelStartX, labelStartY + 2 * lineSpacing);
+  
+  doc.setFontSize(5);
+  doc.text(data.dateNaissance, labelStartX, labelStartY + 2 * lineSpacing + valueOffsetY);
+
+  // Sexe (à droite)
+  const sexeX = CARD_X + 50;
+  const sexeY = labelStartY + lineSpacing + 4;
+  
+  doc.setFontSize(3.5);
+  doc.text("Sexe", sexeX, sexeY);
+  
+  doc.setFontSize(5);
+  doc.text(data.sexe || "M", sexeX, sexeY + valueOffsetY);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Photo titulaire (cercle)
+  // Photo titulaire (circulaire)
   // ─────────────────────────────────────────────────────────────────────────
   if (photoData) {
-    const photoSize = 11.8;
-    const photoX = CARD_X + 59.5;
-    const photoY = CARD_Y + 26.6;
+    const photoSize = 15;
+    const photoX = CARD_X + CARD.w - photoSize - 7;
+    const photoY = CARD_Y + 32;
+    const photoCenterX = photoX + photoSize / 2;
+    const photoCenterY = photoY + photoSize / 2;
+    const photoRadius = photoSize / 2;
+    
+    // Créer un clipping circulaire
+    doc.circle(photoCenterX, photoCenterY, photoRadius, "S");
+    
+    // Ajouter l'image (elle sera clippée par le cercle visuellement)
+    // Note: jsPDF ne supporte pas le vrai clipping, donc on ajoute juste l'image
     doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+    
+    // Dessiner le cercle par-dessus pour le contour
+    doc.setLineWidth(0.3);
+    doc.setDrawColor(200, 200, 200);
+    doc.circle(photoCenterX, photoCenterY, photoRadius);
   }
 
   // Cadre carte
