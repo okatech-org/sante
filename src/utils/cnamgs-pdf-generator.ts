@@ -304,16 +304,34 @@ export const generateCNAMGSPdf = async (
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
+  
+  // Charger l'image en filigrane séparément
+  const watermarkData = await loadImageAsDataUrl('/watermark_waves.jpg');
+  
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
 
   // Capturer le SVG de la carte comme image ultra haute résolution
-  // Le filigrane est déjà inclus dans le SVG template (ligne 44) avec opacité 0.57
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // Ajouter l'image capturée de la carte (contient déjà le filigrane)
+    // D'abord, ajouter le filigrane en arrière-plan avec 57% d'opacité
+    if (watermarkData) {
+      const watermarkY = CARD_Y + CARD.h * 0.2662; // Position après la ligne verte (y=173/650)
+      const watermarkH = CARD.h * 0.7338; // Hauteur de la partie basse (477/650)
+      
+      // Créer un état graphique avec opacité
+      const gs = new (doc as any).GState({ opacity: 0.57 });
+      doc.setGState(gs);
+      doc.addImage(watermarkData, "JPEG", CARD_X, watermarkY, CARD.w, watermarkH);
+      
+      // Restaurer l'opacité normale
+      const gsNormal = new (doc as any).GState({ opacity: 1.0 });
+      doc.setGState(gsNormal);
+    }
+    
+    // Ensuite, ajouter l'image capturée de la carte PAR-DESSUS
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
