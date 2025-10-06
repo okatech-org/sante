@@ -183,13 +183,13 @@ export default function MedicalRecord() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background sombre avec étoiles */}
-      <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div className="absolute inset-0 opacity-40" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
+    <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Background pattern */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-20 dark:opacity-10" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(var(--primary) / 0.1) 1px, transparent 1px), radial-gradient(circle at 60% 70%, hsl(var(--primary) / 0.05) 1px, transparent 1px)',
+          backgroundSize: '200px 200px, 250px 250px',
+          backgroundPosition: '0 0, 50px 50px'
         }} />
       </div>
 
@@ -197,13 +197,13 @@ export default function MedicalRecord() {
       <div className="relative flex">
         {/* Sidebar Desktop */}
         <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-sidebar-background/95 border border-sidebar-border shadow-2xl flex flex-col">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-white">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-sidebar-foreground">SANTE.GA</h1>
               </div>
-              <p className="text-xs text-gray-500">Votre santé à portée de clic</p>
+              <p className="text-xs text-muted-foreground">Votre santé à portée de clic</p>
             </div>
 
             <nav className="space-y-1 flex-1 overflow-y-auto">
@@ -218,13 +218,13 @@ export default function MedicalRecord() {
                       if (item.path) navigate(item.path);
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      isActive ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-white/5'
+                          isActive ? '' : 'bg-muted/30'
                         }`}
                         style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                       >
@@ -245,7 +245,7 @@ export default function MedicalRecord() {
               })}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/10 space-y-4">
+            <div className="mt-auto pt-6 border-t border-sidebar-border space-y-4">
               <div className="flex items-center justify-center gap-2">
                 <ThemeToggle />
                 <LanguageToggle />
@@ -253,24 +253,24 @@ export default function MedicalRecord() {
                   variant="ghost"
                   size="icon"
                   onClick={handleLogout}
-                  className="text-white hover:bg-white/10"
+                  className="hover:bg-sidebar-accent"
                 >
                   <LogOut className="h-5 w-5" />
                 </Button>
               </div>
 
-              <div className="p-3 rounded-lg bg-white/5">
+              <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
                   {avatarUrl ? (
                     <img src={avatarUrl} alt={fullName} className="w-10 h-10 rounded-full object-cover" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground">
                       {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{fullName.split(' ')[0]}</p>
-                    <p className="text-xs text-gray-500">Patient</p>
+                    <p className="text-sm font-medium text-sidebar-foreground truncate">{fullName.split(' ')[0]}</p>
+                    <p className="text-xs text-muted-foreground">Patient</p>
                   </div>
                 </div>
               </div>
@@ -279,27 +279,27 @@ export default function MedicalRecord() {
         </aside>
 
         {/* Mobile Header */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar-background/95 backdrop-blur-xl border-b border-sidebar-border">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-white tracking-tight">SANTE.GA</h1>
+              <h1 className="text-xl font-bold text-sidebar-foreground tracking-tight">SANTE.GA</h1>
             </div>
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent/80 transition-all">
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+              <SheetContent side="left" className="w-72 bg-sidebar-background border-sidebar-border p-0">
                 <div className="h-full flex flex-col p-6">
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-white tracking-tight">SANTE.GA</h1>
+                      <h1 className="text-2xl font-bold text-sidebar-foreground tracking-tight">SANTE.GA</h1>
                     </div>
-                    <p className="text-xs text-gray-500 ml-1">Votre santé à portée de clic</p>
+                    <p className="text-xs text-muted-foreground ml-1">Votre santé à portée de clic</p>
                   </div>
 
                   <nav className="space-y-1 flex-1 overflow-y-auto">
@@ -315,13 +315,13 @@ export default function MedicalRecord() {
                             setMobileMenuOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                            isActive ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-white/5'
+                                isActive ? '' : 'bg-muted/30'
                               }`}
                               style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                             >
@@ -342,7 +342,7 @@ export default function MedicalRecord() {
                     })}
                   </nav>
 
-                  <div className="mt-auto pt-6 border-t border-white/10 space-y-4">
+                  <div className="mt-auto pt-6 border-t border-sidebar-border space-y-4">
                     <div className="flex items-center justify-center gap-2">
                       <ThemeToggle />
                       <LanguageToggle />
@@ -353,7 +353,7 @@ export default function MedicalRecord() {
                           handleLogout();
                           setMobileMenuOpen(false);
                         }}
-                        className="text-white hover:bg-white/10"
+                        className="hover:bg-sidebar-accent"
                       >
                         <LogOut className="h-5 w-5" />
                       </Button>
@@ -376,17 +376,17 @@ export default function MedicalRecord() {
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-3xl font-bold text-white">Mon Dossier Médical</h1>
-                    <p className="text-gray-400 mt-2">
+                    <h1 className="text-3xl font-bold text-foreground">Mon Dossier Médical</h1>
+                    <p className="text-muted-foreground mt-2">
                       Accédez à l'historique complet de votre parcours de santé
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10">
+                    <Button variant="outline">
                       <Share2 className="h-4 w-4 mr-2" />
                       Partager
                     </Button>
-                    <Button className="bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:opacity-90">
+                    <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
                       <Download className="h-4 w-4 mr-2" />
                       Télécharger
                     </Button>
@@ -394,38 +394,38 @@ export default function MedicalRecord() {
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-3">
-                  <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                  <Card className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-[#00d4ff]/10 flex items-center justify-center">
-                        <User className="h-6 w-6 text-[#00d4ff]" />
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-400">Patient</p>
-                        <p className="text-2xl font-bold text-white">{profile?.full_name || 'N/A'}</p>
+                        <p className="text-sm text-muted-foreground">Patient</p>
+                        <p className="text-2xl font-bold text-foreground">{profile?.full_name || 'N/A'}</p>
                       </div>
                     </div>
                   </Card>
 
-                  <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                  <Card className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                        <Calendar className="h-6 w-6 text-green-500" />
+                      <div className="h-12 w-12 rounded-full bg-success/10 flex items-center justify-center">
+                        <Calendar className="h-6 w-6 text-success" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-400">Consultations</p>
-                        <p className="text-2xl font-bold text-white">{consultations.length}</p>
+                        <p className="text-sm text-muted-foreground">Consultations</p>
+                        <p className="text-2xl font-bold text-foreground">{consultations.length}</p>
                       </div>
                     </div>
                   </Card>
 
-                  <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                  <Card className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-blue-500" />
+                      <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                        <FileText className="h-6 w-6 text-secondary" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-400">Antécédents</p>
-                        <p className="text-2xl font-bold text-white">{medicalHistory.length}</p>
+                        <p className="text-sm text-muted-foreground">Antécédents</p>
+                        <p className="text-2xl font-bold text-foreground">{medicalHistory.length}</p>
                       </div>
                     </div>
                   </Card>
@@ -447,23 +447,23 @@ export default function MedicalRecord() {
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
-                  <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                  <Card className="p-6">
                     <div className="flex items-center gap-2 mb-4">
-                      <Heart className="h-5 w-5 text-[#ff0088]" />
-                      <h2 className="text-xl font-semibold text-white">Antécédents Médicaux</h2>
+                      <Heart className="h-5 w-5 text-accent" />
+                      <h2 className="text-xl font-semibold text-foreground">Antécédents Médicaux</h2>
                     </div>
-                    <Separator className="mb-4 bg-white/10" />
+                    <Separator className="mb-4" />
                     <div className="space-y-3">
                       {medicalHistory.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-4">
+                        <p className="text-sm text-muted-foreground text-center py-4">
                           Aucun antécédent médical enregistré
                         </p>
                       ) : (
                         medicalHistory.map((item) => (
                           <div key={item.id} className="flex items-start justify-between">
                             <div>
-                              <p className="font-medium text-white">{item.condition_name}</p>
-                              <p className="text-sm text-gray-400">
+                              <p className="font-medium text-foreground">{item.condition_name}</p>
+                              <p className="text-sm text-muted-foreground">
                                 {item.diagnosed_date
                                   ? `Diagnostiqué le ${format(new Date(item.diagnosed_date), "dd/MM/yyyy", { locale: fr })}`
                                   : 'Date inconnue'}
@@ -476,25 +476,25 @@ export default function MedicalRecord() {
                     </div>
                   </Card>
 
-                  <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                  <Card className="p-6">
                     <div className="flex items-center gap-2 mb-4">
-                      <Pill className="h-5 w-5 text-[#0088ff]" />
-                      <h2 className="text-xl font-semibold text-white">Traitements en Cours</h2>
+                      <Pill className="h-5 w-5 text-secondary" />
+                      <h2 className="text-xl font-semibold text-foreground">Traitements en Cours</h2>
                     </div>
-                    <Separator className="mb-4 bg-white/10" />
+                    <Separator className="mb-4" />
                     <div className="space-y-3">
                       {treatments.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-4">
+                        <p className="text-sm text-muted-foreground text-center py-4">
                           Aucun traitement en cours
                         </p>
                       ) : (
                         treatments.map((treatment) => (
                           <div key={treatment.id} className="flex items-start justify-between">
                             <div>
-                              <p className="font-medium text-white">{treatment.medication_name} {treatment.dosage}</p>
-                              <p className="text-sm text-gray-400">{treatment.frequency}</p>
+                              <p className="font-medium text-foreground">{treatment.medication_name} {treatment.dosage}</p>
+                              <p className="text-sm text-muted-foreground">{treatment.frequency}</p>
                             </div>
-                            <Badge className="bg-green-600">Actif</Badge>
+                            <Badge className="bg-success text-success-foreground">Actif</Badge>
                           </div>
                         ))
                       )}
@@ -502,41 +502,41 @@ export default function MedicalRecord() {
                   </Card>
                 </div>
 
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                <Card className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Activity className="h-5 w-5 text-[#ffaa00]" />
-                    <h2 className="text-xl font-semibold text-white">Historique des Consultations</h2>
+                    <Activity className="h-5 w-5 text-warning" />
+                    <h2 className="text-xl font-semibold text-foreground">Historique des Consultations</h2>
                   </div>
-                  <Separator className="mb-4 bg-white/10" />
+                  <Separator className="mb-4" />
                   <div className="space-y-4">
                     {consultations.length === 0 ? (
-                      <p className="text-sm text-gray-400 text-center py-8">
+                      <p className="text-sm text-muted-foreground text-center py-8">
                         Aucune consultation enregistrée
                       </p>
                     ) : (
                       consultations.map((consultation) => (
                         <div
                           key={consultation.id}
-                          className="flex items-center justify-between p-4 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
+                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Calendar className="h-4 w-4 text-gray-400" />
-                              <span className="font-medium text-white">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-medium text-foreground">
                                 {format(new Date(consultation.consultation_date), "dd/MM/yyyy", { locale: fr })}
                               </span>
-                              <Badge variant="outline" className="border-white/10 text-gray-300">
+                              <Badge variant="outline">
                                 {consultation.consultation_type}
                               </Badge>
                             </div>
-                            <p className="text-sm text-gray-400">{consultation.doctor_name}</p>
-                            <p className="text-sm mt-1 text-gray-300">{consultation.reason}</p>
+                            <p className="text-sm text-muted-foreground">{consultation.doctor_name}</p>
+                            <p className="text-sm mt-1 text-foreground/80">{consultation.reason}</p>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleViewConsultation(consultation)}
-                            className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10"
+                            className="text-primary hover:text-primary hover:bg-primary/10"
                           >
                             <FileText className="h-4 w-4 mr-1" />
                             Voir
