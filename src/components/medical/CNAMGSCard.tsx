@@ -138,6 +138,17 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       node.setAttribute('y', String(ly + dy));
     };
 
+    // Nouveau fallback: placer SOUS le libellé
+    const fallbackPlaceBelowLabel = (fieldId: string, labelId: string, dx = 0, dy = 20) => {
+      const node = $(esc(fieldId));
+      const label = $(esc(labelId));
+      if (!node || !label) return;
+      const lx = +(label.getAttribute('x') || 0);
+      const ly = +(label.getAttribute('y') || 0);
+      node.setAttribute('x', String(lx + dx));
+      node.setAttribute('y', String(ly + dy));
+    };
+
     // Fonction pour injecter le texte
     const setText = (id: string, value: string = '') => {
       const node = $(esc(id));
@@ -170,7 +181,8 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       if (f && f.bbox && f.bbox.some(v => v !== 0)) {
         placeText(fieldId, f.bbox);
       } else {
-        fallbackPlaceNearLabel(fieldId, labelId, 22, 0);
+        // Place la valeur SOUS le libellé
+        fallbackPlaceBelowLabel(fieldId, labelId, 0, 20);
       }
     }
 
