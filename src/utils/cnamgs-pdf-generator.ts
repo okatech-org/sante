@@ -312,26 +312,52 @@ export const generateCNAMGSPdf = async (
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
-    // Emblème des armoiries (haut gauche) - rapproché du texte
+    // Emblème des armoiries (haut gauche) - position exacte du SVG
+    // SVG: x="37" y="15" width="138" height="138" sur canvas 1050x650
     if (armoiriesData) {
-      const emblemSize = 10;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
+      const emblemW = CARD.w * 0.1314; // ~11.25mm
+      const emblemH = emblemW; // carré
+      const emblemX = CARD_X + CARD.w * 0.0352; // ~3mm du bord
+      const emblemY = CARD_Y + CARD.h * 0.0231; // ~1.25mm du haut
+      doc.addImage(armoiriesData, "PNG", emblemX, emblemY, emblemW, emblemH);
     }
 
-    // Logo CNAMGS (haut droite) - proportions naturelles du logo (ratio ~4:1)
+    // Logo CNAMGS (haut droite) - position exacte du SVG
+    // SVG: x="610" y="29" width="400" height="110" sur canvas 1050x650
     if (logoData) {
-      const logoWidth = 32; // Proportions naturelles horizontales du logo
-      const logoHeight = 8;
-      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
+      const logoW = CARD.w * 0.3810; // ~32.6mm
+      const logoH = CARD.h * 0.1692; // ~9.1mm
+      const logoX = CARD_X + CARD.w * 0.5810; // ~49.7mm du bord gauche
+      const logoY = CARD_Y + CARD.h * 0.0446; // ~2.4mm du haut
+      doc.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
     }
 
-    // Photo du titulaire (bas droite) - circulaire découpée
+    // Puce SIM (gauche, après bande verte) - position exacte du SVG
+    // SVG: x="93" y="223" width="162" height="125" sur canvas 1050x650
+    if (chipData) {
+      const chipW = CARD.w * 0.1543; // ~13.2mm
+      const chipH = CARD.h * 0.1923; // ~10.4mm
+      const chipX = CARD_X + CARD.w * 0.0886; // ~7.6mm du bord gauche
+      const chipY = CARD_Y + CARD.h * 0.3431; // ~18.5mm du haut
+      doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
+    }
+
+    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG
+    // SVG: ellipse cx="847" cy="447" rx="130" ry="160" sur canvas 1050x650
+    // rx < ry = ellipse verticale (plus haute que large)
     if (photoData) {
-      // Dimensions et position identiques à celles du SVG
-      const photoSize = 25; // Diamètre du cercle en mm
-      const photoX = CARD_X + CARD.w - photoSize - 3; // Position droite
-      const photoY = CARD_Y + 24; // Position verticale
-      doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
+      const photoRx = CARD.w * 0.1238; // ~10.6mm (rayon horizontal)
+      const photoRy = CARD.h * 0.2462; // ~13.3mm (rayon vertical)
+      const photoCx = CARD_X + CARD.w * 0.8067; // centre x
+      const photoCy = CARD_Y + CARD.h * 0.6877; // centre y
+      
+      // Position pour image (coin haut-gauche)
+      const photoX = photoCx - photoRx;
+      const photoY = photoCy - photoRy;
+      const photoW = photoRx * 2;
+      const photoH = photoRy * 2;
+      
+      doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
     }
   } else {
     // Fallback: rendu vectoriel si la capture échoue
