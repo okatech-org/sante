@@ -194,11 +194,18 @@ const captureSVGAsImage = async (): Promise<string> => {
   // Masquer toutes les images dynamiques sauf le filigrane
   const allImages = clonedSvg.querySelectorAll('image');
   allImages.forEach(img => {
+    const hrefVal = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
+    // Convertir les URLs relatives en absolues pour un rendu correct depuis un blob:
+    if (hrefVal && hrefVal.startsWith('/')) {
+      const abs = window.location.origin + hrefVal;
+      img.setAttribute('href', abs);
+      img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', abs);
+    }
+
     // Ne pas masquer l'image en filigrane
     if (img === watermarkImage) return;
     
-    const href = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
-    if (href.includes('http') || href.includes('blob:') || href.includes('data:')) {
+    if (hrefVal.includes('http') || hrefVal.includes('blob:') || hrefVal.includes('data:')) {
       img.setAttribute('opacity', '0');
     }
   });
