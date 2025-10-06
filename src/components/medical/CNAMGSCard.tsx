@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import cnamgsCardImage from "@/assets/carte_cnamgs.png";
+import { generateCNAMGSCard, validateCardData } from "@/utils/cnamgs-card-generator";
 
 interface CNAMGSCardProps {
   profile: any;
@@ -17,28 +18,64 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   
   const handleExportPDF = async () => {
     try {
-      const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [1050, 650],
-      });
-      
-      // Load the card image and add to PDF
-      const img = new Image();
-      img.src = cnamgsCardImage;
-      
-      img.onload = () => {
-        doc.addImage(img, 'PNG', 0, 0, 1050, 650);
-        doc.save(`carte-cnamgs-${profile?.full_name || 'patient'}.pdf`);
-        toast.success("Carte CNAMGS téléchargée");
+      // Préparer les données
+      const nom = profile?.full_name?.split(' ')[0] || 'NOM';
+      const prenoms = profile?.full_name?.split(' ').slice(1).join(' ') || 'PRENOMS';
+      const dateNaissance = profile?.birth_date 
+        ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr })
+        : '01/01/1990';
+      const sexe = profile?.gender === 'male' ? 'M' : profile?.gender === 'female' ? 'F' : 'M';
+      const numeroCard = profile?.cnamgs_number || '000-000-000-0';
+
+      const cardData = {
+        numero_carte: numeroCard,
+        nom: nom,
+        prenoms: prenoms,
+        date_naissance: dateNaissance,
+        sexe: sexe,
+        photo_url: profile?.avatar_url,
       };
-      
-      img.onerror = () => {
-        toast.error("Erreur lors du chargement de l'image");
+
+      // Valider les données
+      const validation = validateCardData(cardData);
+      if (!validation.valid) {
+        toast.error(`Données invalides: ${validation.errors.join(', ')}`);
+        return;
+      }
+
+      // Charger l'image template
+      const templateImg = new Image();
+      templateImg.src = cnamgsCardImage;
+
+      templateImg.onload = async () => {
+        try {
+          // Générer la carte personnalisée
+          const canvas = await generateCNAMGSCard(templateImg, cardData);
+
+          // Créer le PDF
+          const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [1050, 650],
+          });
+
+          const imgData = canvas.toDataURL('image/png');
+          doc.addImage(imgData, 'PNG', 0, 0, 1050, 650);
+          doc.save(`carte-cnamgs-${profile?.full_name || 'patient'}.pdf`);
+          
+          toast.success("Carte CNAMGS personnalisée téléchargée");
+        } catch (error) {
+          console.error("Error generating card:", error);
+          toast.error("Erreur lors de la génération de la carte");
+        }
+      };
+
+      templateImg.onerror = () => {
+        toast.error("Erreur lors du chargement du template");
       };
     } catch (error) {
-      console.error("Error generating PDF:", error);
-      toast.error("Erreur lors de la génération du PDF");
+      console.error("Error in PDF export:", error);
+      toast.error("Erreur lors de l'export PDF");
     }
   };
 
