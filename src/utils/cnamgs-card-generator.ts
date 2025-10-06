@@ -1,62 +1,94 @@
-// Configuration des positions pour chaque champ sur la carte CNAMGS (1050 × 650 px)
-// Ajustez ces valeurs pour déplacer individuellement chaque information
-export const CARD_TEXT_POSITIONS = {
-  canvas: { width: 1050, height: 650 },
+// Configuration des positions pour chaque champ sur la carte CNAMGS
+// Chargée dynamiquement depuis le fichier JSON
+
+interface LayoutField {
+  id: string;
+  type: string;
+  bbox: [number, number, number, number];
+  text?: string;
+  fontSize?: number;
+  circle?: {
+    cx: number;
+    cy: number;
+    r: number;
+  };
+}
+
+interface CardLayout {
+  template: string;
+  canvas: {
+    width: number;
+    height: number;
+  };
+  fields: LayoutField[];
+}
+
+let cachedLayout: CardLayout | null = null;
+
+export const loadCardLayout = async (): Promise<CardLayout> => {
+  if (cachedLayout) return cachedLayout;
   
-  // Numéro de carte (centré, en haut)
-  numero_carte: {
-    x: 700,      // Position horizontale (centré)
-    y: 300,      // Position verticale
-    fontSize: 28,
-    fontWeight: 'bold',
-    align: 'center' as CanvasTextAlign
-  },
-  
-  // Nom (aligné avec le label "Nom" du template)
-  nom: {
-    x: 99,       // Position horizontale (aligné à gauche)
-    y: 474,      // Position verticale - aligné avec le champ du template
-    fontSize: 30,
-    fontWeight: 'bold',
-    align: 'left' as CanvasTextAlign,
-    maxLength: 28
-  },
-  
-  // Prénoms (aligné avec le label "Prénoms" du template)
-  prenoms: {
-    x: 99,       // Position horizontale (aligné à gauche)
-    y: 556,      // Position verticale - aligné avec le champ du template
-    fontSize: 30,
-    fontWeight: 'bold',
-    align: 'left' as CanvasTextAlign,
-    maxLength: 34
-  },
-  
-  // Date de naissance
-  date_naissance: {
-    x: 98,       // Position horizontale
-    y: 638,      // Position verticale - aligné avec le champ du template
-    fontSize: 30,
-    fontWeight: 'bold',
-    align: 'left' as CanvasTextAlign
-  },
-  
-  // Sexe
-  sexe: {
-    x: 586,      // Position horizontale
-    y: 576,      // Position verticale - aligné avec le champ du template
-    fontSize: 30,
-    fontWeight: 'bold',
-    align: 'left' as CanvasTextAlign
-  },
-  
-  // Photo (cercle à droite)
-  photo: {
-    centerX: 853,
-    centerY: 435,
-    radiusX: 145,
-    radiusY: 145
+  try {
+    const response = await fetch('/cnamgs_layout.json');
+    if (!response.ok) {
+      throw new Error('Failed to load card layout');
+    }
+    cachedLayout = await response.json();
+    return cachedLayout!;
+  } catch (error) {
+    console.error('Error loading card layout:', error);
+    // Fallback aux positions par défaut
+    return {
+      template: 'CNAMGS-fallback',
+      canvas: { width: 1050, height: 650 },
+      fields: []
+    };
   }
+};
+
+// Fonction utilitaire pour trouver un champ dans le layout
+const findField = (layout: CardLayout, id: string): LayoutField | undefined => {
+  return layout.fields.find(f => f.id === id);
+};
+
+// Place un texte selon bbox (x,y,width,height)
+const placeText = (
+  ctx: CanvasRenderingContext2D,
+  bbox: [number, number, number, number],
+  text: string,
+  opts: { align?: CanvasTextAlign; fontSize?: number; fontWeight?: string } = {}
+): void => {
+  const [x, y, w, h] = bbox;
+  
+  if (w === 0 && h === 0) return; // Sera géré par fallback
+  
+  ctx.font = `${opts.fontWeight || 'bold'} ${opts.fontSize || 30}px Arial, sans-serif`;
+  ctx.textAlign = opts.align || 'left';
+  
+  // baseline ≈ y + h - (h*0.2)
+  const baselineY = Math.round(y + h - h * 0.2);
+  ctx.fillText(text, x, baselineY);
+};
+
+// Fallback si bbox = [0,0,0,0] : on aligne après le libellé
+const placeTextNearLabel = (
+  ctx: CanvasRenderingContext2D,
+  layout: CardLayout,
+  labelId: string,
+  text: string,
+  dx: number = 22,
+  dy: number = 0
+): void => {
+  const label = findField(layout, labelId);
+  if (!label || !label.bbox) return;
+  
+  const [lx, ly, lw, lh] = label.bbox;
+  const x = lx + lw + dx;
+  const y = ly + lh - lh * 0.2 + dy;
+  
+  ctx.font = 'bold 30px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(text, x, y);
 };
 
 // Validation des formats
@@ -81,9 +113,12 @@ export const generateCNAMGSCard = async (
 ): Promise<HTMLCanvasElement> => {
   console.log('generateCNAMGSCard: Starting generation with data:', data);
   
+  // Charger le layout
+  const layout = await loadCardLayout();
+  
   const canvas = document.createElement('canvas');
-  canvas.width = CARD_TEXT_POSITIONS.canvas.width;
-  canvas.height = CARD_TEXT_POSITIONS.canvas.height;
+  canvas.width = layout.canvas.width;
+  canvas.height = layout.canvas.height;
   const ctx = canvas.getContext('2d');
 
   if (!ctx) throw new Error('Could not get canvas context');
@@ -98,44 +133,60 @@ export const generateCNAMGSCard = async (
   ctx.fillStyle = '#DC2626'; // Rouge pour tous les champs
   ctx.textBaseline = 'top';
 
-  // 3. Numéro de carte
-  const numConfig = CARD_TEXT_POSITIONS.numero_carte;
-  ctx.font = `${numConfig.fontWeight} ${numConfig.fontSize}px Arial, sans-serif`;
-  ctx.textAlign = numConfig.align;
-  ctx.fillText(data.numero_carte, numConfig.x, numConfig.y);
+  // 3. Numéro de carte (centré)
+  const cardNumberField = findField(layout, 'field-card-number');
+  if (cardNumberField && cardNumberField.bbox.some(v => v !== 0)) {
+    placeText(ctx, cardNumberField.bbox, data.numero_carte, { 
+      align: 'center', 
+      fontSize: 28 
+    });
+  } else {
+    // Fallback: centrer à y=300
+    ctx.font = 'bold 28px Courier New, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(data.numero_carte, 700, 300);
+  }
   console.log('generateCNAMGSCard: Card number drawn:', data.numero_carte);
 
-  // 4. Nom (aligné avec le label "Nom")
-  const nomConfig = CARD_TEXT_POSITIONS.nom;
-  const nomText = data.nom.substring(0, nomConfig.maxLength).toUpperCase();
-  ctx.font = `${nomConfig.fontWeight} ${nomConfig.fontSize}px Arial, sans-serif`;
-  ctx.textAlign = nomConfig.align;
-  ctx.fillText(nomText, nomConfig.x, nomConfig.y);
+  // 4. Nom
+  const nomText = data.nom.substring(0, 28).toUpperCase();
+  const nomField = findField(layout, 'field-name');
+  if (nomField && nomField.bbox.some(v => v !== 0)) {
+    placeText(ctx, nomField.bbox, nomText);
+  } else {
+    placeTextNearLabel(ctx, layout, 'label-nom', nomText);
+  }
   console.log('generateCNAMGSCard: Nom drawn:', nomText);
 
-  // 5. Prénoms (aligné avec le label "Prénoms")
-  const prenomsConfig = CARD_TEXT_POSITIONS.prenoms;
-  const prenomsText = data.prenoms.substring(0, prenomsConfig.maxLength).toUpperCase();
-  ctx.font = `${prenomsConfig.fontWeight} ${prenomsConfig.fontSize}px Arial, sans-serif`;
-  ctx.textAlign = prenomsConfig.align;
-  ctx.fillText(prenomsText, prenomsConfig.x, prenomsConfig.y);
+  // 5. Prénoms
+  const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
+  const prenomsField = findField(layout, 'field-given-names');
+  if (prenomsField && prenomsField.bbox.some(v => v !== 0)) {
+    placeText(ctx, prenomsField.bbox, prenomsText);
+  } else {
+    placeTextNearLabel(ctx, layout, 'label-prenoms', prenomsText);
+  }
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
 
   // 6. Date de naissance
-  const dobConfig = CARD_TEXT_POSITIONS.date_naissance;
-  ctx.font = `${dobConfig.fontWeight} ${dobConfig.fontSize}px Arial, sans-serif`;
-  ctx.textAlign = dobConfig.align;
-  ctx.fillText(data.date_naissance, dobConfig.x, dobConfig.y);
+  const dobField = findField(layout, 'field-birthdate');
+  if (dobField && dobField.bbox.some(v => v !== 0)) {
+    placeText(ctx, dobField.bbox, data.date_naissance);
+  } else {
+    placeTextNearLabel(ctx, layout, 'label-dob', data.date_naissance);
+  }
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
 
   // 7. Sexe
-  const sexeConfig = CARD_TEXT_POSITIONS.sexe;
-  ctx.font = `${sexeConfig.fontWeight} ${sexeConfig.fontSize}px Arial, sans-serif`;
-  ctx.textAlign = sexeConfig.align;
-  ctx.fillText(data.sexe, sexeConfig.x, sexeConfig.y);
+  const sexeField = findField(layout, 'field-sex');
+  if (sexeField && sexeField.bbox.some(v => v !== 0)) {
+    placeText(ctx, sexeField.bbox, data.sexe);
+  } else {
+    placeTextNearLabel(ctx, layout, 'label-sex', data.sexe);
+  }
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
 
-  // 8. Ajouter la photo si disponible (forme ovale)
+  // 8. Ajouter la photo si disponible
   if (data.photo_url) {
     console.log('generateCNAMGSCard: Loading photo from:', data.photo_url);
     try {
@@ -146,12 +197,12 @@ export const generateCNAMGSCard = async (
         photoImg.onload = () => {
           console.log('generateCNAMGSCard: Photo loaded successfully');
           
-          // Position et dimensions de la zone photo (ovale sur la droite)
-          const photoConfig = CARD_TEXT_POSITIONS.photo;
-          const centerX = photoConfig.centerX;
-          const centerY = photoConfig.centerY;
-          const radiusX = photoConfig.radiusX;
-          const radiusY = photoConfig.radiusY;
+          // Récupérer les coordonnées du cercle depuis le layout
+          const photoField = findField(layout, 'photo-placeholder');
+          const centerX = photoField?.circle?.cx || 853;
+          const centerY = photoField?.circle?.cy || 435;
+          const radiusX = photoField?.circle?.r || 145;
+          const radiusY = photoField?.circle?.r || 145;
           
           ctx.save();
           
