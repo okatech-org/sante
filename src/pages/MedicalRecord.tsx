@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ConsultationDetailsModal } from "@/components/medical/ConsultationDetailsModal";
+import { HealthBooklet } from "@/components/medical/HealthBooklet";
+import { VaccinationBooklet } from "@/components/medical/VaccinationBooklet";
+import { CNAMGSCard } from "@/components/medical/CNAMGSCard";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -383,6 +386,18 @@ export default function MedicalRecord() {
                       </div>
                     </div>
                   </Card>
+                </div>
+
+                {/* Carnets numériques */}
+                <div className="grid gap-6 md:grid-cols-3">
+                  <HealthBooklet 
+                    profile={profile}
+                    medicalHistory={medicalHistory}
+                    treatments={treatments}
+                    consultations={consultations}
+                  />
+                  <VaccinationBooklet profile={profile} />
+                  <CNAMGSCard profile={profile} />
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
