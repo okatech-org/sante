@@ -66,8 +66,9 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
         const svg = svgDoc.documentElement as unknown as SVGElement;
 
         // Préparer les données
-        const nom = profile?.full_name?.split(' ')[0] || 'NOM';
-        const prenoms = profile?.full_name?.split(' ').slice(1).join(' ') || 'PRENOMS';
+        const fullNameParts = profile?.full_name?.split(' ') || [];
+        const nom = fullNameParts.length > 0 ? fullNameParts[fullNameParts.length - 1] : 'NOM';
+        const prenoms = fullNameParts.length > 1 ? fullNameParts.slice(0, -1).join(' ') : 'PRENOMS';
         const dateNaissance = profile?.birth_date 
           ? format(new Date(profile.birth_date), "dd/MM/yyyy", { locale: fr })
           : '01/01/1990';
