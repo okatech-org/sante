@@ -199,21 +199,27 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
 
     // 4) Photo dans le cercle
     if (data.photo) {
-      const ph = $('#photo-placeholder');
+      const ph = $(esc('photo-placeholder'));
       if (ph) {
         const cx = +(ph.getAttribute('cx') || 853);
         const cy = +(ph.getAttribute('cy') || 435);
         const r = +(ph.getAttribute('r') || 145);
 
+        // Créer l'élément image SVG
         const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-        img.setAttribute('href', data.photo);
+        img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', data.photo);
         img.setAttribute('x', String(cx - r));
         img.setAttribute('y', String(cy - r));
         img.setAttribute('width', String(2 * r));
         img.setAttribute('height', String(2 * r));
         img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
         img.setAttribute('clip-path', 'url(#clip-photo)');
+        
+        // Insérer l'image avant le cercle placeholder
         ph.parentNode?.insertBefore(img, ph);
+        
+        // Masquer le cercle placeholder
+        ph.setAttribute('opacity', '0');
       }
     }
   };
