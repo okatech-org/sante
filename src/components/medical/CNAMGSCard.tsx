@@ -159,7 +159,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     // 1) Numéro de carte - aligné à gauche au niveau du "C" de "Carte d'Assurance Maladie"
     const cardNumberNode = $(esc('field-card-number'));
     if (cardNumberNode) {
-      cardNumberNode.setAttribute('x', '485');
+      cardNumberNode.setAttribute('x', '493');
       cardNumberNode.setAttribute('y', '280');
       cardNumberNode.setAttribute('text-anchor', 'start');
       cardNumberNode.setAttribute('font-size', '34');
