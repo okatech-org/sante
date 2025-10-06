@@ -121,13 +121,13 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       const [x, y, w, h] = bbox;
       if (w === 0 && h === 0) return; // sera géré par fallback
       node.setAttribute('x', String(x));
-      node.setAttribute('y', String(Math.round(y + h - h * 0.2 + 4)));
+      node.setAttribute('y', String(Math.round(y + h - h * 0.2 + 8)));
       if (opts.anchor) node.setAttribute('text-anchor', opts.anchor);
       if (opts.fontSize) node.setAttribute('font-size', String(opts.fontSize));
     };
 
     // Fallback si bbox = [0,0,0,0]
-    const fallbackPlaceNearLabel = (fieldId: string, labelId: string, dx = 22, dy = 4) => {
+    const fallbackPlaceNearLabel = (fieldId: string, labelId: string, dx = 22, dy = 8) => {
       const node = $(esc(fieldId));
       const label = $(esc(labelId));
       if (!node || !label) return;
