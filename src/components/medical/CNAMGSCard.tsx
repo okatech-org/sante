@@ -158,7 +158,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     // 1) Numéro de carte
     const fCard = layout.fields.find(f => f.id === 'field-card-number');
     if (fCard && fCard.bbox && fCard.bbox.some(v => v !== 0)) {
-      const newFontSize = fCard.fontSize ? fCard.fontSize * 1.2 : 24;
+      const newFontSize = fCard.fontSize ? fCard.fontSize * 1.5 : 32;
       placeText('field-card-number', fCard.bbox, { anchor: 'start', fontSize: newFontSize });
     } else {
       const node = $('#field-card-number');
@@ -166,7 +166,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
         node.setAttribute('x', '485');
         node.setAttribute('y', '300');
         node.setAttribute('text-anchor', 'start');
-        node.setAttribute('font-size', '28.8');
+        node.setAttribute('font-size', '32');
       }
     }
 
