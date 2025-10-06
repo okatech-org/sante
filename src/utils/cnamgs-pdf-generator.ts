@@ -302,9 +302,9 @@ export const generateCNAMGSPdf = async (
     // Photo du titulaire (bas droite) - circulaire découpée
     if (photoData) {
       // Dimensions et position identiques à celles du SVG
-      const photoSize = 30; // Diamètre du cercle en mm
-      const photoX = CARD_X + CARD.w - photoSize - 2; // Position droite
-      const photoY = CARD_Y + 18; // Position verticale
+      const photoSize = 17; // Diamètre du cercle en mm
+      const photoX = CARD_X + CARD.w - photoSize - 5.5; // Position droite
+      const photoY = CARD_Y + 31.5; // Position verticale
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   } else {
@@ -404,9 +404,9 @@ export const generateCNAMGSPdf = async (
     }
 
     if (photoData) {
-      const photoSize = 30; // Même dimension que dans la version principale
-      const photoX = CARD_X + CARD.w - photoSize - 2;
-      const photoY = CARD_Y + 18;
+      const photoSize = 17; // Même dimension que dans la version principale
+      const photoX = CARD_X + CARD.w - photoSize - 5.5;
+      const photoY = CARD_Y + 31.5;
       doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
     }
   }
