@@ -160,7 +160,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     const cardNumberNode = $(esc('field-card-number'));
     if (cardNumberNode) {
       cardNumberNode.setAttribute('x', '700');
-      cardNumberNode.setAttribute('y', '275');
+      cardNumberNode.setAttribute('y', '280');
       cardNumberNode.setAttribute('text-anchor', 'middle');
       cardNumberNode.setAttribute('font-size', '32');
       cardNumberNode.setAttribute('font-weight', 'bold');
