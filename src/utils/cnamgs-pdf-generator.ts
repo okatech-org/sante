@@ -326,7 +326,7 @@ export const generateCNAMGSPdf = async (
     // SVG: x="610" y="29" width="400" height="110" sur canvas 1050x650
     if (logoData) {
       const logoW = CARD.w * 0.3810; // ~32.6mm
-      const logoH = logoW * 0.275; // Ratio naturel du logo (110/400) pour fond gris carré
+      const logoH = logoW * 0.20; // Hauteur réduite pour fond gris carré
       const logoX = CARD_X + CARD.w * 0.5810; // ~49.7mm du bord gauche
       const logoY = CARD_Y + CARD.h * 0.0446; // ~2.4mm du haut
       doc.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
@@ -451,7 +451,7 @@ export const generateCNAMGSPdf = async (
 
     if (logoData) {
       const logoWidth = 32;
-      const logoHeight = logoWidth * 0.275; // Ratio naturel du logo pour fond gris carré
+      const logoHeight = logoWidth * 0.20; // Hauteur réduite pour fond gris carré
       doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
