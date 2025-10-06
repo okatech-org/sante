@@ -110,10 +110,26 @@ const drawGrid = (doc: jsPDF, step = 10) => {
 // Fonction principale ---------------------------------------------------------
 // Helper to capture SVG as high-res image
 const captureSVGAsImage = async (): Promise<string> => {
-  const svgElement = document.querySelector('.cnamgs-card-svg');
+  const svgContainer = document.querySelector('.cnamgs-card-svg');
+  if (!svgContainer) return "";
+  
+  const svgElement = svgContainer.querySelector('svg');
   if (!svgElement) return "";
   
-  const svgString = new XMLSerializer().serializeToString(svgElement);
+  // Clone the SVG to avoid modifying the original
+  const clonedSvg = svgElement.cloneNode(true) as SVGElement;
+  
+  // Get computed styles to ensure colors and fonts are preserved
+  const computedStyle = window.getComputedStyle(svgElement);
+  
+  // Set explicit width and height for high resolution
+  const svgWidth = svgElement.getBoundingClientRect().width;
+  const svgHeight = svgElement.getBoundingClientRect().height;
+  
+  clonedSvg.setAttribute('width', svgWidth.toString());
+  clonedSvg.setAttribute('height', svgHeight.toString());
+  
+  const svgString = new XMLSerializer().serializeToString(clonedSvg);
   const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(svgBlob);
   
@@ -121,19 +137,35 @@ const captureSVGAsImage = async (): Promise<string> => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      // High resolution: 300 DPI equivalent
-      const scale = 3;
-      canvas.width = 856 * scale; // 85.6mm at ~10px/mm * scale
-      canvas.height = 540 * scale; // 53.98mm at ~10px/mm * scale
+      // Ultra high resolution: 600 DPI equivalent for crisp output
+      const scale = 6;
+      const targetWidth = 856; // Target width in pixels for 85.6mm
+      const targetHeight = 540; // Target height in pixels for 53.98mm
       
-      const ctx = canvas.getContext('2d');
+      canvas.width = targetWidth * scale;
+      canvas.height = targetHeight * scale;
+      
+      const ctx = canvas.getContext('2d', { 
+        alpha: true,
+        desynchronized: false,
+        colorSpace: 'srgb'
+      });
+      
       if (ctx) {
+        // Enable high-quality rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Scale and draw with anti-aliasing
         ctx.scale(scale, scale);
-        ctx.drawImage(img, 0, 0, 856, 540);
-        const dataUrl = canvas.toDataURL('image/png');
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+        
+        // Export as high-quality PNG
+        const dataUrl = canvas.toDataURL('image/png', 1.0);
         URL.revokeObjectURL(url);
         resolve(dataUrl);
       } else {
+        URL.revokeObjectURL(url);
         resolve("");
       }
     };
@@ -183,24 +215,23 @@ export const generateCNAMGSPdf = async (
   // Traits de coupe
   drawCutMarks(doc, CARD_X, CARD_Y, CARD.w, CARD.h, 3);
 
-  // Charger les images directement depuis les fichiers
-  const armoiriesData = assets?.armoiriesUrl
-    ? await loadImageAsDataUrl(assets.armoiriesUrl)
-    : "";
-  const logoData = assets?.cnamgsLogoUrl
-    ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
-    : "";
-  const photoData = assets?.photoUrl
-    ? await loadImageAsDataUrl(assets.photoUrl)
-    : "";
-
-  // Capturer le SVG de la carte comme image haute résolution
+  // Capturer le SVG de la carte comme image ultra haute résolution
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // Ajouter l'image capturée de la carte
-    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h);
+    // Ajouter l'image capturée de la carte en haute qualité
+    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
   } else {
+    // Charger les images directement depuis les fichiers pour le fallback
+    const armoiriesData = assets?.armoiriesUrl
+      ? await loadImageAsDataUrl(assets.armoiriesUrl)
+      : "";
+    const logoData = assets?.cnamgsLogoUrl
+      ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
+      : "";
+    const photoData = assets?.photoUrl
+      ? await loadImageAsDataUrl(assets.photoUrl)
+      : "";
     // Fallback: rendu vectoriel si la capture échoue
     // Fond carte (vert clair)
     doc.setFillColor(233, 242, 233);
@@ -285,23 +316,7 @@ export const generateCNAMGSPdf = async (
     doc.text(data.sexe || "M", sexeX, labelStartY + 10);
   }
 
-  // Superposer les images sources (toujours en haute qualité)
-  if (armoiriesData) {
-    doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3.5, 12, 12);
-  }
-
-  if (logoData) {
-    doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, 30, 8.5);
-  }
-
-  if (photoData) {
-    const photoSize = 18;
-    const photoX = CARD_X + CARD.w - photoSize - 6;
-    const photoY = CARD_Y + 31;
-    doc.addImage(photoData, "PNG", photoX, photoY, photoSize, photoSize);
-  }
-
-  // Cadre carte
+  // Cadre carte (uniquement si capture réussie)
   doc.setLineWidth(0.5);
   doc.setDrawColor(200, 200, 200);
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
