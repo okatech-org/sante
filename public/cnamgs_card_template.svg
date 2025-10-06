@@ -9,9 +9,9 @@
   <rect x="0" y="0" width="1050" height="650" rx="28" fill="#e9f2e9"/>
   <rect id="sepTop" x="0" y="165" width="1050" height="8" fill="#2aa84a"/>
 
-  <!-- logos (remplis par app via href) -->
-  <image id="img-coat-of-arms" x="60" y="34" width="120" height="120" href=""/>
-  <image id="img-cnamgs-logo" x="610" y="45" width="400" height="110" href=""/>
+  <!-- logos -->
+  <image id="img-coat-of-arms" x="60" y="34" width="120" height="120" href="/emblem_gabon.png" preserveAspectRatio="xMidYMid meet"/>
+  <image id="img-cnamgs-logo" x="610" y="45" width="400" height="110" href="/cnamgs_logo.png" preserveAspectRatio="xMidYMid meet"/>
 
   <!-- titres -->
   <text id="txt-republique" x="190" y="90" style="font:700 36px Arial;fill:#111">RÉPUBLIQUE</text>
