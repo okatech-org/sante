@@ -158,13 +158,13 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     // 1) Numéro de carte
     const fCard = layout.fields.find(f => f.id === 'field-card-number');
     if (fCard && fCard.bbox && fCard.bbox.some(v => v !== 0)) {
-      placeText('field-card-number', fCard.bbox, { anchor: 'middle' });
+      placeText('field-card-number', fCard.bbox, { anchor: 'start' });
     } else {
       const node = $('#field-card-number');
       if (node) {
-        node.setAttribute('x', '700');
+        node.setAttribute('x', '485');
         node.setAttribute('y', '300');
-        node.setAttribute('text-anchor', 'middle');
+        node.setAttribute('text-anchor', 'start');
       }
     }
 
