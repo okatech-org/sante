@@ -82,52 +82,52 @@ export const generateCNAMGSCard = async (
   console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
   ctx.fillStyle = '#000000';
 
-  // 4. Dessiner le nom (aligné à gauche, rouge, sous le label "Nom")
+  // 4. Dessiner le nom (aligné à gauche, rouge, 5mm sous le label "Nom")
   const nomText = data.nom.substring(0, 28).toUpperCase();
   ctx.font = 'bold 32px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     nomText,
-    120,
-    530 // Position sous le label "Nom"
+    75,
+    534
   );
   console.log('generateCNAMGSCard: Nom drawn:', nomText);
   ctx.fillStyle = '#000000';
 
-  // 5. Dessiner les prénoms (aligné à gauche, rouge, sous le label "Prénoms")
+  // 5. Dessiner les prénoms (aligné à gauche, rouge, 5mm sous le label "Prénoms")
   const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
   ctx.font = 'bold 32px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     prenomsText,
-    120,
-    640 // Position sous le label "Prénoms"
+    75,
+    649
   );
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
   ctx.fillStyle = '#000000';
 
-  // 6. Dessiner la date de naissance (aligné à gauche, rouge, sous le label "Date de naissance")
+  // 6. Dessiner la date de naissance (aligné à gauche, rouge, 5mm sous le label "Date de naissance")
   ctx.font = 'bold 28px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
   ctx.textAlign = 'left';
   ctx.fillText(
     data.date_naissance,
-    120,
-    760 // Position sous le label "Date de naissance"
+    75,
+    789
   );
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
   ctx.fillStyle = '#000000';
 
-  // 7. Dessiner le sexe (aligné à gauche, rouge, sous le label "Sexe")
+  // 7. Dessiner le sexe (centré, rouge, 5mm sous le label "Sexe")
   ctx.font = 'bold 36px Arial, sans-serif';
   ctx.fillStyle = '#DC2626';
-  ctx.textAlign = 'left';
+  ctx.textAlign = 'center';
   ctx.fillText(
     data.sexe,
-    635,
-    705 // Position sous le label "Sexe"
+    585,
+    704
   );
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
   ctx.fillStyle = '#000000';
