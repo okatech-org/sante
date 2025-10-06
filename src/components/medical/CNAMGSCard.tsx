@@ -17,11 +17,18 @@ interface CNAMGSCardProps {
 
 export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
   const [generatedCardUrl, setGeneratedCardUrl] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Générer la carte au chargement
   useEffect(() => {
     const generateCard = async () => {
-      if (!profile) return;
+      if (!profile) {
+        console.log('CNAMGSCard: No profile provided');
+        return;
+      }
+
+      setIsGenerating(true);
+      console.log('CNAMGSCard: Starting card generation for profile:', profile);
 
       try {
         const nom = profile?.full_name?.split(' ')[0] || 'NOM';
@@ -41,20 +48,35 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
           photo_url: profile?.avatar_url,
         };
 
-        const templateImg = new Image();
-        templateImg.src = cnamgsCardImage;
+        console.log('CNAMGSCard: Card data prepared:', cardData);
 
+        const templateImg = new Image();
+        templateImg.crossOrigin = 'anonymous';
+        
         templateImg.onload = async () => {
+          console.log('CNAMGSCard: Template image loaded');
           try {
             const canvas = await generateCNAMGSCard(templateImg, cardData);
-            const dataUrl = canvas.toDataURL('image/png');
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
+            console.log('CNAMGSCard: Card generated successfully');
             setGeneratedCardUrl(dataUrl);
+            setIsGenerating(false);
           } catch (error) {
-            console.error("Error generating card preview:", error);
+            console.error("CNAMGSCard: Error generating card preview:", error);
+            setIsGenerating(false);
           }
         };
+
+        templateImg.onerror = (error) => {
+          console.error("CNAMGSCard: Error loading template image:", error);
+          setIsGenerating(false);
+        };
+
+        templateImg.src = cnamgsCardImage;
+        console.log('CNAMGSCard: Loading template image from:', cnamgsCardImage);
       } catch (error) {
-        console.error("Error in card generation:", error);
+        console.error("CNAMGSCard: Error in card generation:", error);
+        setIsGenerating(false);
       }
     };
 

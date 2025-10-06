@@ -49,6 +49,8 @@ export const generateCNAMGSCard = async (
   templateImage: HTMLImageElement,
   data: CardData
 ): Promise<HTMLCanvasElement> => {
+  console.log('generateCNAMGSCard: Starting generation with data:', data);
+  
   const canvas = document.createElement('canvas');
   canvas.width = CARD_FIELDS.canvas.width;
   canvas.height = CARD_FIELDS.canvas.height;
@@ -56,8 +58,11 @@ export const generateCNAMGSCard = async (
 
   if (!ctx) throw new Error('Could not get canvas context');
 
+  console.log('generateCNAMGSCard: Canvas created', { width: canvas.width, height: canvas.height });
+
   // 1. Dessiner l'image template
   ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+  console.log('generateCNAMGSCard: Template image drawn');
 
   // 2. Configurer le style de texte
   ctx.fillStyle = '#000000';
@@ -67,11 +72,16 @@ export const generateCNAMGSCard = async (
   // 3. Dessiner le numéro de carte
   const cardNumberField = CARD_FIELDS.fields.card_number.px;
   ctx.font = 'bold 24px Arial, sans-serif';
+  const cardNumberText = data.numero_carte;
   ctx.fillText(
-    data.numero_carte,
+    cardNumberText,
     cardNumberField.x + cardNumberField.width / 2,
     cardNumberField.y + cardNumberField.height / 2
   );
+  console.log('generateCNAMGSCard: Card number drawn:', cardNumberText, 'at', {
+    x: cardNumberField.x + cardNumberField.width / 2,
+    y: cardNumberField.y + cardNumberField.height / 2
+  });
 
   // 4. Dessiner le nom (majuscules)
   const nomField = CARD_FIELDS.fields.field_nom_rect.px;
@@ -154,10 +164,11 @@ export const generateCNAMGSCard = async (
       
       photoImg.src = data.photo_url;
     } catch (error) {
-      console.error('Error loading photo:', error);
+      console.error('generateCNAMGSCard: Error loading photo:', error);
     }
   }
 
+  console.log('generateCNAMGSCard: Card generation complete');
   return canvas;
 };
 
