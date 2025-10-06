@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PatientSidebar } from "@/components/layout/PatientSidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Calendar, X, Filter, ChevronRight } from "lucide-react";
+import { Plus, Calendar, X, Filter, ChevronRight, Video } from "lucide-react";
 import { AppointmentCard, Appointment } from "@/components/appointments/AppointmentCard";
 import { CancelAppointmentModal } from "@/components/appointments/CancelAppointmentModal";
 import { BookingModal } from "@/components/appointments/BookingModal";
@@ -138,6 +139,7 @@ const mockAppointments: Appointment[] = [
 ];
 
 export default function Appointments() {
+  const navigate = useNavigate();
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -203,10 +205,10 @@ export default function Appointments() {
   const renderUpcoming = () => {
     if (upcomingAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucun rendez-vous prévu</h3>
-          <p className="text-gray-400 mb-6">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucun rendez-vous prévu</h3>
+          <p className="text-muted-foreground mb-6">
             Vous n'avez aucun rendez-vous à venir pour le moment
           </p>
           <Button onClick={() => setBookingModalOpen(true)}>
@@ -218,17 +220,40 @@ export default function Appointments() {
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {upcomingAppointments.map((appointment) => (
+      <div className="space-y-4">
+        {/* Prochain rendez-vous en évidence */}
+        <div className="rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 p-6 shadow-md">
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar className="h-5 w-5 text-cyan-600" />
+            <h3 className="text-sm font-semibold text-cyan-900">Prochain Rendez-vous</h3>
+          </div>
           <AppointmentCard
-            key={appointment.id}
-            appointment={appointment}
-            onCancel={() => handleCancelAppointment(appointment)}
-            onPay={() => handlePay(appointment)}
-            onCall={() => handleCall(appointment)}
-            onGetDirections={() => handleGetDirections(appointment)}
+            appointment={upcomingAppointments[0]}
+            onCancel={() => handleCancelAppointment(upcomingAppointments[0])}
+            onPay={() => handlePay(upcomingAppointments[0])}
+            onCall={() => handleCall(upcomingAppointments[0])}
+            onGetDirections={() => handleGetDirections(upcomingAppointments[0])}
           />
-        ))}
+        </div>
+
+        {/* Autres rendez-vous */}
+        {upcomingAppointments.length > 1 && (
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground">Rendez-vous à venir</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {upcomingAppointments.slice(1).map((appointment) => (
+                <AppointmentCard
+                  key={appointment.id}
+                  appointment={appointment}
+                  onCancel={() => handleCancelAppointment(appointment)}
+                  onPay={() => handlePay(appointment)}
+                  onCall={() => handleCall(appointment)}
+                  onGetDirections={() => handleGetDirections(appointment)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -236,10 +261,10 @@ export default function Appointments() {
   const renderPast = () => {
     if (pastAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <Calendar className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucun historique</h3>
-          <p className="text-gray-400">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucun historique</h3>
+          <p className="text-muted-foreground">
             Vous n'avez aucun rendez-vous passé pour le moment
           </p>
         </div>
@@ -262,10 +287,10 @@ export default function Appointments() {
   const renderCancelled = () => {
     if (cancelledAppointments.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl backdrop-blur-xl p-8 bg-[#1a1f2e]/80 border border-white/10">
-          <X className="h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-white">Aucune annulation</h3>
-          <p className="text-gray-400">
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl bg-card border border-border p-8">
+          <X className="h-16 w-16 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2 text-foreground">Aucune annulation</h3>
+          <p className="text-muted-foreground">
             Vous n'avez annulé aucun rendez-vous
           </p>
         </div>
@@ -370,6 +395,45 @@ export default function Appointments() {
                       <SelectItem value="biolab">BIOLAB Libreville</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions Cards - Style tableau de bord */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {/* Prendre RDV */}
+              <div 
+                onClick={() => setBookingModalOpen(true)}
+                className="p-6 rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 hover:shadow-lg transition-all cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Prendre RDV</h3>
+                    <Badge className="bg-pink-500 text-white hover:bg-pink-600 border-0">
+                      Disponible aujourd'hui
+                    </Badge>
+                  </div>
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-cyan-100 group-hover:scale-110 transition-transform">
+                    <Calendar className="w-7 h-7 text-cyan-600" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Téléconsultation */}
+              <div 
+                onClick={() => navigate('/teleconsultation')}
+                className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Téléconsultation</h3>
+                    <Badge className="bg-pink-500 text-white hover:bg-pink-600 border-0">
+                      Médecins disponibles
+                    </Badge>
+                  </div>
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-purple-100 group-hover:scale-110 transition-transform">
+                    <Video className="w-7 h-7 text-purple-600" />
+                  </div>
                 </div>
               </div>
             </div>
