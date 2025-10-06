@@ -64,14 +64,15 @@ export const generateCNAMGSCard = async (
   ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
   console.log('generateCNAMGSCard: Template image drawn');
 
-  // 2. Configurer le style de texte
+  // 2. Configurer le style de texte par défaut
   ctx.fillStyle = '#000000';
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // 3. Dessiner le numéro de carte
+  // 3. Dessiner le numéro de carte (centré, en rouge)
   const cardNumberField = CARD_FIELDS.fields.card_number.px;
-  ctx.font = 'bold 24px Arial, sans-serif';
+  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.textAlign = 'center';
   const cardNumberText = data.numero_carte;
   ctx.fillText(
     cardNumberText,
@@ -82,51 +83,63 @@ export const generateCNAMGSCard = async (
     x: cardNumberField.x + cardNumberField.width / 2,
     y: cardNumberField.y + cardNumberField.height / 2
   });
+  ctx.fillStyle = '#000000'; // Retour au noir
 
-  // 4. Dessiner le nom (majuscules)
+  // 4. Dessiner le nom (aligné à gauche, majuscules, en rouge)
   const nomField = CARD_FIELDS.fields.field_nom_rect.px;
   const nomText = data.nom.substring(0, 28).toUpperCase();
-  ctx.font = 'bold 28px Arial, sans-serif';
+  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.textAlign = 'left';
   ctx.fillText(
     nomText,
-    nomField.x + nomField.width / 2,
+    nomField.x,
     nomField.y + nomField.height / 2
   );
   console.log('generateCNAMGSCard: Nom drawn:', nomText, 'at', {
-    x: nomField.x + nomField.width / 2,
+    x: nomField.x,
     y: nomField.y + nomField.height / 2
   });
+  ctx.fillStyle = '#000000'; // Retour au noir
 
-  // 5. Dessiner les prénoms
+  // 5. Dessiner les prénoms (aligné à gauche, majuscules, en rouge)
   const prenomsField = CARD_FIELDS.fields.field_prenoms_rect.px;
   const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
-  ctx.font = '28px Arial, sans-serif';
+  ctx.font = 'bold 32px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.textAlign = 'left';
   ctx.fillText(
     prenomsText,
-    prenomsField.x + prenomsField.width / 2,
+    prenomsField.x,
     prenomsField.y + prenomsField.height / 2
   );
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText, 'at', {
-    x: prenomsField.x + prenomsField.width / 2,
+    x: prenomsField.x,
     y: prenomsField.y + prenomsField.height / 2
   });
+  ctx.fillStyle = '#000000'; // Retour au noir
 
-  // 6. Dessiner la date de naissance
+  // 6. Dessiner la date de naissance (aligné à gauche, en rouge)
   const dobField = CARD_FIELDS.fields.field_dob_rect.px;
-  ctx.font = '24px Arial, sans-serif';
+  ctx.font = 'bold 28px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.textAlign = 'left';
   ctx.fillText(
     data.date_naissance,
-    dobField.x + dobField.width / 2,
+    dobField.x,
     dobField.y + dobField.height / 2
   );
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance, 'at', {
-    x: dobField.x + dobField.width / 2,
+    x: dobField.x,
     y: dobField.y + dobField.height / 2
   });
+  ctx.fillStyle = '#000000'; // Retour au noir
 
-  // 7. Dessiner le sexe
+  // 7. Dessiner le sexe (centré, en rouge)
   const sexField = CARD_FIELDS.fields.field_sex_rect.px;
-  ctx.font = 'bold 24px Arial, sans-serif';
+  ctx.font = 'bold 36px Arial, sans-serif';
+  ctx.fillStyle = '#DC2626'; // Rouge
+  ctx.textAlign = 'center';
   ctx.fillText(
     data.sexe,
     sexField.x + sexField.width / 2,
@@ -136,8 +149,9 @@ export const generateCNAMGSCard = async (
     x: sexField.x + sexField.width / 2,
     y: sexField.y + sexField.height / 2
   });
+  ctx.fillStyle = '#000000'; // Retour au noir
 
-  // 8. Ajouter la photo si disponible
+  // 8. Ajouter la photo si disponible (forme ovale)
   if (data.photo_url) {
     console.log('generateCNAMGSCard: Loading photo from:', data.photo_url);
     try {
@@ -149,7 +163,19 @@ export const generateCNAMGSCard = async (
           console.log('generateCNAMGSCard: Photo loaded successfully');
           const photoField = CARD_FIELDS.fields.photo.px;
           
-          // Dessiner la photo en respectant le ratio et en remplissant la zone
+          ctx.save();
+          
+          // Créer un clip path ovale
+          const centerX = photoField.x + photoField.width / 2;
+          const centerY = photoField.y + photoField.height / 2;
+          const radiusX = photoField.width / 2;
+          const radiusY = photoField.height / 2;
+          
+          ctx.beginPath();
+          ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+          ctx.clip();
+          
+          // Dessiner la photo en respectant le ratio et en remplissant la zone ovale
           const scale = Math.max(
             photoField.width / photoImg.width,
             photoField.height / photoImg.height
@@ -161,11 +187,6 @@ export const generateCNAMGSCard = async (
           const offsetX = (photoField.width - scaledWidth) / 2;
           const offsetY = (photoField.height - scaledHeight) / 2;
           
-          ctx.save();
-          ctx.beginPath();
-          ctx.rect(photoField.x, photoField.y, photoField.width, photoField.height);
-          ctx.clip();
-          
           ctx.drawImage(
             photoImg,
             photoField.x + offsetX,
@@ -175,7 +196,7 @@ export const generateCNAMGSCard = async (
           );
           
           ctx.restore();
-          console.log('generateCNAMGSCard: Photo drawn successfully');
+          console.log('generateCNAMGSCard: Photo drawn successfully in oval shape');
           resolve();
         };
         photoImg.onerror = (error) => {
