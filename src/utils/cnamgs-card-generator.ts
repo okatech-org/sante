@@ -66,71 +66,61 @@ export const generateCNAMGSCard = async (
   console.log('generateCNAMGSCard: Template image drawn');
 
   // 2. Configurer le style de texte par défaut
-  ctx.fillStyle = '#000000';
-  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#DC2626'; // Rouge pour tous les champs
+  ctx.textBaseline = 'top';
 
-  // 3. Dessiner le numéro de carte (centré, rouge, 5mm sous le titre)
-  ctx.font = 'bold 36px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626'; // Rouge
+  // 3. Dessiner le numéro de carte (centré, rouge, juste sous "Carte d'Assurance Maladie")
+  ctx.font = 'bold 38px Arial, sans-serif';
   ctx.textAlign = 'center';
   const cardNumberText = data.numero_carte;
   ctx.fillText(
     cardNumberText,
-    canvas.width / 2,
-    365 // Position 5mm sous "Carte d'Assurance Maladie"
+    645, // Centré sur la partie droite
+    345  // Position sous "Carte d'Assurance Maladie"
   );
   console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
-  ctx.fillStyle = '#000000';
 
-  // 4. Dessiner le nom (aligné à gauche, rouge, 5mm sous le label "Nom")
+  // 4. Dessiner le nom (aligné à gauche, rouge, juste sous le label "Nom")
   const nomText = data.nom.substring(0, 28).toUpperCase();
-  ctx.font = 'bold 32px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
+  ctx.font = 'bold 34px Arial, sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(
     nomText,
-    75,
-    534
+    76,
+    520
   );
   console.log('generateCNAMGSCard: Nom drawn:', nomText);
-  ctx.fillStyle = '#000000';
 
-  // 5. Dessiner les prénoms (aligné à gauche, rouge, 5mm sous le label "Prénoms")
+  // 5. Dessiner les prénoms (aligné à gauche, rouge, juste sous le label "Prénoms")
   const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
-  ctx.font = 'bold 32px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
+  ctx.font = 'bold 34px Arial, sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(
     prenomsText,
-    75,
-    649
+    76,
+    632
   );
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
-  ctx.fillStyle = '#000000';
 
-  // 6. Dessiner la date de naissance (aligné à gauche, rouge, 5mm sous le label "Date de naissance")
-  ctx.font = 'bold 28px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
+  // 6. Dessiner la date de naissance (aligné à gauche, rouge, juste sous le label "Date de naissance")
+  ctx.font = 'bold 32px Arial, sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(
     data.date_naissance,
-    75,
-    789
+    76,
+    758
   );
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
-  ctx.fillStyle = '#000000';
 
-  // 7. Dessiner le sexe (centré, rouge, 5mm sous le label "Sexe")
-  ctx.font = 'bold 36px Arial, sans-serif';
-  ctx.fillStyle = '#DC2626';
-  ctx.textAlign = 'center';
+  // 7. Dessiner le sexe (aligné à gauche, rouge, juste sous le label "Sexe")
+  ctx.font = 'bold 38px Arial, sans-serif';
+  ctx.textAlign = 'left';
   ctx.fillText(
     data.sexe,
-    585,
-    704
+    632,
+    695
   );
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
-  ctx.fillStyle = '#000000';
 
   // 8. Ajouter la photo si disponible (forme ovale)
   if (data.photo_url) {
@@ -142,36 +132,36 @@ export const generateCNAMGSCard = async (
       await new Promise<void>((resolve, reject) => {
         photoImg.onload = () => {
           console.log('generateCNAMGSCard: Photo loaded successfully');
-          const photoField = CARD_FIELDS.fields.photo.px;
+          
+          // Position et dimensions de la zone photo (ovale sur la droite)
+          const centerX = 1000;
+          const centerY = 525;
+          const radiusX = 140;
+          const radiusY = 165;
           
           ctx.save();
           
           // Créer un clip path ovale
-          const centerX = photoField.x + photoField.width / 2;
-          const centerY = photoField.y + photoField.height / 2;
-          const radiusX = photoField.width / 2;
-          const radiusY = photoField.height / 2;
-          
           ctx.beginPath();
           ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
           ctx.clip();
           
           // Dessiner la photo en respectant le ratio et en remplissant la zone ovale
           const scale = Math.max(
-            photoField.width / photoImg.width,
-            photoField.height / photoImg.height
+            (radiusX * 2) / photoImg.width,
+            (radiusY * 2) / photoImg.height
           );
           
           const scaledWidth = photoImg.width * scale;
           const scaledHeight = photoImg.height * scale;
           
-          const offsetX = (photoField.width - scaledWidth) / 2;
-          const offsetY = (photoField.height - scaledHeight) / 2;
+          const offsetX = centerX - scaledWidth / 2;
+          const offsetY = centerY - scaledHeight / 2;
           
           ctx.drawImage(
             photoImg,
-            photoField.x + offsetX,
-            photoField.y + offsetY,
+            offsetX,
+            offsetY,
             scaledWidth,
             scaledHeight
           );
