@@ -234,10 +234,10 @@ export const generateCNAMGSPdf = async (
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
-    // Emblème des armoiries (haut gauche) - positionné pour ne pas chevaucher le texte
+    // Emblème des armoiries (haut gauche) - rapproché du texte
     if (armoiriesData) {
-      const emblemSize = 10; // Réduit pour éviter le chevauchement avec le texte
-      doc.addImage(armoiriesData, "PNG", CARD_X + 3, CARD_Y + 3, emblemSize, emblemSize);
+      const emblemSize = 10;
+      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
     }
 
     // Logo CNAMGS (haut droite) - proportions naturelles du logo (ratio ~4:1)
@@ -336,7 +336,7 @@ export const generateCNAMGSPdf = async (
     // Fallback: Superposer les images sources
     if (armoiriesData) {
       const emblemSize = 10;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 3, CARD_Y + 3, emblemSize, emblemSize);
+      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
     }
 
     if (logoData) {
