@@ -236,16 +236,15 @@ export const generateCNAMGSPdf = async (
     // Superposer les images sources pour une qualité optimale
     // Emblème des armoiries (haut gauche) - positionné pour ne pas chevaucher le texte
     if (armoiriesData) {
-      const emblemSize = 11; // Légèrement réduit pour éviter le chevauchement
-      doc.addImage(armoiriesData, "PNG", CARD_X + 4.5, CARD_Y + 4, emblemSize, emblemSize);
+      const emblemSize = 10; // Réduit pour éviter le chevauchement avec le texte
+      doc.addImage(armoiriesData, "PNG", CARD_X + 3, CARD_Y + 3, emblemSize, emblemSize);
     }
 
-    // Logo CNAMGS (haut droite) - proportions naturelles conservées
+    // Logo CNAMGS (haut droite) - proportions naturelles du logo (ratio ~4:1)
     if (logoData) {
-      // Proportions naturelles du logo CNAMGS (plus carré)
-      const logoWidth = 24;
-      const logoHeight = 10;
-      doc.addImage(logoData, "PNG", CARD_X + 52, CARD_Y + 4.5, logoWidth, logoHeight);
+      const logoWidth = 32; // Proportions naturelles horizontales du logo
+      const logoHeight = 8;
+      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
     // La photo est déjà circulaire dans le SVG capturé grâce au clipPath
@@ -336,14 +335,14 @@ export const generateCNAMGSPdf = async (
     
     // Fallback: Superposer les images sources
     if (armoiriesData) {
-      const emblemSize = 11;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 4.5, CARD_Y + 4, emblemSize, emblemSize);
+      const emblemSize = 10;
+      doc.addImage(armoiriesData, "PNG", CARD_X + 3, CARD_Y + 3, emblemSize, emblemSize);
     }
 
     if (logoData) {
-      const logoWidth = 24;
-      const logoHeight = 10;
-      doc.addImage(logoData, "PNG", CARD_X + 52, CARD_Y + 4.5, logoWidth, logoHeight);
+      const logoWidth = 32;
+      const logoHeight = 8;
+      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 4, logoWidth, logoHeight);
     }
 
     if (photoData) {
