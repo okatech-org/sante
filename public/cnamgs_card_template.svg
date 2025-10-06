@@ -42,8 +42,8 @@
   <image id="img-cnamgs-logo" x="610" y="45" width="400" height="110" href="/cnamgs_logo.png" preserveAspectRatio="xMidYMid meet"/>
 
   <!-- titres en haut gauche -->
-  <text id="txt-republique" x="190" y="90" style="font:700 36px Arial;fill:#111">RÉPUBLIQUE</text>
-  <text id="txt-gabonaise" x="190" y="130" style="font:700 36px Arial;fill:#111">GABONAISE</text>
+  <text id="txt-republique" x="190" y="90" style="font:700 33px Arial;fill:#111;letter-spacing:-0.5px">RÉPUBLIQUE</text>
+  <text id="txt-gabonaise" x="190" y="130" style="font:700 33px Arial;fill:#111;letter-spacing:-0.5px">GABONAISE</text>
   
   <!-- titres centrés -->
   <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 31px Arial;fill:#555">Secteur Privé</text>
