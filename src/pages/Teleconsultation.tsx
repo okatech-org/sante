@@ -109,42 +109,42 @@ export default function Teleconsultation() {
 
   if (inCall && selectedDoctor) {
     return (
-      <div className="min-h-screen bg-[#0f1419] flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         {/* Video Interface */}
         <div className="flex-1 relative">
           {/* Main Video - Doctor */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-full h-full max-w-5xl mx-auto p-4 lg:p-8">
-              <div className="h-full rounded-2xl backdrop-blur-xl bg-[#1a1f2e]/95 border border-white/10 shadow-2xl overflow-hidden">
+              <div className="h-full rounded-2xl backdrop-blur-xl bg-card/95 border border-border shadow-2xl overflow-hidden">
                 <div className="h-full flex flex-col items-center justify-center relative">
                   {videoEnabled ? (
-                    <div className="w-full h-full bg-gradient-to-br from-[#1a1f2e] to-[#0f1419] flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-card to-background flex items-center justify-center">
                       <div className="text-center space-y-4">
-                        <Avatar className="h-32 w-32 mx-auto ring-4 ring-[#00d4ff]/20">
+                        <Avatar className="h-32 w-32 mx-auto ring-4 ring-cyan-500/20">
                           <AvatarImage src={selectedDoctor.avatar} />
-                          <AvatarFallback className="text-4xl bg-[#00d4ff]/20 text-[#00d4ff]">
+                          <AvatarFallback className="text-4xl bg-cyan-100 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400">
                             {selectedDoctor.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <h3 className="text-2xl font-semibold text-white">{selectedDoctor.name}</h3>
-                          <p className="text-gray-400">{selectedDoctor.specialty}</p>
+                          <h3 className="text-2xl font-semibold text-foreground">{selectedDoctor.name}</h3>
+                          <p className="text-muted-foreground">{selectedDoctor.specialty}</p>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-full bg-[#1a1f2e]/50">
-                      <VideoOff className="h-16 w-16 text-gray-400" />
+                    <div className="flex items-center justify-center h-full bg-card/50">
+                      <VideoOff className="h-16 w-16 text-muted-foreground" />
                     </div>
                   )}
                   
                   {/* Consultation Info Overlay */}
                   <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                    <Badge className="backdrop-blur-xl bg-[#1a1f2e]/80 px-4 py-2 text-white border-white/10">
+                    <Badge className="backdrop-blur-xl bg-card/80 px-4 py-2 text-foreground border-border">
                       <Clock className="h-3 w-3 mr-2" />
                       <span className="font-mono">00:05:23</span>
                     </Badge>
-                    <Badge className="backdrop-blur-xl bg-[#00d4ff]/20 px-4 py-2 text-[#00d4ff] border-[#00d4ff]/30">
+                    <Badge className="backdrop-blur-xl bg-cyan-100 dark:bg-cyan-950/30 px-4 py-2 text-cyan-700 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800">
                       <CheckCircle2 className="h-3 w-3 mr-2" />
                       En ligne
                     </Badge>
@@ -156,17 +156,17 @@ export default function Teleconsultation() {
 
           {/* Self Video - Picture in Picture */}
           <div className="absolute bottom-24 right-4 w-48 h-36 lg:w-64 lg:h-48">
-            <div className="h-full rounded-xl backdrop-blur-xl bg-[#1a1f2e]/95 border border-white/10 overflow-hidden">
-              <div className="h-full flex items-center justify-center bg-gradient-to-br from-[#00d4ff]/5 to-[#0088ff]/5">
+            <div className="h-full rounded-xl backdrop-blur-xl bg-card/95 border border-border overflow-hidden">
+              <div className="h-full flex items-center justify-center bg-gradient-to-br from-cyan-50 dark:from-cyan-950/10 to-blue-50 dark:to-blue-950/10">
                 {videoEnabled ? (
                   <div className="text-center">
-                    <Avatar className="h-16 w-16 mx-auto ring-2 ring-[#00d4ff]/20">
-                      <AvatarFallback className="text-xl bg-[#00d4ff] text-white">VU</AvatarFallback>
+                    <Avatar className="h-16 w-16 mx-auto ring-2 ring-cyan-500/20">
+                      <AvatarFallback className="text-xl bg-cyan-500 dark:bg-cyan-600 text-white">VU</AvatarFallback>
                     </Avatar>
-                    <p className="text-xs text-gray-400 mt-2">Vous</p>
+                    <p className="text-xs text-muted-foreground mt-2">Vous</p>
                   </div>
                 ) : (
-                  <VideoOff className="h-8 w-8 text-gray-400" />
+                  <VideoOff className="h-8 w-8 text-muted-foreground" />
                 )}
               </div>
             </div>
@@ -174,13 +174,13 @@ export default function Teleconsultation() {
         </div>
 
         {/* Controls */}
-        <div className="bg-[#1a1f2e]/95 backdrop-blur-xl border-t border-white/10 p-4">
+        <div className="bg-card/95 backdrop-blur-xl border-t border-border p-4">
           <div className="container max-w-3xl mx-auto flex items-center justify-center gap-4">
             <Button
               size="lg"
               variant={videoEnabled ? "secondary" : "destructive"}
               onClick={() => setVideoEnabled(!videoEnabled)}
-              className="rounded-full h-14 w-14 bg-white/10 hover:bg-white/20 border border-white/10"
+              className="rounded-full h-14 w-14"
             >
               {videoEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
             </Button>
@@ -189,7 +189,7 @@ export default function Teleconsultation() {
               size="lg"
               variant={audioEnabled ? "secondary" : "destructive"}
               onClick={() => setAudioEnabled(!audioEnabled)}
-              className="rounded-full h-14 w-14 bg-white/10 hover:bg-white/20 border border-white/10"
+              className="rounded-full h-14 w-14"
             >
               {audioEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
             </Button>
@@ -197,7 +197,7 @@ export default function Teleconsultation() {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full h-14 w-14 bg-white/10 hover:bg-white/20 border border-white/10"
+              className="rounded-full h-14 w-14"
             >
               <MessageSquare className="h-5 w-5" />
             </Button>
@@ -205,7 +205,7 @@ export default function Teleconsultation() {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full h-14 w-14 bg-white/10 hover:bg-white/20 border border-white/10"
+              className="rounded-full h-14 w-14"
             >
               <FileText className="h-5 w-5" />
             </Button>
@@ -213,7 +213,7 @@ export default function Teleconsultation() {
             <Button
               size="lg"
               onClick={endConsultation}
-              className="rounded-full h-16 w-16 ml-4 bg-[#ff0088] hover:bg-[#e0007a]"
+              className="rounded-full h-16 w-16 ml-4 bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700"
             >
               <Phone className="h-6 w-6" />
             </Button>
@@ -227,53 +227,53 @@ export default function Teleconsultation() {
     <PatientDashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="rounded-2xl backdrop-blur-xl p-3 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2">
+        <div className="rounded-2xl bg-card border border-border shadow-sm p-3 sm:p-6 lg:p-8 mb-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-2">
             Téléconsultation
           </h1>
-          <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
+          <p className="text-muted-foreground text-xs sm:text-sm lg:text-base">
             Consultez un médecin à distance, en toute sécurité
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+        <div className="rounded-xl bg-card border border-border shadow-sm p-4 sm:p-6 mb-6">
           <div className="grid grid-cols-3 gap-3 sm:gap-4">
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#00d4ff]/20 flex items-center justify-center mb-2">
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[#00d4ff]" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 flex items-center justify-center mb-2">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-cyan-600 dark:text-cyan-400" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-white mb-1">24</p>
-              <p className="text-[10px] sm:text-sm text-gray-400">Médecins disponibles</p>
+              <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">24</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Médecins disponibles</p>
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#0088ff]/20 flex items-center justify-center mb-2">
-                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-[#0088ff]" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-blue-100 dark:bg-blue-950/30 flex items-center justify-center mb-2">
+                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-white mb-1">~5 min</p>
-              <p className="text-[10px] sm:text-sm text-gray-400">Temps d'attente moyen</p>
+              <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">~5 min</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Temps d'attente moyen</p>
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-[#ffaa00]/20 flex items-center justify-center mb-2">
-                <Video className="h-5 w-5 sm:h-6 sm:w-6 text-[#ffaa00]" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-amber-100 dark:bg-amber-950/30 flex items-center justify-center mb-2">
+                <Video className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 dark:text-amber-400" />
               </div>
-              <p className="text-xl sm:text-3xl font-bold text-white mb-1">3</p>
-              <p className="text-[10px] sm:text-sm text-gray-400">Consultations ce mois</p>
+              <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">3</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Consultations ce mois</p>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
-            <TabsList className="grid w-full grid-cols-2 bg-white/5">
-              <TabsTrigger value="available" className="gap-2 data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-6 mb-6">
+            <TabsList className="grid w-full grid-cols-2 bg-muted">
+              <TabsTrigger value="available" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 <span className="hidden sm:inline">Médecins </span>disponibles
               </TabsTrigger>
-              <TabsTrigger value="scheduled" className="gap-2 data-[state=active]:bg-[#0088ff]/20 data-[state=active]:text-[#0088ff]">
+              <TabsTrigger value="scheduled" className="gap-2">
                 <Calendar className="h-4 w-4" />
                 <span className="hidden sm:inline">Consultations </span>programmées
               </TabsTrigger>
@@ -284,19 +284,19 @@ export default function Teleconsultation() {
           <TabsContent value="available" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {mockAvailableDoctors.map((doctor) => (
-                <div key={doctor.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
+                <div key={doctor.id} className="rounded-xl bg-card border border-border hover:shadow-md transition-all p-6">
                   <div className="flex items-start gap-4 mb-4">
-                    <Avatar className="h-16 w-16 ring-2 ring-[#00d4ff]/20">
+                    <Avatar className="h-16 w-16 ring-2 ring-cyan-200 dark:ring-cyan-800">
                       <AvatarImage src={doctor.avatar} />
-                      <AvatarFallback className="text-xl bg-[#00d4ff]/20 text-[#00d4ff]">
+                      <AvatarFallback className="text-xl bg-cyan-100 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400">
                         {doctor.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="text-lg font-semibold text-white">{doctor.name}</h3>
-                          <p className="text-sm text-gray-400 flex items-center gap-2 mt-1">
+                          <h3 className="text-lg font-semibold text-foreground">{doctor.name}</h3>
+                          <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                             <Stethoscope className="h-3 w-3" />
                             {doctor.specialty}
                           </p>
@@ -305,12 +305,12 @@ export default function Teleconsultation() {
                           variant={doctor.available ? "default" : "secondary"}
                           className={cn(
                             "gap-1",
-                            doctor.available ? "bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30" : "bg-white/10 text-gray-400"
+                            doctor.available ? "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800" : "bg-muted text-muted-foreground"
                           )}
                         >
                           <div className={cn(
                             "h-2 w-2 rounded-full",
-                            doctor.available ? "bg-[#00d4ff] animate-pulse" : "bg-gray-400"
+                            doctor.available ? "bg-cyan-600 dark:bg-cyan-400 animate-pulse" : "bg-muted-foreground"
                           )} />
                           {doctor.available ? "Disponible" : "Occupé"}
                         </Badge>
@@ -322,33 +322,33 @@ export default function Teleconsultation() {
                             className={cn(
                               "h-4 w-4",
                               i < Math.floor(doctor.rating) 
-                                ? "fill-[#ffaa00] text-[#ffaa00]" 
-                                : "text-gray-600"
+                                ? "fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400" 
+                                : "text-muted"
                             )}
                           />
                         ))}
-                        <span className="text-xs text-gray-400 ml-2">
+                        <span className="text-xs text-muted-foreground ml-2">
                           {doctor.rating}/5
                         </span>
                       </div>
                     </div>
                   </div>
                   {!doctor.available && doctor.nextSlot && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400 p-3 bg-white/5 rounded-lg mb-3">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 bg-muted rounded-lg mb-3">
                       <Clock className="h-4 w-4" />
                       Prochain créneau : {doctor.nextSlot}
                     </div>
                   )}
                   <div className="flex gap-2">
                     <Button 
-                      className="flex-1 bg-[#00d4ff] hover:bg-[#00b8e6] text-white"
+                      className="flex-1"
                       disabled={!doctor.available}
                       onClick={() => startConsultation(doctor)}
                     >
                       <Video className="h-4 w-4 mr-2" />
                       {doctor.available ? "Démarrer" : "Non disponible"}
                     </Button>
-                    <Button variant="outline" className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
+                    <Button variant="outline">
                       <Calendar className="h-4 w-4 mr-2" />
                       Planifier
                     </Button>
@@ -361,20 +361,20 @@ export default function Teleconsultation() {
           {/* Scheduled Consultations */}
           <TabsContent value="scheduled" className="space-y-4">
             {mockUpcomingConsultations.map((consultation) => (
-              <div key={consultation.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
+              <div key={consultation.id} className="rounded-xl bg-card border border-border hover:shadow-md transition-all p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="h-12 w-12 rounded-xl bg-[#00d4ff]/20 flex items-center justify-center">
-                      <Video className="h-6 w-6 text-[#00d4ff]" />
+                    <div className="h-12 w-12 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 flex items-center justify-center">
+                      <Video className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-white">{consultation.doctor}</h3>
+                        <h3 className="font-semibold text-foreground">{consultation.doctor}</h3>
                         <Badge 
                           className={cn(
                             consultation.status === "confirmed" 
-                              ? "bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30" 
-                              : "bg-[#ffaa00]/20 text-[#ffaa00] border-[#ffaa00]/30"
+                              ? "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800" 
+                              : "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800"
                           )}
                         >
                           {consultation.status === "confirmed" ? (
@@ -390,22 +390,22 @@ export default function Teleconsultation() {
                           )}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-400">{consultation.specialty}</p>
+                      <p className="text-sm text-muted-foreground">{consultation.specialty}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium text-white">{consultation.date}</p>
-                      <p className="text-sm text-gray-400 flex items-center gap-1">
+                      <p className="text-sm font-medium text-foreground">{consultation.date}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {consultation.time}
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
+                      <Button variant="outline" size="sm">
                         Modifier
                       </Button>
-                      <Button size="sm" className="bg-[#00d4ff] hover:bg-[#00b8e6] text-white">
+                      <Button size="sm">
                         <Video className="h-4 w-4 mr-2" />
                         Rejoindre
                       </Button>
