@@ -14,8 +14,8 @@ export const CARD_TEXT_POSITIONS = {
   
   // Nom (aligné avec le label "Nom" du template)
   nom: {
-    x: 120,      // Position horizontale (aligné à gauche)
-    y: 472,      // Position verticale - aligné avec le champ du template
+    x: 99,       // Position horizontale (aligné à gauche)
+    y: 474,      // Position verticale - aligné avec le champ du template
     fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign,
@@ -24,8 +24,8 @@ export const CARD_TEXT_POSITIONS = {
   
   // Prénoms (aligné avec le label "Prénoms" du template)
   prenoms: {
-    x: 120,      // Position horizontale (aligné à gauche)
-    y: 564,      // Position verticale - aligné avec le champ du template
+    x: 99,       // Position horizontale (aligné à gauche)
+    y: 556,      // Position verticale - aligné avec le champ du template
     fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign,
@@ -34,8 +34,8 @@ export const CARD_TEXT_POSITIONS = {
   
   // Date de naissance
   date_naissance: {
-    x: 120,      // Position horizontale
-    y: 656,      // Position verticale - aligné avec le champ du template
+    x: 98,       // Position horizontale
+    y: 638,      // Position verticale - aligné avec le champ du template
     fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign
@@ -43,8 +43,8 @@ export const CARD_TEXT_POSITIONS = {
   
   // Sexe
   sexe: {
-    x: 603,      // Position horizontale
-    y: 552,      // Position verticale - aligné avec le champ du template
+    x: 586,      // Position horizontale
+    y: 576,      // Position verticale - aligné avec le champ du template
     fontSize: 30,
     fontWeight: 'bold',
     align: 'left' as CanvasTextAlign
@@ -52,7 +52,7 @@ export const CARD_TEXT_POSITIONS = {
   
   // Photo (cercle à droite)
   photo: {
-    centerX: 865,
+    centerX: 853,
     centerY: 435,
     radiusX: 145,
     radiusY: 145

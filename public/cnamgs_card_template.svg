@@ -1,27 +1,26 @@
-<svg id="cnamgs-card" xmlns="http://www.w3.org/2000/svg" width="1050" height="650" viewBox="0 0 1050 650">
+<svg id="cnamgs-card" width="1050" height="650" viewBox="0 0 1050 650" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="photoGloss" cx="50%" cy="40%" r="75%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#dcdcdc"/>
-    </radialGradient>
+    <clipPath id="clip-photo">
+      <circle cx="853" cy="435" r="145"/>
+    </clipPath>
   </defs>
 
-  <!-- Fond et séparateur -->
-  <rect id="bg" x="0" y="0" width="1050" height="650" rx="28" ry="28" fill="#e9f2e9"/>
+  <!-- fond + séparateur -->
+  <rect x="0" y="0" width="1050" height="650" rx="28" fill="#e9f2e9"/>
   <rect id="sepTop" x="0" y="165" width="1050" height="8" fill="#2aa84a"/>
 
-  <!-- Logos (à remplacer si besoin) -->
-  <image id="img-coat-of-arms" x="48" y="26" width="120" height="120" href="" preserveAspectRatio="xMidYMid meet"/>
-  <image id="img-cnamgs-logo" x="610" y="22" width="400" height="110" href="" preserveAspectRatio="xMidYMid meet"/>
+  <!-- logos (remplis par app via href) -->
+  <image id="img-coat-of-arms" x="60" y="34" width="120" height="120" href=""/>
+  <image id="img-cnamgs-logo" x="610" y="45" width="400" height="110" href=""/>
 
-  <!-- Titres -->
-  <text id="txt-republique" x="190" y="70" style="font:700 36px Arial; fill:#111">RÉPUBLIQUE</text>
-  <text id="txt-gabonaise"  x="190" y="110" style="font:700 36px Arial; fill:#111">GABONAISE</text>
-  <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial; fill:#111">Secteur Privé</text>
-  <text id="txt-carte"   x="700" y="252" text-anchor="middle" style="font:700 34px Arial; fill:#111">Carte d'Assurance Maladie</text>
+  <!-- titres -->
+  <text id="txt-republique" x="190" y="90" style="font:700 36px Arial;fill:#111">RÉPUBLIQUE</text>
+  <text id="txt-gabonaise" x="190" y="130" style="font:700 36px Arial;fill:#111">GABONAISE</text>
+  <text id="txt-secteur" x="700" y="210" text-anchor="middle" style="font:700 34px Arial;fill:#111">Secteur Privé</text>
+  <text id="txt-carte" x="700" y="252" text-anchor="middle" style="font:700 34px Arial;fill:#111">Carte d'Assurance Maladie</text>
 
-  <!-- Puce (groupe) -->
-  <g id="chip" transform="translate(126,258)">
+  <!-- puce (groupe – image ou vectoriel) -->
+  <g id="chip" transform="translate(121,235)">
     <rect x="0" y="0" width="162" height="125" rx="18" ry="18" fill="#efd389" stroke="#1a1a1a" stroke-width="1.5"/>
     <rect x="18" y="18" width="126" height="89" rx="10" ry="10" fill="none" stroke="#2a2821" stroke-width="1.5"/>
     <rect x="64" y="34" width="34" height="58" rx="6" ry="6" fill="none" stroke="#2a2821" stroke-width="1.5"/>
@@ -34,19 +33,19 @@
     </g>
   </g>
 
-  <!-- Zone PHOTO (réservée) -->
-  <circle id="photo-placeholder" cx="865" cy="435" r="145" fill="url(#photoGloss)"/>
+  <!-- zone photo réservée -->
+  <circle id="photo-placeholder" cx="853" cy="435" r="145" fill="#eee"/>
 
-  <!-- Libellés -->
-  <text x="120" y="430" style="font:700 26px Arial; fill:#111">Nom</text>
-  <text x="120" y="522" style="font:700 26px Arial; fill:#111">Prénoms</text>
-  <text x="120" y="614" style="font:700 26px Arial; fill:#111">Date de naissance</text>
-  <text x="565" y="510" style="font:700 26px Arial; fill:#111">Sexe</text>
+  <!-- libellés -->
+  <text id="label-nom" x="99" y="432" style="font:700 26px Arial;fill:#111">Nom</text>
+  <text id="label-prenoms" x="99" y="514" style="font:700 26px Arial;fill:#111">Prénoms</text>
+  <text id="label-dob" x="98" y="596" style="font:700 26px Arial;fill:#111">Date de naissance</text>
+  <text id="label-sex" x="548" y="534" style="font:700 26px Arial;fill:#111">Sexe</text>
 
-  <!-- CHAMPS À REMPLIR PAR L'APP -->
-  <text id="field-name"         x="120" y="472" style="font:700 30px Arial; fill:#000"></text>
-  <text id="field-given-names"  x="120" y="564" style="font:700 30px Arial; fill:#000"></text>
-  <text id="field-birthdate"    x="120" y="656" style="font:700 30px Arial; fill:#000"></text>
-  <text id="field-sex"          x="603" y="552" style="font:700 30px Arial; fill:#000"></text>
-  <text id="field-card-number"  x="700" y="300" text-anchor="middle" style="font:700 28px 'Courier New', monospace; fill:#111"></text>
+  <!-- CHAMPS à injecter par l'app -->
+  <text id="field-card-number" style="font:700 28px 'Courier New',monospace;fill:#111" text-anchor="middle"></text>
+  <text id="field-name" style="font:700 30px Arial;fill:#000"></text>
+  <text id="field-given-names" style="font:700 30px Arial;fill:#000"></text>
+  <text id="field-birthdate" style="font:700 30px Arial;fill:#000"></text>
+  <text id="field-sex" style="font:700 30px Arial;fill:#000"></text>
 </svg>
