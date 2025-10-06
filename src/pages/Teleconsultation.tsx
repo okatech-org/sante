@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PatientSidebar } from "@/components/layout/PatientSidebar";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -224,21 +224,19 @@ export default function Teleconsultation() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <PatientSidebar />
-      <main className="flex-1 md:ml-0 pt-20 md:pt-0">
-        <div className="container mx-auto p-4 md:p-6 space-y-6">
-          {/* Header */}
-          <div className="rounded-2xl backdrop-blur-xl p-3 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
+    <PatientDashboardLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="rounded-2xl backdrop-blur-xl p-3 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2">
             Téléconsultation
           </h1>
           <p className="text-gray-400 text-xs sm:text-sm lg:text-base">
             Consultez un médecin à distance, en toute sécurité
           </p>
-          </div>
+        </div>
 
-          {/* Stats Cards */}
+        {/* Stats Cards */}
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
           <div className="grid grid-cols-3 gap-3 sm:gap-4">
             <div className="flex flex-col items-center text-center">
@@ -265,11 +263,11 @@ export default function Teleconsultation() {
               <p className="text-[10px] sm:text-sm text-gray-400">Consultations ce mois</p>
             </div>
           </div>
-          </div>
+        </div>
 
-          {/* Main Content */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
+        {/* Main Content */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
             <TabsList className="grid w-full grid-cols-2 bg-white/5">
               <TabsTrigger value="available" className="gap-2 data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">
                 <Stethoscope className="h-4 w-4" />
@@ -280,10 +278,10 @@ export default function Teleconsultation() {
                 <span className="hidden sm:inline">Consultations </span>programmées
               </TabsTrigger>
             </TabsList>
-            </div>
+          </div>
 
-            {/* Available Doctors */}
-            <TabsContent value="available" className="space-y-4">
+          {/* Available Doctors */}
+          <TabsContent value="available" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {mockAvailableDoctors.map((doctor) => (
                 <div key={doctor.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
@@ -358,13 +356,13 @@ export default function Teleconsultation() {
                 </div>
               ))}
             </div>
-            </TabsContent>
+          </TabsContent>
 
-            {/* Scheduled Consultations */}
-            <TabsContent value="scheduled" className="space-y-4">
-              {mockUpcomingConsultations.map((consultation) => (
-                <div key={consultation.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
-                  <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* Scheduled Consultations */}
+          <TabsContent value="scheduled" className="space-y-4">
+            {mockUpcomingConsultations.map((consultation) => (
+              <div key={consultation.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="flex items-center gap-4 flex-1">
                     <div className="h-12 w-12 rounded-xl bg-[#00d4ff]/20 flex items-center justify-center">
                       <Video className="h-6 w-6 text-[#00d4ff]" />
@@ -394,8 +392,8 @@ export default function Teleconsultation() {
                       </div>
                       <p className="text-sm text-gray-400">{consultation.specialty}</p>
                     </div>
-                   </div>
-                    <div className="flex items-center gap-4">
+                  </div>
+                  <div className="flex items-center gap-4">
                     <div className="text-right">
                       <p className="text-sm font-medium text-white">{consultation.date}</p>
                       <p className="text-sm text-gray-400 flex items-center gap-1">
@@ -403,7 +401,7 @@ export default function Teleconsultation() {
                         {consultation.time}
                       </p>
                     </div>
-                      <div className="flex gap-2">
+                    <div className="flex gap-2">
                       <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                         Modifier
                       </Button>
@@ -411,15 +409,14 @@ export default function Teleconsultation() {
                         <Video className="h-4 w-4 mr-2" />
                         Rejoindre
                       </Button>
-                      </div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
-    </div>
+              </div>
+            ))}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </PatientDashboardLayout>
   );
 }

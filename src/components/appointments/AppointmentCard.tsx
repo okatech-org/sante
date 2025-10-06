@@ -114,25 +114,25 @@ export const AppointmentCard = ({
 
   if (variant === "compact") {
     return (
-      <div className="p-5 rounded-xl bg-card border border-border hover:shadow-md transition-all">
+      <div className="p-5 rounded-xl backdrop-blur-xl bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               {appointment.status === "past" && (
-                <CheckCircle2 className="h-4 w-4 text-cyan-600 flex-shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-[#00d4ff] flex-shrink-0" />
               )}
               {appointment.status === "cancelled" && (
-                <X className="h-4 w-4 text-pink-600 flex-shrink-0" />
+                <X className="h-4 w-4 text-[#ff0088] flex-shrink-0" />
               )}
-              <p className="font-medium truncate text-foreground">
+              <p className="font-medium truncate text-white">
                 {format(appointment.date, "dd/MM", { locale: fr })} - {appointment.timeSlot.split(" - ")[0]} | {appointment.provider.name}
               </p>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               {getTypeLabel()} | {appointment.provider.specialty}
             </p>
             {appointment.cancellation && (
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Annulé le {format(appointment.cancellation.date, "dd/MM", { locale: fr })} ({appointment.cancellation.by === "patient" ? "vous" : "praticien"})
                 {appointment.cancellation.refund && (
                   <span className="block">
@@ -144,13 +144,13 @@ export const AppointmentCard = ({
           </div>
           <div className="flex gap-2 flex-shrink-0">
             {appointment.documents && appointment.documents.length > 0 && (
-              <Button variant="outline" size="sm" onClick={onViewDetails}>
+              <Button variant="outline" size="sm" onClick={onViewDetails} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <FileText className="h-4 w-4" />
                 {appointment.documents.length}
               </Button>
             )}
             {onViewDetails && (
-              <Button variant="ghost" size="sm" onClick={onViewDetails}>
+              <Button variant="ghost" size="sm" onClick={onViewDetails} className="hover:bg-white/10 text-gray-400 hover:text-white">
                 Détails
               </Button>
             )}
@@ -162,33 +162,33 @@ export const AppointmentCard = ({
 
   return (
     <div className={cn(
-      "p-6 rounded-xl bg-card border border-border hover:shadow-md transition-all",
-      isSoon && appointment.status === "upcoming" && "border-cyan-200 shadow-lg bg-cyan-50/50"
+      "p-6 rounded-xl backdrop-blur-xl bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl",
+      isSoon && appointment.status === "upcoming" && "border-[#00d4ff]/50 shadow-[#00d4ff]/20 shadow-2xl"
     )}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div 
-            className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center",
-              appointment.type === "telemedicine" ? "bg-cyan-100" :
-              appointment.type === "exam" ? "bg-amber-100" : "bg-blue-100"
-            )}
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{ 
+              backgroundColor: appointment.type === "telemedicine" ? "#00d4ff20" : 
+                              appointment.type === "exam" ? "#ffaa0020" : "#0088ff20" 
+            }}
           >
-            <div className={cn(
-              appointment.type === "telemedicine" ? "text-cyan-600" :
-              appointment.type === "exam" ? "text-amber-600" : "text-blue-600"
-            )}>
+            <div style={{ 
+              color: appointment.type === "telemedicine" ? "#00d4ff" : 
+                     appointment.type === "exam" ? "#ffaa00" : "#0088ff" 
+            }}>
               {getTypeIcon()}
             </div>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground mb-1">
+            <p className="text-sm text-gray-400 mb-1">
               {format(appointment.date, "EEEE dd MMMM yyyy", { locale: fr })}
             </p>
-            <p className="font-semibold text-lg text-foreground">{appointment.timeSlot}</p>
+            <p className="font-semibold text-lg text-white">{appointment.timeSlot}</p>
             {appointment.type === "telemedicine" && (
-              <Badge className="mt-1 bg-cyan-100 text-cyan-700 hover:bg-cyan-200 border-0">
+              <Badge variant="outline" className="mt-1 bg-[#00d4ff]/20 text-[#00d4ff] border-[#00d4ff]/30">
                 <Video className="h-3 w-3 mr-1" />
                 {getTypeLabel()}
               </Badge>
@@ -196,7 +196,7 @@ export const AppointmentCard = ({
           </div>
         </div>
         {isToday && appointment.status === "upcoming" && (
-          <Badge className="bg-pink-500 text-white hover:bg-pink-600 animate-pulse">
+          <Badge className="bg-[#ff0088] text-white animate-pulse">
             AUJOURD'HUI
           </Badge>
         )}
@@ -204,30 +204,30 @@ export const AppointmentCard = ({
 
       {/* Provider Info */}
       <div className="mb-4">
-        <h3 className="font-semibold text-lg mb-1 flex items-center gap-2 text-foreground">
+        <h3 className="font-semibold text-lg mb-1 flex items-center gap-2 text-white">
           👨‍⚕️ {appointment.provider.name}
         </h3>
-        <p className="text-muted-foreground ml-6">{appointment.provider.specialty}</p>
+        <p className="text-gray-400 ml-6">{appointment.provider.specialty}</p>
       </div>
 
       {/* Reason */}
       <div className="mb-4 flex items-start gap-2">
-        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
-        <p className="text-sm text-foreground">{appointment.reason}</p>
+        <FileText className="h-4 w-4 text-gray-400 mt-0.5" />
+        <p className="text-sm text-gray-300">{appointment.reason}</p>
       </div>
 
       {/* Location or Telemedicine */}
       {appointment.location && appointment.type !== "telemedicine" && (
         <div className="mb-4">
           <div className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm text-foreground">{appointment.location}</p>
+              <p className="text-sm text-gray-300">{appointment.location}</p>
               {onGetDirections && (
                 <Button
                   variant="link"
                   size="sm"
-                  className="h-auto p-0 mt-1 text-primary hover:text-primary/80"
+                  className="h-auto p-0 mt-1 text-[#00d4ff] hover:text-[#00b8e6]"
                   onClick={onGetDirections}
                 >
                   🗺️ Voir itinéraire
@@ -241,36 +241,36 @@ export const AppointmentCard = ({
       {/* Prescribed By (for exams) */}
       {appointment.prescribedBy && (
         <div className="mb-4 flex items-start gap-2">
-          <Pill className="h-4 w-4 text-muted-foreground mt-0.5" />
-          <p className="text-sm text-foreground">Prescrit par : {appointment.prescribedBy}</p>
+          <Pill className="h-4 w-4 text-gray-400 mt-0.5" />
+          <p className="text-sm text-gray-300">Prescrit par : {appointment.prescribedBy}</p>
         </div>
       )}
 
       {/* Instructions */}
       {appointment.instructions && (
-        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
-          <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-amber-700">{appointment.instructions}</p>
+        <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-[#ffaa00]/20 border border-[#ffaa00]/30">
+          <AlertCircle className="h-4 w-4 text-[#ffaa00] mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-[#ffaa00]">{appointment.instructions}</p>
         </div>
       )}
 
       {/* Payment Status */}
       <div className="mb-4">
         {appointment.payment.status === "paid" ? (
-          <div className="flex items-center gap-2 text-cyan-600">
+          <div className="flex items-center gap-2 text-[#00d4ff]">
             <CheckCircle2 className="h-4 w-4" />
             <span className="text-sm font-medium">
               Payé : {appointment.payment.amount.toLocaleString()} FCFA
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-amber-600">
+          <div className="flex items-center gap-2 text-[#ffaa00]">
             <AlertCircle className="h-4 w-4" />
             <span className="text-sm font-medium">
               À payer : {appointment.payment.amount.toLocaleString()} FCFA
             </span>
             {appointment.payment.method && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-gray-400">
                 (Paiement sur place sélectionné)
               </span>
             )}
@@ -282,7 +282,7 @@ export const AppointmentCard = ({
       {timeUntil && appointment.status === "upcoming" && (
         <div className={cn(
           "mb-4 flex items-center gap-2 p-2 rounded-lg",
-          isSoon ? "bg-pink-50 text-pink-700" : "bg-muted text-muted-foreground"
+          isSoon ? "bg-[#ff0088]/20 text-[#ff0088]" : "bg-white/5 text-gray-300"
         )}>
           <Clock className="h-4 w-4" />
           <span className="text-sm font-medium">{timeUntil}</span>
@@ -318,13 +318,13 @@ export const AppointmentCard = ({
               </Button>
             )}
             {onModify && (
-              <Button variant="outline" size="sm" onClick={onModify} className="flex-1 sm:flex-none">
+              <Button variant="outline" size="sm" onClick={onModify} className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <Edit className="h-4 w-4 mr-2" />
                 Modifier
               </Button>
             )}
             {onCancel && (
-              <Button variant="outline" size="sm" onClick={onCancel} className="flex-1 sm:flex-none border-pink-200 text-pink-600 hover:bg-pink-50">
+              <Button variant="outline" size="sm" onClick={onCancel} className="bg-[#ff0088]/20 border-[#ff0088]/30 hover:bg-[#ff0088]/30 text-[#ff0088]">
                 <X className="h-4 w-4 mr-2" />
                 Annuler
               </Button>
@@ -334,7 +334,7 @@ export const AppointmentCard = ({
         {appointment.status === "past" && appointment.documents && (
           <>
             {appointment.documents.map((doc, idx) => (
-              <Button key={idx} variant="outline" size="sm">
+              <Button key={idx} variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white">
                 <FileText className="h-4 w-4 mr-2" />
                 {doc.label}
               </Button>
