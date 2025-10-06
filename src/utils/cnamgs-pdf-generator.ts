@@ -324,7 +324,8 @@ export const generateCNAMGSPdf = async (
     // La partie basse commence après la ligne verte (y=173 sur 650, soit ~30.55% de la hauteur)
     if (watermarkData) {
       doc.saveGraphicsState();
-      doc.setGState({ opacity: 0.57 });
+      const gs = new (doc as any).GState({ opacity: 0.57 });
+      doc.setGState(gs);
       
       const watermarkY = CARD_Y + CARD.h * 0.3055; // Position après la ligne verte
       const watermarkH = CARD.h * 0.6945; // Hauteur de la partie basse
