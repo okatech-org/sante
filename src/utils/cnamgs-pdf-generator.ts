@@ -188,9 +188,15 @@ const captureSVGAsImage = async (): Promise<string> => {
     photoPlaceholder.setAttribute('opacity', '0');
   }
   
-  // Masquer toutes les images dynamiques
+  // NE PAS masquer l'image en filigrane - on veut la conserver
+  const watermarkImage = clonedSvg.querySelector('image[href="/watermark_waves.jpg"]');
+  
+  // Masquer toutes les images dynamiques sauf le filigrane
   const allImages = clonedSvg.querySelectorAll('image');
   allImages.forEach(img => {
+    // Ne pas masquer l'image en filigrane
+    if (img === watermarkImage) return;
+    
     const href = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
     if (href.includes('http') || href.includes('blob:') || href.includes('data:')) {
       img.setAttribute('opacity', '0');
