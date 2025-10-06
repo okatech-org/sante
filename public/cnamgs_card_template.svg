@@ -62,7 +62,7 @@
   <text id="label-sex" x="511" y="574" style="font:400 26px Arial;fill:#666">Sexe</text>
 
   <!-- CHAMPS dynamiques -->
-  <text id="field-card-number" x="700" y="280" text-anchor="middle" style="font:700 32px 'Courier New',monospace;fill:#111"></text>
+  <text id="field-card-number" x="700" y="275" text-anchor="middle" style="font:700 32px 'Courier New',monospace;fill:#111"></text>
   <text id="field-name" x="99" y="467" style="font:700 32px Arial;fill:#000"></text>
   <text id="field-given-names" x="99" y="549" style="font:700 32px Arial;fill:#000"></text>
   <text id="field-birthdate" x="99" y="631" style="font:700 32px Arial;fill:#000"></text>
