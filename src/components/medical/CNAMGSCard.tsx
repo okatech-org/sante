@@ -139,7 +139,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
     };
 
     // Nouveau fallback: placer SOUS le libellé
-    const fallbackPlaceBelowLabel = (fieldId: string, labelId: string, dx = 0, dy = 20) => {
+    const fallbackPlaceBelowLabel = (fieldId: string, labelId: string, dx = 0, dy = 35) => {
       const node = $(esc(fieldId));
       const label = $(esc(labelId));
       if (!node || !label) return;
@@ -182,7 +182,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
         placeText(fieldId, f.bbox);
       } else {
         // Place la valeur SOUS le libellé
-        fallbackPlaceBelowLabel(fieldId, labelId, 0, 20);
+        fallbackPlaceBelowLabel(fieldId, labelId, 0, 35);
       }
     }
 
