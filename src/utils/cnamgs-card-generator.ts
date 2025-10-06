@@ -69,7 +69,7 @@ export const generateCNAMGSCard = async (
   ctx.fillStyle = '#000000';
   ctx.textBaseline = 'middle';
 
-  // 3. Dessiner le numéro de carte (centré, rouge, 5mm sous "Carte d'Assurance Maladie")
+  // 3. Dessiner le numéro de carte (centré, rouge, sous le titre)
   ctx.font = 'bold 36px Arial, sans-serif';
   ctx.fillStyle = '#DC2626'; // Rouge
   ctx.textAlign = 'center';
@@ -77,7 +77,7 @@ export const generateCNAMGSCard = async (
   ctx.fillText(
     cardNumberText,
     canvas.width / 2,
-    365 // Position exacte 5mm sous "Carte d'Assurance Maladie"
+    340 // Position sous "Carte d'Assurance Maladie"
   );
   console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
   ctx.fillStyle = '#000000';
