@@ -389,15 +389,18 @@ export default function MedicalRecord() {
                 </div>
 
                 {/* Carnets numériques */}
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="space-y-6">
                   <HealthBooklet 
                     profile={profile}
                     medicalHistory={medicalHistory}
                     treatments={treatments}
                     consultations={consultations}
                   />
-                  <VaccinationBooklet profile={profile} />
-                  <CNAMGSCard profile={profile} />
+                  
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <VaccinationBooklet profile={profile} />
+                    <CNAMGSCard profile={profile} />
+                  </div>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
