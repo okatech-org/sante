@@ -156,31 +156,40 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
       if (node) node.textContent = value ?? '';
     };
 
-    // 1) Numéro de carte - centré
+    // 1) Numéro de carte
+    const fCard = layout.fields.find(f => f.id === 'field-card-number');
     const cardNumberNode = $(esc('field-card-number'));
     if (cardNumberNode) {
-      cardNumberNode.setAttribute('x', '700');
-      cardNumberNode.setAttribute('y', '300');
-      cardNumberNode.setAttribute('text-anchor', 'middle');
-      cardNumberNode.setAttribute('font-size', '32');
+      cardNumberNode.setAttribute('font-size', '36');
       cardNumberNode.setAttribute('font-weight', 'bold');
     }
-
-    // 2) Champs SOUS les libellés
-    const setFieldBelowLabel = (fieldId: string, x: number, y: number) => {
-      const node = $(esc(fieldId));
-      if (node) {
-        node.setAttribute('x', String(x));
-        node.setAttribute('y', String(y));
-        node.setAttribute('font-size', '32');
-        node.setAttribute('font-weight', 'bold');
+    if (fCard && fCard.bbox && fCard.bbox.some(v => v !== 0)) {
+      placeText('field-card-number', fCard.bbox, { anchor: 'start', fontSize: 36 });
+    } else {
+      if (cardNumberNode) {
+        cardNumberNode.setAttribute('x', '485');
+        cardNumberNode.setAttribute('y', '300');
+        cardNumberNode.setAttribute('text-anchor', 'start');
       }
-    };
+    }
 
-    setFieldBelowLabel('field-name', 99, 467);
-    setFieldBelowLabel('field-given-names', 99, 549);
-    setFieldBelowLabel('field-birthdate', 99, 631);
-    setFieldBelowLabel('field-sex', 548, 569);
+    // 2) Champs à droite des libellés
+    const fieldMap = [
+      ['field-name', 'label-nom'],
+      ['field-given-names', 'label-prenoms'],
+      ['field-birthdate', 'label-dob'],
+      ['field-sex', 'label-sex']
+    ];
+
+    for (const [fieldId, labelId] of fieldMap) {
+      const f = layout.fields.find(x => x.id === fieldId);
+      if (f && f.bbox && f.bbox.some(v => v !== 0)) {
+        placeText(fieldId, f.bbox);
+      } else {
+        // Place la valeur SOUS le libellé
+        fallbackPlaceBelowLabel(fieldId, labelId, 0, 35);
+      }
+    }
 
     // 3) Injecter les données texte
     setText('field-card-number', data.cardNumber);
