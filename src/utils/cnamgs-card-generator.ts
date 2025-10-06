@@ -1,32 +1,61 @@
-// Coordonnées des champs sur la carte CNAMGS (1050 × 650 px)
-// Utilisation des coordonnées exactes fournies dans la documentation
-export const CARD_FIELDS = {
+// Configuration des positions pour chaque champ sur la carte CNAMGS (1050 × 650 px)
+// Ajustez ces valeurs pour déplacer individuellement chaque information
+export const CARD_TEXT_POSITIONS = {
   canvas: { width: 1050, height: 650 },
-  fields: {
-    card_number: {
-      px: { x: 380, y: 130, width: 320, height: 48 },
-      norm: { x: 0.3620, y: 0.2000, w: 0.3048, h: 0.0738 }
-    },
-    photo: {
-      px: { x: 720, y: 320, width: 200, height: 250 },
-      norm: { x: 0.6857, y: 0.4923, w: 0.1905, h: 0.3846 }
-    },
-    field_nom_rect: {
-      px: { x: 120, y: 352, width: 430, height: 48 },
-      norm: { x: 0.1143, y: 0.5415, w: 0.4095, h: 0.0738 }
-    },
-    field_prenoms_rect: {
-      px: { x: 120, y: 436, width: 430, height: 48 },
-      norm: { x: 0.1143, y: 0.6723, w: 0.4095, h: 0.0738 }
-    },
-    field_dob_rect: {
-      px: { x: 120, y: 520, width: 220, height: 48 },
-      norm: { x: 0.1143, y: 0.8000, w: 0.2095, h: 0.0738 }
-    },
-    field_sex_rect: {
-      px: { x: 380, y: 520, width: 80, height: 48 },
-      norm: { x: 0.3620, y: 0.8000, w: 0.0762, h: 0.0738 }
-    }
+  
+  // Numéro de carte (centré, en haut)
+  numero_carte: {
+    x: 645,      // Position horizontale (centré sur la partie droite)
+    y: 225,      // Position verticale
+    fontSize: 38,
+    fontWeight: 'bold',
+    align: 'center' as CanvasTextAlign
+  },
+  
+  // Nom (aligné avec le label "Nom" du template)
+  nom: {
+    x: 76,       // Position horizontale (aligné à gauche)
+    y: 400,      // Position verticale - AJUSTER pour aligner avec le label "Nom"
+    fontSize: 34,
+    fontWeight: 'bold',
+    align: 'left' as CanvasTextAlign,
+    maxLength: 28
+  },
+  
+  // Prénoms (aligné avec le label "Prénoms" du template)
+  prenoms: {
+    x: 76,       // Position horizontale (aligné à gauche)
+    y: 512,      // Position verticale - AJUSTER pour aligner avec le label "Prénoms"
+    fontSize: 34,
+    fontWeight: 'bold',
+    align: 'left' as CanvasTextAlign,
+    maxLength: 34
+  },
+  
+  // Date de naissance
+  date_naissance: {
+    x: 76,       // Position horizontale
+    y: 638,      // Position verticale - AJUSTER pour aligner avec le label
+    fontSize: 32,
+    fontWeight: 'bold',
+    align: 'left' as CanvasTextAlign
+  },
+  
+  // Sexe
+  sexe: {
+    x: 632,      // Position horizontale
+    y: 575,      // Position verticale - AJUSTER pour aligner avec le label
+    fontSize: 38,
+    fontWeight: 'bold',
+    align: 'left' as CanvasTextAlign
+  },
+  
+  // Photo (forme ovale à droite)
+  photo: {
+    centerX: 1000,
+    centerY: 405,
+    radiusX: 140,
+    radiusY: 165
   }
 };
 
@@ -53,8 +82,8 @@ export const generateCNAMGSCard = async (
   console.log('generateCNAMGSCard: Starting generation with data:', data);
   
   const canvas = document.createElement('canvas');
-  canvas.width = CARD_FIELDS.canvas.width;
-  canvas.height = CARD_FIELDS.canvas.height;
+  canvas.width = CARD_TEXT_POSITIONS.canvas.width;
+  canvas.height = CARD_TEXT_POSITIONS.canvas.height;
   const ctx = canvas.getContext('2d');
 
   if (!ctx) throw new Error('Could not get canvas context');
@@ -69,57 +98,41 @@ export const generateCNAMGSCard = async (
   ctx.fillStyle = '#DC2626'; // Rouge pour tous les champs
   ctx.textBaseline = 'top';
 
-  // 3. Dessiner le numéro de carte (centré, rouge, juste sous "Carte d'Assurance Maladie")
-  ctx.font = 'bold 38px Arial, sans-serif';
-  ctx.textAlign = 'center';
-  const cardNumberText = data.numero_carte;
-  ctx.fillText(
-    cardNumberText,
-    645, // Centré sur la partie droite
-    225  // Position sous "Carte d'Assurance Maladie"
-  );
-  console.log('generateCNAMGSCard: Card number drawn:', cardNumberText);
+  // 3. Numéro de carte
+  const numConfig = CARD_TEXT_POSITIONS.numero_carte;
+  ctx.font = `${numConfig.fontWeight} ${numConfig.fontSize}px Arial, sans-serif`;
+  ctx.textAlign = numConfig.align;
+  ctx.fillText(data.numero_carte, numConfig.x, numConfig.y);
+  console.log('generateCNAMGSCard: Card number drawn:', data.numero_carte);
 
-  // 4. Dessiner le nom (aligné à gauche, rouge, juste sous le label "Nom")
-  const nomText = data.nom.substring(0, 28).toUpperCase();
-  ctx.font = 'bold 34px Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    nomText,
-    76,
-    400
-  );
+  // 4. Nom (aligné avec le label "Nom")
+  const nomConfig = CARD_TEXT_POSITIONS.nom;
+  const nomText = data.nom.substring(0, nomConfig.maxLength).toUpperCase();
+  ctx.font = `${nomConfig.fontWeight} ${nomConfig.fontSize}px Arial, sans-serif`;
+  ctx.textAlign = nomConfig.align;
+  ctx.fillText(nomText, nomConfig.x, nomConfig.y);
   console.log('generateCNAMGSCard: Nom drawn:', nomText);
 
-  // 5. Dessiner les prénoms (aligné à gauche, rouge, juste sous le label "Prénoms")
-  const prenomsText = data.prenoms.substring(0, 34).toUpperCase();
-  ctx.font = 'bold 34px Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    prenomsText,
-    76,
-    512
-  );
+  // 5. Prénoms (aligné avec le label "Prénoms")
+  const prenomsConfig = CARD_TEXT_POSITIONS.prenoms;
+  const prenomsText = data.prenoms.substring(0, prenomsConfig.maxLength).toUpperCase();
+  ctx.font = `${prenomsConfig.fontWeight} ${prenomsConfig.fontSize}px Arial, sans-serif`;
+  ctx.textAlign = prenomsConfig.align;
+  ctx.fillText(prenomsText, prenomsConfig.x, prenomsConfig.y);
   console.log('generateCNAMGSCard: Prénoms drawn:', prenomsText);
 
-  // 6. Dessiner la date de naissance (aligné à gauche, rouge, juste sous le label "Date de naissance")
-  ctx.font = 'bold 32px Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    data.date_naissance,
-    76,
-    638
-  );
+  // 6. Date de naissance
+  const dobConfig = CARD_TEXT_POSITIONS.date_naissance;
+  ctx.font = `${dobConfig.fontWeight} ${dobConfig.fontSize}px Arial, sans-serif`;
+  ctx.textAlign = dobConfig.align;
+  ctx.fillText(data.date_naissance, dobConfig.x, dobConfig.y);
   console.log('generateCNAMGSCard: Date drawn:', data.date_naissance);
 
-  // 7. Dessiner le sexe (aligné à gauche, rouge, juste sous le label "Sexe")
-  ctx.font = 'bold 38px Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(
-    data.sexe,
-    632,
-    575
-  );
+  // 7. Sexe
+  const sexeConfig = CARD_TEXT_POSITIONS.sexe;
+  ctx.font = `${sexeConfig.fontWeight} ${sexeConfig.fontSize}px Arial, sans-serif`;
+  ctx.textAlign = sexeConfig.align;
+  ctx.fillText(data.sexe, sexeConfig.x, sexeConfig.y);
   console.log('generateCNAMGSCard: Sexe drawn:', data.sexe);
 
   // 8. Ajouter la photo si disponible (forme ovale)
@@ -134,10 +147,11 @@ export const generateCNAMGSCard = async (
           console.log('generateCNAMGSCard: Photo loaded successfully');
           
           // Position et dimensions de la zone photo (ovale sur la droite)
-          const centerX = 1000;
-          const centerY = 405;
-          const radiusX = 140;
-          const radiusY = 165;
+          const photoConfig = CARD_TEXT_POSITIONS.photo;
+          const centerX = photoConfig.centerX;
+          const centerY = photoConfig.centerY;
+          const radiusX = photoConfig.radiusX;
+          const radiusY = photoConfig.radiusY;
           
           ctx.save();
           
