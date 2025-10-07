@@ -118,25 +118,53 @@ const loadEllipticalImageAsDataUrl = (src: string, width: number = 260, height: 
     img.src = src;
   });
 
-// Charge une image avec opacité appliquée
-const loadImageWithOpacity = (src: string, opacity: number = 0.35): Promise<string> =>
+// Charge le filigrane en ultra haute résolution avec opacité
+const loadWatermarkHighRes = (src: string, opacity: number = 0.25): Promise<string> =>
   new Promise((resolve) => {
     if (!src) return resolve("");
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
+      // Ultra high resolution comme pour le SVG
+      const scale = 6;
+      const targetWidth = 856;
+      const targetHeight = 477; // Hauteur de la partie basse (73.4% de 650px)
+      
+      canvas.width = targetWidth * scale;
+      canvas.height = targetHeight * scale;
+      
+      const ctx = canvas.getContext("2d", {
+        alpha: true,
+        desynchronized: false,
+        colorSpace: 'srgb'
+      });
+      
       if (ctx) {
+        // Enable high-quality rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
         // Appliquer l'opacité
         ctx.globalAlpha = opacity;
-        ctx.drawImage(img, 0, 0);
+        
+        // Scale and draw with anti-aliasing
+        ctx.scale(scale, scale);
+        
+        // Dessiner l'image en couvrant toute la zone
+        const scaleX = targetWidth / img.width;
+        const scaleY = targetHeight / img.height;
+        const imgScale = Math.max(scaleX, scaleY);
+        const imgW = img.width * imgScale;
+        const imgH = img.height * imgScale;
+        const imgX = (targetWidth - imgW) / 2;
+        const imgY = (targetHeight - imgH) / 2;
+        
+        ctx.drawImage(img, imgX, imgY, imgW, imgH);
         
         try {
-          const data = canvas.toDataURL("image/png");
-          resolve(data);
+          const dataUrl = canvas.toDataURL('image/png', 1.0);
+          resolve(dataUrl);
         } catch {
           resolve("");
         }
@@ -329,8 +357,8 @@ export const generateCNAMGSPdf = async (
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
   
-  // Charger le nouveau filigrane avec opacité de 35%
-  const watermarkData = await loadImageWithOpacity('/fili_cnamgs.png', 0.35);
+  // Charger le filigrane en ultra haute résolution avec opacité
+  const watermarkData = await loadWatermarkHighRes('/fili_cnamgs.png', 0.25);
   
   // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
