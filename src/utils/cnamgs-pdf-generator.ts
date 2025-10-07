@@ -118,37 +118,6 @@ const loadEllipticalImageAsDataUrl = (src: string, width: number = 260, height: 
     img.src = src;
   });
 
-// Charge une image avec opacité appliquée
-const loadImageWithOpacity = (src: string, opacity: number, width: number, height: number): Promise<string> =>
-  new Promise((resolve) => {
-    if (!src) return resolve("");
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.globalAlpha = opacity;
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        try {
-          const data = canvas.toDataURL("image/png");
-          resolve(data);
-        } catch {
-          resolve("");
-        }
-      } else {
-        resolve("");
-      }
-    };
-    img.onerror = () => resolve("");
-    img.src = src;
-  });
-
 const drawCutMarks = (
   doc: jsPDF,
   x: number,
@@ -219,15 +188,9 @@ const captureSVGAsImage = async (): Promise<string> => {
     photoPlaceholder.setAttribute('opacity', '0');
   }
   
-  // NE PAS masquer l'image en filigrane - on veut la conserver
-  const watermarkImage = clonedSvg.querySelector('image[href="/watermark_waves.jpg"]');
-  
-  // Masquer toutes les images dynamiques sauf le filigrane
+  // Masquer toutes les images dynamiques
   const allImages = clonedSvg.querySelectorAll('image');
   allImages.forEach(img => {
-    // Ne pas masquer l'image en filigrane
-    if (img === watermarkImage) return;
-    
     const href = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
     if (href.includes('http') || href.includes('blob:') || href.includes('data:')) {
       img.setAttribute('opacity', '0');
@@ -336,11 +299,7 @@ export const generateCNAMGSPdf = async (
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
   
-  // Charger le filigrane avec 57% d'opacité déjà appliquée sur le canvas
-  const watermarkH = CARD.h * 0.4 * 10; // Convertir en pixels (approximatif)
-  const watermarkW = CARD.w * 10; // Convertir en pixels (approximatif)
-  const watermarkData = await loadImageWithOpacity('/watermark_waves.jpg', 0.57, watermarkW, watermarkH);
-  
+  // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
@@ -349,14 +308,7 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // 1. Ajouter le filigrane en premier (arrière-plan) - l'opacité est déjà appliquée
-    if (watermarkData) {
-      const watermarkH = CARD.h * 0.4;
-      const watermarkY = CARD_Y + CARD.h - watermarkH;
-      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH);
-    }
-    
-    // 2. Ajouter l'image capturée de la carte (par-dessus le filigrane)
+    // Ajouter l'image capturée de la carte en haute qualité
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
