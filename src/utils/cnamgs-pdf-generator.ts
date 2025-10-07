@@ -397,17 +397,17 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MESSAGE PERSONNALISÉ (à gauche de la carte)
+  // MESSAGE PERSONNALISÉ (pleine largeur)
   // ═══════════════════════════════════════════════════════════════════════════
   
   let currentY = HEADER_H + 8;
-  const leftColumnW = A4.w - CARD.w - 3 * MARGIN - 5;
+  const messageWidth = A4.w - 2 * MARGIN;
   
   // Encadré message personnalisé (card: 0 0% 100% avec border)
   doc.setFillColor(255, 255, 255); // card background
   doc.setDrawColor(226, 232, 240); // border color (214 32% 91%)
   doc.setLineWidth(0.15);
-  doc.roundedRect(MARGIN, currentY, leftColumnW, 35, 3, 3, "FD");
+  doc.roundedRect(MARGIN, currentY, messageWidth, 40, 3, 3, "FD");
   
   currentY += 4;
   
@@ -466,7 +466,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("📋 INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
+  doc.text("INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
   // Position de la carte dans cette section (à droite)
@@ -637,7 +637,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("✅ DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4.5);
+  doc.text("DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
   // Tableau des couvertures
@@ -707,7 +707,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("📅 PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4.5);
+  doc.text("PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
   // Grille validité (4 colonnes)
@@ -732,7 +732,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(139, 10, 61); // accent dark
-  doc.text("⚠️ IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
+  doc.text("IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
