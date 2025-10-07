@@ -548,12 +548,14 @@ export const generateCNAMGSPdf = async (
     }
   }
   
-  // Masque final
-  doc.setFillColor(255, 255, 255);
-  doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
-  doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
-  doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
-  doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
+  // Suppression du masque extérieur pour éviter de masquer le texte à gauche de la carte
+  // (les images sont déjà limitées à la zone de la carte)
+  // Ancien code supprimé:
+  // doc.setFillColor(255, 255, 255);
+  // doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
+  // doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
+  // doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
+  // doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
   
   doc.setLineWidth(0.08);
   doc.setDrawColor(180, 180, 180);
