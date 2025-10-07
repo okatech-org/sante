@@ -409,23 +409,23 @@ export const generateCNAMGSPdf = async (
   doc.setLineWidth(0.15);
   doc.roundedRect(MARGIN, currentY, messageWidth, 40, 3, 3, "FD");
   
-  currentY += 4;
+  currentY += 5;
   
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("VOTRE ATTESTATION DE DROITS", MARGIN + 3, currentY);
   
-  currentY += 6;
+  currentY += 8;
   
-  doc.setFontSize(8);
+  doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(38, 43, 51); // foreground
   
   const salutation = data.sexe === "F" ? "Chère madame" : "Cher monsieur";
   doc.text(`${salutation} ${data.nom},`, MARGIN + 3, currentY);
   
-  currentY += 5;
+  currentY += 6;
   
   const messageLines = [
     "Pour être mieux suivi, respectez le parcours de soins coordonné",
@@ -436,19 +436,19 @@ export const generateCNAMGSPdf = async (
     "à jour vos droits et votre carte d'assuré."
   ];
   
-  doc.setFontSize(7.5);
+  doc.setFontSize(9.5);
   messageLines.forEach(line => {
     doc.text(line, MARGIN + 3, currentY);
-    currentY += line === "" ? 2 : 4;
+    currentY += line === "" ? 3 : 5;
   });
   
-  currentY += 3;
+  currentY += 4;
   
-  doc.setFontSize(7.5);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "italic");
   doc.setTextColor(0, 161, 254); // secondary blue (#00A1FE)
   doc.text("Avec toute notre attention,", MARGIN + 3, currentY);
-  currentY += 3.5;
+  currentY += 4.5;
   doc.text("Votre correspondant CNAMGS", MARGIN + 3, currentY);
   
   currentY += 12;
@@ -595,29 +595,31 @@ export const generateCNAMGSPdf = async (
   drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, infoColW);
   currentY += 12;
   
-  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, infoColW);
-  currentY += 12;
-  
   drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
   currentY += 12;
   
+  // QUALITÉ et STATUT sur la même ligne (2 colonnes)
+  const halfColW = (infoColW - 2) / 2;
+  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, halfColW);
+  
   // Statut badge
+  const statutX = MARGIN + halfColW + 2;
   doc.setFillColor(255, 255, 255);
   doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(0.12);
-  doc.roundedRect(MARGIN, currentY, infoColW, 10, 2, 2, "FD");
+  doc.roundedRect(statutX, currentY, halfColW, 10, 2, 2, "FD");
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133);
-  doc.text("STATUT", MARGIN + 2, currentY + 3.5);
+  doc.text("STATUT", statutX + 2, currentY + 3.5);
   
   const isActif = data.statut !== "Inactif";
   doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68);
-  doc.roundedRect(MARGIN + 2, currentY + 5, 18, 4, 2, 2, "F");
+  doc.roundedRect(statutX + 2, currentY + 5, 18, 4, 2, 2, "F");
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text(data.statut || "ACTIF", MARGIN + 11, currentY + 8, { align: "center" });
+  doc.text(data.statut || "ACTIF", statutX + 11, currentY + 8, { align: "center" });
   
   currentY += 15;
   
