@@ -18,6 +18,10 @@ export type CNAMGSData = {
   regime: string; // "Secteur Privé"
   qualite?: string; // "Assuré principal"
   employeur: string; // "ORGANÉUS GABON"
+  numeroAttestation?: string; // "2025/CNAMGS/00001234"
+  dateDebut?: string; // "01/01/2025"
+  dateFin?: string; // "31/12/2025"
+  statut?: "Actif" | "Inactif";
   couvertures: {
     type: string;
     taux: string; // "80%"
@@ -41,10 +45,10 @@ const A4 = { w: 210, h: 297 }; // mm
 const CARD = { w: 85.6, h: 53.98, radius: 3 }; // ID-1 (ISO/IEC 7810)
 const MARGIN = 15; // mm
 
-// Placement carte (centrée sous en-tête)
-const HEADER_H = 25; // mm
-const CARD_Y = HEADER_H + 10; // mm – espacements sous l'en-tête
-const CARD_X = (A4.w - CARD.w) / 2; // centré
+// Placement carte (haut droit de l'attestation)
+const HEADER_H = 53; // mm - en-tête + titre
+const CARD_Y = HEADER_H + 8; // mm
+const CARD_X = A4.w - MARGIN - CARD.w; // aligné à droite
 
 // Utilitaires -----------------------------------------------------------------
 const loadImageAsDataUrl = (src: string): Promise<string> =>
@@ -327,19 +331,53 @@ export const generateCNAMGSPdf = async (
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // EN-TÊTE
+  // EN-TÊTE OFFICIEL
   // ═══════════════════════════════════════════════════════════════════════════
-  doc.setFontSize(18);
+  
+  // Bande bleue supérieure avec dégradé simulé
+  doc.setFillColor(30, 58, 138); // Bleu foncé
+  doc.rect(0, 0, A4.w, 35, "F");
+  
+  // Ligne verte accent en haut
+  doc.setFillColor(16, 185, 129);
+  doc.rect(0, 0, A4.w, 1, "F");
+  
+  // Logo CNAMGS
+  doc.setFontSize(28);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(0, 0, 0);
-  doc.text("RÉPUBLIQUE GABONAISE", A4.w / 2, 12, { align: "center" });
-
-  doc.setFontSize(16);
-  doc.text("ATTESTATION D'ASSURANCE MALADIE", A4.w / 2, 20, { align: "center" });
-
-  doc.setFontSize(12);
+  doc.setTextColor(255, 255, 255);
+  doc.text("CNAMGS", A4.w / 2, 15, { align: "center" });
+  
+  // Sous-titre
+  doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("CNAMGS", A4.w / 2, 26, { align: "center" });
+  doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 22, { align: "center" });
+  doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 27, { align: "center" });
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TITRE DU DOCUMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Fond gris clair
+  doc.setFillColor(243, 244, 246);
+  doc.rect(0, 35, A4.w, 18, "F");
+  
+  // Bordure gauche verte
+  doc.setFillColor(16, 185, 129);
+  doc.rect(0, 35, 1.2, 18, "F");
+  
+  // Titre
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 58, 138);
+  doc.text("ATTESTATION DE DROITS", MARGIN, 44);
+  
+  // Numéro d'attestation
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(107, 114, 128);
+  const numAttestation = data.numeroAttestation || `2025/CNAMGS/${data.numero.replace(/-/g, '')}`;
+  doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 50);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CARTE CNAMGS - Capture SVG haute résolution + images superposées
@@ -629,76 +667,281 @@ export const generateCNAMGSPdf = async (
   doc.roundedRect(CARD_X + 0.1, CARD_Y + 0.1, CARD.w - 0.2, CARD.h - 0.2, CARD.radius - 0.05, CARD.radius - 0.05);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTIONS D'INFORMATIONS (sous la carte)
+  // SECTIONS D'INFORMATIONS (à gauche de la carte)
   // ═══════════════════════════════════════════════════════════════════════════
-  let currentY = CARD_Y + CARD.h + 15;
-
-  // Section Assuré
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(0, 0, 0);
-  doc.text("Informations de l'assuré", MARGIN, currentY);
-  currentY += 7;
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Qualité : ${data.qualite || "Assuré principal"}`, MARGIN, currentY);
-  currentY += 5;
-  doc.text(`Employeur : ${data.employeur}`, MARGIN, currentY);
-  currentY += 5;
-  if (data.age) {
-    doc.text(`Âge : ${data.age}`, MARGIN, currentY);
-    currentY += 5;
-  }
-
-  currentY += 5;
-
-  // Section Couvertures
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Couvertures", MARGIN, currentY);
-  currentY += 7;
-
+  
+  let currentY = HEADER_H + 8;
+  const leftColumnW = A4.w - CARD.w - 3 * MARGIN - 5;
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 1 : Informations de l'Assuré
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Titre de section
+  doc.setFillColor(239, 246, 255);
+  doc.rect(MARGIN, currentY, leftColumnW, 7, "F");
+  doc.setFillColor(59, 130, 246);
+  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  
   doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  data.couvertures.forEach((couv) => {
-    doc.text(`• ${couv.type}`, MARGIN + 2, currentY);
-    currentY += 4;
-    doc.setFont("helvetica", "italic");
-    doc.text(`  Taux : ${couv.taux} - ${couv.ticket}`, MARGIN + 4, currentY);
-    doc.setFont("helvetica", "normal");
-    currentY += 5;
-  });
-
-  currentY += 5;
-
-  // Pied de page
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "italic");
-  doc.setTextColor(0, 0, 0);
-  doc.text(
-    "Cette attestation certifie que le titulaire bénéficie d'une couverture",
-    A4.w / 2,
-    currentY,
-    { align: "center" }
-  );
-  currentY += 5;
-  doc.text(
-    "d'assurance maladie auprès de la CNAMGS.",
-    A4.w / 2,
-    currentY,
-    { align: "center" }
-  );
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 64, 175);
+  doc.text("📋 INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
-
-  doc.setFontSize(8);
+  
+  // Grille d'informations (2 colonnes)
+  const gridStartY = currentY;
+  const colWidth = leftColumnW / 2;
+  
+  const drawInfoBox = (label: string, value: string, x: number, y: number, w: number) => {
+    // Fond
+    doc.setFillColor(249, 250, 251);
+    doc.setDrawColor(229, 231, 235);
+    doc.setLineWidth(0.1);
+    doc.roundedRect(x, y, w, 10, 1, 1, "FD");
+    
+    // Label
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(107, 114, 128);
+    doc.text(label, x + 2, y + 3.5);
+    
+    // Valeur
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(17, 24, 39);
+    doc.text(value, x + 2, y + 7.5);
+  };
+  
+  // Ligne 1
+  drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, colWidth - 2);
+  drawInfoBox("NOM ET PRÉNOMS", `${data.nom} ${data.prenoms}`, MARGIN + colWidth, currentY, colWidth - 2);
+  currentY += 12;
+  
+  // Ligne 2
+  drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, colWidth - 2);
+  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN + colWidth, currentY, colWidth - 2);
+  currentY += 12;
+  
+  // Ligne 3
+  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, colWidth - 2);
+  
+  // Statut badge
+  const statutX = MARGIN + colWidth;
+  doc.setFillColor(249, 250, 251);
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.1);
+  doc.roundedRect(statutX, currentY, colWidth - 2, 10, 1, 1, "FD");
+  doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
-  doc.text(
-    `Document généré le ${new Date().toLocaleDateString("fr-FR")}`,
-    A4.w / 2,
-    currentY,
-    { align: "center" }
-  );
+  doc.setTextColor(107, 114, 128);
+  doc.text("STATUT", statutX + 2, currentY + 3.5);
+  
+  // Badge statut
+  const isActif = data.statut !== "Inactif";
+  doc.setFillColor(isActif ? 16 : 239, isActif ? 185 : 68, isActif ? 129 : 68);
+  doc.roundedRect(statutX + 2, currentY + 5, 18, 4, 2, 2, "F");
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(255, 255, 255);
+  doc.text(data.statut || "ACTIF", statutX + 11, currentY + 8, { align: "center" });
+  
+  currentY += 15;
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 2 : Droits et Taux de Couverture (sous la carte, pleine largeur)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  currentY = Math.max(currentY, CARD_Y + CARD.h + 10);
+  
+  // Titre de section
+  doc.setFillColor(239, 246, 255);
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
+  doc.setFillColor(59, 130, 246);
+  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 64, 175);
+  doc.text("✅ DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4.5);
+  currentY += 10;
+  
+  // Tableau des couvertures
+  const tableX = MARGIN;
+  const tableW = A4.w - 2 * MARGIN;
+  const col1W = tableW * 0.5;
+  const col2W = tableW * 0.25;
+  const col3W = tableW * 0.25;
+  const rowH = 8;
+  
+  // En-tête du tableau
+  doc.setFillColor(30, 64, 175);
+  doc.rect(tableX, currentY, tableW, rowH, "F");
+  
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(255, 255, 255);
+  doc.text("Type de Prestation", tableX + 3, currentY + 5.5);
+  doc.text("Taux de Couverture", tableX + col1W + 3, currentY + 5.5);
+  doc.text("Ticket Modérateur", tableX + col1W + col2W + 3, currentY + 5.5);
+  currentY += rowH;
+  
+  // Lignes du tableau
+  data.couvertures.forEach((couv, idx) => {
+    // Fond alterné
+    if (idx % 2 === 0) {
+      doc.setFillColor(249, 250, 251);
+      doc.rect(tableX, currentY, tableW, rowH, "F");
+    }
+    
+    // Bordures
+    doc.setDrawColor(229, 231, 235);
+    doc.setLineWidth(0.1);
+    doc.line(tableX, currentY + rowH, tableX + tableW, currentY + rowH);
+    
+    // Contenu
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(17, 24, 39);
+    doc.text(couv.type, tableX + 3, currentY + 5.5);
+    
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(16, 185, 129);
+    doc.setFontSize(10);
+    doc.text(couv.taux, tableX + col1W + 3, currentY + 5.5);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(17, 24, 39);
+    doc.setFontSize(8);
+    doc.text(couv.ticket, tableX + col1W + col2W + 3, currentY + 5.5);
+    
+    currentY += rowH;
+  });
+  
+  currentY += 8;
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 3 : Période de Validité
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Titre de section
+  doc.setFillColor(239, 246, 255);
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
+  doc.setFillColor(59, 130, 246);
+  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 64, 175);
+  doc.text("📅 PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4.5);
+  currentY += 10;
+  
+  // Grille validité (4 colonnes)
+  const validiteColW = (A4.w - 2 * MARGIN) / 4;
+  drawInfoBox("DATE DE DÉBUT", data.dateDebut || "01/01/2025", MARGIN, currentY, validiteColW - 2);
+  drawInfoBox("DATE DE FIN", data.dateFin || "31/12/2025", MARGIN + validiteColW, currentY, validiteColW - 2);
+  drawInfoBox("DATE D'ÉDITION", new Date().toLocaleDateString("fr-FR"), MARGIN + 2 * validiteColW, currentY, validiteColW - 2);
+  drawInfoBox("EMPLOYEUR", data.employeur, MARGIN + 3 * validiteColW, currentY, validiteColW - 2);
+  
+  currentY += 15;
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // AVERTISSEMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  doc.setFillColor(254, 243, 199);
+  doc.setDrawColor(245, 158, 11);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 18, 1, 1, "FD");
+  
+  doc.setFillColor(245, 158, 11);
+  doc.rect(MARGIN, currentY, 1, 18, "F");
+  
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(146, 64, 14);
+  doc.text("⚠️ IMPORTANT", MARGIN + 3, currentY + 5);
+  
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  const warningText = "Cette attestation est valable uniquement auprès des prestataires conventionnés CNAMGS.";
+  const warningText2 = "Le système de tiers-payant s'applique selon les tarifs conventionnés. Tout dépassement (GAP)";
+  const warningText3 = "reste à votre charge. Présentez cette attestation lors de chaque consultation.";
+  doc.text(warningText, MARGIN + 3, currentY + 9);
+  doc.text(warningText2, MARGIN + 3, currentY + 12.5);
+  doc.text(warningText3, MARGIN + 3, currentY + 16);
+  
+  currentY += 22;
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SIGNATURE
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(107, 114, 128);
+  doc.text(`Fait à Libreville, le ${new Date().toLocaleDateString("fr-FR")}`, A4.w - MARGIN, currentY, { align: "right" });
+  currentY += 15;
+  
+  // Ligne de signature
+  const signatureX = A4.w - MARGIN - 50;
+  doc.setDrawColor(30, 64, 175);
+  doc.setLineWidth(0.4);
+  doc.line(signatureX, currentY, A4.w - MARGIN, currentY);
+  
+  currentY += 5;
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 64, 175);
+  doc.text("Le Directeur Général", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
+  currentY += 3.5;
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(107, 114, 128);
+  doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PIED DE PAGE
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  const footerY = A4.h - 25;
+  
+  doc.setFillColor(243, 244, 246);
+  doc.rect(0, footerY, A4.w, 25, "F");
+  
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.4);
+  doc.line(0, footerY, A4.w, footerY);
+  
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(17, 24, 39);
+  doc.text("CNAMGS - Siège Social :", MARGIN, footerY + 5);
+  doc.setFont("helvetica", "normal");
+  doc.text("Libreville, Gabon", MARGIN + 35, footerY + 5);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Téléphone :", MARGIN, footerY + 9);
+  doc.setFont("helvetica", "normal");
+  doc.text("+241 01 XX XX XX", MARGIN + 20, footerY + 9);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Email :", MARGIN + 60, footerY + 9);
+  doc.setFont("helvetica", "normal");
+  doc.text("contact@cnamgs.ga", MARGIN + 70, footerY + 9);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Site web :", MARGIN, footerY + 13);
+  doc.setFont("helvetica", "normal");
+  doc.text("www.cnamgs.ga", MARGIN + 16, footerY + 13);
+  
+  doc.setFontSize(6.5);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(107, 114, 128);
+  const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires";
+  const footerNote2 = "conventionnés. Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS.";
+  doc.text(footerNote, MARGIN, footerY + 18);
+  doc.text(footerNote2, MARGIN, footerY + 21);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // EXPORT
