@@ -118,6 +118,37 @@ const loadEllipticalImageAsDataUrl = (src: string, width: number = 260, height: 
     img.src = src;
   });
 
+// Charge une image avec opacité appliquée
+const loadImageWithOpacity = (src: string, opacity: number, width: number, height: number): Promise<string> =>
+  new Promise((resolve) => {
+    if (!src) return resolve("");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.globalAlpha = opacity;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        try {
+          const data = canvas.toDataURL("image/png");
+          resolve(data);
+        } catch {
+          resolve("");
+        }
+      } else {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = src;
+  });
+
 const drawCutMarks = (
   doc: jsPDF,
   x: number,
@@ -304,7 +335,12 @@ export const generateCNAMGSPdf = async (
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
-  const watermarkData = await loadImageAsDataUrl('/watermark_waves.jpg');
+  
+  // Charger le filigrane avec 57% d'opacité déjà appliquée sur le canvas
+  const watermarkH = CARD.h * 0.4 * 10; // Convertir en pixels (approximatif)
+  const watermarkW = CARD.w * 10; // Convertir en pixels (approximatif)
+  const watermarkData = await loadImageWithOpacity('/watermark_waves.jpg', 0.57, watermarkW, watermarkH);
+  
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
@@ -313,18 +349,11 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // 1. Ajouter le filigrane en premier (arrière-plan) avec opacité 57%
+    // 1. Ajouter le filigrane en premier (arrière-plan) - l'opacité est déjà appliquée
     if (watermarkData) {
-      // Calculer la position pour placer le filigrane dans la partie basse de la carte
-      const watermarkH = CARD.h * 0.4; // 40% de la hauteur de la carte
-      const watermarkW = CARD.w;
+      const watermarkH = CARD.h * 0.4;
       const watermarkY = CARD_Y + CARD.h - watermarkH;
-      
-      // Appliquer l'opacité avec setGState
-      doc.saveGraphicsState();
-      doc.setGState({ opacity: 0.57 });
-      doc.addImage(watermarkData, "JPEG", CARD_X, watermarkY, watermarkW, watermarkH);
-      doc.restoreGraphicsState();
+      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH);
     }
     
     // 2. Ajouter l'image capturée de la carte (par-dessus le filigrane)
