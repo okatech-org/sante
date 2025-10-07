@@ -13,7 +13,6 @@ import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import ForProfessionals from "./pages/ForProfessionals";
 import Awareness from "./pages/Awareness";
-import Login from "./pages/Login";
 import LoginPatient from "./pages/LoginPatient";
 import LoginProfessional from "./pages/LoginProfessional";
 import Register from "./pages/Register";
@@ -64,7 +63,6 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/for-professionals" element={<ForProfessionals />} />
             <Route path="/awareness" element={<Awareness />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/login/patient" element={<LoginPatient />} />
             <Route path="/login/pro" element={<LoginProfessional />} />
             <Route path="/superadmin" element={<SuperAdminLogin />} />
