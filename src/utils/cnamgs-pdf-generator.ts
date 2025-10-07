@@ -393,12 +393,33 @@ export const generateCNAMGSPdf = async (
   // Capturer le SVG de la carte comme image ultra haute résolution
   const cardImageData = await captureSVGAsImage();
   
+  // ═══════════════════════════════════════════════════════════════════════════
+  // APPLIQUER UN CLIPPING PATH POUR ÉVITER LES DÉBORDEMENTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Sauvegarder l'état graphique
+  doc.saveGraphicsState();
+  
+  // Créer un chemin de clipping avec coins arrondis
+  // On crée un rectangle arrondi légèrement plus petit pour être sûr
+  const clipMargin = 0.05;
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(
+    CARD_X + clipMargin, 
+    CARD_Y + clipMargin, 
+    CARD.w - 2 * clipMargin, 
+    CARD.h - 2 * clipMargin, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  
   if (cardImageData) {
-    // Ajouter d'abord le fond blanc pour la partie haute
+    // Ajouter d'abord le fond blanc pour la partie haute (à l'intérieur du clipping)
     doc.setFillColor(255, 255, 255);
-    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F"); // Partie haute blanche (0 à 165px sur 650px de hauteur = 25.4%)
+    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F"); // Partie haute blanche
     
-    // Ajouter l'image capturée de la carte en haute qualité
+    // Ajouter l'image capturée de la carte en haute qualité (confinée par le clipping)
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images
