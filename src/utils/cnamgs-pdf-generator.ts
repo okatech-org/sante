@@ -331,26 +331,27 @@ export const generateCNAMGSPdf = async (
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // EN-TÊTE OFFICIEL (Design system: primary turquoise + fond clair)
+  // EN-TÊTE OFFICIEL (Fond blanc avec textes noirs/gris pour meilleur contraste)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Fond dégradé turquoise à bleu (#17CCB9 vers #00A1FE)
-  doc.setFillColor(23, 204, 185); // Primary turquoise
+  // Fond blanc
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, A4.w, 35, "F");
   
   // Accent rose vibrant en haut (#E63B7A)
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // Logo CNAMGS
+  // Logo CNAMGS (en noir)
   doc.setFontSize(28);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(255, 255, 255);
+  doc.setTextColor(38, 43, 51); // foreground - noir
   doc.text("CNAMGS", A4.w / 2, 15, { align: "center" });
   
-  // Sous-titre
+  // Sous-titre (en gris)
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
+  doc.setTextColor(102, 112, 133); // muted-foreground - gris
   doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 22, { align: "center" });
   doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 27, { align: "center" });
   
