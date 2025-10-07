@@ -194,18 +194,11 @@ const captureSVGAsImage = async (): Promise<string> => {
   // Masquer toutes les images dynamiques sauf le filigrane
   const allImages = clonedSvg.querySelectorAll('image');
   allImages.forEach(img => {
-    const hrefVal = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
-    // Convertir les URLs relatives en absolues pour un rendu correct depuis un blob:
-    if (hrefVal && hrefVal.startsWith('/')) {
-      const abs = window.location.origin + hrefVal;
-      img.setAttribute('href', abs);
-      img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', abs);
-    }
-
     // Ne pas masquer l'image en filigrane
     if (img === watermarkImage) return;
     
-    if (hrefVal.includes('http') || hrefVal.includes('blob:') || hrefVal.includes('data:')) {
+    const href = img.getAttribute('href') || img.getAttribute('xlink:href') || '';
+    if (href.includes('http') || href.includes('blob:') || href.includes('data:')) {
       img.setAttribute('opacity', '0');
     }
   });
@@ -311,34 +304,16 @@ export const generateCNAMGSPdf = async (
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
-  
-  // Charger l'image en filigrane séparément
-  const watermarkData = await loadImageAsDataUrl('/watermark_waves.jpg');
-  
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
 
   // Capturer le SVG de la carte comme image ultra haute résolution
+  // Le filigrane est déjà inclus dans le SVG template (ligne 44) avec opacité 0.57
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // D'abord, ajouter le filigrane en arrière-plan avec 57% d'opacité
-    if (watermarkData) {
-      const watermarkY = CARD_Y + CARD.h * 0.2662; // Position après la ligne verte (y=173/650)
-      const watermarkH = CARD.h * 0.7338; // Hauteur de la partie basse (477/650)
-      
-      // Créer un état graphique avec opacité
-      const gs = new (doc as any).GState({ opacity: 0.57 });
-      doc.setGState(gs);
-      doc.addImage(watermarkData, "JPEG", CARD_X, watermarkY, CARD.w, watermarkH);
-      
-      // Restaurer l'opacité normale
-      const gsNormal = new (doc as any).GState({ opacity: 1.0 });
-      doc.setGState(gsNormal);
-    }
-    
-    // Ensuite, ajouter l'image capturée de la carte PAR-DESSUS
+    // Ajouter l'image capturée de la carte (contient déjà le filigrane)
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
