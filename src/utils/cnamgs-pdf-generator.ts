@@ -561,14 +561,36 @@ export const generateCNAMGSPdf = async (
     }
   }
 
-  // Effet d'ombre réaliste (impression papier) - ombre fine et subtile
+  // Effet d'ombre réaliste (impression papier) - ombres superposées
   const shadowOffset = 0.3; // mm
-  const shadowBlur = 0.8; // mm
+  const shadowBlur = 0.6; // mm
   
-  // Ombre principale (plus foncée)
-  doc.saveGraphicsState();
-  doc.setFillColor(0, 0, 0);
-  doc.setGState({ opacity: 0.15 });
+  // Ombre diffuse (la plus claire et la plus étendue)
+  doc.setFillColor(230, 230, 230);
+  doc.roundedRect(
+    CARD_X + shadowBlur + 0.2, 
+    CARD_Y + shadowBlur + 0.2, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  
+  // Ombre intermédiaire
+  doc.setFillColor(210, 210, 210);
+  doc.roundedRect(
+    CARD_X + shadowOffset + 0.15, 
+    CARD_Y + shadowOffset + 0.15, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  
+  // Ombre principale (plus foncée, plus proche)
+  doc.setFillColor(190, 190, 190);
   doc.roundedRect(
     CARD_X + shadowOffset, 
     CARD_Y + shadowOffset, 
@@ -578,32 +600,16 @@ export const generateCNAMGSPdf = async (
     CARD.radius, 
     "F"
   );
-  doc.restoreGraphicsState();
-  
-  // Ombre diffuse (plus claire et étendue)
-  doc.saveGraphicsState();
-  doc.setFillColor(0, 0, 0);
-  doc.setGState({ opacity: 0.08 });
-  doc.roundedRect(
-    CARD_X + shadowBlur, 
-    CARD_Y + shadowBlur, 
-    CARD.w, 
-    CARD.h, 
-    CARD.radius, 
-    CARD.radius, 
-    "F"
-  );
-  doc.restoreGraphicsState();
 
   // Cadre carte avec bordure fine
   doc.setLineWidth(0.2);
-  doc.setDrawColor(180, 180, 180);
+  doc.setDrawColor(160, 160, 160);
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
   
   // Bordure intérieure pour effet de profondeur
-  doc.setLineWidth(0.1);
-  doc.setDrawColor(220, 220, 220);
-  doc.roundedRect(CARD_X + 0.2, CARD_Y + 0.2, CARD.w - 0.4, CARD.h - 0.4, CARD.radius - 0.1, CARD.radius - 0.1);
+  doc.setLineWidth(0.08);
+  doc.setDrawColor(200, 200, 200);
+  doc.roundedRect(CARD_X + 0.15, CARD_Y + 0.15, CARD.w - 0.3, CARD.h - 0.3, CARD.radius - 0.1, CARD.radius - 0.1);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTIONS D'INFORMATIONS (sous la carte)
