@@ -561,10 +561,49 @@ export const generateCNAMGSPdf = async (
     }
   }
 
-  // Cadre carte
-  doc.setLineWidth(0.5);
-  doc.setDrawColor(200, 200, 200);
+  // Effet d'ombre réaliste (impression papier) - ombre fine et subtile
+  const shadowOffset = 0.3; // mm
+  const shadowBlur = 0.8; // mm
+  
+  // Ombre principale (plus foncée)
+  doc.saveGraphicsState();
+  doc.setFillColor(0, 0, 0);
+  doc.setGState({ opacity: 0.15 });
+  doc.roundedRect(
+    CARD_X + shadowOffset, 
+    CARD_Y + shadowOffset, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  doc.restoreGraphicsState();
+  
+  // Ombre diffuse (plus claire et étendue)
+  doc.saveGraphicsState();
+  doc.setFillColor(0, 0, 0);
+  doc.setGState({ opacity: 0.08 });
+  doc.roundedRect(
+    CARD_X + shadowBlur, 
+    CARD_Y + shadowBlur, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  doc.restoreGraphicsState();
+
+  // Cadre carte avec bordure fine
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(180, 180, 180);
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
+  
+  // Bordure intérieure pour effet de profondeur
+  doc.setLineWidth(0.1);
+  doc.setDrawColor(220, 220, 220);
+  doc.roundedRect(CARD_X + 0.2, CARD_Y + 0.2, CARD.w - 0.4, CARD.h - 0.4, CARD.radius - 0.1, CARD.radius - 0.1);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTIONS D'INFORMATIONS (sous la carte)
