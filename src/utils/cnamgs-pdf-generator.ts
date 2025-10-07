@@ -345,15 +345,15 @@ export const generateCNAMGSPdf = async (
     doc.setFillColor(255, 255, 255);
     doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F"); // Partie haute blanche (0 à 165px sur 650px de hauteur = 25.4%)
     
-    // Ajouter le filigrane dans la partie basse avec opacité
+    // Ajouter l'image capturée de la carte en haute qualité
+    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
+    
+    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images
     if (watermarkData) {
       const watermarkY = CARD_Y + CARD.h * 0.266; // Commence après la ligne verte (173px sur 650px = 26.6%)
       const watermarkH = CARD.h * 0.734; // Hauteur restante (477px sur 650px = 73.4%)
       doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
     }
-    
-    // Ajouter l'image capturée de la carte en haute qualité (par-dessus)
-    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
     // Emblème des armoiries (haut gauche) - position exacte du SVG
