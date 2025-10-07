@@ -45,10 +45,8 @@ const A4 = { w: 210, h: 297 }; // mm
 const CARD = { w: 85.6, h: 53.98, radius: 3 }; // ID-1 (ISO/IEC 7810)
 const MARGIN = 15; // mm
 
-// Placement carte (haut droit de l'attestation)
+// Placement carte (dans la section INFORMATIONS DE L'ASSURÉ)
 const HEADER_H = 53; // mm - en-tête + titre
-const CARD_Y = HEADER_H + 8; // mm
-const CARD_X = A4.w - MARGIN - CARD.w; // aligné à droite
 
 // Utilitaires -----------------------------------------------------------------
 const loadImageAsDataUrl = (src: string): Promise<string> =>
@@ -343,18 +341,18 @@ export const generateCNAMGSPdf = async (
   doc.rect(0, 0, A4.w, 1.5, "F");
   
   // Charger et afficher le logo CNAMGS
-  const headerLogoData = await loadImageAsDataUrl('/logo_sante.png');
+  const headerLogoData = await loadImageAsDataUrl('/cnamgs_header_logo.png');
   if (headerLogoData) {
-    const logoW = 50; // Largeur du logo en mm
-    const logoH = 12; // Hauteur proportionnelle
+    const logoW = 60; // Largeur du logo en mm
+    const logoH = 14; // Hauteur proportionnelle
     const logoX = (A4.w - logoW) / 2; // Centrer horizontalement
-    const logoY = 8; // Position verticale
+    const logoY = 6; // Position verticale
     doc.addImage(headerLogoData, "PNG", logoX, logoY, logoW, logoH);
   }
   
-  // Sous-titre (en gris)
+  // Sous-titre (en gras)
   doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("helvetica", "bold"); // Changed to bold
   doc.setTextColor(102, 112, 133); // muted-foreground - gris
   doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 24, { align: "center" });
   doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 29, { align: "center" });
@@ -384,39 +382,7 @@ export const generateCNAMGSPdf = async (
   const numAttestation = data.numeroAttestation || `2025/CNAMGS/${data.numero.replace(/-/g, '')}`;
   doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 50);
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // CARTE CNAMGS - Capture SVG haute résolution + images superposées
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // EFFET D'OMBRE (EN ARRIÈRE-PLAN - AVANT LE CONTENU)
-  // ═══════════════════════════════════════════════════════════════════════════
-  const shadowOffset = 0.15; // mm - décalage subtil
-  
-  // Ombre diffuse (6 couches pour un dégradé réaliste)
-  doc.setFillColor(245, 245, 245);
-  doc.roundedRect(CARD_X + 0.5, CARD_Y + 0.5, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  doc.setFillColor(240, 240, 240);
-  doc.roundedRect(CARD_X + 0.4, CARD_Y + 0.4, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  doc.setFillColor(235, 235, 235);
-  doc.roundedRect(CARD_X + 0.3, CARD_Y + 0.3, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  doc.setFillColor(230, 230, 230);
-  doc.roundedRect(CARD_X + 0.25, CARD_Y + 0.25, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  doc.setFillColor(220, 220, 220);
-  doc.roundedRect(CARD_X + 0.2, CARD_Y + 0.2, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  doc.setFillColor(210, 210, 210);
-  doc.roundedRect(CARD_X + shadowOffset, CARD_Y + shadowOffset, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // CONTENU DE LA CARTE (PAR-DESSUS LES OMBRES)
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  // Charger les images directement depuis les fichiers
+  // Charger les images pour la carte (à utiliser plus tard)
   const armoiriesData = assets?.armoiriesUrl
     ? await loadImageAsDataUrl(assets.armoiriesUrl)
     : "";
@@ -424,252 +390,11 @@ export const generateCNAMGSPdf = async (
     ? await loadImageAsDataUrl(assets.cnamgsLogoUrl)
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
-  
-  // Charger le filigrane en ultra haute résolution avec opacité
   const watermarkData = await loadWatermarkHighRes('/fili_cnamgs.png', 0.25);
-  
-  // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
     : "";
-
-  // Capturer le SVG de la carte comme image ultra haute résolution
   const cardImageData = await captureSVGAsImage();
-  
-  // ═══════════════════════════════════════════════════════════════════════════
-  // FOND BLANC AVEC COINS ARRONDIS (MASQUE DE BASE)
-  // ═══════════════════════════════════════════════════════════════════════════
-  
-  // Dessiner un fond blanc avec coins arrondis pour créer la zone de la carte
-  doc.setFillColor(255, 255, 255);
-  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
-  
-  if (cardImageData) {
-    // Réduire légèrement les images pour éviter tout débordement
-    const imgMargin = 0.1; // marge de sécurité
-    const imgX = CARD_X + imgMargin;
-    const imgY = CARD_Y + imgMargin;
-    const imgW = CARD.w - 2 * imgMargin;
-    const imgH = CARD.h - 2 * imgMargin;
-    
-    // Ajouter l'image capturée de la carte en haute qualité (légèrement réduite)
-    doc.addImage(cardImageData, "PNG", imgX, imgY, imgW, imgH, undefined, 'FAST');
-    
-    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images (réduit)
-    if (watermarkData) {
-      const watermarkY = CARD_Y + CARD.h * 0.266 + imgMargin;
-      const watermarkH = CARD.h * 0.734 - 2 * imgMargin;
-      doc.addImage(watermarkData, "PNG", imgX, watermarkY, imgW, watermarkH, undefined, 'FAST');
-    }
-    
-    // Superposer les images sources pour une qualité optimale
-    // Emblème des armoiries (haut gauche) - position exacte du SVG
-    // SVG: x="37" y="15" width="138" height="138" sur canvas 1050x650
-    if (armoiriesData) {
-      const emblemW = CARD.w * 0.1314; // ~11.25mm
-      const emblemH = emblemW; // carré
-      const emblemX = CARD_X + CARD.w * 0.0352; // ~3mm du bord
-      const emblemY = CARD_Y + CARD.h * 0.0231; // ~1.25mm du haut
-      doc.addImage(armoiriesData, "PNG", emblemX, emblemY, emblemW, emblemH);
-    }
-
-    // Logo CNAMGS (haut droite) - position exacte du SVG
-    // SVG: x="610" y="29" width="400" height="110" sur canvas 1050x650
-    if (logoData) {
-      const logoW = CARD.w * 0.3810; // ~32.6mm
-      const logoH = logoW * 0.20; // Hauteur réduite pour fond gris carré
-      const logoX = CARD_X + CARD.w * 0.5810; // ~49.7mm du bord gauche
-      const logoY = CARD_Y + CARD.h * 0.0446 + 1; // ~2.4mm du haut + 1mm
-      doc.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
-    }
-
-    // Puce SIM (gauche, après bande verte) - position exacte du SVG
-    // SVG: x="93" y="223" width="162" height="125" sur canvas 1050x650
-    if (chipData) {
-      const chipW = CARD.w * 0.1543; // ~13.2mm
-      const chipH = CARD.h * 0.1923; // ~10.4mm
-      const chipX = CARD_X + CARD.w * 0.0886; // ~7.6mm du bord gauche
-      const chipY = CARD_Y + CARD.h * 0.3431; // ~18.5mm du haut
-      doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
-    }
-
-    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG (confinée)
-    // SVG: ellipse cx="847" cy="447" rx="130" ry="160" sur canvas 1050x650
-    // rx < ry = ellipse verticale (plus haute que large)
-    if (photoData) {
-      const photoRx = CARD.w * 0.1238; // ~10.6mm (rayon horizontal)
-      const photoRy = CARD.h * 0.2462; // ~13.3mm (rayon vertical)
-      const photoCx = CARD_X + CARD.w * 0.8067; // centre x
-      const photoCy = CARD_Y + CARD.h * 0.6877; // centre y
-      
-      // Position pour image (coin haut-gauche)
-      const photoX = photoCx - photoRx;
-      const photoY = photoCy - photoRy;
-      const photoW = photoRx * 2;
-      const photoH = photoRy * 2;
-      
-      // Vérifier que la photo ne dépasse pas les bords de la carte
-      const maxPhotoX = CARD_X + CARD.w - photoW - 0.5;
-      const maxPhotoY = CARD_Y + CARD.h - photoH - 0.5;
-      const finalPhotoX = Math.min(photoX, maxPhotoX);
-      const finalPhotoY = Math.min(photoY, maxPhotoY);
-      
-      doc.addImage(photoData, "PNG", finalPhotoX, finalPhotoY, photoW, photoH);
-    }
-  } else {
-    // Fallback: rendu vectoriel si la capture échoue
-    
-    // Fond blanc pour la partie haute
-    doc.setFillColor(255, 255, 255);
-    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F");
-    
-    // Fond vert clair pour la partie basse
-    doc.setFillColor(233, 242, 233);
-    const basseY = CARD_Y + CARD.h * 0.254;
-    doc.rect(CARD_X, basseY, CARD.w, CARD.h * 0.746, "F");
-    
-    // Ajouter le filigrane dans la partie basse avec opacité
-    if (watermarkData) {
-      const watermarkY = CARD_Y + CARD.h * 0.266;
-      const watermarkH = CARD.h * 0.734;
-      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
-    }
-
-    // Bande verte horizontale
-    const bandY = CARD_Y + CARD.h * 0.254;
-    doc.setFillColor(42, 168, 74);
-    doc.rect(CARD_X, bandY, CARD.w, CARD.h * 0.012, "F"); // 8px sur 650px = 1.2%
-
-    // Textes en-tête carte
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(0, 0, 0);
-    doc.text("RÉPUBLIQUE", CARD_X + 18, CARD_Y + 8);
-    doc.text("GABONAISE", CARD_X + 18, CARD_Y + 13);
-
-    // "Secteur Privé" centré
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-    doc.text("Secteur Privé", CARD_X + CARD.w / 2, CARD_Y + 24.5, { align: "center" });
-    
-    // "Carte d'Assurance Maladie" centré
-    doc.setFontSize(8);
-    doc.text("Carte d'Assurance Maladie", CARD_X + CARD.w / 2, CARD_Y + 29, {
-      align: "center",
-    });
-
-    // Numéro de carte
-    doc.setFontSize(7);
-    doc.setFont("courier", "bold");
-    doc.text(data.numero, CARD_X + CARD.w / 2, CARD_Y + 34, { align: "center" });
-
-    // Puce (chip)
-    const chipX = CARD_X + 13;
-    const chipY = CARD_Y + 23;
-    const chipW = 15;
-    const chipH = 11;
-    doc.setFillColor(239, 211, 137);
-    doc.setDrawColor(26, 26, 26);
-    doc.setLineWidth(0.2);
-    doc.roundedRect(chipX, chipY, chipW, chipH, 2, 2, "FD");
-
-    // Détails chip
-    doc.setLineWidth(0.15);
-    const innerMargin = 1.5;
-    doc.roundedRect(chipX + innerMargin, chipY + innerMargin, chipW - 2*innerMargin, chipH - 2*innerMargin, 1, 1, "D");
-    
-    const cellW = (chipW - 2*innerMargin) / 3;
-    const cellH = (chipH - 2*innerMargin) / 3;
-    
-    for (let i = 1; i < 3; i++) {
-      doc.line(chipX + innerMargin + i * cellW, chipY + innerMargin, chipX + innerMargin + i * cellW, chipY + chipH - innerMargin);
-      doc.line(chipX + innerMargin, chipY + innerMargin + i * cellH, chipX + chipW - innerMargin, chipY + innerMargin + i * cellH);
-    }
-
-    // Champs identité
-    const labelStartX = CARD_X + 13;
-    const labelStartY = CARD_Y + 38;
-
-    doc.setFontSize(5);
-    doc.setFont("helvetica", "bold");
-    doc.text("Nom", labelStartX, labelStartY);
-    doc.setFontSize(7);
-    doc.text(data.nom, labelStartX, labelStartY + 3);
-
-    doc.setFontSize(5);
-    doc.text("Prénoms", labelStartX, labelStartY + 7);
-    doc.setFontSize(7);
-    doc.text(data.prenoms, labelStartX, labelStartY + 10);
-
-    doc.setFontSize(5);
-    doc.text("Date de naissance", labelStartX, labelStartY + 14);
-    doc.setFontSize(7);
-    doc.text(data.dateNaissance, labelStartX, labelStartY + 17);
-
-    // Sexe
-    const sexeX = CARD_X + 55;
-    doc.setFontSize(5);
-    doc.text("Sexe", sexeX, labelStartY + 7);
-    doc.setFontSize(7);
-    doc.text(data.sexe || "M", sexeX, labelStartY + 10);
-    
-    // Fallback: Superposer les images sources
-    if (armoiriesData) {
-      const emblemSize = 10;
-      doc.addImage(armoiriesData, "PNG", CARD_X + 5.5, CARD_Y + 3, emblemSize, emblemSize);
-    }
-
-    if (logoData) {
-      const logoWidth = 32;
-      const logoHeight = logoWidth * 0.20; // Hauteur réduite pour fond gris carré
-      doc.addImage(logoData, "PNG", CARD_X + 48, CARD_Y + 5, logoWidth, logoHeight);
-    }
-
-    if (chipData) {
-      const chipW = CARD.w * 0.1543;
-      const chipH = CARD.h * 0.1923;
-      const chipX = CARD_X + CARD.w * 0.0886;
-      const chipY = CARD_Y + CARD.h * 0.3431;
-      doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
-    }
-
-    if (photoData) {
-      const photoRx = CARD.w * 0.1238;
-      const photoRy = CARD.h * 0.2462;
-      const photoCx = CARD_X + CARD.w * 0.8067;
-      const photoCy = CARD_Y + CARD.h * 0.6877;
-      const photoX = photoCx - photoRx;
-      const photoY = photoCy - photoRy;
-      const photoW = photoRx * 2;
-      const photoH = photoRy * 2;
-      doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MASQUE FINAL : Rectangle blanc par-dessus pour couper les débordements
-  // ═══════════════════════════════════════════════════════════════════════════
-  
-  // Dessiner 4 rectangles blancs autour de la carte pour masquer tout débordement
-  // Haut
-  doc.setFillColor(255, 255, 255);
-  doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
-  // Bas
-  doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
-  // Gauche
-  doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
-  // Droite
-  doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
-  
-  // Redessiner le cadre de la carte par-dessus pour des bords nets
-  doc.setLineWidth(0.08);
-  doc.setDrawColor(180, 180, 180);
-  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
-  
-  // Bordure intérieure subtile pour effet de profondeur
-  doc.setLineWidth(0.05);
-  doc.setDrawColor(220, 220, 220);
-  doc.roundedRect(CARD_X + 0.1, CARD_Y + 0.1, CARD.w - 0.2, CARD.h - 0.2, CARD.radius - 0.05, CARD.radius - 0.05);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MESSAGE PERSONNALISÉ (à gauche de la carte)
@@ -729,12 +454,12 @@ export const generateCNAMGSPdf = async (
   currentY += 12;
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 1 : Informations de l'Assuré
+  // SECTION 1 : Informations de l'Assuré (avec carte CNAMGS)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Titre de section (primary-light background)
+  // Titre de section (primary-light background) - largeur totale
   doc.setFillColor(210, 239, 235); // primary-light (173 70% 85%)
-  doc.rect(MARGIN, currentY, leftColumnW, 7, "F");
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
   doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(MARGIN, currentY, 0.8, 7, "F");
   
@@ -744,9 +469,101 @@ export const generateCNAMGSPdf = async (
   doc.text("📋 INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
-  // Grille d'informations (2 colonnes)
-  const gridStartY = currentY;
-  const colWidth = leftColumnW / 2;
+  // Position de la carte dans cette section (à droite)
+  const CARD_Y = currentY;
+  const CARD_X = A4.w - MARGIN - CARD.w;
+  const shadowOffset = 0.15;
+  
+  // Ombre diffuse pour la carte
+  doc.setFillColor(245, 245, 245);
+  doc.roundedRect(CARD_X + 0.5, CARD_Y + 0.5, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  doc.setFillColor(240, 240, 240);
+  doc.roundedRect(CARD_X + 0.4, CARD_Y + 0.4, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  doc.setFillColor(235, 235, 235);
+  doc.roundedRect(CARD_X + 0.3, CARD_Y + 0.3, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  doc.setFillColor(230, 230, 230);
+  doc.roundedRect(CARD_X + 0.25, CARD_Y + 0.25, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  doc.setFillColor(220, 220, 220);
+  doc.roundedRect(CARD_X + 0.2, CARD_Y + 0.2, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  doc.setFillColor(210, 210, 210);
+  doc.roundedRect(CARD_X + shadowOffset, CARD_Y + shadowOffset, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  
+  // Fond blanc avec coins arrondis pour la carte
+  doc.setFillColor(255, 255, 255);
+  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+  
+  if (cardImageData) {
+    const imgMargin = 0.1;
+    const imgX = CARD_X + imgMargin;
+    const imgY = CARD_Y + imgMargin;
+    const imgW = CARD.w - 2 * imgMargin;
+    const imgH = CARD.h - 2 * imgMargin;
+    
+    doc.addImage(cardImageData, "PNG", imgX, imgY, imgW, imgH, undefined, 'FAST');
+    
+    if (watermarkData) {
+      const watermarkY = CARD_Y + CARD.h * 0.266 + imgMargin;
+      const watermarkH = CARD.h * 0.734 - 2 * imgMargin;
+      doc.addImage(watermarkData, "PNG", imgX, watermarkY, imgW, watermarkH, undefined, 'FAST');
+    }
+    
+    if (armoiriesData) {
+      const emblemW = CARD.w * 0.1314;
+      const emblemH = emblemW;
+      const emblemX = CARD_X + CARD.w * 0.0352;
+      const emblemY = CARD_Y + CARD.h * 0.0231;
+      doc.addImage(armoiriesData, "PNG", emblemX, emblemY, emblemW, emblemH);
+    }
+    
+    if (logoData) {
+      const logoW = CARD.w * 0.3810;
+      const logoH = logoW * 0.20;
+      const logoX = CARD_X + CARD.w * 0.5810;
+      const logoY = CARD_Y + CARD.h * 0.0446 + 1;
+      doc.addImage(logoData, "PNG", logoX, logoY, logoW, logoH);
+    }
+    
+    if (chipData) {
+      const chipW = CARD.w * 0.1543;
+      const chipH = CARD.h * 0.1923;
+      const chipX = CARD_X + CARD.w * 0.0886;
+      const chipY = CARD_Y + CARD.h * 0.3431;
+      doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
+    }
+    
+    if (photoData) {
+      const photoRx = CARD.w * 0.1238;
+      const photoRy = CARD.h * 0.2462;
+      const photoCx = CARD_X + CARD.w * 0.8067;
+      const photoCy = CARD_Y + CARD.h * 0.6877;
+      const photoX = photoCx - photoRx;
+      const photoY = photoCy - photoRy;
+      const photoW = photoRx * 2;
+      const photoH = photoRy * 2;
+      const maxPhotoX = CARD_X + CARD.w - photoW - 0.5;
+      const maxPhotoY = CARD_Y + CARD.h - photoH - 0.5;
+      const finalPhotoX = Math.min(photoX, maxPhotoX);
+      const finalPhotoY = Math.min(photoY, maxPhotoY);
+      doc.addImage(photoData, "PNG", finalPhotoX, finalPhotoY, photoW, photoH);
+    }
+  }
+  
+  // Masque final
+  doc.setFillColor(255, 255, 255);
+  doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
+  doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
+  doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
+  doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
+  
+  doc.setLineWidth(0.08);
+  doc.setDrawColor(180, 180, 180);
+  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
+  doc.setLineWidth(0.05);
+  doc.setDrawColor(220, 220, 220);
+  doc.roundedRect(CARD_X + 0.1, CARD_Y + 0.1, CARD.w - 0.2, CARD.h - 0.2, CARD.radius - 0.05, CARD.radius - 0.05);
+  
+  // Grille d'informations (à gauche de la carte, 1 colonne)
+  const infoColW = A4.w - CARD.w - 3 * MARGIN - 5;
   
   const drawInfoBox = (label: string, value: string, x: number, y: number, w: number) => {
     // Fond (card white avec border subtile)
@@ -768,46 +585,48 @@ export const generateCNAMGSPdf = async (
     doc.text(value, x + 2, y + 7.5);
   };
   
-  // Ligne 1
-  drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, colWidth - 2);
-  drawInfoBox("NOM ET PRÉNOMS", `${data.nom} ${data.prenoms}`, MARGIN + colWidth, currentY, colWidth - 2);
+  // Informations en colonne à gauche de la carte
+  drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, infoColW);
   currentY += 12;
   
-  // Ligne 2
-  drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, colWidth - 2);
-  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN + colWidth, currentY, colWidth - 2);
+  drawInfoBox("NOM ET PRÉNOMS", `${data.nom} ${data.prenoms}`, MARGIN, currentY, infoColW);
   currentY += 12;
   
-  // Ligne 3
-  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, colWidth - 2);
+  drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, infoColW);
+  currentY += 12;
+  
+  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, infoColW);
+  currentY += 12;
+  
+  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
+  currentY += 12;
   
   // Statut badge
-  const statutX = MARGIN + colWidth;
-  doc.setFillColor(255, 255, 255); // card
-  doc.setDrawColor(226, 232, 240); // border
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(0.12);
-  doc.roundedRect(statutX, currentY, colWidth - 2, 10, 2, 2, "FD");
+  doc.roundedRect(MARGIN, currentY, infoColW, 10, 2, 2, "FD");
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(102, 112, 133); // muted-foreground
-  doc.text("STATUT", statutX + 2, currentY + 3.5);
+  doc.setTextColor(102, 112, 133);
+  doc.text("STATUT", MARGIN + 2, currentY + 3.5);
   
-  // Badge statut (accent rose pour actif, destructive pour inactif)
   const isActif = data.statut !== "Inactif";
-  doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68); // accent (#E63B7A) ou destructive
-  doc.roundedRect(statutX + 2, currentY + 5, 18, 4, 2, 2, "F");
+  doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68);
+  doc.roundedRect(MARGIN + 2, currentY + 5, 18, 4, 2, 2, "F");
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text(data.statut || "ACTIF", statutX + 11, currentY + 8, { align: "center" });
+  doc.text(data.statut || "ACTIF", MARGIN + 11, currentY + 8, { align: "center" });
   
   currentY += 15;
   
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 2 : Droits et Taux de Couverture (sous la carte, pleine largeur)
-  // ═══════════════════════════════════════════════════════════════════════════
+  // S'assurer qu'on passe en dessous de la carte
+  currentY = Math.max(currentY, CARD_Y + CARD.h + 5);
   
-  currentY = Math.max(currentY, CARD_Y + CARD.h + 10);
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 2 : Droits et Taux de Couverture (pleine largeur)
+  // ═══════════════════════════════════════════════════════════════════════════
   
   // Titre de section
   doc.setFillColor(210, 239, 235); // primary-light
@@ -905,9 +724,7 @@ export const generateCNAMGSPdf = async (
   // ═══════════════════════════════════════════════════════════════════════════
   
   doc.setFillColor(254, 231, 240); // fond rose très clair (accent/10)
-  doc.setDrawColor(230, 59, 122); // accent rose (#E63B7A)
-  doc.setLineWidth(1);
-  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 2, 2, "FD");
+  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 2, 2, "F");
   
   doc.setFillColor(230, 59, 122); // accent rose
   doc.rect(MARGIN, currentY, 1.5, 22, "F");
