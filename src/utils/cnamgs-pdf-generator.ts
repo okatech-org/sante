@@ -402,33 +402,21 @@ export const generateCNAMGSPdf = async (
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
   
   if (cardImageData) {
-    // ═══════════════════════════════════════════════════════════════════════════
-    // ACTIVER LE CLIPPING POUR TOUTES LES IMAGES
-    // ═══════════════════════════════════════════════════════════════════════════
+    // Réduire légèrement les images pour éviter tout débordement
+    const imgMargin = 0.1; // marge de sécurité
+    const imgX = CARD_X + imgMargin;
+    const imgY = CARD_Y + imgMargin;
+    const imgW = CARD.w - 2 * imgMargin;
+    const imgH = CARD.h - 2 * imgMargin;
     
-    // Sauvegarder l'état graphique
-    doc.saveGraphicsState();
+    // Ajouter l'image capturée de la carte en haute qualité (légèrement réduite)
+    doc.addImage(cardImageData, "PNG", imgX, imgY, imgW, imgH, undefined, 'FAST');
     
-    // Créer un chemin de clipping avec coins arrondis (légèrement réduit pour sécurité)
-    const clipMargin = 0.05; // petite marge de sécurité
-    doc.roundedRect(
-      CARD_X + clipMargin, 
-      CARD_Y + clipMargin, 
-      CARD.w - 2 * clipMargin, 
-      CARD.h - 2 * clipMargin, 
-      CARD.radius - clipMargin, 
-      CARD.radius - clipMargin
-    );
-    doc.clip();
-    
-    // Ajouter l'image capturée de la carte en haute qualité
-    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
-    
-    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images
+    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images (réduit)
     if (watermarkData) {
-      const watermarkY = CARD_Y + CARD.h * 0.266;
-      const watermarkH = CARD.h * 0.734;
-      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
+      const watermarkY = CARD_Y + CARD.h * 0.266 + imgMargin;
+      const watermarkH = CARD.h * 0.734 - 2 * imgMargin;
+      doc.addImage(watermarkData, "PNG", imgX, watermarkY, imgW, watermarkH, undefined, 'FAST');
     }
     
     // Superposer les images sources pour une qualité optimale
@@ -462,7 +450,7 @@ export const generateCNAMGSPdf = async (
       doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
     }
 
-    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG
+    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG (confinée)
     // SVG: ellipse cx="847" cy="447" rx="130" ry="160" sur canvas 1050x650
     // rx < ry = ellipse verticale (plus haute que large)
     if (photoData) {
@@ -477,11 +465,14 @@ export const generateCNAMGSPdf = async (
       const photoW = photoRx * 2;
       const photoH = photoRy * 2;
       
-      doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
+      // Vérifier que la photo ne dépasse pas les bords de la carte
+      const maxPhotoX = CARD_X + CARD.w - photoW - 0.5;
+      const maxPhotoY = CARD_Y + CARD.h - photoH - 0.5;
+      const finalPhotoX = Math.min(photoX, maxPhotoX);
+      const finalPhotoY = Math.min(photoY, maxPhotoY);
+      
+      doc.addImage(photoData, "PNG", finalPhotoX, finalPhotoY, photoW, photoH);
     }
-    
-    // Restaurer l'état graphique (désactive le clipping)
-    doc.restoreGraphicsState();
   } else {
     // Fallback: rendu vectoriel si la capture échoue
     
@@ -613,8 +604,19 @@ export const generateCNAMGSPdf = async (
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // Le clipping s'occupe maintenant de tout - plus besoin de masques rectangulaires
+  // MASQUE FINAL : Rectangle blanc par-dessus pour couper les débordements
   // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Dessiner 4 rectangles blancs autour de la carte pour masquer tout débordement
+  // Haut
+  doc.setFillColor(255, 255, 255);
+  doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
+  // Bas
+  doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
+  // Gauche
+  doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
+  // Droite
+  doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
   
   // Redessiner le cadre de la carte par-dessus pour des bords nets
   doc.setLineWidth(0.08);
