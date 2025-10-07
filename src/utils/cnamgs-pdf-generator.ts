@@ -345,9 +345,6 @@ export const generateCNAMGSPdf = async (
   // CARTE CNAMGS - Capture SVG haute résolution + images superposées
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Traits de coupe
-  drawCutMarks(doc, CARD_X, CARD_Y, CARD.w, CARD.h, 3);
-
   // ═══════════════════════════════════════════════════════════════════════════
   // EFFET D'OMBRE (EN ARRIÈRE-PLAN - AVANT LE CONTENU)
   // ═══════════════════════════════════════════════════════════════════════════
