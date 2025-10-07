@@ -342,18 +342,22 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // Logo CNAMGS (en noir)
-  doc.setFontSize(28);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(38, 43, 51); // foreground - noir
-  doc.text("CNAMGS", A4.w / 2, 15, { align: "center" });
+  // Charger et afficher le logo CNAMGS
+  const headerLogoData = await loadImageAsDataUrl('/logo_sante.png');
+  if (headerLogoData) {
+    const logoW = 50; // Largeur du logo en mm
+    const logoH = 12; // Hauteur proportionnelle
+    const logoX = (A4.w - logoW) / 2; // Centrer horizontalement
+    const logoY = 8; // Position verticale
+    doc.addImage(headerLogoData, "PNG", logoX, logoY, logoW, logoH);
+  }
   
   // Sous-titre (en gris)
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground - gris
-  doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 22, { align: "center" });
-  doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 27, { align: "center" });
+  doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 24, { align: "center" });
+  doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 29, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
   // TITRE DU DOCUMENT
@@ -897,24 +901,25 @@ export const generateCNAMGSPdf = async (
   currentY += 15;
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // AVERTISSEMENT (warning color: #FDAD00)
+  // AVERTISSEMENT (fond rose opaque #E63B7A du design system)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  doc.setFillColor(255, 247, 230); // warning background très clair
-  doc.setDrawColor(253, 173, 0); // warning (#FDAD00)
-  doc.setLineWidth(0.8);
+  doc.setFillColor(254, 231, 240); // fond rose très clair (accent/10)
+  doc.setDrawColor(230, 59, 122); // accent rose (#E63B7A)
+  doc.setLineWidth(1);
   doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 2, 2, "FD");
   
-  doc.setFillColor(253, 173, 0); // warning
-  doc.rect(MARGIN, currentY, 1.2, 22, "F");
+  doc.setFillColor(230, 59, 122); // accent rose
+  doc.rect(MARGIN, currentY, 1.5, 22, "F");
   
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(120, 80, 0); // warning dark
+  doc.setTextColor(139, 10, 61); // accent dark
   doc.text("⚠️ IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
+  doc.setTextColor(100, 8, 46); // accent darker
   const warningText = "Cette attestation est valable uniquement auprès des prestataires conventionnés CNAMGS.";
   const warningText2 = "Le système de tiers-payant s'applique selon les tarifs conventionnés. Tout dépassement (GAP)";
   const warningText3 = "reste à votre charge. Toute attestation de droits antérieure est à détruire.";
@@ -924,7 +929,7 @@ export const generateCNAMGSPdf = async (
   
   doc.setFont("helvetica", "italic");
   doc.setFontSize(6.8);
-  doc.setTextColor(100, 70, 0); // warning foreground darker
+  doc.setTextColor(80, 5, 37); // accent darkest
   doc.text("La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations.", MARGIN + 3, currentY + 19.5);
   
   currentY += 26;
