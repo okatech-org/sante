@@ -299,6 +299,9 @@ export const generateCNAMGSPdf = async (
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
   
+  // Charger le nouveau filigrane avec opacité
+  const watermarkData = await loadImageAsDataUrl('/fili_cnamgs.png');
+  
   // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
     ? await loadEllipticalImageAsDataUrl(assets.photoUrl, 260, 320)
@@ -308,7 +311,18 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
   
   if (cardImageData) {
-    // Ajouter l'image capturée de la carte en haute qualité
+    // Ajouter d'abord le fond blanc pour la partie haute
+    doc.setFillColor(255, 255, 255);
+    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F"); // Partie haute blanche (0 à 165px sur 650px de hauteur = 25.4%)
+    
+    // Ajouter le filigrane dans la partie basse avec opacité
+    if (watermarkData) {
+      const watermarkY = CARD_Y + CARD.h * 0.266; // Commence après la ligne verte (173px sur 650px = 26.6%)
+      const watermarkH = CARD.h * 0.734; // Hauteur restante (477px sur 650px = 73.4%)
+      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
+    }
+    
+    // Ajouter l'image capturée de la carte en haute qualité (par-dessus)
     doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
     
     // Superposer les images sources pour une qualité optimale
@@ -361,14 +375,27 @@ export const generateCNAMGSPdf = async (
     }
   } else {
     // Fallback: rendu vectoriel si la capture échoue
-    // Fond carte (vert clair)
+    
+    // Fond blanc pour la partie haute
+    doc.setFillColor(255, 255, 255);
+    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F");
+    
+    // Fond vert clair pour la partie basse
     doc.setFillColor(233, 242, 233);
-    doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
+    const basseY = CARD_Y + CARD.h * 0.254;
+    doc.rect(CARD_X, basseY, CARD.w, CARD.h * 0.746, "F");
+    
+    // Ajouter le filigrane dans la partie basse avec opacité
+    if (watermarkData) {
+      const watermarkY = CARD_Y + CARD.h * 0.266;
+      const watermarkH = CARD.h * 0.734;
+      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
+    }
 
     // Bande verte horizontale
-    const bandY = CARD_Y + 19.5;
+    const bandY = CARD_Y + CARD.h * 0.254;
     doc.setFillColor(42, 168, 74);
-    doc.rect(CARD_X, bandY, CARD.w, 2, "F");
+    doc.rect(CARD_X, bandY, CARD.w, CARD.h * 0.012, "F"); // 8px sur 650px = 1.2%
 
     // Textes en-tête carte
     doc.setFontSize(9);
