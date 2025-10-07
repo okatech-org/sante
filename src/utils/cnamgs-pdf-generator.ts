@@ -394,39 +394,29 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // APPLIQUER UN CLIPPING PATH POUR ÉVITER LES DÉBORDEMENTS
+  // FOND BLANC AVEC COINS ARRONDIS (MASQUE DE BASE)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Sauvegarder l'état graphique
-  doc.saveGraphicsState();
-  
-  // Créer un chemin de clipping avec coins arrondis
-  // On crée un rectangle arrondi légèrement plus petit pour être sûr
-  const clipMargin = 0.05;
+  // Dessiner un fond blanc avec coins arrondis pour créer la zone de la carte
   doc.setFillColor(255, 255, 255);
-  doc.roundedRect(
-    CARD_X + clipMargin, 
-    CARD_Y + clipMargin, 
-    CARD.w - 2 * clipMargin, 
-    CARD.h - 2 * clipMargin, 
-    CARD.radius, 
-    CARD.radius, 
-    "F"
-  );
+  doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius, "F");
   
   if (cardImageData) {
-    // Ajouter d'abord le fond blanc pour la partie haute (à l'intérieur du clipping)
-    doc.setFillColor(255, 255, 255);
-    doc.rect(CARD_X, CARD_Y, CARD.w, CARD.h * 0.254, "F"); // Partie haute blanche
+    // Réduire légèrement les images pour éviter tout débordement
+    const imgMargin = 0.1; // marge de sécurité
+    const imgX = CARD_X + imgMargin;
+    const imgY = CARD_Y + imgMargin;
+    const imgW = CARD.w - 2 * imgMargin;
+    const imgH = CARD.h - 2 * imgMargin;
     
-    // Ajouter l'image capturée de la carte en haute qualité (confinée par le clipping)
-    doc.addImage(cardImageData, "PNG", CARD_X, CARD_Y, CARD.w, CARD.h, undefined, 'FAST');
+    // Ajouter l'image capturée de la carte en haute qualité (légèrement réduite)
+    doc.addImage(cardImageData, "PNG", imgX, imgY, imgW, imgH, undefined, 'FAST');
     
-    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images
+    // Ajouter le filigrane dans la partie basse APRÈS le SVG mais AVANT les autres images (réduit)
     if (watermarkData) {
-      const watermarkY = CARD_Y + CARD.h * 0.266; // Commence après la ligne verte (173px sur 650px = 26.6%)
-      const watermarkH = CARD.h * 0.734; // Hauteur restante (477px sur 650px = 73.4%)
-      doc.addImage(watermarkData, "PNG", CARD_X, watermarkY, CARD.w, watermarkH, undefined, 'FAST');
+      const watermarkY = CARD_Y + CARD.h * 0.266 + imgMargin;
+      const watermarkH = CARD.h * 0.734 - 2 * imgMargin;
+      doc.addImage(watermarkData, "PNG", imgX, watermarkY, imgW, watermarkH, undefined, 'FAST');
     }
     
     // Superposer les images sources pour une qualité optimale
@@ -460,7 +450,7 @@ export const generateCNAMGSPdf = async (
       doc.addImage(chipData, "PNG", chipX, chipY, chipW, chipH);
     }
 
-    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG
+    // Photo du titulaire (bas droite) - ellipse verticale comme dans le SVG (confinée)
     // SVG: ellipse cx="847" cy="447" rx="130" ry="160" sur canvas 1050x650
     // rx < ry = ellipse verticale (plus haute que large)
     if (photoData) {
@@ -475,7 +465,13 @@ export const generateCNAMGSPdf = async (
       const photoW = photoRx * 2;
       const photoH = photoRy * 2;
       
-      doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
+      // Vérifier que la photo ne dépasse pas les bords de la carte
+      const maxPhotoX = CARD_X + CARD.w - photoW - 0.5;
+      const maxPhotoY = CARD_Y + CARD.h - photoH - 0.5;
+      const finalPhotoX = Math.min(photoX, maxPhotoX);
+      const finalPhotoY = Math.min(photoY, maxPhotoY);
+      
+      doc.addImage(photoData, "PNG", finalPhotoX, finalPhotoY, photoW, photoH);
     }
   } else {
     // Fallback: rendu vectoriel si la capture échoue
@@ -607,7 +603,22 @@ export const generateCNAMGSPdf = async (
     }
   }
 
-  // Cadre carte avec bordure ultra-fine et réaliste
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MASQUE FINAL : Rectangle blanc par-dessus pour couper les débordements
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Dessiner 4 rectangles blancs autour de la carte pour masquer tout débordement
+  // Haut
+  doc.setFillColor(255, 255, 255);
+  doc.rect(CARD_X - 5, CARD_Y - 5, CARD.w + 10, 5, "F");
+  // Bas
+  doc.rect(CARD_X - 5, CARD_Y + CARD.h, CARD.w + 10, 5, "F");
+  // Gauche
+  doc.rect(CARD_X - 5, CARD_Y - 5, 5, CARD.h + 10, "F");
+  // Droite
+  doc.rect(CARD_X + CARD.w, CARD_Y - 5, 5, CARD.h + 10, "F");
+  
+  // Redessiner le cadre de la carte par-dessus pour des bords nets
   doc.setLineWidth(0.08);
   doc.setDrawColor(180, 180, 180);
   doc.roundedRect(CARD_X, CARD_Y, CARD.w, CARD.h, CARD.radius, CARD.radius);
