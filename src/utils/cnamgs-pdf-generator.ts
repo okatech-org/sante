@@ -348,6 +348,52 @@ export const generateCNAMGSPdf = async (
   // Traits de coupe
   drawCutMarks(doc, CARD_X, CARD_Y, CARD.w, CARD.h, 3);
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EFFET D'OMBRE (EN ARRIÈRE-PLAN - AVANT LE CONTENU)
+  // ═══════════════════════════════════════════════════════════════════════════
+  const shadowOffset = 0.3; // mm
+  const shadowBlur = 0.6; // mm
+  
+  // Ombre diffuse (la plus claire et la plus étendue)
+  doc.setFillColor(230, 230, 230);
+  doc.roundedRect(
+    CARD_X + shadowBlur + 0.2, 
+    CARD_Y + shadowBlur + 0.2, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  
+  // Ombre intermédiaire
+  doc.setFillColor(210, 210, 210);
+  doc.roundedRect(
+    CARD_X + shadowOffset + 0.15, 
+    CARD_Y + shadowOffset + 0.15, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+  
+  // Ombre principale (plus foncée, plus proche)
+  doc.setFillColor(190, 190, 190);
+  doc.roundedRect(
+    CARD_X + shadowOffset, 
+    CARD_Y + shadowOffset, 
+    CARD.w, 
+    CARD.h, 
+    CARD.radius, 
+    CARD.radius, 
+    "F"
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONTENU DE LA CARTE (PAR-DESSUS LES OMBRES)
+  // ═══════════════════════════════════════════════════════════════════════════
+
   // Charger les images directement depuis les fichiers
   const armoiriesData = assets?.armoiriesUrl
     ? await loadImageAsDataUrl(assets.armoiriesUrl)
@@ -560,46 +606,6 @@ export const generateCNAMGSPdf = async (
       doc.addImage(photoData, "PNG", photoX, photoY, photoW, photoH);
     }
   }
-
-  // Effet d'ombre réaliste (impression papier) - ombres superposées
-  const shadowOffset = 0.3; // mm
-  const shadowBlur = 0.6; // mm
-  
-  // Ombre diffuse (la plus claire et la plus étendue)
-  doc.setFillColor(230, 230, 230);
-  doc.roundedRect(
-    CARD_X + shadowBlur + 0.2, 
-    CARD_Y + shadowBlur + 0.2, 
-    CARD.w, 
-    CARD.h, 
-    CARD.radius, 
-    CARD.radius, 
-    "F"
-  );
-  
-  // Ombre intermédiaire
-  doc.setFillColor(210, 210, 210);
-  doc.roundedRect(
-    CARD_X + shadowOffset + 0.15, 
-    CARD_Y + shadowOffset + 0.15, 
-    CARD.w, 
-    CARD.h, 
-    CARD.radius, 
-    CARD.radius, 
-    "F"
-  );
-  
-  // Ombre principale (plus foncée, plus proche)
-  doc.setFillColor(190, 190, 190);
-  doc.roundedRect(
-    CARD_X + shadowOffset, 
-    CARD_Y + shadowOffset, 
-    CARD.w, 
-    CARD.h, 
-    CARD.radius, 
-    CARD.radius, 
-    "F"
-  );
 
   // Cadre carte avec bordure fine
   doc.setLineWidth(0.2);
