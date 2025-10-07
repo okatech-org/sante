@@ -667,11 +667,61 @@ export const generateCNAMGSPdf = async (
   doc.roundedRect(CARD_X + 0.1, CARD_Y + 0.1, CARD.w - 0.2, CARD.h - 0.2, CARD.radius - 0.05, CARD.radius - 0.05);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTIONS D'INFORMATIONS (à gauche de la carte)
+  // MESSAGE PERSONNALISÉ (à gauche de la carte)
   // ═══════════════════════════════════════════════════════════════════════════
   
   let currentY = HEADER_H + 8;
   const leftColumnW = A4.w - CARD.w - 3 * MARGIN - 5;
+  
+  // Encadré message personnalisé
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.2);
+  doc.roundedRect(MARGIN, currentY, leftColumnW, 35, 2, 2, "FD");
+  
+  currentY += 4;
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 64, 175);
+  doc.text("VOTRE ATTESTATION DE DROITS", MARGIN + 3, currentY);
+  
+  currentY += 6;
+  
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(17, 24, 39);
+  
+  const salutation = data.sexe === "F" ? "Chère madame" : "Cher monsieur";
+  doc.text(`${salutation} ${data.nom},`, MARGIN + 3, currentY);
+  
+  currentY += 5;
+  
+  const messageLines = [
+    "Pour être mieux suivi, respectez le parcours de soins coordonné",
+    "et présentez cette attestation lors de chaque consultation médicale.",
+    "",
+    "En cas de changement d'activité, de déménagement ou de situation",
+    "familiale, pensez à informer rapidement la CNAMGS pour mettre",
+    "à jour vos droits et votre carte d'assuré."
+  ];
+  
+  doc.setFontSize(7.5);
+  messageLines.forEach(line => {
+    doc.text(line, MARGIN + 3, currentY);
+    currentY += line === "" ? 2 : 4;
+  });
+  
+  currentY += 3;
+  
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(59, 130, 246);
+  doc.text("Avec toute notre attention,", MARGIN + 3, currentY);
+  currentY += 3.5;
+  doc.text("Votre correspondant CNAMGS", MARGIN + 3, currentY);
+  
+  currentY += 12;
   
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 1 : Informations de l'Assuré
@@ -852,26 +902,31 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(254, 243, 199);
   doc.setDrawColor(245, 158, 11);
   doc.setLineWidth(0.8);
-  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 18, 1, 1, "FD");
+  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 1, 1, "FD");
   
   doc.setFillColor(245, 158, 11);
-  doc.rect(MARGIN, currentY, 1, 18, "F");
+  doc.rect(MARGIN, currentY, 1, 22, "F");
   
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(146, 64, 14);
-  doc.text("⚠️ IMPORTANT", MARGIN + 3, currentY + 5);
+  doc.text("⚠️ IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
   
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
   const warningText = "Cette attestation est valable uniquement auprès des prestataires conventionnés CNAMGS.";
   const warningText2 = "Le système de tiers-payant s'applique selon les tarifs conventionnés. Tout dépassement (GAP)";
-  const warningText3 = "reste à votre charge. Présentez cette attestation lors de chaque consultation.";
+  const warningText3 = "reste à votre charge. Toute attestation de droits antérieure est à détruire.";
   doc.text(warningText, MARGIN + 3, currentY + 9);
   doc.text(warningText2, MARGIN + 3, currentY + 12.5);
   doc.text(warningText3, MARGIN + 3, currentY + 16);
   
-  currentY += 22;
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(6.8);
+  doc.setTextColor(120, 53, 15);
+  doc.text("La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations.", MARGIN + 3, currentY + 19.5);
+  
+  currentY += 26;
   
   // ═══════════════════════════════════════════════════════════════════════════
   // SIGNATURE
@@ -940,8 +995,10 @@ export const generateCNAMGSPdf = async (
   doc.setTextColor(107, 114, 128);
   const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires";
   const footerNote2 = "conventionnés. Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS.";
-  doc.text(footerNote, MARGIN, footerY + 18);
-  doc.text(footerNote2, MARGIN, footerY + 21);
+  const footerNote3 = "Conformément à la loi, vous disposez d'un droit d'accès et de rectification des informations vous concernant.";
+  doc.text(footerNote, MARGIN, footerY + 17);
+  doc.text(footerNote2, MARGIN, footerY + 20);
+  doc.text(footerNote3, MARGIN, footerY + 23);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // EXPORT
