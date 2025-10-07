@@ -118,6 +118,36 @@ const loadEllipticalImageAsDataUrl = (src: string, width: number = 260, height: 
     img.src = src;
   });
 
+// Charge une image avec opacité appliquée
+const loadImageWithOpacity = (src: string, opacity: number = 0.35): Promise<string> =>
+  new Promise((resolve) => {
+    if (!src) return resolve("");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        // Appliquer l'opacité
+        ctx.globalAlpha = opacity;
+        ctx.drawImage(img, 0, 0);
+        
+        try {
+          const data = canvas.toDataURL("image/png");
+          resolve(data);
+        } catch {
+          resolve("");
+        }
+      } else {
+        resolve("");
+      }
+    };
+    img.onerror = () => resolve("");
+    img.src = src;
+  });
+
 const drawCutMarks = (
   doc: jsPDF,
   x: number,
@@ -299,8 +329,8 @@ export const generateCNAMGSPdf = async (
     : "";
   const chipData = await loadImageAsDataUrl('/puce_cnamgs.png');
   
-  // Charger le nouveau filigrane avec opacité
-  const watermarkData = await loadImageAsDataUrl('/fili_cnamgs.png');
+  // Charger le nouveau filigrane avec opacité de 35%
+  const watermarkData = await loadImageWithOpacity('/fili_cnamgs.png', 0.35);
   
   // Charger la photo et la découper en ellipse (comme dans l'application - rx=130, ry=160)
   const photoData = assets?.photoUrl
