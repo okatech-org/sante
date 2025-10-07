@@ -331,16 +331,16 @@ export const generateCNAMGSPdf = async (
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // EN-TÊTE OFFICIEL
+  // EN-TÊTE OFFICIEL (Design system: primary turquoise + fond clair)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Bande bleue supérieure avec dégradé simulé
-  doc.setFillColor(30, 58, 138); // Bleu foncé
+  // Fond dégradé turquoise à bleu (#17CCB9 vers #00A1FE)
+  doc.setFillColor(23, 204, 185); // Primary turquoise
   doc.rect(0, 0, A4.w, 35, "F");
   
-  // Ligne verte accent en haut
-  doc.setFillColor(16, 185, 129);
-  doc.rect(0, 0, A4.w, 1, "F");
+  // Accent rose vibrant en haut (#E63B7A)
+  doc.setFillColor(230, 59, 122);
+  doc.rect(0, 0, A4.w, 1.5, "F");
   
   // Logo CNAMGS
   doc.setFontSize(28);
@@ -358,24 +358,24 @@ export const generateCNAMGSPdf = async (
   // TITRE DU DOCUMENT
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Fond gris clair
-  doc.setFillColor(243, 244, 246);
+  // Fond très clair (background: 0 0% 98%)
+  doc.setFillColor(250, 250, 250);
   doc.rect(0, 35, A4.w, 18, "F");
   
-  // Bordure gauche verte
-  doc.setFillColor(16, 185, 129);
+  // Bordure gauche turquoise (#17CCB9)
+  doc.setFillColor(23, 204, 185);
   doc.rect(0, 35, 1.2, 18, "F");
   
-  // Titre
+  // Titre (foreground: 210 20% 15%)
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 58, 138);
+  doc.setTextColor(38, 43, 51); // foreground color
   doc.text("ATTESTATION DE DROITS", MARGIN, 44);
   
-  // Numéro d'attestation
+  // Numéro d'attestation (muted-foreground: 215 16% 47%)
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(107, 114, 128);
+  doc.setTextColor(102, 112, 133); // muted-foreground
   const numAttestation = data.numeroAttestation || `2025/CNAMGS/${data.numero.replace(/-/g, '')}`;
   doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 50);
 
@@ -673,24 +673,24 @@ export const generateCNAMGSPdf = async (
   let currentY = HEADER_H + 8;
   const leftColumnW = A4.w - CARD.w - 3 * MARGIN - 5;
   
-  // Encadré message personnalisé
-  doc.setFillColor(255, 255, 255);
-  doc.setDrawColor(229, 231, 235);
-  doc.setLineWidth(0.2);
-  doc.roundedRect(MARGIN, currentY, leftColumnW, 35, 2, 2, "FD");
+  // Encadré message personnalisé (card: 0 0% 100% avec border)
+  doc.setFillColor(255, 255, 255); // card background
+  doc.setDrawColor(226, 232, 240); // border color (214 32% 91%)
+  doc.setLineWidth(0.15);
+  doc.roundedRect(MARGIN, currentY, leftColumnW, 35, 3, 3, "FD");
   
   currentY += 4;
   
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 64, 175);
+  doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("VOTRE ATTESTATION DE DROITS", MARGIN + 3, currentY);
   
   currentY += 6;
   
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(17, 24, 39);
+  doc.setTextColor(38, 43, 51); // foreground
   
   const salutation = data.sexe === "F" ? "Chère madame" : "Cher monsieur";
   doc.text(`${salutation} ${data.nom},`, MARGIN + 3, currentY);
@@ -716,7 +716,7 @@ export const generateCNAMGSPdf = async (
   
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "italic");
-  doc.setTextColor(59, 130, 246);
+  doc.setTextColor(0, 161, 254); // secondary blue (#00A1FE)
   doc.text("Avec toute notre attention,", MARGIN + 3, currentY);
   currentY += 3.5;
   doc.text("Votre correspondant CNAMGS", MARGIN + 3, currentY);
@@ -727,15 +727,15 @@ export const generateCNAMGSPdf = async (
   // SECTION 1 : Informations de l'Assuré
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Titre de section
-  doc.setFillColor(239, 246, 255);
+  // Titre de section (primary-light background)
+  doc.setFillColor(210, 239, 235); // primary-light (173 70% 85%)
   doc.rect(MARGIN, currentY, leftColumnW, 7, "F");
-  doc.setFillColor(59, 130, 246);
+  doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(MARGIN, currentY, 0.8, 7, "F");
   
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 64, 175);
+  doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("📋 INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
@@ -744,22 +744,22 @@ export const generateCNAMGSPdf = async (
   const colWidth = leftColumnW / 2;
   
   const drawInfoBox = (label: string, value: string, x: number, y: number, w: number) => {
-    // Fond
-    doc.setFillColor(249, 250, 251);
-    doc.setDrawColor(229, 231, 235);
-    doc.setLineWidth(0.1);
-    doc.roundedRect(x, y, w, 10, 1, 1, "FD");
+    // Fond (card white avec border subtile)
+    doc.setFillColor(255, 255, 255); // card
+    doc.setDrawColor(226, 232, 240); // border (214 32% 91%)
+    doc.setLineWidth(0.12);
+    doc.roundedRect(x, y, w, 10, 2, 2, "FD");
     
-    // Label
+    // Label (muted-foreground)
     doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(107, 114, 128);
+    doc.setTextColor(102, 112, 133); // muted-foreground (215 16% 47%)
     doc.text(label, x + 2, y + 3.5);
     
-    // Valeur
+    // Valeur (foreground)
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(17, 24, 39);
+    doc.setTextColor(38, 43, 51); // foreground (210 20% 15%)
     doc.text(value, x + 2, y + 7.5);
   };
   
@@ -778,18 +778,18 @@ export const generateCNAMGSPdf = async (
   
   // Statut badge
   const statutX = MARGIN + colWidth;
-  doc.setFillColor(249, 250, 251);
-  doc.setDrawColor(229, 231, 235);
-  doc.setLineWidth(0.1);
-  doc.roundedRect(statutX, currentY, colWidth - 2, 10, 1, 1, "FD");
+  doc.setFillColor(255, 255, 255); // card
+  doc.setDrawColor(226, 232, 240); // border
+  doc.setLineWidth(0.12);
+  doc.roundedRect(statutX, currentY, colWidth - 2, 10, 2, 2, "FD");
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(107, 114, 128);
+  doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text("STATUT", statutX + 2, currentY + 3.5);
   
-  // Badge statut
+  // Badge statut (accent rose pour actif, destructive pour inactif)
   const isActif = data.statut !== "Inactif";
-  doc.setFillColor(isActif ? 16 : 239, isActif ? 185 : 68, isActif ? 129 : 68);
+  doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68); // accent (#E63B7A) ou destructive
   doc.roundedRect(statutX + 2, currentY + 5, 18, 4, 2, 2, "F");
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
@@ -805,14 +805,14 @@ export const generateCNAMGSPdf = async (
   currentY = Math.max(currentY, CARD_Y + CARD.h + 10);
   
   // Titre de section
-  doc.setFillColor(239, 246, 255);
+  doc.setFillColor(210, 239, 235); // primary-light
   doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
-  doc.setFillColor(59, 130, 246);
+  doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(MARGIN, currentY, 0.8, 7, "F");
   
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 64, 175);
+  doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("✅ DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
@@ -824,8 +824,8 @@ export const generateCNAMGSPdf = async (
   const col3W = tableW * 0.25;
   const rowH = 8;
   
-  // En-tête du tableau
-  doc.setFillColor(30, 64, 175);
+  // En-tête du tableau (primary turquoise)
+  doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(tableX, currentY, tableW, rowH, "F");
   
   doc.setFontSize(8);
@@ -838,30 +838,30 @@ export const generateCNAMGSPdf = async (
   
   // Lignes du tableau
   data.couvertures.forEach((couv, idx) => {
-    // Fond alterné
+    // Fond alterné (muted vs white)
     if (idx % 2 === 0) {
-      doc.setFillColor(249, 250, 251);
+      doc.setFillColor(248, 249, 250); // muted (210 40% 96%)
       doc.rect(tableX, currentY, tableW, rowH, "F");
     }
     
-    // Bordures
-    doc.setDrawColor(229, 231, 235);
+    // Bordures (border color)
+    doc.setDrawColor(226, 232, 240); // border (214 32% 91%)
     doc.setLineWidth(0.1);
     doc.line(tableX, currentY + rowH, tableX + tableW, currentY + rowH);
     
     // Contenu
     doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(17, 24, 39);
+    doc.setTextColor(38, 43, 51); // foreground
     doc.text(couv.type, tableX + 3, currentY + 5.5);
     
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(16, 185, 129);
+    doc.setTextColor(23, 204, 185); // primary turquoise
     doc.setFontSize(10);
     doc.text(couv.taux, tableX + col1W + 3, currentY + 5.5);
     
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(17, 24, 39);
+    doc.setTextColor(38, 43, 51); // foreground
     doc.setFontSize(8);
     doc.text(couv.ticket, tableX + col1W + col2W + 3, currentY + 5.5);
     
@@ -875,14 +875,14 @@ export const generateCNAMGSPdf = async (
   // ═══════════════════════════════════════════════════════════════════════════
   
   // Titre de section
-  doc.setFillColor(239, 246, 255);
+  doc.setFillColor(210, 239, 235); // primary-light
   doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
-  doc.setFillColor(59, 130, 246);
+  doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(MARGIN, currentY, 0.8, 7, "F");
   
   doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 64, 175);
+  doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("📅 PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4.5);
   currentY += 10;
   
@@ -896,20 +896,20 @@ export const generateCNAMGSPdf = async (
   currentY += 15;
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // AVERTISSEMENT
+  // AVERTISSEMENT (warning color: #FDAD00)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  doc.setFillColor(254, 243, 199);
-  doc.setDrawColor(245, 158, 11);
+  doc.setFillColor(255, 247, 230); // warning background très clair
+  doc.setDrawColor(253, 173, 0); // warning (#FDAD00)
   doc.setLineWidth(0.8);
-  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 1, 1, "FD");
+  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 2, 2, "FD");
   
-  doc.setFillColor(245, 158, 11);
-  doc.rect(MARGIN, currentY, 1, 22, "F");
+  doc.setFillColor(253, 173, 0); // warning
+  doc.rect(MARGIN, currentY, 1.2, 22, "F");
   
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(146, 64, 14);
+  doc.setTextColor(120, 80, 0); // warning dark
   doc.text("⚠️ IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
   
   doc.setFont("helvetica", "normal");
@@ -923,7 +923,7 @@ export const generateCNAMGSPdf = async (
   
   doc.setFont("helvetica", "italic");
   doc.setFontSize(6.8);
-  doc.setTextColor(120, 53, 15);
+  doc.setTextColor(100, 70, 0); // warning foreground darker
   doc.text("La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations.", MARGIN + 3, currentY + 19.5);
   
   currentY += 26;
@@ -934,25 +934,25 @@ export const generateCNAMGSPdf = async (
   
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(107, 114, 128);
+  doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text(`Fait à Libreville, le ${new Date().toLocaleDateString("fr-FR")}`, A4.w - MARGIN, currentY, { align: "right" });
   currentY += 15;
   
   // Ligne de signature
   const signatureX = A4.w - MARGIN - 50;
-  doc.setDrawColor(30, 64, 175);
+  doc.setDrawColor(23, 204, 185); // primary turquoise
   doc.setLineWidth(0.4);
   doc.line(signatureX, currentY, A4.w - MARGIN, currentY);
   
   currentY += 5;
   doc.setFontSize(8);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 64, 175);
+  doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("Le Directeur Général", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
   currentY += 3.5;
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(107, 114, 128);
+  doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
@@ -961,16 +961,16 @@ export const generateCNAMGSPdf = async (
   
   const footerY = A4.h - 25;
   
-  doc.setFillColor(243, 244, 246);
+  doc.setFillColor(250, 250, 250); // background très clair
   doc.rect(0, footerY, A4.w, 25, "F");
   
-  doc.setDrawColor(229, 231, 235);
-  doc.setLineWidth(0.4);
+  doc.setDrawColor(226, 232, 240); // border
+  doc.setLineWidth(0.3);
   doc.line(0, footerY, A4.w, footerY);
   
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(17, 24, 39);
+  doc.setTextColor(38, 43, 51); // foreground
   doc.text("CNAMGS - Siège Social :", MARGIN, footerY + 5);
   doc.setFont("helvetica", "normal");
   doc.text("Libreville, Gabon", MARGIN + 35, footerY + 5);
@@ -992,7 +992,7 @@ export const generateCNAMGSPdf = async (
   
   doc.setFontSize(6.5);
   doc.setFont("helvetica", "italic");
-  doc.setTextColor(107, 114, 128);
+  doc.setTextColor(102, 112, 133); // muted-foreground
   const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires";
   const footerNote2 = "conventionnés. Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS.";
   const footerNote3 = "Conformément à la loi, vous disposez d'un droit d'accès et de rectification des informations vous concernant.";
