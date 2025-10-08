@@ -306,19 +306,19 @@ export default function Profile() {
               {activeSection === "account" && (
                 <>
                   {/* Avatar et informations principales */}
-                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-card border border-border shadow-xl">
+                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-card/95 border border-border/50 shadow-lg hover:shadow-xl transition-all">
                     <h2 className="text-xs sm:text-sm lg:text-base font-bold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
-                      <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" style={{ color: '#00d4ff' }} />
+                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-4 lg:h-4" style={{ color: '#00d4ff' }} />
                       Photo de profil
                     </h2>
-                    <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                       <div className="relative flex-shrink-0">
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/70 p-[2px] ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
                           <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                             {avatarUrl ? (
                               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{initials}</span>
+                              <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{initials}</span>
                             )}
                           </div>
                         </div>
@@ -328,16 +328,22 @@ export default function Profile() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="mb-0.5 sm:mb-1">
-                          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-foreground truncate">
+                        <div className="mb-1">
+                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground truncate">
                             {displayLastName}
                           </h3>
-                          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-foreground truncate">
+                          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-foreground/80 truncate">
                             {displayFirstName}
                           </h3>
                         </div>
-                        <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground truncate">{displayEmail}</p>
-                        <p className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground mt-0.5 sm:mt-1">Membre depuis {new Date().getFullYear()}</p>
+                        <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground truncate flex items-center gap-1.5">
+                          <Mail className="w-3 h-3 flex-shrink-0" />
+                          {displayEmail}
+                        </p>
+                        <p className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+                          <Calendar className="w-3 h-3 flex-shrink-0" />
+                          Membre depuis {new Date().getFullYear()}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -345,25 +351,25 @@ export default function Profile() {
                   {/* Formulaire d'informations personnelles */}
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
-                      {/* Informations personnelles */}
-                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-card border border-border shadow-xl h-full flex flex-col">
-                        <h2 className="text-sm sm:text-base font-bold text-foreground mb-3 flex items-center gap-2">
+                      {/* Informations personnelles - Optimisé mobile */}
+                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-card/95 border border-border/50 shadow-lg hover:shadow-xl transition-all h-full flex flex-col">
+                        <h2 className="text-xs sm:text-sm font-bold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
                           <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                           Informations personnelles
                         </h2>
-                        <div className="space-y-2 flex-1">
+                        <div className="space-y-2.5 sm:space-y-2 flex-1">
                           <div className="grid grid-cols-3 gap-2 items-stretch">
-                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-1">
-                              <Label htmlFor="gender" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                <User className="h-3 w-3 flex-shrink-0" />
+                            <div className="space-y-1 w-full h-full flex flex-col col-span-1">
+                              <Label htmlFor="gender" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
+                                <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                                 Genre
                               </Label>
                               <Select 
                                 value={genderValue || ""}
                                 onValueChange={(value) => setValue("gender", value)}
                               >
-                                <SelectTrigger className="bg-muted border-border text-foreground h-8 text-xs w-full">
-                                  <SelectValue placeholder="Sélectionnez votre genre" />
+                                <SelectTrigger className="bg-muted/50 border-border text-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation">
+                                  <SelectValue placeholder="Genre" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="male">Homme</SelectItem>
@@ -601,26 +607,27 @@ export default function Profile() {
                       <Button
                         type="submit"
                         disabled={saving || saveSuccess}
-                        className={`w-full sm:w-auto px-4 sm:px-6 h-8 sm:h-9 text-xs sm:text-sm transition-all ${
+                        className={`w-full sm:w-auto px-6 sm:px-8 h-11 sm:h-10 text-sm sm:text-sm font-semibold transition-all touch-manipulation active:scale-95 ${
                           saveSuccess 
-                            ? 'bg-green-500 hover:bg-green-600' 
-                            : 'bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:from-[#00c4ef] hover:to-[#0078ef]'
-                        } text-white`}
+                            ? 'bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/20' 
+                            : 'bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20'
+                        } text-primary-foreground`}
                       >
                         {saving ? (
                           <>
-                            <Loader2 className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5 animate-spin" />
-                            Enregistrement...
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <span className="animate-pulse">Enregistrement...</span>
                           </>
                         ) : saveSuccess ? (
                           <>
-                            <Check className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            Sauvegardé !
+                            <Check className="mr-2 h-4 w-4 animate-in zoom-in" />
+                            <span>Sauvegardé !</span>
                           </>
                         ) : (
                           <>
-                            <Save className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            Enregistrer les modifications
+                            <Save className="mr-2 h-4 w-4" />
+                            <span className="hidden sm:inline">Enregistrer les modifications</span>
+                            <span className="sm:hidden">Enregistrer</span>
                           </>
                         )}
                       </Button>
