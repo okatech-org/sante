@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import logoSante from "@/assets/logo_sante.png";
+import { NotificationBell } from "@/components/professional/NotificationBell";
 
 interface PatientDashboardLayoutProps {
   children: ReactNode;
@@ -326,13 +327,16 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
               </h1>
             </div>
             
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent/30 text-sidebar-foreground hover:bg-sidebar-accent transition-all">
-                  <Menu className="w-6 h-6" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-sidebar border-sidebar-border p-0">
+            <div className="flex items-center gap-2">
+              {isProfessional && <NotificationBell />}
+              
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent/30 text-sidebar-foreground hover:bg-sidebar-accent transition-all">
+                    <Menu className="w-6 h-6" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-72 bg-sidebar border-sidebar-border p-0">
                 <div className="h-full flex flex-col p-6">
                     <div className="mb-8 mt-6">
                       <div className="flex items-center gap-3 mb-2">
@@ -371,6 +375,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                 </div>
               </SheetContent>
             </Sheet>
+            </div>
           </div>
         </div>
 

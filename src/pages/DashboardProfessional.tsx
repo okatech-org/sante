@@ -6,18 +6,22 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { useProfessionalStats } from "@/hooks/useProfessionalStats";
 
 export default function DashboardProfessional() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [professionalId, setProfessionalId] = useState<string | undefined>();
   const [profileData, setProfileData] = useState<{
     full_name: string;
     professional_type?: string;
     numero_ordre?: string;
   } | null>(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
   
   const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Dr. Pierre KOMBILA';
+  const { stats, loading } = useProfessionalStats(professionalId);
 
   // Charger le profil depuis la base de données
   useEffect(() => {
@@ -33,7 +37,7 @@ export default function DashboardProfessional() {
         // Charger les infos professionnelles
         const { data: professional } = await supabase
           .from('professionals')
-          .select('professional_type, numero_ordre')
+          .select('id, professional_type, numero_ordre')
           .eq('user_id', user.id)
           .single();
         
@@ -45,10 +49,30 @@ export default function DashboardProfessional() {
           });
           if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
         }
+        
+        if (professional?.id) {
+          setProfessionalId(professional.id);
+          loadUpcomingAppointments(professional.id);
+        }
       }
     };
     loadProfile();
   }, [user?.id]);
+
+  const loadUpcomingAppointments = async (profId: string) => {
+    const { data } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        patient:profiles!appointments_patient_id_fkey(full_name)
+      `)
+      .eq('professional_id', profId)
+      .gte('appointment_date', new Date().toISOString())
+      .order('appointment_date', { ascending: true })
+      .limit(3);
+
+    if (data) setUpcomingAppointments(data);
+  };
 
   // Séparer le nom et le prénom
   const nameParts = fullName.split(' ');
@@ -135,10 +159,10 @@ export default function DashboardProfessional() {
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
           <div className="grid grid-cols-4 gap-3 sm:gap-4">
             {[
-              { label: 'Patients', value: '89', icon: Users, trend: 'Ce mois', color: '#00d4ff' },
-              { label: 'Consultations', value: '156', icon: Stethoscope, trend: 'Ce mois', color: '#0088ff' },
-              { label: 'Téléconsultations', value: '24', icon: Video, trend: 'Ce mois', color: '#ffaa00' },
-              { label: 'Revenus', value: '2.5M', icon: DollarSign, trend: 'Ce mois', color: '#ff0088' }
+              { label: 'Patients', value: loading ? '...' : stats.month.patients, icon: Users, trend: 'Ce mois', color: '#00d4ff' },
+              { label: 'Consultations', value: loading ? '...' : stats.month.consultations, icon: Stethoscope, trend: 'Ce mois', color: '#0088ff' },
+              { label: 'Téléconsultations', value: loading ? '...' : stats.today.teleconsultations, icon: Video, trend: "Aujourd'hui", color: '#ffaa00' },
+              { label: 'RDV Aujourd\'hui', value: loading ? '...' : stats.today.appointments, icon: Calendar, trend: 'En cours', color: '#ff0088' }
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -200,29 +224,51 @@ export default function DashboardProfessional() {
               Prochains Rendez-vous
             </h3>
             <div className="space-y-2 sm:space-y-3">
-              {[
-                { time: '14h30', patient: 'Marie MOUSSAVOU', type: 'Consultation', icon: Stethoscope, color: '#00d4ff' },
-                { time: '15h00', patient: 'Jean NZENGUE', type: 'Téléconsultation', icon: Video, color: '#0088ff' },
-                { time: '16h00', patient: 'Claire OBAME', type: 'Suivi', icon: Activity, color: '#ffaa00' }
-              ].map((rdv, idx) => {
-                const Icon = rdv.icon;
-                return (
-                  <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${rdv.color}20` }}>
-                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: rdv.color }} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-0.5">{rdv.time}</p>
-                          <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight">{rdv.patient}</p>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground">{rdv.type}</p>
+              {upcomingAppointments.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun rendez-vous à venir</p>
+                </div>
+              ) : (
+                upcomingAppointments.map((rdv) => {
+                  const appointmentDate = new Date(rdv.appointment_date);
+                  const typeColors: Record<string, string> = {
+                    'consultation': '#00d4ff',
+                    'teleconsultation': '#0088ff',
+                    'suivi': '#ffaa00',
+                    'urgence': '#ff0088'
+                  };
+                  const typeIcons: Record<string, any> = {
+                    'consultation': Stethoscope,
+                    'teleconsultation': Video,
+                    'suivi': Activity,
+                    'urgence': Activity
+                  };
+                  const Icon = typeIcons[rdv.type] || Stethoscope;
+                  const color = typeColors[rdv.type] || '#00d4ff';
+                  
+                  return (
+                    <div key={rdv.id} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}20` }}>
+                            <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-0.5">
+                              {appointmentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                            <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight">
+                              {rdv.patient?.full_name || 'Patient'}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground capitalize">{rdv.type}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
 
