@@ -354,36 +354,36 @@ export const generateCNAMGSPdf = async (
   
   let contactTextY = contactY + 4;
   
-  doc.setFontSize(6);
+  doc.setFontSize(7.2);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground
   doc.text("CNAMGS - Siège Social :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(5.5);
+  doc.setFontSize(6.6);
   doc.text("Libreville, Gabon", contactX + 28, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(6);
+  doc.setFontSize(7.2);
   doc.setFont("helvetica", "bold");
   doc.text("Téléphone :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(5.5);
+  doc.setFontSize(6.6);
   doc.text("+241 01 XX XX XX", contactX + 16, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(6);
+  doc.setFontSize(7.2);
   doc.setFont("helvetica", "bold");
   doc.text("Email :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(5.5);
+  doc.setFontSize(6.6);
   doc.text("contact@cnamgs.ga", contactX + 10, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(6);
+  doc.setFontSize(7.2);
   doc.setFont("helvetica", "bold");
   doc.text("Site web :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(5.5);
+  doc.setFontSize(6.6);
   doc.text("www.cnamgs.ga", contactX + 13, contactTextY);
   
   // LOGO ET TEXTE À DROITE
