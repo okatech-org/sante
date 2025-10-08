@@ -1,5 +1,5 @@
 
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +50,7 @@ export default function AdminProject() {
   };
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="relative min-h-screen">
         {/* Hero Section */}
         <div className="border-b bg-gradient-to-br from-primary/5 via-background to-background">
@@ -1312,6 +1312,6 @@ Protection:
           </Button>
         )}
       </div>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 }

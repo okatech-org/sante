@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -286,7 +286,7 @@ export default function AdminDemo() {
   };
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -375,7 +375,7 @@ export default function AdminDemo() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 }
 

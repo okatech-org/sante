@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -272,7 +272,7 @@ const AdminProfessionals = () => {
 
   if (!isSuperAdmin && !isAdmin) {
     return (
-      <MainLayout>
+      <SuperAdminLayout>
         <div className="container py-8">
           <Card>
             <CardHeader>
@@ -283,12 +283,12 @@ const AdminProfessionals = () => {
             </CardHeader>
           </Card>
         </div>
-      </MainLayout>
+      </SuperAdminLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container py-8 space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Professionnels de santé</h1>
@@ -628,7 +628,7 @@ const AdminProfessionals = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 };
 

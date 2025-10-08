@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -305,7 +305,7 @@ export default function AdminEstablishments() {
 
   if (!isAdmin) {
     return (
-      <MainLayout>
+      <SuperAdminLayout>
         <div className="container max-w-7xl mx-auto px-4 py-8">
           <Card>
             <CardHeader>
@@ -319,12 +319,12 @@ export default function AdminEstablishments() {
             </CardHeader>
           </Card>
         </div>
-      </MainLayout>
+      </SuperAdminLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -741,6 +741,6 @@ export default function AdminEstablishments() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -179,11 +179,11 @@ const AdminAudit = () => {
 
   if (isLoading) {
     return (
-      <MainLayout>
+      <SuperAdminLayout>
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      </MainLayout>
+      </SuperAdminLayout>
     );
   }
 
@@ -303,7 +303,7 @@ const AdminAudit = () => {
   }, [searchTerm, categoryFilter, severityFilter, dateFilter]);
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -582,7 +582,7 @@ const AdminAudit = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 };
 
