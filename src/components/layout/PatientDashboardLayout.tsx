@@ -19,7 +19,7 @@ interface PatientDashboardLayoutProps {
 }
 
 export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps) {
-  const { user } = useAuth();
+  const { user, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
@@ -85,17 +85,31 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     }
   };
   
-  const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', color: '#ffaa00' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088' }
+  // Menu items pour super admin
+  const superAdminMenuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Shield, path: '/dashboard/superadmin', color: '#ff0088', badge: undefined },
+    { id: 'users', label: 'Utilisateurs', icon: Home, path: '/admin/users', color: '#00d4ff', badge: undefined },
+    { id: 'approvals', label: 'Approbations', icon: AlertCircle, path: '/admin/approvals', color: '#0088ff', badge: undefined },
+    { id: 'establishments', label: 'Établissements', icon: Stethoscope, path: '/admin/establishments', color: '#ffaa00', badge: undefined },
+    { id: 'professionals', label: 'Professionnels', icon: Heart, path: '/admin/professionals', color: '#00d4ff', badge: undefined },
+    { id: 'audit', label: 'Audit', icon: Activity, path: '/admin/audit', color: '#0088ff', badge: undefined },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/settings', color: '#ff0088', badge: undefined }
   ];
+
+  // Menu items pour patient
+  const patientMenuItems = [
+    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff', badge: undefined },
+    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
+    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff', badge: undefined },
+    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00', badge: undefined },
+    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
+    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff', badge: undefined },
+    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff', badge: undefined },
+    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', color: '#ffaa00' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088', badge: undefined }
+  ];
+
+  const menuItems = isSuperAdmin ? superAdminMenuItems : patientMenuItems;
 
   const activeMenu = menuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
 
@@ -259,15 +273,22 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
               {/* User Profile Card */}
               <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
-                    {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                    style={{ backgroundColor: isSuperAdmin ? '#ff0088' : '#00d4ff' }}
+                  >
+                    {isSuperAdmin ? (
+                      <Shield className="w-5 h-5" />
+                    ) : (
+                      <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-sidebar-foreground truncate">
                       {fullName.split(' ')[0]}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      N° ••••7891
+                      {isSuperAdmin ? 'Super Admin' : 'N° ••••7891'}
                     </p>
                   </div>
                 </div>
@@ -311,12 +332,19 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                   <div className="mt-auto pt-6 border-t border-white/10">
                     <div className="p-3 rounded-xl bg-white/5">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff] text-lg">
-                          {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                          style={{ backgroundColor: isSuperAdmin ? '#ff0088' : '#00d4ff' }}
+                        >
+                          {isSuperAdmin ? (
+                            <Shield className="w-6 h-6" />
+                          ) : (
+                            <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-white truncate">{fullName.split(' ')[0]}</p>
-                          <p className="text-xs text-gray-500">Patient</p>
+                          <p className="text-xs text-gray-500">{isSuperAdmin ? 'Super Admin' : 'Patient'}</p>
                         </div>
                       </div>
                     </div>
