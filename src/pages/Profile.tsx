@@ -26,6 +26,7 @@ const profileSchema = z.object({
   email: z.string().email("Email invalide").optional().or(z.literal("")),
   phone: z.string().min(8, "Numéro de téléphone invalide"),
   birth_date: z.string().optional(),
+  birth_place: z.string().optional(),
   gender: z.string().optional(),
   province: z.string().optional(),
   city: z.string().optional(),
@@ -132,6 +133,7 @@ export default function Profile() {
           email: data.email || "",
           phone: data.phone || "",
           birth_date: data.birth_date || "",
+          birth_place: data.birth_place || "",
           gender: data.gender || "",
           province: data.province || "",
           city: data.city || "",
@@ -163,6 +165,7 @@ export default function Profile() {
           email: user?.email || "",
           phone: (user?.user_metadata as any)?.phone || "",
           birth_date: "",
+          birth_place: "",
           gender: "",
           province: "",
           city: "",
@@ -197,6 +200,7 @@ export default function Profile() {
           email: data.email || null,
           phone: data.phone,
           birth_date: data.birth_date || null,
+          birth_place: data.birth_place || null,
           gender: data.gender || null,
           province: data.province || null,
           city: data.city || null,
@@ -648,6 +652,44 @@ export default function Profile() {
                           Informations personnelles
                         </h2>
                         <div className="space-y-2 flex-1">
+                          <div className="grid grid-cols-2 gap-2 items-stretch">
+                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                              <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                <User className="h-3 w-3 flex-shrink-0" />
+                                Nom *
+                              </Label>
+                              <Input
+                                id="last_name"
+                                {...register("last_name")}
+                                placeholder="Votre nom"
+                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              />
+                              {errors.last_name && (
+                                <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
+                              )}
+                            </div>
+
+                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                              <Label htmlFor="gender" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                <User className="h-3 w-3 flex-shrink-0" />
+                                Genre
+                              </Label>
+                              <Select 
+                                value={genderValue || ""}
+                                onValueChange={(value) => setValue("gender", value)}
+                              >
+                                <SelectTrigger className="bg-muted border-border text-foreground h-8 text-xs w-full">
+                                  <SelectValue placeholder="Sélectionnez votre genre" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="male">Homme</SelectItem>
+                                  <SelectItem value="female">Femme</SelectItem>
+                                  <SelectItem value="other">Autre</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
                           <div className="space-y-1.5 w-full">
                             <Label htmlFor="first_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
                               <User className="h-3 w-3 flex-shrink-0" />
@@ -664,56 +706,33 @@ export default function Profile() {
                             )}
                           </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                              <User className="h-3 w-3 flex-shrink-0" />
-                              Nom *
-                            </Label>
-                            <Input
-                              id="last_name"
-                              {...register("last_name")}
-                              placeholder="Votre nom"
-                              className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
-                            />
-                            {errors.last_name && (
-                              <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
-                            )}
-                          </div>
-
-                            <div className="grid grid-cols-2 gap-2 items-stretch">
-                              <div className="space-y-1.5 w-full h-full flex flex-col">
-                                <Label htmlFor="birth_date" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                  <Calendar className="h-3 w-3 flex-shrink-0" />
-                                  Date de naissance
-                                </Label>
-                                <Input
-                                  id="birth_date"
-                                  type="date"
-                                  {...register("birth_date")}
-                                  className="bg-muted border-border text-foreground h-8 text-xs w-full"
-                                />
-                              </div>
-
-                              <div className="space-y-1.5 w-full h-full flex flex-col">
-                                <Label htmlFor="gender" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                  <User className="h-3 w-3 flex-shrink-0" />
-                                  Genre
-                                </Label>
-                                <Select 
-                                  value={genderValue || ""}
-                                  onValueChange={(value) => setValue("gender", value)}
-                                >
-                                  <SelectTrigger className="bg-muted border-border text-foreground h-8 text-xs w-full">
-                                    <SelectValue placeholder="Sélectionnez votre genre" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="male">Homme</SelectItem>
-                                    <SelectItem value="female">Femme</SelectItem>
-                                    <SelectItem value="other">Autre</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
+                          <div className="grid grid-cols-2 gap-2 items-stretch">
+                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_date" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                <Calendar className="h-3 w-3 flex-shrink-0" />
+                                Date de naissance
+                              </Label>
+                              <Input
+                                id="birth_date"
+                                type="date"
+                                {...register("birth_date")}
+                                className="bg-muted border-border text-foreground h-8 text-xs w-full"
+                              />
                             </div>
+
+                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_place" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                                Lieu de naissance
+                              </Label>
+                              <Input
+                                id="birth_place"
+                                {...register("birth_place")}
+                                placeholder="Ex: Libreville"
+                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              />
+                            </div>
+                          </div>
 
                             {/* Informations médicales */}
                             <div className="pt-2 mt-2 border-t border-border">
