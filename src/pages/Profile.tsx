@@ -741,7 +741,7 @@ export default function Profile() {
                                 Informations médicales
                               </h3>
                               
-                              <div className="grid grid-cols-4 gap-2 items-stretch">
+                              <div className="grid grid-cols-3 gap-2 items-stretch">
                                 <div className="space-y-1.5 w-full h-full flex flex-col">
                                   <Label htmlFor="weight_kg" className="text-muted-foreground text-xs">
                                     Poids (kg)
@@ -793,18 +793,19 @@ export default function Profile() {
                                     </SelectContent>
                                   </Select>
                                 </div>
+                              </div>
 
-                                <div className="space-y-1.5 w-full h-full flex flex-col">
-                                  <Label htmlFor="cnamgs_number" className="text-muted-foreground text-xs">
-                                    N° CNAMGS
-                                  </Label>
-                                  <Input
-                                    id="cnamgs_number"
-                                    {...register("cnamgs_number")}
-                                    placeholder="GA2384567891"
-                                    className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
-                                  />
-                                </div>
+                              <div className="space-y-1.5 w-full">
+                                <Label htmlFor="cnamgs_number" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                  <Shield className="h-3 w-3 flex-shrink-0" />
+                                  N° CNAMGS
+                                </Label>
+                                <Input
+                                  id="cnamgs_number"
+                                  {...register("cnamgs_number")}
+                                  placeholder="GA2384567891"
+                                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                                />
                               </div>
                             </div>
                         </div>
