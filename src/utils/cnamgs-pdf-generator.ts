@@ -340,9 +340,9 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // BLOC COORDONNÉES À GAUCHE - aligné avec le logo CNAMGS
-  const contactW = 60; // Réduit de 1/5 (75 -> 60)
-  const contactH = 22; // Hauteur ajustée
+  // BLOC COORDONNÉES À GAUCHE - aligné avec le logo CNAMGS (zone carrée)
+  const contactW = 45; // Zone carrée
+  const contactH = 45; // Même hauteur pour un carré
   const contactX = MARGIN;
   const contactY = 6; // Aligné avec le logo CNAMGS
   
@@ -352,43 +352,47 @@ export const generateCNAMGSPdf = async (
   doc.setLineWidth(0.15);
   doc.roundedRect(contactX, contactY, contactW, contactH, 2, 2, "FD");
   
-  let contactTextY = contactY + 4.5;
+  let contactTextY = contactY + 8;
   
   // Ligne 1 : Siège Social sur une ligne
-  doc.setFontSize(6);
+  doc.setFontSize(5.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground
   doc.text("CNAMGS - Siège Social :", contactX + 2, contactTextY);
+  contactTextY += 3;
   doc.setFont("helvetica", "normal");
-  doc.text("Libreville, Gabon", contactX + 29, contactTextY);
+  doc.text("Libreville, Gabon", contactX + 2, contactTextY);
   
   // Ligne 2 : Téléphone
-  contactTextY += 4.5;
+  contactTextY += 6;
   doc.setFont("helvetica", "bold");
   doc.text("Téléphone :", contactX + 2, contactTextY);
+  contactTextY += 3;
   doc.setFont("helvetica", "normal");
-  doc.text("+241 01 XX XX XX", contactX + 16, contactTextY);
+  doc.text("+241 01 XX XX XX", contactX + 2, contactTextY);
   
   // Ligne 3 : Email
-  contactTextY += 4.5;
+  contactTextY += 6;
   doc.setFont("helvetica", "bold");
   doc.text("Email :", contactX + 2, contactTextY);
+  contactTextY += 3;
   doc.setFont("helvetica", "normal");
-  doc.text("contact@cnamgs.ga", contactX + 10, contactTextY);
+  doc.text("contact@cnamgs.ga", contactX + 2, contactTextY);
   
   // Ligne 4 : Site web
-  contactTextY += 4.5;
+  contactTextY += 6;
   doc.setFont("helvetica", "bold");
   doc.text("Site web :", contactX + 2, contactTextY);
+  contactTextY += 3;
   doc.setFont("helvetica", "normal");
-  doc.text("www.cnamgs.ga", contactX + 13, contactTextY);
+  doc.text("www.cnamgs.ga", contactX + 2, contactTextY);
   
   // LOGO ET TEXTE À DROITE
   // Charger et afficher le logo CNAMGS
   const headerLogoData = await loadImageAsDataUrl('/cnamgs_header_logo.png');
   if (headerLogoData) {
     const logoW = 60; // Largeur du logo en mm
-    const logoH = 14; // Hauteur proportionnelle
+    const logoH = 12; // Hauteur réduite
     const logoX = (A4.w + contactX + contactW - logoW) / 2 + 10; // Centrer dans l'espace de droite
     const logoY = 6; // Position verticale
     doc.addImage(headerLogoData, "PNG", logoX, logoY, logoW, logoH);
