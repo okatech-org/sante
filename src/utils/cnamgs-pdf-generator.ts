@@ -341,7 +341,7 @@ export const generateCNAMGSPdf = async (
   doc.rect(0, 0, A4.w, 1.5, "F");
   
   // BLOC COORDONNÉES À GAUCHE - aligné avec le logo CNAMGS
-  const contactW = 75;
+  const contactW = 60; // Réduit de 1/5 (75 -> 60)
   const contactH = 22;
   const contactX = MARGIN;
   const contactY = 6; // Aligné avec le logo CNAMGS
@@ -354,37 +354,37 @@ export const generateCNAMGSPdf = async (
   
   let contactTextY = contactY + 4;
   
-  doc.setFontSize(7);
+  doc.setFontSize(6);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground
   doc.text("CNAMGS - Siège Social :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.5);
-  doc.text("Libreville, Gabon", contactX + 34, contactTextY);
+  doc.setFontSize(5.5);
+  doc.text("Libreville, Gabon", contactX + 28, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(7);
+  doc.setFontSize(6);
   doc.setFont("helvetica", "bold");
   doc.text("Téléphone :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.5);
-  doc.text("+241 01 XX XX XX", contactX + 18, contactTextY);
+  doc.setFontSize(5.5);
+  doc.text("+241 01 XX XX XX", contactX + 16, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(7);
+  doc.setFontSize(6);
   doc.setFont("helvetica", "bold");
   doc.text("Email :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.5);
-  doc.text("contact@cnamgs.ga", contactX + 11, contactTextY);
+  doc.setFontSize(5.5);
+  doc.text("contact@cnamgs.ga", contactX + 10, contactTextY);
   
   contactTextY += 4;
-  doc.setFontSize(7);
+  doc.setFontSize(6);
   doc.setFont("helvetica", "bold");
   doc.text("Site web :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.5);
-  doc.text("www.cnamgs.ga", contactX + 15, contactTextY);
+  doc.setFontSize(5.5);
+  doc.text("www.cnamgs.ga", contactX + 13, contactTextY);
   
   // LOGO ET TEXTE À DROITE
   // Charger et afficher le logo CNAMGS
