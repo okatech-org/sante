@@ -428,12 +428,11 @@ export const generateCNAMGSPdf = async (
   currentY += 6;
   
   const messageLines = [
-    "Pour être mieux suivi, respectez le parcours de soins coordonné",
-    "et présentez cette attestation lors de chaque consultation médicale.",
+    "Pour être mieux suivi, respectez le parcours de soins coordonné et présentez cette attestation lors de chaque",
+    "consultation médicale.",
     "",
-    "En cas de changement d'activité, de déménagement ou de situation",
-    "familiale, pensez à informer rapidement la CNAMGS pour mettre",
-    "à jour vos droits et votre carte d'assuré."
+    "En cas de changement d'activité, de déménagement ou de situation familiale, pensez à informer rapidement la",
+    "CNAMGS pour mettre à jour vos droits et votre carte d'assuré."
   ];
   
   doc.setFontSize(9.5);
@@ -820,9 +819,9 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(6.5);
   doc.setFont("helvetica", "italic");
   doc.setTextColor(102, 112, 133); // muted-foreground
-  const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires";
-  const footerNote2 = "conventionnés. Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS.";
-  const footerNote3 = "Conformément à la loi, vous disposez d'un droit d'accès et de rectification des informations vous concernant.";
+  const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires conventionnés.";
+  const footerNote2 = "Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS. Conformément à la loi, vous disposez d'un droit d'accès";
+  const footerNote3 = "et de rectification des informations vous concernant.";
   doc.text(footerNote, MARGIN, footerY + 17);
   doc.text(footerNote2, MARGIN, footerY + 20);
   doc.text(footerNote3, MARGIN, footerY + 23);
