@@ -599,10 +599,10 @@ export default function Support() {
             className="w-full h-48 object-cover cursor-pointer transition-transform group-hover:scale-105"
             onClick={() => window.open(attachment.url, '_blank')}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="absolute bottom-0 left-0 right-0 p-3">
-              <p className="text-white text-sm font-medium truncate">{attachment.name}</p>
-              <p className="text-white/80 text-xs">{attachment.size}</p>
+              <p className="text-primary-foreground text-sm font-medium truncate">{attachment.name}</p>
+              <p className="text-primary-foreground/80 text-xs">{attachment.size}</p>
             </div>
           </div>
           <Button
@@ -646,14 +646,14 @@ export default function Support() {
                 </div>
               </div>
               {attachment.duration && (
-                <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                <div className="absolute bottom-2 right-2 bg-background/80 text-foreground text-xs px-2 py-1 rounded">
                   {attachment.duration}
                 </div>
               )}
             </div>
           ) : (
-            <div className="aspect-video bg-gray-800 flex items-center justify-center">
-              <Film className="h-12 w-12 text-gray-600" />
+            <div className="aspect-video bg-muted flex items-center justify-center">
+              <Film className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
           <div className="p-3 bg-card">
@@ -741,7 +741,7 @@ export default function Support() {
                     </div>
                     {item.badge && (
                       <span
-                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground"
                         style={{ backgroundColor: item.color }}
                       >
                         {item.badge}
@@ -874,7 +874,7 @@ export default function Support() {
                           </div>
                           {item.badge && (
                             <span
-                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground"
                               style={{ backgroundColor: item.color }}
                             >
                               {item.badge}
@@ -972,7 +972,7 @@ export default function Support() {
                 </div>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
-                    <Badge className="bg-[#ffaa00] text-white px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm flex-shrink-0">
+                    <Badge className="bg-warning text-warning-foreground px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm flex-shrink-0">
                       {unreadCount}
                     </Badge>
                   )}
@@ -994,7 +994,7 @@ export default function Support() {
               <div className="flex flex-col gap-3">
                 {/* Bulk Actions Bar */}
                 {selectedMessageIds.size > 0 && (
-                  <div className="flex items-center justify-between bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg p-3">
+                  <div className="flex items-center justify-between bg-warning/10 border border-warning/20 rounded-lg p-3">
                     <div className="flex items-center gap-2">
                       <Checkbox
                         checked={selectedMessageIds.size === filteredMessages.length}
@@ -1127,7 +1127,7 @@ export default function Support() {
                                 message.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
                                 message.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
                                 message.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
-                                'bg-gray-500/10 text-gray-400'
+                                'bg-muted/50 text-muted-foreground'
                               }`}>
                                 {getSenderIcon(message.sender_type)}
                               </div>
@@ -1263,7 +1263,7 @@ export default function Support() {
                                   {getCategoryLabel(selectedMessage.category)}
                                 </Badge>
                                 {selectedMessage.priority !== 'normal' && (
-                                  <Badge className={`${getPriorityColor(selectedMessage.priority)} text-white border-0 text-xs`}>
+                                  <Badge className={`${getPriorityColor(selectedMessage.priority)} text-primary-foreground border-0 text-xs`}>
                                     {selectedMessage.priority === 'urgent' ? 'Urgent' :
                                      selectedMessage.priority === 'high' ? 'Haute' :
                                      selectedMessage.priority === 'low' ? 'Basse' : 'Normal'}
@@ -1322,7 +1322,7 @@ export default function Support() {
                                   size="sm"
                                   onClick={handleSendReply}
                                   disabled={!replyContent.trim() || isSendingReply}
-                                  className="bg-gradient-to-r from-[#ffaa00] to-[#ff6600] text-white hover:opacity-90"
+                                  className="bg-gradient-to-r from-warning to-warning-foreground text-primary-foreground hover:opacity-90"
                                 >
                                   {isSendingReply ? "Envoi..." : "Envoyer"}
                                 </Button>
