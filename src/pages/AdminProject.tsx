@@ -52,16 +52,16 @@ export default function AdminProject() {
   return (
     <SuperAdminLayout>
       <div className="relative min-h-screen">
-        {/* Hero Section */}
-        <div className="border-b bg-gradient-to-br from-primary/5 via-background to-background">
-          <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
-            <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+        {/* Hero Section with improved visuals */}
+        <div className="border-b backdrop-blur-xl bg-gradient-to-br from-primary/10 via-secondary/5 to-background sticky top-0 z-20 shadow-lg">
+          <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+            <div className="max-w-4xl mx-auto space-y-4">
               <div className="flex items-start gap-3 sm:items-center">
-                <div className="p-3 rounded-xl bg-primary/10 flex-shrink-0">
-                  <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20 flex-shrink-0 animate-in fade-in slide-in-from-left-5 duration-500">
+                  <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
                 </div>
-                <div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+                <div className="animate-in fade-in slide-in-from-right-5 duration-500">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
                     {t('project.title')}
                   </h1>
                   <p className="text-base sm:text-lg text-muted-foreground mt-1">
@@ -70,60 +70,87 @@ export default function AdminProject() {
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="text-xs sm:text-sm">
+              <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-bottom-3 duration-700">
+                <Badge variant="secondary" className="text-xs sm:text-sm hover:scale-105 transition-transform">
                   <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                   {t('project.version')}
                 </Badge>
-                <Badge variant="outline" className="text-xs sm:text-sm">React + TypeScript</Badge>
-                <Badge variant="outline" className="text-xs sm:text-sm">Lovable Cloud</Badge>
-                <Badge variant="outline" className="text-xs sm:text-sm text-success border-success">{t('project.productionReady')}</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm hover:scale-105 transition-transform border-blue-500/50 text-blue-600 dark:text-blue-400">React + TypeScript</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm hover:scale-105 transition-transform border-green-500/50 text-green-600 dark:text-green-400">Lovable Cloud</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm hover:scale-105 transition-transform text-success border-success bg-success/10">{t('project.productionReady')}</Badge>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-20">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            {/* Tabs Navigation - Responsive */}
-            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-4 border-b">
+            {/* Tabs Navigation - Enhanced with better UX */}
+            <div className="sticky top-[110px] sm:top-[130px] z-10 backdrop-blur-xl bg-background/95 pb-4 border-b border-border/50 shadow-sm rounded-xl">
               <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1 sm:gap-2 p-1">
-                  <TabsTrigger value="overview" className="whitespace-nowrap text-xs sm:text-sm">
+                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1 sm:gap-2 p-1.5 bg-muted/50 rounded-xl">
+                  <TabsTrigger 
+                    value="overview" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <FileText className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">{t('project.overview')}</span>
                     <span className="sm:hidden">{t('project.overview')}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="features" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="features" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Activity className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.features')}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="architecture" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="architecture" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Layers className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.architecture')}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="backend" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="backend" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Database className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.backend')}
                   </TabsTrigger>
-                  <TabsTrigger value="frontend" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="frontend" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Code className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.frontend')}
                   </TabsTrigger>
-                  <TabsTrigger value="implementation" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="implementation" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Workflow className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.implementation')}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="backend-cursor" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="backend-cursor" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Server className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">{t('project.backend')} Cursor</span>
                     <span className="sm:hidden">Cursor</span>
                   </TabsTrigger>
-                  <TabsTrigger value="security" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="security" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <Shield className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.security')}</span>
                   </TabsTrigger>
-                  <TabsTrigger value="roadmap" className="whitespace-nowrap text-xs sm:text-sm">
+                  <TabsTrigger 
+                    value="roadmap" 
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                  >
                     <GitBranch className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.roadmap')}
                   </TabsTrigger>
@@ -132,15 +159,15 @@ export default function AdminProject() {
             </div>
 
             {/* VUE D'ENSEMBLE */}
-            <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 duration-300">
-              <Card>
-                <CardHeader>
+            <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
+              <Card className="border-2 hover:shadow-xl transition-all duration-300 backdrop-blur-sm bg-card/95">
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5">
                   <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
-                    <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                     {t('project.presentation')}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 pt-6">
                   <div>
                     <h3 className="font-semibold text-base sm:text-lg mb-3">{t('project.mission')}</h3>
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -151,44 +178,31 @@ export default function AdminProject() {
                   <Separator />
 
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg mb-4">{t('project.mainObjectives')}</h3>
+                    <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-success" />
+                      {t('project.mainObjectives')}
+                    </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                      <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
-                        <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-sm sm:text-base">{t('project.healthcareAccess')}</p>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            {t('project.healthcareAccessDesc')}
-                          </p>
+                      {[
+                        { title: t('project.healthcareAccess'), desc: t('project.healthcareAccessDesc'), color: "from-blue-500/10 to-blue-500/5" },
+                        { title: t('project.medicalRecord'), desc: t('project.medicalRecordDesc'), color: "from-green-500/10 to-green-500/5" },
+                        { title: t('project.adminManagement'), desc: t('project.adminManagementDesc'), color: "from-purple-500/10 to-purple-500/5" },
+                        { title: t('project.telemedicine'), desc: t('project.telemedicineDesc'), color: "from-pink-500/10 to-pink-500/5" }
+                      ].map((item, i) => (
+                        <div 
+                          key={i} 
+                          className={`flex gap-3 p-4 rounded-xl border-2 bg-gradient-to-br ${item.color} hover:shadow-lg hover:scale-[1.02] transition-all duration-300 animate-in fade-in slide-in-from-bottom-3`}
+                          style={{ animationDelay: `${i * 100}ms` }}
+                        >
+                          <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-medium text-sm sm:text-base">{item.title}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                              {item.desc}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
-                        <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-sm sm:text-base">{t('project.medicalRecord')}</p>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            {t('project.medicalRecordDesc')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
-                        <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-sm sm:text-base">{t('project.adminManagement')}</p>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            {t('project.adminManagementDesc')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-3 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow">
-                        <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-medium text-sm sm:text-base">{t('project.telemedicine')}</p>
-                          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                            {t('project.telemedicineDesc')}
-                          </p>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
@@ -228,9 +242,12 @@ export default function AdminProject() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl sm:text-2xl">{t('project.technologies')}</CardTitle>
+              <Card className="border-2 hover:shadow-xl transition-all duration-300 backdrop-blur-sm bg-card/95">
+                <CardHeader className="bg-gradient-to-r from-blue-500/5 to-green-500/5">
+                  <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+                    <Layers className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                    {t('project.technologies')}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -316,10 +333,13 @@ export default function AdminProject() {
             </TabsContent>
 
             {/* FONCTIONNALITÉS */}
-            <TabsContent value="features" className="space-y-6 animate-in fade-in-50 duration-300">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl sm:text-2xl">Fonctionnalités Implémentées</CardTitle>
+            <TabsContent value="features" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
+              <Card className="border-2 hover:shadow-xl transition-all duration-300 backdrop-blur-sm bg-card/95">
+                <CardHeader className="bg-gradient-to-r from-secondary/5 to-accent/5">
+                  <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+                    <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                    Fonctionnalités Implémentées
+                  </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
                     Liste complète des fonctionnalités actuellement disponibles dans la plateforme
                   </CardDescription>
@@ -344,7 +364,11 @@ export default function AdminProject() {
                         { title: "Animations Fluides", desc: "Fade-in, scale-in, hover-scale avec délais en cascade" },
                         { title: "Footer Complet", desc: "Logo, description, services, contact - Tout traduit" }
                       ].map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg border bg-gradient-to-br from-card to-primary/5 hover:shadow-md transition-all">
+                        <div 
+                          key={i} 
+                          className="flex items-start gap-3 p-3 rounded-xl border-2 bg-gradient-to-br from-card to-primary/5 hover:shadow-lg hover:scale-[1.01] transition-all duration-300 animate-in fade-in slide-in-from-left-3"
+                          style={{ animationDelay: `${i * 50}ms` }}
+                        >
                           <CheckCircle2 className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
                           <div>
                             <p className="font-medium text-sm sm:text-base">{item.title}</p>
@@ -487,11 +511,11 @@ export default function AdminProject() {
             </TabsContent>
 
             {/* ARCHITECTURE */}
-            <TabsContent value="architecture" className="space-y-6 animate-in fade-in-50 duration-300">
-              <Card>
-                <CardHeader>
+            <TabsContent value="architecture" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
+              <Card className="border-2 hover:shadow-xl transition-all duration-300 backdrop-blur-sm bg-card/95">
+                <CardHeader className="bg-gradient-to-r from-accent/5 to-primary/5">
                   <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
-                    <Layers className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <Layers className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
                     Architecture Système
                   </CardTitle>
                 </CardHeader>
