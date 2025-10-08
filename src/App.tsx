@@ -202,7 +202,7 @@ const App = () => (
               <AdminSettings />
             </ProtectedRoute>
           } />
-            <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
+            <Route path="/demo/doctor" element={<DashboardProfessional />} />
             <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
             
             {/* Routes professionnelles */}
