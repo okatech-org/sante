@@ -391,13 +391,21 @@ export default function AdminProject() {
                     </h3>
                     <div className="grid gap-3">
                       {[
-                        { title: "Dashboard Personnel", desc: "Vue d'ensemble avec RDV, ordonnances, résultats" },
-                        { title: "Gestion Rendez-vous", desc: "Consultation, téléconsultation, examens" },
-                        { title: "Ordonnances Électroniques", desc: "Visualisation, statut, géolocalisation pharmacies" },
+                        { title: "Dashboard Aurora Glass", desc: "Design glassmorphism avec couleurs vives (turquoise, bleu, jaune, rose)" },
+                        { title: "Navigation Responsive", desc: "Menu latéral collapsible + barre de navigation mobile" },
+                        { title: "Gestion Profil Complète", desc: "Avatar upload, changement mot de passe, infos médicales" },
+                        { title: "Gestion Rendez-vous", desc: "Prise de RDV multi-étapes (type, date/heure, motif, paiement)" },
+                        { title: "Historique Consultations", desc: "Liste des consultations avec détails et documents" },
+                        { title: "Ordonnances Électroniques", desc: "Visualisation, envoi pharmacie avec géolocalisation" },
                         { title: "Résultats d'Examens", desc: "Biologie, imagerie avec téléchargement PDF" },
+                        { title: "Dossier Médical", desc: "Carnet de santé, vaccinations, antécédents" },
+                        { title: "Carte CNAMGS", desc: "Génération PDF avec QR code et informations assuré" },
                         { title: "Statut Assurance", desc: "CNAMGS/CNSS avec taux de couverture et plafonds" },
-                        { title: "Recherche Prestataires", desc: "Médecins, pharmacies, hôpitaux, laboratoires" },
-                        { title: "Profil Patient", desc: "Informations personnelles, contact, adresse" }
+                        { title: "Cartographie Prestataires", desc: "Médecins, pharmacies, hôpitaux avec carte interactive" },
+                        { title: "Messagerie Sécurisée", desc: "Communication avec professionnels de santé" },
+                        { title: "Remboursements", desc: "Suivi demandes de remboursement CNAMGS/CNSS" },
+                        { title: "Système de Notifications", desc: "Rappels RDV, résultats disponibles" },
+                        { title: "Multi-langue & Thème", desc: "5 langues (FR/EN/ES/AR/PT) + mode sombre/clair" }
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
                           <CheckCircle2 className="h-4 w-4 text-success mt-1 flex-shrink-0" />
@@ -420,11 +428,21 @@ export default function AdminProject() {
                     </h3>
                     <div className="grid gap-3">
                       {[
-                        { title: "Tableau de Bord Admin", desc: "Métriques, statistiques, activité système" },
-                        { title: "Gestion Utilisateurs", desc: "Création, modification, attribution de rôles" },
-                        { title: "Approbations", desc: "Validation des inscriptions professionnels/établissements" },
-                        { title: "Comptes Démo", desc: "Initialisation et gestion des comptes de test" },
-                        { title: "Documentation Projet", desc: "Vue complète architecture et fonctionnalités" }
+                        { title: "Dashboard Aurora Glass", desc: "Interface harmonisée avec le design patient (glassmorphism + couleurs)" },
+                        { title: "Navigation Latérale Moderne", desc: "Menu collapsible avec icônes colorées et animations" },
+                        { title: "Statistiques Globales", desc: "KPI utilisateurs, établissements, professionnels, approbations" },
+                        { title: "Gestion Utilisateurs", desc: "Liste complète, création, modification, attribution rôles" },
+                        { title: "Gestion Établissements", desc: "Hôpitaux, cliniques, centres avec statuts et localisation" },
+                        { title: "Gestion Professionnels", desc: "Médecins, infirmiers, spécialistes avec validation" },
+                        { title: "Système Approbations", desc: "Validation inscriptions professionnels/établissements" },
+                        { title: "Audit & Logs", desc: "Suivi activités système et actions utilisateurs" },
+                        { title: "Cartographie Nationale", desc: "Vue carte interactive des prestataires par province" },
+                        { title: "Comptes Démo", desc: "Initialisation automatique 17 comptes test" },
+                        { title: "Paramètres Système", desc: "Configuration globale, notifications, maintenance" },
+                        { title: "Documentation Technique", desc: "Architecture, API, base de données, sécurité" },
+                        { title: "Analytics Avancées", desc: "Statistiques par province, graphiques temporels" },
+                        { title: "Gestion Rôles & Permissions", desc: "17 rôles système avec contrôle d'accès granulaire" },
+                        { title: "Multi-langue & Préférences", desc: "Interface traduite en 5 langues avec thème personnalisable" }
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
                           <CheckCircle2 className="h-4 w-4 text-success mt-1 flex-shrink-0" />
