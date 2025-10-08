@@ -301,7 +301,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
             <p className="text-xs text-muted-foreground">Carte d'assuré</p>
           </div>
         </div>
-        <Button onClick={handleExportPDF} size="sm" variant="outline" className="self-start sm:self-auto">
+        <Button onClick={handleExportPDF} size="sm" className="self-start sm:self-auto bg-accent hover:bg-accent/90 text-accent-foreground">
           <Download className="h-3 w-3 mr-1.5" />
           <span className="text-xs">Téléchargez votre attestation CNAMGS</span>
         </Button>
