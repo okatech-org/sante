@@ -731,7 +731,6 @@ export default function Profile() {
                                 placeholder="Selon attestation CNAMGS"
                                 className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
                               />
-                              <p className="text-[9px] text-muted-foreground">L'attestation CNAMGS sera générée avec ce lieu</p>
                             </div>
                           </div>
 
