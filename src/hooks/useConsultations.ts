@@ -40,10 +40,16 @@ export const useConsultations = () => {
           .from("professionals")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profError) throw profError;
-        if (!professional) throw new Error("Profil professionnel non trouvé");
+        if (!professional) {
+          console.log("Profil professionnel non trouvé");
+          setConsultations([]);
+          setStats({ today: 0, month: 0, prescriptions: 0, uniquePatients: 0 });
+          setLoading(false);
+          return;
+        }
 
         // Fetch completed appointments (our consultations)
         const { data, error: aptError } = await supabase
