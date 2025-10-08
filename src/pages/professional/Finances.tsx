@@ -1,8 +1,8 @@
 import { DollarSign, CreditCard, TrendingUp, Clock, Download } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 
 export default function ProfessionalFinances() {
   const transactions = [
@@ -73,192 +73,163 @@ export default function ProfessionalFinances() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Finances & CNAMGS</h1>
-          <p className="text-muted-foreground">Gestion financière et facturation</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Exporter
-          </Button>
-          <Button>
-            <DollarSign className="mr-2 h-4 w-4" />
-            Nouvelle Facture
-          </Button>
-        </div>
-      </div>
-
-      {/* Stats financières */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Revenus Mois</p>
-                <p className="text-2xl font-bold">4.8M FCFA</p>
-                <p className="text-xs text-green-500">+12% vs mois dernier</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-primary" />
+    <PatientDashboardLayout>
+      <div className="space-y-6">
+        {/* Stats financières */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center">
+              <DollarSign className="w-7 h-7 text-green-500" />
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Part CNAMGS</p>
-                <p className="text-2xl font-bold">2.9M FCFA</p>
-                <p className="text-xs text-muted-foreground">60% du total</p>
-              </div>
-              <CreditCard className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">En attente</p>
-                <p className="text-2xl font-bold text-yellow-500">850K FCFA</p>
-                <p className="text-xs text-muted-foreground">Délai: 47j</p>
-              </div>
-              <Clock className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Taux collecte</p>
-                <p className="text-2xl font-bold text-green-500">92%</p>
-                <p className="text-xs text-green-500">Excellent</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Graphique revenus */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Évolution des revenus</CardTitle>
-          <CardDescription>Revenus des 6 derniers mois par source</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 flex items-center justify-center text-muted-foreground">
-            <TrendingUp className="h-12 w-12 opacity-50 mr-4" />
-            <p>Graphique des revenus - À implémenter avec Recharts</p>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Revenus Mois</p>
+            <p className="text-3xl font-bold text-foreground mb-1">4.8M</p>
+            <p className="text-xs text-green-500">+12% vs mois dernier</p>
           </div>
-        </CardContent>
-      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Transactions récentes */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Transactions Récentes</CardTitle>
-            <CardDescription>Paiements reçus aujourd'hui</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {transactions.map((transaction) => (
-                <div key={transaction.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <p className="font-medium">{transaction.patient}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="text-xs">{transaction.type}</Badge>
-                      <span className="text-xs text-muted-foreground">{transaction.invoice}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold">{transaction.amount.toLocaleString()} FCFA</p>
-                    <Badge className={getStatusColor(transaction.status)} variant="outline">
-                      {getStatusLabel(transaction.status)}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center">
+              <CreditCard className="w-7 h-7 text-blue-500" />
             </div>
-          </CardContent>
-        </Card>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Part CNAMGS</p>
+            <p className="text-3xl font-bold text-foreground mb-1">2.9M</p>
+            <p className="text-xs text-muted-foreground">60% du total</p>
+          </div>
 
-        {/* Remboursements CNAMGS */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Remboursements CNAMGS</CardTitle>
-            <CardDescription>Suivi des paiements tiers-payant</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {cnamgsPayments.map((payment) => (
-                <div key={payment.id} className="p-4 border rounded-lg">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <p className="font-semibold">{payment.period}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {payment.consultations} consultations
-                      </p>
-                    </div>
-                    <Badge className={getStatusColor(payment.status)}>
-                      {getStatusLabel(payment.status)}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between mt-3">
-                    <p className="text-xl font-bold">{payment.amount.toLocaleString()} FCFA</p>
-                    {payment.status === "pending" ? (
-                      <p className="text-xs text-muted-foreground">
-                        Attendu: {new Date(payment.expected).toLocaleDateString('fr-FR')}
-                      </p>
-                    ) : (
-                      <p className="text-xs text-green-500">
-                        Payé: {new Date(payment.paidDate!).toLocaleDateString('fr-FR')}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 flex items-center justify-center">
+              <Clock className="w-7 h-7 text-yellow-500" />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">En attente</p>
+            <p className="text-3xl font-bold text-foreground mb-1">850K</p>
+            <p className="text-xs text-muted-foreground">Délai: 47j</p>
+          </div>
 
-      {/* Ventilation des paiements */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ventilation des Paiements</CardTitle>
-          <CardDescription>Répartition par mode de paiement ce mois</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">Espèces</p>
-                <span className="text-xs text-muted-foreground">30%</span>
-              </div>
-              <p className="text-2xl font-bold">1.44M FCFA</p>
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center">
+              <TrendingUp className="w-7 h-7 text-green-500" />
             </div>
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">CNAMGS</p>
-                <span className="text-xs text-muted-foreground">60%</span>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Taux collecte</p>
+            <p className="text-3xl font-bold text-foreground mb-1">92%</p>
+            <p className="text-xs text-green-500">Excellent</p>
+          </div>
+        </div>
+
+        {/* Graphique revenus */}
+        <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Évolution des revenus</h2>
+                <p className="text-sm text-muted-foreground">Revenus des 6 derniers mois</p>
               </div>
-              <p className="text-2xl font-bold">2.88M FCFA</p>
+              <Button variant="outline" className="rounded-xl">
+                <Download className="mr-2 h-4 w-4" />
+                Exporter
+              </Button>
             </div>
-            <div className="p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium">Mobile Money</p>
-                <span className="text-xs text-muted-foreground">10%</span>
-              </div>
-              <p className="text-2xl font-bold">480K FCFA</p>
+            <div className="h-64 flex items-center justify-center text-muted-foreground">
+              <TrendingUp className="h-12 w-12 opacity-50 mr-4" />
+              <p>Graphique des revenus - À implémenter</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Transactions récentes */}
+          <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-foreground mb-4">Transactions Récentes</h3>
+              <div className="space-y-3">
+                {transactions.map((transaction) => (
+                  <div key={transaction.id} className="rounded-xl backdrop-blur-xl p-4 bg-card/60 border border-border/20">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{transaction.patient}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs rounded-full">{transaction.type}</Badge>
+                          <span className="text-xs text-muted-foreground">{transaction.invoice}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-foreground">{transaction.amount.toLocaleString()} F</p>
+                        <Badge className={`${getStatusColor(transaction.status)} rounded-full`} variant="outline">
+                          {getStatusLabel(transaction.status)}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          {/* Remboursements CNAMGS */}
+          <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-foreground mb-4">Remboursements CNAMGS</h3>
+              <div className="space-y-3">
+                {cnamgsPayments.map((payment) => (
+                  <div key={payment.id} className="rounded-xl backdrop-blur-xl p-4 bg-card/60 border border-border/20">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="font-semibold text-foreground">{payment.period}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {payment.consultations} consultations
+                        </p>
+                      </div>
+                      <Badge className={`${getStatusColor(payment.status)} rounded-full`}>
+                        {getStatusLabel(payment.status)}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <p className="text-xl font-bold text-foreground">{payment.amount.toLocaleString()} F</p>
+                      {payment.status === "pending" ? (
+                        <p className="text-xs text-muted-foreground">
+                          Attendu: {new Date(payment.expected).toLocaleDateString('fr-FR')}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-green-500">
+                          Payé: {new Date(payment.paidDate!).toLocaleDateString('fr-FR')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Ventilation des paiements */}
+        <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-foreground mb-6">Ventilation des Paiements</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-muted-foreground">Espèces</p>
+                  <span className="text-xs text-muted-foreground">30%</span>
+                </div>
+                <p className="text-2xl font-bold text-foreground">1.44M F</p>
+              </div>
+              <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-muted-foreground">CNAMGS</p>
+                  <span className="text-xs text-muted-foreground">60%</span>
+                </div>
+                <p className="text-2xl font-bold text-foreground">2.88M F</p>
+              </div>
+              <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-muted-foreground">Mobile Money</p>
+                  <span className="text-xs text-muted-foreground">10%</span>
+                </div>
+                <p className="text-2xl font-bold text-foreground">480K F</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </PatientDashboardLayout>
   );
 }
