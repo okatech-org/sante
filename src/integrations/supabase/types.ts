@@ -199,6 +199,101 @@ export type Database = {
         }
         Relationships: []
       }
+      electronic_prescriptions: {
+        Row: {
+          additional_notes: string | null
+          consultation_id: string | null
+          created_at: string | null
+          diagnosis: string | null
+          dispensed_at: string | null
+          expiry_date: string | null
+          id: string
+          issued_date: string
+          medications: Json
+          patient_id: string
+          prescription_number: string
+          professional_id: string
+          qr_code_data: string | null
+          sent_at: string | null
+          sent_to_pharmacy_id: string | null
+          signature_data: string | null
+          status: string
+          teleconsultation_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          consultation_id?: string | null
+          created_at?: string | null
+          diagnosis?: string | null
+          dispensed_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string
+          medications: Json
+          patient_id: string
+          prescription_number: string
+          professional_id: string
+          qr_code_data?: string | null
+          sent_at?: string | null
+          sent_to_pharmacy_id?: string | null
+          signature_data?: string | null
+          status?: string
+          teleconsultation_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          consultation_id?: string | null
+          created_at?: string | null
+          diagnosis?: string | null
+          dispensed_at?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string
+          medications?: Json
+          patient_id?: string
+          prescription_number?: string
+          professional_id?: string
+          qr_code_data?: string | null
+          sent_at?: string | null
+          sent_to_pharmacy_id?: string | null
+          signature_data?: string | null
+          status?: string
+          teleconsultation_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "electronic_prescriptions_consultation_id_fkey"
+            columns: ["consultation_id"]
+            isOneToOne: false
+            referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "electronic_prescriptions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "electronic_prescriptions_sent_to_pharmacy_id_fkey"
+            columns: ["sent_to_pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "electronic_prescriptions_teleconsultation_id_fkey"
+            columns: ["teleconsultation_id"]
+            isOneToOne: false
+            referencedRelation: "teleconsultation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_equipment: {
         Row: {
           annee_installation: number | null
@@ -1410,6 +1505,72 @@ export type Database = {
         }
         Relationships: []
       }
+      teleconsultation_sessions: {
+        Row: {
+          appointment_id: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          end_time: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          professional_id: string
+          recording_url: string | null
+          room_id: string | null
+          session_type: string
+          start_time: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          professional_id: string
+          recording_url?: string | null
+          room_id?: string | null
+          session_type?: string
+          start_time?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          professional_id?: string
+          recording_url?: string | null
+          room_id?: string | null
+          session_type?: string
+          start_time?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teleconsultation_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teleconsultation_sessions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       treatments: {
         Row: {
           created_at: string
@@ -1487,6 +1648,10 @@ export type Database = {
           target_user_id: string
         }
         Returns: undefined
+      }
+      generate_prescription_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_user_roles: {
         Args: { _user_id: string }
