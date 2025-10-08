@@ -794,19 +794,6 @@ export default function Profile() {
                                   </Select>
                                 </div>
                               </div>
-
-                              <div className="space-y-1.5 w-full">
-                                <Label htmlFor="cnamgs_number" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                  <Shield className="h-3 w-3 flex-shrink-0" />
-                                  N° CNAMGS
-                                </Label>
-                                <Input
-                                  id="cnamgs_number"
-                                  {...register("cnamgs_number")}
-                                  placeholder="GA2384567891"
-                                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
-                                />
-                              </div>
                             </div>
                         </div>
                       </div>
@@ -886,6 +873,29 @@ export default function Profile() {
                             />
                           </div>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Bloc CNAMGS indépendant */}
+                    <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-card border border-border shadow-xl">
+                      <h2 className="text-sm sm:text-base font-bold text-foreground mb-3 flex items-center gap-2">
+                        <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
+                        Assurance CNAMGS
+                      </h2>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="cnamgs_number" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                          <Shield className="h-3 w-3 flex-shrink-0" />
+                          Numéro d'assuré CNAMGS
+                        </Label>
+                        <Input
+                          id="cnamgs_number"
+                          {...register("cnamgs_number")}
+                          placeholder="GA2384567891"
+                          className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-9 text-sm w-full"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Saisissez votre numéro d'assuré pour faciliter vos remboursements
+                        </p>
                       </div>
                     </div>
 
