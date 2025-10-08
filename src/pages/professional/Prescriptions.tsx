@@ -1,15 +1,38 @@
-import { useState } from "react";
-import { Pill, Search, Filter, QrCode, Download, Send, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Pill, Search, Filter, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PrescriptionModal } from "@/components/professional/PrescriptionModal";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { PrescriptionsStats } from "@/components/professional/PrescriptionsStats";
+import { PrescriptionListItem } from "@/components/professional/PrescriptionListItem";
 
 export default function ProfessionalPrescriptions() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+
+  useEffect(() => {
+    document.title = "Prescriptions | Espace Professionnel - SANTE.GA";
+    const meta = document.querySelector('meta[name="description"]');
+    const content = "Gestion des prescriptions électroniques, ordonnances avec QR Code et intégration CNAMGS.";
+    if (meta) {
+      meta.setAttribute("content", content);
+    } else {
+      const m = document.createElement("meta");
+      m.name = "description";
+      m.content = content;
+      document.head.appendChild(m);
+    }
+    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', window.location.origin + '/professional/prescriptions');
+  }, []);
 
   const prescriptions = [
     {
@@ -49,26 +72,9 @@ export default function ProfessionalPrescriptions() {
     }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case "active": return "bg-green-500/10 text-green-500";
-      case "delivered": return "bg-blue-500/10 text-blue-500";
-      case "expired": return "bg-gray-500/10 text-gray-500";
-      default: return "bg-muted";
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch(status) {
-      case "active": return "Active";
-      case "delivered": return "Délivrée";
-      case "expired": return "Expirée";
-      default: return status;
-    }
-  };
-
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <PatientDashboardLayout>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Prescriptions Électroniques</h1>
@@ -80,56 +86,11 @@ export default function ProfessionalPrescriptions() {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Ce mois</p>
-                <p className="text-2xl font-bold">134</p>
-              </div>
-              <Pill className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Actives</p>
-                <p className="text-2xl font-bold text-green-500">89</p>
-              </div>
-              <Pill className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Délivrées</p>
-                <p className="text-2xl font-bold text-blue-500">45</p>
-              </div>
-              <QrCode className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Taux CNAMGS</p>
-                <p className="text-2xl font-bold text-orange-500">78%</p>
-              </div>
-              <Download className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <PrescriptionsStats total={134} active={89} delivered={45} cnamgsRate="78%" />
+        </div>
 
-      {/* Recherche et filtres */}
-      <Card>
+        <Card className="rounded-xl backdrop-blur-xl bg-card/80 border border-border shadow-xl">
         <CardHeader>
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
@@ -158,75 +119,21 @@ export default function ProfessionalPrescriptions() {
 
             <TabsContent value="all" className="space-y-3 mt-4">
               {prescriptions.map((prescription) => (
-                <Card key={prescription.id} className="hover:bg-muted/50 transition-colors">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex gap-4 flex-1">
-                        <div className="flex flex-col items-center justify-center min-w-[100px]">
-                          <QrCode className="h-8 w-8 text-primary mb-2" />
-                          <span className="text-xs font-mono">{prescription.id}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(prescription.date).toLocaleDateString('fr-FR')}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold">{prescription.patient}</h4>
-                            <Badge className={getStatusColor(prescription.status)}>
-                              {getStatusLabel(prescription.status)}
-                            </Badge>
-                            {prescription.cnamgs && (
-                              <Badge variant="outline">CNAMGS</Badge>
-                            )}
-                          </div>
-                          
-                          <div className="space-y-1 mb-2">
-                            {prescription.medications.map((med, idx) => (
-                              <div key={idx} className="text-sm">
-                                <span className="font-medium">{med.name}</span>
-                                <span className="text-muted-foreground ml-2">
-                                  {med.dosage} • {med.duration}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-
-                          {prescription.pharmacy && (
-                            <p className="text-xs text-muted-foreground">
-                              Pharmacie: {prescription.pharmacy}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <QrCode className="h-4 w-4 mr-2" />
-                          QR Code
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Download className="h-4 w-4 mr-2" />
-                          PDF
-                        </Button>
-                        {!prescription.pharmacy && (
-                          <Button variant="outline" size="sm">
-                            <Send className="h-4 w-4 mr-2" />
-                            Envoyer
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PrescriptionListItem
+                  key={prescription.id}
+                  prescription={prescription as any}
+                />
               ))}
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
 
-      <PrescriptionModal 
-        open={showPrescriptionModal}
-        onClose={() => setShowPrescriptionModal(false)}
-      />
-    </div>
+        <PrescriptionModal 
+          open={showPrescriptionModal}
+          onClose={() => setShowPrescriptionModal(false)}
+        />
+      </div>
+    </PatientDashboardLayout>
   );
 }
