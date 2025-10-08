@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { FileText, Search, Filter, Calendar, User, Pill } from "lucide-react";
+import { FileText, Search, Filter, Calendar, User, Pill, LayoutDashboard, Users, Video, Stethoscope, ClipboardList, DollarSign, BarChart3, MessageSquare, Network, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConsultationDetailsModal } from "@/components/medical/ConsultationDetailsModal";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { useNavigate } from "react-router-dom";
+import { QuickActionCard } from "@/components/dashboard/patient/QuickActionCard";
 
 export default function ProfessionalConsultations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
+  const navigate = useNavigate();
 
   const consultations = [
     {
@@ -50,9 +54,50 @@ export default function ProfessionalConsultations() {
     }
   ];
 
+  const menuItems = [
+    { icon: LayoutDashboard, title: "Tableau de bord", route: "/professional/dashboard" },
+    { icon: Calendar, title: "Agenda & RDV", route: "/professional/agenda", badge: "8" },
+    { icon: Users, title: "Mes patients", route: "/professional/patients" },
+    { icon: Video, title: "Téléconsultations", route: "/professional/teleconsultations" },
+    { icon: Stethoscope, title: "Consultations", route: "/professional/consultations" },
+    { icon: ClipboardList, title: "Prescriptions", route: "/professional/prescriptions" },
+    { icon: DollarSign, title: "Finances & CNAMGS", route: "/professional/finances" },
+    { icon: BarChart3, title: "Statistiques", route: "/professional/statistics" },
+    { icon: MessageSquare, title: "Messages", route: "/professional/messages", badge: "5" },
+    { icon: Network, title: "Télé-expertise", route: "/professional/tele-expertise" },
+    { icon: Settings, title: "Paramètres", route: "/professional/settings" },
+  ];
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/20">
+      {/* Glassmorphic Sidebar - Hidden on mobile */}
+      <aside className="hidden md:block w-80 border-r border-border/50 bg-card/30 backdrop-blur-xl sticky top-0 h-screen overflow-y-auto">
+        <div className="p-6 space-y-4">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Menu Professionnel
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">Accès rapide</p>
+          </div>
+          
+          <div className="space-y-3">
+            {menuItems.map((item, index) => (
+              <QuickActionCard
+                key={index}
+                icon={item.icon}
+                title={item.title}
+                badge={item.badge}
+                onClick={() => navigate(item.route)}
+              />
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="container mx-auto p-6 space-y-6">
+          <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Consultations</h1>
           <p className="text-muted-foreground">Historique des consultations effectuées</p>
@@ -188,13 +233,15 @@ export default function ProfessionalConsultations() {
         </CardContent>
       </Card>
 
-      {selectedConsultation && (
-        <ConsultationDetailsModal
-          open={!!selectedConsultation}
-          onOpenChange={(open) => !open && setSelectedConsultation(null)}
-          consultation={selectedConsultation}
-        />
-      )}
+        {selectedConsultation && (
+          <ConsultationDetailsModal
+            open={!!selectedConsultation}
+            onOpenChange={(open) => !open && setSelectedConsultation(null)}
+            consultation={selectedConsultation}
+          />
+        )}
+        </div>
+      </div>
     </div>
   );
 }
