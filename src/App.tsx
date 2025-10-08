@@ -22,6 +22,8 @@ import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
+import DemoHospitalDashboard from "./pages/demo/DemoHospitalDashboard";
+import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import ProfessionalAgenda from "./pages/professional/Agenda";
 import ProfessionalPatients from "./pages/professional/Patients";
@@ -204,8 +206,10 @@ const App = () => (
               <AdminSettings />
             </ProtectedRoute>
           } />
-            <Route path="/demo/doctor" element={<DashboardProfessional />} />
+            <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
             <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
+            <Route path="/demo/hospital" element={<DemoHospitalDashboard />} />
+            <Route path="/demo/clinic" element={<DemoClinicDashboard />} />
             
             {/* Routes professionnelles */}
             <Route path="/professional/agenda" element={
