@@ -269,8 +269,8 @@ export default function Profile() {
       <div className="space-y-2 sm:space-y-3 w-full">
             {/* Menu secondaire des sections */}
             <div className="w-full overflow-hidden">
-              <div className="rounded-xl backdrop-blur-xl p-1 sm:p-1.5 md:p-2 bg-card border border-border shadow-xl">
-                <nav className="flex gap-1 sm:gap-1.5 md:gap-2 lg:gap-3 overflow-x-auto scrollbar-hide pb-0.5">
+              <div className="rounded-lg sm:rounded-xl backdrop-blur-xl p-0.5 sm:p-1 md:p-1.5 bg-card border border-border shadow-lg">
+                <nav className="flex gap-0.5 sm:gap-1 md:gap-1.5 overflow-x-auto scrollbar-hide">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -278,19 +278,19 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3 px-2 sm:px-3 md:px-4 lg:px-5 py-2 sm:py-2.5 md:py-2.5 lg:py-3 rounded-lg transition-all whitespace-nowrap flex-shrink-0 min-w-[48px] sm:min-w-0 ${
-                          isActive ? 'bg-accent text-accent-foreground shadow-md font-semibold' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground font-medium'
+                        className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-1.5 md:gap-2 px-1.5 sm:px-2.5 md:px-3.5 py-1.5 sm:py-2 md:py-2 rounded-md sm:rounded-lg transition-all whitespace-nowrap flex-shrink-0 min-w-[40px] sm:min-w-0 ${
+                          isActive ? 'bg-accent text-accent-foreground shadow-sm font-semibold' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground font-medium'
                         }`}
                       >
                         <div
-                          className={`w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
+                          className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded flex items-center justify-center flex-shrink-0 transition-all ${
                             isActive ? '' : 'bg-muted'
                           }`}
                           style={isActive ? { backgroundColor: `${section.color}20` } : {}}
                         >
-                          <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 lg:w-4.5 lg:h-4.5" style={{ color: isActive ? section.color : '' }} />
+                          <Icon className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" style={{ color: isActive ? section.color : '' }} />
                         </div>
-                        <span className="hidden sm:inline text-[10px] sm:text-[11px] md:text-xs lg:text-sm xl:text-base tracking-tight sm:tracking-normal truncate max-w-[80px] sm:max-w-[100px] md:max-w-none">
+                        <span className="hidden sm:inline text-[10px] md:text-[11px] lg:text-xs tracking-tight truncate max-w-[70px] md:max-w-[90px] lg:max-w-none">
                           {section.label}
                         </span>
                       </button>
