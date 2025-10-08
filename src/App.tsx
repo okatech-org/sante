@@ -20,6 +20,8 @@ import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
+import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
+import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
@@ -190,6 +192,8 @@ const App = () => (
               <AdminSettings />
             </ProtectedRoute>
           } />
+          <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
+          <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
           <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

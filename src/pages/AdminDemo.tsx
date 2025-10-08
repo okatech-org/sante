@@ -263,9 +263,33 @@ export default function AdminDemo() {
         description: `Connecté en tant que ${account.name} (${account.type})`,
       });
 
+      // Navigation intelligente vers le dashboard approprié
       switch (account.role) {
         case 'patient':
           navigate('/dashboard');
+          break;
+        case 'doctor':
+          navigate('/demo/doctor');
+          break;
+        case 'specialist':
+          navigate('/demo/specialist');
+          break;
+        case 'nurse':
+        case 'midwife':
+        case 'physiotherapist':
+        case 'psychologist':
+        case 'ophthalmologist':
+        case 'anesthesiologist':
+          navigate('/dashboard/professional');
+          break;
+        case 'pharmacist':
+        case 'pharmacy':
+          navigate('/dashboard/professional');
+          break;
+        case 'laboratory_technician':
+        case 'radiologist':
+        case 'radiology_center':
+          navigate('/dashboard/professional');
           break;
         case 'admin':
         case 'hospital_admin':
@@ -339,10 +363,20 @@ export default function AdminDemo() {
                     <p className="text-sm text-muted-foreground mb-2">
                       {account.description}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Badge variant="outline" className="font-mono">
-                        {account.email}
-                      </Badge>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Badge variant="outline" className="font-mono text-xs">
+                          {account.email}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        🔗 Dashboard: <span className="font-mono text-primary">
+                          {account.role === 'doctor' ? '/demo/doctor' : 
+                           account.role === 'specialist' ? '/demo/specialist' :
+                           account.role === 'patient' ? '/dashboard' : 
+                           '/dashboard/professional'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   
