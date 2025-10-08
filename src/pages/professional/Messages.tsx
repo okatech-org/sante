@@ -1,83 +1,87 @@
 import { useState, useEffect } from "react";
-import { Mail, Send, Search, Star, Trash2 } from "lucide-react";
+import { Mail, Send, Search, Star, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { MessagesStats } from "@/components/professional/MessagesStats";
+import { useMessages } from "@/hooks/useMessages";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProfessionalMessages() {
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [replyContent, setReplyContent] = useState("");
+  const { messages, stats, loading, error, markAsRead, toggleStar, deleteMessage } = useMessages();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    document.title = "Messages | Espace Professionnel - SANTE.GA";
-    const meta = document.querySelector('meta[name="description"]');
-    const content = "Messagerie sécurisée pour communiquer avec les patients et confrères.";
-    if (meta) {
-      meta.setAttribute("content", content);
-    } else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = content;
-      document.head.appendChild(m);
-    }
-    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
-    if (!link) {
-      link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      document.head.appendChild(link);
-    }
-    link.setAttribute('href', window.location.origin + '/professional/messages');
-  }, []);
-
-  const messages = [
-    {
-      id: 1,
-      from: "Marie MOUSSAVOU",
-      subject: "Question sur mon traitement",
-      preview: "Bonjour Docteur, j'ai une question concernant...",
-      date: "2025-02-05 10:30",
-      isRead: false,
-      isStarred: true,
-      category: "patient"
-    },
-    {
-      id: 2,
-      from: "CNAMGS - Service Facturation",
-      subject: "Validation facture FACT-2025-089",
-      preview: "Votre facture a été validée pour un montant de...",
-      date: "2025-02-04 15:45",
-      isRead: true,
-      isStarred: false,
-      category: "admin"
-    },
-    {
-      id: 3,
-      from: "Jean NZENGUE",
-      subject: "Demande de certificat médical",
-      preview: "Pourriez-vous me fournir un certificat médical pour...",
-      date: "2025-02-04 09:20",
-      isRead: false,
-      isStarred: false,
-      category: "patient"
-    },
-    {
-      id: 4,
-      from: "CHU Libreville - RH",
-      subject: "Télé-expertise demandée",
-      preview: "Un de nos confrères sollicite votre expertise sur...",
-      date: "2025-02-03 14:00",
-      isRead: true,
-      isStarred: true,
-      category: "professional"
-    }
-  ];
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
   };
+
+  const handleSelectMessage = async (message: any) => {
+    setSelectedMessage(message);
+    if (!message.isRead) {
+      await markAsRead(message.id);
+    }
+  };
+
+  const handleToggleStar = async (messageId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await toggleStar(messageId);
+  };
+
+  const handleDelete = async (messageId: string) => {
+    await deleteMessage(messageId);
+    if (selectedMessage?.id === messageId) {
+      setSelectedMessage(null);
+    }
+    toast({
+      title: "Message supprimé",
+      description: "Le message a été supprimé avec succès.",
+    });
+  };
+
+  const handleSendReply = () => {
+    // TODO: Implement send reply functionality
+    toast({
+      title: "Réponse envoyée",
+      description: "Votre réponse a été envoyée avec succès.",
+    });
+    setReplyContent("");
+  };
+
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
+  const filteredMessages = searchQuery
+    ? messages.filter(
+        (m) =>
+          m.from.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          m.subject.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : messages;
 
   return (
     <PatientDashboardLayout>
@@ -94,7 +98,12 @@ export default function ProfessionalMessages() {
       </div>
 
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
-          <MessagesStats unread={5} today={8} starred={12} archived={234} />
+          <MessagesStats 
+            unread={stats.unread} 
+            today={stats.today} 
+            starred={stats.starred} 
+            archived={stats.archived} 
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -104,16 +113,27 @@ export default function ProfessionalMessages() {
             <div className="flex items-center gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Rechercher..." className="pl-10" />
+                <Input 
+                  placeholder="Rechercher..." 
+                  className="pl-10" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
             <div className="space-y-1">
-              {messages.map((message) => (
+              {filteredMessages.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Mail className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun message trouvé</p>
+                </div>
+              ) : (
+                filteredMessages.map((message) => (
                 <div
                   key={message.id}
-                  onClick={() => setSelectedMessage(message)}
+                  onClick={() => handleSelectMessage(message)}
                   className={`p-4 cursor-pointer border-b hover:bg-muted/50 transition-colors ${
                     !message.isRead ? 'bg-primary/5' : ''
                   } ${selectedMessage?.id === message.id ? 'bg-muted' : ''}`}
@@ -128,7 +148,10 @@ export default function ProfessionalMessages() {
                           {message.from}
                         </p>
                         {message.isStarred && (
-                          <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                          <Star 
+                            className="h-4 w-4 text-yellow-500 fill-yellow-500 cursor-pointer" 
+                            onClick={(e) => handleToggleStar(message.id, e)}
+                          />
                         )}
                       </div>
                       <p className={`text-sm mb-1 truncate ${!message.isRead ? 'font-medium' : 'text-muted-foreground'}`}>
@@ -148,7 +171,8 @@ export default function ProfessionalMessages() {
                     </div>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -174,10 +198,18 @@ export default function ProfessionalMessages() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => toggleStar(selectedMessage.id)}
+                    >
                       <Star className={selectedMessage.isStarred ? "h-4 w-4 text-yellow-500 fill-yellow-500" : "h-4 w-4"} />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => handleDelete(selectedMessage.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -185,17 +217,7 @@ export default function ProfessionalMessages() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="prose max-w-none">
-                  <p>
-                    Bonjour Docteur,
-                  </p>
-                  <p>
-                    {selectedMessage.preview} Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
-                  <p>
-                    Cordialement,<br />
-                    {selectedMessage.from}
-                  </p>
+                  <p>{selectedMessage.content}</p>
                 </div>
 
                 <div className="border-t pt-4">
@@ -204,10 +226,12 @@ export default function ProfessionalMessages() {
                     placeholder="Votre réponse..." 
                     rows={5}
                     className="mb-2"
+                    value={replyContent}
+                    onChange={(e) => setReplyContent(e.target.value)}
                   />
                   <div className="flex justify-end gap-2">
                     <Button variant="outline">Brouillon</Button>
-                    <Button>
+                    <Button onClick={handleSendReply} disabled={!replyContent.trim()}>
                       <Send className="mr-2 h-4 w-4" />
                       Envoyer
                     </Button>

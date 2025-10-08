@@ -1,76 +1,49 @@
 import { useState, useEffect } from "react";
-import { Pill, Search, Filter, Plus } from "lucide-react";
+import { Pill, Search, Filter, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PrescriptionModal } from "@/components/professional/PrescriptionModal";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { PrescriptionsStats } from "@/components/professional/PrescriptionsStats";
 import { PrescriptionListItem } from "@/components/professional/PrescriptionListItem";
+import { usePrescriptions } from "@/hooks/usePrescriptions";
 
 export default function ProfessionalPrescriptions() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const { prescriptions, stats, loading, error } = usePrescriptions();
 
-  useEffect(() => {
-    document.title = "Prescriptions | Espace Professionnel - SANTE.GA";
-    const meta = document.querySelector('meta[name="description"]');
-    const content = "Gestion des prescriptions électroniques, ordonnances avec QR Code et intégration CNAMGS.";
-    if (meta) {
-      meta.setAttribute("content", content);
-    } else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = content;
-      document.head.appendChild(m);
-    }
-    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
-    if (!link) {
-      link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      document.head.appendChild(link);
-    }
-    link.setAttribute('href', window.location.origin + '/professional/prescriptions');
-  }, []);
 
-  const prescriptions = [
-    {
-      id: "PRES-2025-0001",
-      date: "2025-02-01",
-      patient: "Marie MOUSSAVOU",
-      medications: [
-        { name: "Metformine 500mg", dosage: "1cp x2/j", duration: "30j" },
-        { name: "Insuline Lantus", dosage: "20UI le soir", duration: "30j" }
-      ],
-      status: "active",
-      cnamgs: "GAB123456789",
-      pharmacy: "Pharmacie de la Grâce"
-    },
-    {
-      id: "PRES-2025-0002",
-      date: "2025-02-01",
-      patient: "Jean NZENGUE",
-      medications: [
-        { name: "Amlodipine 5mg", dosage: "1cp/j", duration: "90j" },
-        { name: "Atorvastatine 20mg", dosage: "1cp le soir", duration: "90j" }
-      ],
-      status: "active",
-      cnamgs: "GAB987654321",
-      pharmacy: null
-    },
-    {
-      id: "PRES-2025-0003",
-      date: "2025-01-30",
-      patient: "Claire OBAME",
-      medications: [
-        { name: "Oméprazole 20mg", dosage: "1cp/j à jeun", duration: "28j" }
-      ],
-      status: "delivered",
-      cnamgs: null,
-      pharmacy: "Pharmacie du Soleil"
-    }
-  ];
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
+  const filteredPrescriptions = searchQuery
+    ? prescriptions.filter(
+        (p) =>
+          p.patient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.id.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : prescriptions;
 
   return (
     <PatientDashboardLayout>
@@ -87,7 +60,12 @@ export default function ProfessionalPrescriptions() {
       </div>
 
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
-          <PrescriptionsStats total={134} active={89} delivered={45} cnamgsRate="78%" />
+          <PrescriptionsStats 
+            total={stats.total} 
+            active={stats.active} 
+            delivered={stats.delivered} 
+            cnamgsRate={stats.cnamgsRate} 
+          />
         </div>
 
         <Card className="rounded-xl backdrop-blur-xl bg-card/80 border border-border shadow-xl">
@@ -118,12 +96,19 @@ export default function ProfessionalPrescriptions() {
             </TabsList>
 
             <TabsContent value="all" className="space-y-3 mt-4">
-              {prescriptions.map((prescription) => (
+              {filteredPrescriptions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Pill className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucune prescription trouvée</p>
+                </div>
+              ) : (
+                filteredPrescriptions.map((prescription) => (
                 <PrescriptionListItem
                   key={prescription.id}
                   prescription={prescription as any}
                 />
-              ))}
+                ))
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>

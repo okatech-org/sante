@@ -1,56 +1,18 @@
 import { useState } from "react";
-import { Users, Search, Filter, UserPlus, Phone, Mail, Calendar, ChevronRight } from "lucide-react";
+import { Users, Search, Filter, UserPlus, Phone, Mail, Calendar, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { usePatients } from "@/hooks/usePatients";
 
 export default function ProfessionalPatients() {
   const [searchQuery, setSearchQuery] = useState("");
+  const { patients, stats, loading, error } = usePatients(searchQuery);
 
-  const patients = [
-    {
-      id: 1,
-      name: "Marie MOUSSAVOU",
-      age: 38,
-      gender: "F",
-      cnamgs: "GAB123456789",
-      phone: "+241 06 12 34 56",
-      email: "marie.m@email.com",
-      lastVisit: "2025-02-01",
-      nextVisit: "2025-02-15",
-      conditions: ["Diabète Type 2", "Hypertension"],
-      status: "suivi_actif"
-    },
-    {
-      id: 2,
-      name: "Jean NZENGUE",
-      age: 52,
-      gender: "M",
-      cnamgs: "GAB987654321",
-      phone: "+241 06 98 76 54",
-      email: "jean.n@email.com",
-      lastVisit: "2025-01-28",
-      nextVisit: null,
-      conditions: ["Hypertension"],
-      status: "suivi_actif"
-    },
-    {
-      id: 3,
-      name: "Claire OBAME",
-      age: 29,
-      gender: "F",
-      cnamgs: null,
-      phone: "+241 06 45 67 89",
-      email: "claire.o@email.com",
-      lastVisit: "2025-01-15",
-      nextVisit: null,
-      conditions: [],
-      status: "occasionnel"
-    }
-  ];
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
@@ -65,6 +27,26 @@ export default function ProfessionalPatients() {
     }
   };
 
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
   return (
     <PatientDashboardLayout>
       <div className="space-y-6">
@@ -75,7 +57,7 @@ export default function ProfessionalPatients() {
               <Users className="w-7 h-7 text-primary" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Total Patients</p>
-            <p className="text-3xl font-bold text-foreground mb-1">234</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.total}</p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -83,7 +65,7 @@ export default function ProfessionalPatients() {
               <Users className="w-7 h-7 text-green-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Suivi Actif</p>
-            <p className="text-3xl font-bold text-foreground mb-1">156</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.active}</p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -91,7 +73,7 @@ export default function ProfessionalPatients() {
               <UserPlus className="w-7 h-7 text-blue-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Nouveau ce mois</p>
-            <p className="text-3xl font-bold text-foreground mb-1">12</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.newThisMonth}</p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -99,7 +81,7 @@ export default function ProfessionalPatients() {
               <Calendar className="w-7 h-7 text-orange-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">RDV à venir</p>
-            <p className="text-3xl font-bold text-foreground mb-1">28</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.upcomingAppointments}</p>
           </div>
         </div>
 
@@ -133,7 +115,13 @@ export default function ProfessionalPatients() {
           <div className="p-6">
             <h2 className="text-2xl font-bold text-foreground mb-6">Liste des Patients</h2>
             <div className="space-y-4">
-              {patients.map((patient) => (
+              {patients.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun patient trouvé</p>
+                </div>
+              ) : (
+                patients.map((patient) => (
                 <div 
                   key={patient.id} 
                   className="rounded-2xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 hover:bg-card/80 transition-all cursor-pointer hover:scale-[1.01] shadow-lg"
@@ -192,7 +180,8 @@ export default function ProfessionalPatients() {
                     <ChevronRight className="w-6 h-6 text-muted-foreground" />
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </Card>

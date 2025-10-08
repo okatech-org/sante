@@ -1,54 +1,18 @@
 import { useState } from "react";
-import { Calendar, Clock, Video, Users, DollarSign, Stethoscope, Camera, ChevronRight, Home, MapPin } from "lucide-react";
+import { Calendar, Clock, Video, Users, DollarSign, Stethoscope, Loader2, Home, MapPin, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AppointmentModal } from "@/components/professional/AppointmentModal";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAgenda } from "@/hooks/useAgenda";
 
 export default function ProfessionalAgenda() {
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const { user } = useAuth();
-
-  const appointments = [
-    {
-      id: 1,
-      time: "08:30",
-      patient: "Marie MOUSSAVOU",
-      type: "cabinet",
-      reason: "Consultation diabète",
-      status: "confirmé",
-      cnamgs: "GAB123456789"
-    },
-    {
-      id: 2,
-      time: "09:30",
-      patient: "Jean NZENGUE",
-      type: "teleconsultation",
-      reason: "Suivi hypertension",
-      status: "confirmé",
-      cnamgs: "GAB987654321"
-    },
-    {
-      id: 3,
-      time: "10:00",
-      patient: "Claire OBAME",
-      type: "cabinet",
-      reason: "Douleurs abdominales",
-      status: "en_attente",
-      cnamgs: null
-    },
-    {
-      id: 4,
-      time: "11:00",
-      patient: "Paul MINTSA",
-      type: "domicile",
-      reason: "Visite post-opératoire",
-      status: "confirmé",
-      cnamgs: "GAB456789123"
-    }
-  ];
+  const { appointments, stats, loading, error } = useAgenda();
 
   const getTypeIcon = (type: string) => {
     switch(type) {
@@ -68,6 +32,26 @@ export default function ProfessionalAgenda() {
   };
 
 
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
   return (
     <PatientDashboardLayout>
       <div className="space-y-6">
@@ -78,7 +62,7 @@ export default function ProfessionalAgenda() {
               <Users className="w-7 h-7 text-cyan-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Patients</p>
-            <p className="text-3xl font-bold text-foreground mb-1">89</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.patients}</p>
             <p className="text-xs text-muted-foreground">Ce mois</p>
           </div>
 
@@ -87,7 +71,7 @@ export default function ProfessionalAgenda() {
               <Stethoscope className="w-7 h-7 text-blue-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Consultations</p>
-            <p className="text-3xl font-bold text-foreground mb-1">156</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.consultations}</p>
             <p className="text-xs text-muted-foreground">Ce mois</p>
           </div>
 
@@ -96,7 +80,7 @@ export default function ProfessionalAgenda() {
               <Video className="w-7 h-7 text-orange-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Téléconsultations</p>
-            <p className="text-3xl font-bold text-foreground mb-1">24</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.teleconsultations}</p>
             <p className="text-xs text-muted-foreground">Ce mois</p>
           </div>
 
@@ -105,7 +89,7 @@ export default function ProfessionalAgenda() {
               <DollarSign className="w-7 h-7 text-pink-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Revenus</p>
-            <p className="text-3xl font-bold text-foreground mb-1">2.5M</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{(stats.revenue / 1000000).toFixed(1)}M</p>
             <p className="text-xs text-muted-foreground">Ce mois</p>
           </div>
         </div>
@@ -152,7 +136,13 @@ export default function ProfessionalAgenda() {
           <div className="p-6">
             <h2 className="text-2xl font-bold text-foreground mb-6">Prochains Rendez-vous</h2>
             <div className="space-y-4">
-              {appointments.map((apt) => (
+              {appointments.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun rendez-vous à venir</p>
+                </div>
+              ) : (
+                appointments.map((apt) => (
                 <div 
                   key={apt.id} 
                   className="rounded-2xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 hover:bg-card/80 transition-all cursor-pointer hover:scale-[1.01] shadow-lg"
@@ -182,7 +172,8 @@ export default function ProfessionalAgenda() {
                     </Badge>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </Card>

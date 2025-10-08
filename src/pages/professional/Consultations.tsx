@@ -1,78 +1,50 @@
 import { useState, useEffect } from "react";
-import { FileText, Search, Filter, Calendar, User, Pill } from "lucide-react";
+import { FileText, Search, Filter, Calendar, User, Pill, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConsultationDetailsModal } from "@/components/medical/ConsultationDetailsModal";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { ConsultationListItem } from "@/components/professional/ConsultationListItem";
 import { ConsultationsStats } from "@/components/professional/ConsultationsStats";
+import { useConsultations } from "@/hooks/useConsultations";
 
 export default function ProfessionalConsultations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
+  const { consultations, stats, loading, error } = useConsultations();
 
-  useEffect(() => {
-    document.title = "Consultations | Espace Professionnel - SANTE.GA";
-    const meta = document.querySelector('meta[name="description"]');
-    const content = "Historique des consultations, filtres et accès rapide pour les professionnels de santé.";
-    if (meta) {
-      meta.setAttribute("content", content);
-    } else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = content;
-      document.head.appendChild(m);
-    }
-    // Canonical
-    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
-    if (!link) {
-      link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      document.head.appendChild(link);
-    }
-    link.setAttribute('href', window.location.origin + '/professional/consultations');
-  }, []);
-  const consultations = [
-    {
-      id: 1,
-      date: "2025-02-01",
-      time: "10:00",
-      patient: "Marie MOUSSAVOU",
-      type: "Consultation de suivi",
-      diagnosis: "Diabète Type 2 - Contrôle glycémique",
-      prescription: true,
-      examens: ["Glycémie à jeun", "HbA1c"],
-      notes: "Patient bien équilibré, poursuivre le traitement actuel",
-      nextVisit: "2025-03-01"
-    },
-    {
-      id: 2,
-      date: "2025-02-01",
-      time: "11:30",
-      patient: "Jean NZENGUE",
-      type: "Téléconsultation",
-      diagnosis: "Hypertension artérielle - Suivi",
-      prescription: true,
-      examens: [],
-      notes: "TA bien contrôlée sous traitement",
-      nextVisit: "2025-02-15"
-    },
-    {
-      id: 3,
-      date: "2025-01-30",
-      time: "09:00",
-      patient: "Claire OBAME",
-      type: "Consultation initiale",
-      diagnosis: "Gastrite aiguë",
-      prescription: true,
-      examens: ["Fibroscopie recommandée"],
-      notes: "IPP prescrit pour 4 semaines",
-      nextVisit: null
-    }
-  ];
+
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
+  const filteredConsultations = searchQuery
+    ? consultations.filter(
+        (c) =>
+          c.patient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (c.diagnosis && c.diagnosis.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : consultations;
 
   return (
     <PatientDashboardLayout>
@@ -90,7 +62,12 @@ export default function ProfessionalConsultations() {
 
         {/* Stats */}
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
-          <ConsultationsStats today={12} month={156} prescriptions={134} uniquePatients={89} />
+          <ConsultationsStats 
+            today={stats.today} 
+            month={stats.month} 
+            prescriptions={stats.prescriptions} 
+            uniquePatients={stats.uniquePatients} 
+          />
         </div>
 
         {/* Recherche et filtres */}
@@ -122,13 +99,20 @@ export default function ProfessionalConsultations() {
             </TabsList>
 
             <TabsContent value="all" className="space-y-3 mt-4">
-              {consultations.map((consultation) => (
+              {filteredConsultations.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucune consultation trouvée</p>
+                </div>
+              ) : (
+                filteredConsultations.map((consultation) => (
                 <ConsultationListItem
                   key={consultation.id}
                   consultation={consultation as any}
                   onSelect={() => setSelectedConsultation(consultation)}
                 />
-              ))}
+                ))
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>
