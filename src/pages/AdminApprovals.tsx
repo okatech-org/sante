@@ -62,7 +62,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 
 interface PendingApproval {
   id: string;
@@ -311,10 +310,8 @@ export default function AdminApprovals() {
 
   return (
     <SuperAdminLayout>
-      <div className="space-y-6">
+      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
-        <SuperAdminHeader />
-        
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
