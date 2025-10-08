@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
+import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,6 +125,9 @@ export default function AdminSettings() {
   return (
     <SuperAdminLayout>
       <div className="space-y-6">
+        <SuperAdminHeader />
+        
+        <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Paramètres système</h1>
@@ -646,6 +650,7 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
       </div>
     </SuperAdminLayout>
   );

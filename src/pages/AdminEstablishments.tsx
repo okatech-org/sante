@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
+import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -325,7 +326,10 @@ export default function AdminEstablishments() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="space-y-6">
+        <SuperAdminHeader />
+        
+        <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -741,6 +745,7 @@ export default function AdminEstablishments() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </SuperAdminLayout>
   );
 }
