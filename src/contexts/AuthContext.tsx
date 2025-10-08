@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!isMounted) return;
         
         setSession(session);
@@ -42,23 +42,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Fetch roles if user exists
         if (session?.user) {
-          try {
-            const roles = await authService.getUserRoles(session.user.id);
-            if (isMounted) {
-              setUserRoles(roles);
-            }
-          } catch (error) {
-            console.error('Error fetching user roles:', error);
-            if (isMounted) {
-              setUserRoles([]);
-            }
-          }
+          authService.getUserRoles(session.user.id)
+            .then(roles => {
+              if (isMounted) {
+                setUserRoles(roles);
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching user roles:', error);
+              if (isMounted) {
+                setUserRoles([]);
+              }
+            })
+            .finally(() => {
+              if (isMounted) {
+                setIsLoading(false);
+              }
+            });
         } else {
           setUserRoles([]);
-        }
-        
-        if (isMounted) {
-          setIsLoading(false);
+          if (isMounted) {
+            setIsLoading(false);
+          }
         }
       }
     );
