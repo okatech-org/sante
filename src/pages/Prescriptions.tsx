@@ -272,11 +272,11 @@ export default function Prescriptions() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-600">Active</Badge>;
+        return <Badge className="bg-success text-success-foreground">Active</Badge>;
       case "expired":
         return <Badge variant="destructive">Expirée</Badge>;
       case "renewed":
-        return <Badge className="bg-blue-600">Renouvelée</Badge>;
+        return <Badge className="bg-secondary text-secondary-foreground">Renouvelée</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -285,11 +285,11 @@ export default function Prescriptions() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-success" />;
       case "expired":
-        return <XCircle className="h-5 w-5 text-red-600" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       case "renewed":
-        return <AlertCircle className="h-5 w-5 text-blue-600" />;
+        return <AlertCircle className="h-5 w-5 text-secondary" />;
       default:
         return <FileText className="h-5 w-5" />;
     }
@@ -402,8 +402,8 @@ export default function Prescriptions() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Logout Button */}
-                <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300" title="Déconnexion">
+              {/* Logout Button */}
+                <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-destructive/10 hover:bg-destructive/20 transition-colors text-destructive hover:text-destructive/80" title="Déconnexion">
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
@@ -411,7 +411,7 @@ export default function Prescriptions() {
               {/* User Profile Card */}
               <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold bg-primary">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -530,7 +530,7 @@ export default function Prescriptions() {
                       </DropdownMenu>
 
                       {/* Logout Button */}
-                      <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300" title="Déconnexion">
+                      <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-destructive/10 hover:bg-destructive/20 transition-colors text-destructive hover:text-destructive/80" title="Déconnexion">
                         <LogOut className="w-4 h-4" />
                       </button>
                     </div>
@@ -538,7 +538,7 @@ export default function Prescriptions() {
                     {/* User Profile Card */}
                     <div className="p-3 rounded-lg bg-sidebar-accent/30">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold bg-primary">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -561,7 +561,7 @@ export default function Prescriptions() {
               {/* Header */}
               <div>
                 <h1 className="text-3xl font-bold text-foreground">
-                  Mes <span className="bg-gradient-to-r from-[#00d4ff] via-[#0088ff] to-[#ff0088] bg-clip-text text-transparent">Ordonnances</span>
+                  Mes <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Ordonnances</span>
                 </h1>
                 <p className="text-muted-foreground mt-2">
                   Consultez et gérez vos prescriptions médicales
@@ -572,8 +572,8 @@ export default function Prescriptions() {
               <div className="grid gap-4 md:grid-cols-3">
                 <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-                      <CheckCircle className="h-6 w-6 text-green-500" />
+                    <div className="h-12 w-12 rounded-full bg-success/10 flex items-center justify-center">
+                      <CheckCircle className="h-6 w-6 text-success" />
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Ordonnances actives</p>
@@ -584,8 +584,8 @@ export default function Prescriptions() {
 
                 <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
-                      <XCircle className="h-6 w-6 text-red-500" />
+                    <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                      <XCircle className="h-6 w-6 text-destructive" />
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Expirées</p>
@@ -596,8 +596,8 @@ export default function Prescriptions() {
 
                 <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#ff0088]/10 flex items-center justify-center">
-                      <FileText className="h-6 w-6 text-[#ff0088]" />
+                    <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
+                      <FileText className="h-6 w-6 text-accent" />
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Total</p>
@@ -629,16 +629,16 @@ export default function Prescriptions() {
               {/* Tabs */}
               <Tabs value={selectedTab} onValueChange={setSelectedTab}>
                 <TabsList className="grid w-full grid-cols-4 bg-card/50 border border-border">
-                  <TabsTrigger value="all" className="data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
                     Toutes ({mockPrescriptions.length})
                   </TabsTrigger>
-                  <TabsTrigger value="active" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-500">
+                  <TabsTrigger value="active" className="data-[state=active]:bg-success/20 data-[state=active]:text-success">
                     Actives ({activePrescriptions.length})
                   </TabsTrigger>
-                  <TabsTrigger value="expired" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-500">
+                  <TabsTrigger value="expired" className="data-[state=active]:bg-destructive/20 data-[state=active]:text-destructive">
                     Expirées ({expiredPrescriptions.length})
                   </TabsTrigger>
-                  <TabsTrigger value="renewed" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-500">
+                  <TabsTrigger value="renewed" className="data-[state=active]:bg-secondary/20 data-[state=active]:text-secondary">
                     Renouvelées
                   </TabsTrigger>
                 </TabsList>
@@ -648,7 +648,7 @@ export default function Prescriptions() {
                     <Card className="p-12 text-center bg-card/50 border-border backdrop-blur-sm">
                       <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="text-lg font-semibold mb-2 text-foreground">Aucune ordonnance trouvée</h3>
-                      <p className="text-gray-400">
+                      <p className="text-muted-foreground">
                         {searchQuery 
                           ? "Essayez avec d'autres termes de recherche"
                           : "Vous n'avez pas encore d'ordonnances dans cette catégorie"}
@@ -661,7 +661,7 @@ export default function Prescriptions() {
                         {/* En-tête */}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-start gap-3 min-w-0 flex-1">
-                            <div className="h-10 w-10 rounded-full bg-[#ff0088]/10 flex items-center justify-center flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
                               {getStatusIcon(prescription.status)}
                             </div>
                             <div className="min-w-0 flex-1">
@@ -691,7 +691,7 @@ export default function Prescriptions() {
                               variant="ghost" 
                               size="sm"
                               onClick={() => setPreviewPrescription(prescription)}
-                              className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-8 w-8 p-0"
+                              className="text-accent hover:text-accent hover:bg-accent/10 h-8 w-8 p-0"
                               title="Visualiser"
                             >
                               <Eye className="h-3.5 w-3.5" />
@@ -700,7 +700,7 @@ export default function Prescriptions() {
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleShare(prescription.id)}
-                              className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8 p-0"
+                              className="text-muted-foreground hover:text-foreground hover:bg-muted h-8 w-8 p-0"
                               title="Partager"
                             >
                               <Share2 className="h-3.5 w-3.5" />
@@ -709,7 +709,7 @@ export default function Prescriptions() {
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleDownload(prescription.id)}
-                              className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-8 w-8 p-0"
+                              className="text-primary hover:text-primary hover:bg-primary/10 h-8 w-8 p-0"
                               title="Télécharger"
                             >
                               <Download className="h-3.5 w-3.5" />
@@ -722,26 +722,26 @@ export default function Prescriptions() {
                           <div className="flex-1 min-w-0">
                             {/* Médicaments */}
                             <div className="space-y-2 mb-3">
-                              <h4 className="font-semibold flex items-center gap-2 text-sm text-white">
-                                <Pill className="h-3.5 w-3.5 text-[#ff0088]" />
+                              <h4 className="font-semibold flex items-center gap-2 text-sm text-foreground">
+                                <Pill className="h-3.5 w-3.5 text-accent" />
                                 Médicaments ({prescription.medications.length})
                               </h4>
                               {prescription.medications.map((med, index) => (
                                 <div 
                                   key={index} 
-                                  className="border border-white/10 rounded-lg p-3 bg-white/5"
+                                  className="border border-border rounded-lg p-3 bg-muted/50"
                                 >
                                   <div className="flex items-start justify-between mb-1.5">
                                     <div className="min-w-0 flex-1">
-                                      <p className="font-semibold text-sm text-white truncate">{med.name}</p>
-                                      <p className="text-xs text-gray-400">{med.dosage}</p>
+                                      <p className="font-semibold text-sm text-foreground truncate">{med.name}</p>
+                                      <p className="text-xs text-muted-foreground">{med.dosage}</p>
                                     </div>
-                                    <Badge variant="outline" className="border-white/10 text-gray-300 text-xs ml-2 flex-shrink-0">{med.duration}</Badge>
+                                    <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">{med.duration}</Badge>
                                   </div>
                                   <div className="space-y-0.5 text-xs">
-                                    <p className="text-gray-300"><span className="font-medium">Posologie:</span> {med.frequency}</p>
+                                    <p className="text-foreground"><span className="font-medium">Posologie:</span> {med.frequency}</p>
                                     {med.instructions && (
-                                      <p className="text-gray-400">
+                                      <p className="text-muted-foreground">
                                         <AlertCircle className="h-3 w-3 inline mr-1" />
                                         {med.instructions}
                                       </p>
@@ -755,7 +755,7 @@ export default function Prescriptions() {
                             <div className="mb-3">
                               <Button
                                 onClick={() => handleSendToPharmacy(prescription.id)}
-                                className="w-full bg-gradient-to-r from-[#00d4ff] to-[#0088ff] hover:opacity-90 text-white"
+                                className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground"
                               >
                                 <Send className="h-4 w-4 mr-2" />
                                 Envoyer à une pharmacie
@@ -764,9 +764,9 @@ export default function Prescriptions() {
 
                             {/* Notes */}
                             {prescription.notes && (
-                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                                <p className="text-xs text-gray-300">
-                                  <span className="font-semibold text-white">Note:</span>{" "}
+                              <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3">
+                                <p className="text-xs text-foreground">
+                                  <span className="font-semibold">Note:</span>{" "}
                                   {prescription.notes}
                                 </p>
                               </div>
@@ -800,7 +800,7 @@ export default function Prescriptions() {
                                 <div className="mb-2">
                                   <h3 className="font-bold text-gray-800 text-[6px] mb-1">MÉDICAMENTS</h3>
                                   {prescription.medications.map((med, index) => (
-                                    <div key={index} className="mb-1.5 pl-2 border-l-2 border-[#ff0088]">
+                                    <div key={index} className="mb-1.5 pl-2 border-l-2 border-accent">
                                       <p className="font-semibold text-gray-800 text-[5px]">{index + 1}. {med.name}</p>
                                       <p className="text-gray-600 text-[4px]">{med.dosage}</p>
                                       <p className="text-gray-600 text-[4px]">{med.frequency}</p>
@@ -822,7 +822,7 @@ export default function Prescriptions() {
                                     variant="ghost" 
                                     size="sm"
                                     onClick={() => setPreviewPrescription(prescription)}
-                                    className="text-[#ff0088] hover:text-[#ff0088] hover:bg-[#ff0088]/10 h-6 w-6 p-0"
+                                    className="text-accent hover:text-accent hover:bg-accent/10 h-6 w-6 p-0"
                                     title="Agrandir"
                                   >
                                     <Eye className="h-3 w-3" />
@@ -840,7 +840,7 @@ export default function Prescriptions() {
                                     variant="ghost" 
                                     size="sm"
                                     onClick={() => handleDownload(prescription.id)}
-                                    className="text-[#00d4ff] hover:text-[#00d4ff] hover:bg-[#00d4ff]/10 h-6 w-6 p-0"
+                                    className="text-primary hover:text-primary hover:bg-primary/10 h-6 w-6 p-0"
                                     title="Télécharger"
                                   >
                                     <Download className="h-3 w-3" />
@@ -863,9 +863,9 @@ export default function Prescriptions() {
 
       {/* Modal de prévisualisation */}
       <Dialog open={!!previewPrescription} onOpenChange={() => setPreviewPrescription(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-[#1a1f2e] border-white/10">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
           <DialogHeader>
-            <DialogTitle className="text-white">Aperçu de l'ordonnance</DialogTitle>
+            <DialogTitle className="text-foreground">Aperçu de l'ordonnance</DialogTitle>
           </DialogHeader>
           
           {previewPrescription && (
@@ -894,7 +894,7 @@ export default function Prescriptions() {
                 <div className="mb-6">
                   <h3 className="font-bold text-gray-800 mb-3">MÉDICAMENTS PRESCRITS</h3>
                   {previewPrescription.medications.map((med, index) => (
-                    <div key={index} className="mb-4 pl-4 border-l-2 border-[#ff0088]">
+                    <div key={index} className="mb-4 pl-4 border-l-2 border-accent">
                       <p className="font-semibold text-gray-800">{index + 1}. {med.name}</p>
                       <p className="text-sm text-gray-600">Dosage: {med.dosage}</p>
                       <p className="text-sm text-gray-600">Posologie: {med.frequency}</p>
@@ -927,14 +927,13 @@ export default function Prescriptions() {
                 <Button 
                   variant="outline"
                   onClick={() => handleShare(previewPrescription.id)}
-                  className="border-white/10 bg-white/5 text-white hover:bg-white/10"
                 >
                   <Share2 className="h-4 w-4 mr-2" />
                   Partager
                 </Button>
                 <Button 
                   onClick={() => handleDownload(previewPrescription.id)}
-                  className="bg-[#00d4ff] hover:bg-[#00d4ff]/80 text-white"
+                  className="bg-primary hover:bg-primary/80 text-primary-foreground"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Télécharger
