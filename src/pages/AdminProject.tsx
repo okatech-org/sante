@@ -1,6 +1,5 @@
 
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -52,10 +51,7 @@ export default function AdminProject() {
 
   return (
     <SuperAdminLayout>
-      <div className="space-y-6">
-        <SuperAdminHeader />
-        
-        <div className="relative min-h-screen">
+      <div className="relative min-h-screen">
         {/* Hero Section */}
         <div className="border-b bg-gradient-to-br from-primary/5 via-background to-background">
           <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -1315,7 +1311,6 @@ Protection:
             <ArrowUp className="h-5 w-5" />
           </Button>
         )}
-      </div>
       </div>
     </SuperAdminLayout>
   );

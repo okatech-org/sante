@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -305,10 +304,7 @@ const AdminAudit = () => {
 
   return (
     <SuperAdminLayout>
-      <div className="space-y-6">
-        <SuperAdminHeader />
-        
-        <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Journal d'Audit</h1>
@@ -585,7 +581,6 @@ const AdminAudit = () => {
             )}
           </DialogContent>
         </Dialog>
-      </div>
       </div>
     </SuperAdminLayout>
   );

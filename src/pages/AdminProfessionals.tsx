@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -290,10 +289,7 @@ const AdminProfessionals = () => {
 
   return (
     <SuperAdminLayout>
-      <div className="space-y-6">
-        <SuperAdminHeader />
-        
-        <div className="container py-8 space-y-6">
+      <div className="container py-8 space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Professionnels de santé</h1>
           <p className="text-muted-foreground">
@@ -632,7 +628,6 @@ const AdminProfessionals = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      </div>
     </SuperAdminLayout>
   );
 };
