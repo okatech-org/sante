@@ -342,7 +342,7 @@ export const generateCNAMGSPdf = async (
   
   // BLOC COORDONNÉES À GAUCHE - aligné avec le logo CNAMGS
   const contactW = 60; // Réduit de 1/5 (75 -> 60)
-  const contactH = 26; // Augmenté pour mieux espacer
+  const contactH = 22; // Hauteur ajustée
   const contactX = MARGIN;
   const contactY = 6; // Aligné avec le logo CNAMGS
   
@@ -354,42 +354,34 @@ export const generateCNAMGSPdf = async (
   
   let contactTextY = contactY + 4.5;
   
-  // Ligne 1 : Siège Social
-  doc.setFontSize(6.5);
+  // Ligne 1 : Siège Social sur une ligne
+  doc.setFontSize(6);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground
   doc.text("CNAMGS - Siège Social :", contactX + 2, contactTextY);
-  contactTextY += 3;
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.text("Libreville, Gabon", contactX + 2, contactTextY);
+  doc.text("Libreville, Gabon", contactX + 29, contactTextY);
   
   // Ligne 2 : Téléphone
   contactTextY += 4.5;
-  doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.text("Téléphone :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.text("+241 01 XX XX XX", contactX + 17, contactTextY);
+  doc.text("+241 01 XX XX XX", contactX + 16, contactTextY);
   
   // Ligne 3 : Email
   contactTextY += 4.5;
-  doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.text("Email :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.text("contact@cnamgs.ga", contactX + 11, contactTextY);
+  doc.text("contact@cnamgs.ga", contactX + 10, contactTextY);
   
   // Ligne 4 : Site web
   contactTextY += 4.5;
-  doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.text("Site web :", contactX + 2, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.text("www.cnamgs.ga", contactX + 14, contactTextY);
+  doc.text("www.cnamgs.ga", contactX + 13, contactTextY);
   
   // LOGO ET TEXTE À DROITE
   // Charger et afficher le logo CNAMGS
