@@ -1,14 +1,36 @@
-import { useState } from "react";
-import { Mail, Send, Search, Star, Trash2, Archive } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Mail, Send, Search, Star, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { MessagesStats } from "@/components/professional/MessagesStats";
 
 export default function ProfessionalMessages() {
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
+
+  useEffect(() => {
+    document.title = "Messages | Espace Professionnel - SANTE.GA";
+    const meta = document.querySelector('meta[name="description"]');
+    const content = "Messagerie sécurisée pour communiquer avec les patients et confrères.";
+    if (meta) {
+      meta.setAttribute("content", content);
+    } else {
+      const m = document.createElement("meta");
+      m.name = "description";
+      m.content = content;
+      document.head.appendChild(m);
+    }
+    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', window.location.origin + '/professional/messages');
+  }, []);
 
   const messages = [
     {
@@ -58,7 +80,8 @@ export default function ProfessionalMessages() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <PatientDashboardLayout>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Messagerie</h1>
@@ -70,57 +93,13 @@ export default function ProfessionalMessages() {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Non lus</p>
-                <p className="text-2xl font-bold">5</p>
-              </div>
-              <Mail className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Reçus aujourd'hui</p>
-                <p className="text-2xl font-bold">8</p>
-              </div>
-              <Mail className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Favoris</p>
-                <p className="text-2xl font-bold">12</p>
-              </div>
-              <Star className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Archives</p>
-                <p className="text-2xl font-bold">234</p>
-              </div>
-              <Archive className="h-8 w-8 text-gray-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <MessagesStats unread={5} today={8} starred={12} archived={234} />
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Liste des messages */}
-        <Card className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Liste des messages */}
+          <Card className="lg:col-span-1 rounded-xl backdrop-blur-xl bg-card/80 border border-border shadow-xl">
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="flex-1 relative">
@@ -174,8 +153,8 @@ export default function ProfessionalMessages() {
           </CardContent>
         </Card>
 
-        {/* Détail du message */}
-        <Card className="lg:col-span-2">
+          {/* Détail du message */}
+          <Card className="lg:col-span-2 rounded-xl backdrop-blur-xl bg-card/80 border border-border shadow-xl">
           {selectedMessage ? (
             <>
               <CardHeader>
@@ -245,7 +224,8 @@ export default function ProfessionalMessages() {
             </CardContent>
           )}
         </Card>
+        </div>
       </div>
-    </div>
+    </PatientDashboardLayout>
   );
 }
