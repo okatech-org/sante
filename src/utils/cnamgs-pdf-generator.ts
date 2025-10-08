@@ -340,11 +340,11 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // BLOC COORDONNÉES À GAUCHE - plus compact (déplacé de 1cm vers le bas)
+  // BLOC COORDONNÉES À GAUCHE - plus compact (ajusté de 0,5cm vers le haut)
   const contactW = 75;
   const contactH = 22;
   const contactX = MARGIN;
-  const contactY = 14; // +10mm = ~1cm vers le bas
+  const contactY = 9; // Ajusté vers le haut
   
   // Bloc gris clair pour les coordonnées
   doc.setFillColor(248, 249, 250); // muted background
