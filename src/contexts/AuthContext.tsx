@@ -30,53 +30,79 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let isMounted = true;
+
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        if (!isMounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer role fetching with setTimeout
+        // Fetch roles if user exists
         if (session?.user) {
-          setTimeout(async () => {
-            try {
-              const roles = await authService.getUserRoles(session.user.id);
+          try {
+            const roles = await authService.getUserRoles(session.user.id);
+            if (isMounted) {
               setUserRoles(roles);
-            } catch (error) {
-              console.error('Error fetching user roles:', error);
+            }
+          } catch (error) {
+            console.error('Error fetching user roles:', error);
+            if (isMounted) {
               setUserRoles([]);
             }
-          }, 0);
+          }
         } else {
           setUserRoles([]);
         }
         
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        setTimeout(async () => {
+    // Check for existing session
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!isMounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
           try {
             const roles = await authService.getUserRoles(session.user.id);
-            setUserRoles(roles);
+            if (isMounted) {
+              setUserRoles(roles);
+            }
           } catch (error) {
             console.error('Error fetching user roles:', error);
-            setUserRoles([]);
+            if (isMounted) {
+              setUserRoles([]);
+            }
           }
+        } else {
+          setUserRoles([]);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        if (isMounted) {
           setIsLoading(false);
-        }, 0);
-      } else {
-        setIsLoading(false);
+        }
       }
-    });
+    };
 
-    return () => subscription.unsubscribe();
+    initializeAuth();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const hasRole = (role: AppRole) => userRoles.includes(role);
