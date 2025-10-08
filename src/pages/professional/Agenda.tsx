@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { Calendar, Clock, Video, Home, MapPin, Plus, Search, Filter } from "lucide-react";
+import { Calendar, Clock, Video, Users, DollarSign, Stethoscope, Camera, ChevronRight, Home, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { AppointmentModal } from "@/components/professional/AppointmentModal";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProfessionalAgenda() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const { user } = useAuth();
 
   const appointments = [
     {
@@ -68,154 +67,173 @@ export default function ProfessionalAgenda() {
     }
   };
 
+  const fullName = (user?.user_metadata as any)?.full_name || 'Dr. Pierre KOMBILA';
+  const profession = (user?.user_metadata as any)?.profession || 'Médecin';
+  const specialty = (user?.user_metadata as any)?.specialty || 'Cardiologie';
+  const orderNumber = (user?.user_metadata as any)?.order_number || 'Non renseigné';
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Agenda & Rendez-vous</h1>
-          <p className="text-muted-foreground">Gérez vos consultations quotidiennes</p>
+    <PatientDashboardLayout>
+      <div className="space-y-6">
+        {/* Header Card avec profil médecin */}
+        <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+          <div className="p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center gap-6">
+                <div className="relative group">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center text-4xl font-bold text-foreground border-4 border-primary/50 shadow-lg">
+                    {fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
+                  </div>
+                  <button className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                    <Camera className="w-5 h-5 text-white" />
+                  </button>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground mb-2">{fullName.toUpperCase()}</h1>
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-2">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Profession</p>
+                      <p className="text-lg font-semibold text-foreground">{profession}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Spécialité</p>
+                      <p className="text-lg font-semibold text-foreground">{specialty}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <p className="text-sm text-muted-foreground">Numéro d'ordre</p>
+                    <p className="text-lg font-semibold text-foreground">{orderNumber}</p>
+                  </div>
+                </div>
+              </div>
+              <Button variant="outline" className="rounded-xl">
+                Modifier
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Statistiques */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 flex items-center justify-center">
+              <Users className="w-7 h-7 text-cyan-500" />
+            </div>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Patients</p>
+            <p className="text-3xl font-bold text-foreground mb-1">89</p>
+            <p className="text-xs text-muted-foreground">Ce mois</p>
+          </div>
+
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center">
+              <Stethoscope className="w-7 h-7 text-blue-500" />
+            </div>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Consultations</p>
+            <p className="text-3xl font-bold text-foreground mb-1">156</p>
+            <p className="text-xs text-muted-foreground">Ce mois</p>
+          </div>
+
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center">
+              <Video className="w-7 h-7 text-orange-500" />
+            </div>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Téléconsultations</p>
+            <p className="text-3xl font-bold text-foreground mb-1">24</p>
+            <p className="text-xs text-muted-foreground">Ce mois</p>
+          </div>
+
+          <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
+            <div className="w-14 h-14 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-pink-500/20 to-pink-600/20 flex items-center justify-center">
+              <DollarSign className="w-7 h-7 text-pink-500" />
+            </div>
+            <p className="text-xs mb-2 text-muted-foreground font-medium">Revenus</p>
+            <p className="text-3xl font-bold text-foreground mb-1">2.5M</p>
+            <p className="text-xs text-muted-foreground">Ce mois</p>
+          </div>
         </div>
-        <Button onClick={() => setShowAppointmentModal(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouveau RDV
-        </Button>
-      </div>
 
-      {/* Stats rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
+        {/* Actions rapides */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="group rounded-2xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/40 border border-border/30 hover:bg-card/60 shadow-xl">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Aujourd'hui</p>
-                <p className="text-2xl font-bold">12</p>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-cyan-600/20">
+                  <Calendar className="w-8 h-8 text-cyan-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Mon Agenda</h3>
+                  <span className="inline-block px-4 py-1.5 text-sm rounded-full bg-pink-500/20 text-pink-500 border border-pink-500/30 font-medium">
+                    8 RDV aujourd'hui
+                  </span>
+                </div>
               </div>
-              <Calendar className="h-8 w-8 text-primary" />
+              <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">En attente</p>
-                <p className="text-2xl font-bold text-yellow-500">3</p>
-              </div>
-              <Clock className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Téléconsultations</p>
-                <p className="text-2xl font-bold text-blue-500">5</p>
-              </div>
-              <Video className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Taux remplissage</p>
-                <p className="text-2xl font-bold text-green-500">85%</p>
-              </div>
-              <MapPin className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calendrier */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Calendrier</CardTitle>
-            <CardDescription>Sélectionnez une date</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CalendarComponent
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
-              className="rounded-md border"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Liste des RDV */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
+          <div className="group rounded-2xl backdrop-blur-xl p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/40 border border-border/30 hover:bg-card/60 shadow-xl">
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Rendez-vous du jour</CardTitle>
-                <CardDescription>
-                  {selectedDate.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </CardDescription>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-500/20 to-cyan-600/20">
+                  <Users className="w-8 h-8 text-cyan-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Mes Patients</h3>
+                  <span className="inline-block px-4 py-1.5 text-sm rounded-full bg-pink-500/20 text-pink-500 border border-pink-500/30 font-medium">
+                    89 patients actifs
+                  </span>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon">
-                  <Search className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Filter className="h-4 w-4" />
-                </Button>
-              </div>
+              <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="all">
-              <TabsList className="mb-4">
-                <TabsTrigger value="all">Tous</TabsTrigger>
-                <TabsTrigger value="cabinet">Cabinet</TabsTrigger>
-                <TabsTrigger value="teleconsultation">Téléconsultation</TabsTrigger>
-                <TabsTrigger value="domicile">Domicile</TabsTrigger>
-              </TabsList>
+          </div>
+        </div>
 
-              <TabsContent value="all" className="space-y-3">
-                {appointments.map((apt) => (
-                  <Card key={apt.id} className="hover:bg-muted/50 transition-colors cursor-pointer">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex gap-4 flex-1">
-                          <div className="flex flex-col items-center justify-center min-w-[60px]">
-                            <Clock className="h-4 w-4 text-muted-foreground mb-1" />
-                            <span className="font-semibold text-sm">{apt.time}</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-semibold">{apt.patient}</h4>
-                              <Badge variant="outline" className="flex items-center gap-1">
-                                {getTypeIcon(apt.type)}
-                                <span className="capitalize">{apt.type}</span>
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">{apt.reason}</p>
-                            {apt.cnamgs && (
-                              <p className="text-xs text-muted-foreground">CNAMGS: {apt.cnamgs}</p>
-                            )}
-                          </div>
-                        </div>
-                        <Badge className={getStatusColor(apt.status)}>
-                          {apt.status}
-                        </Badge>
+        {/* Prochains Rendez-vous */}
+        <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Prochains Rendez-vous</h2>
+            <div className="space-y-4">
+              {appointments.map((apt) => (
+                <div 
+                  key={apt.id} 
+                  className="rounded-2xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 hover:bg-card/80 transition-all cursor-pointer hover:scale-[1.01] shadow-lg"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex gap-4 flex-1">
+                      <div className="flex flex-col items-center justify-center min-w-[70px] rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 p-3">
+                        <Clock className="h-5 w-5 text-primary mb-1" />
+                        <span className="font-bold text-sm text-foreground">{apt.time}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </TabsContent>
-            </Tabs>
-          </CardContent>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold text-foreground text-lg">{apt.patient}</h4>
+                          <Badge variant="outline" className="flex items-center gap-1 rounded-full">
+                            {getTypeIcon(apt.type)}
+                            <span className="capitalize text-xs">{apt.type}</span>
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{apt.reason}</p>
+                        {apt.cnamgs && (
+                          <p className="text-xs text-muted-foreground font-mono">CNAMGS: {apt.cnamgs}</p>
+                        )}
+                      </div>
+                    </div>
+                    <Badge className={`${getStatusColor(apt.status)} rounded-full px-4`}>
+                      {apt.status}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </Card>
-      </div>
 
-      <AppointmentModal 
-        open={showAppointmentModal} 
-        onOpenChange={setShowAppointmentModal}
-      />
-    </div>
+        <AppointmentModal 
+          open={showAppointmentModal} 
+          onOpenChange={setShowAppointmentModal}
+        />
+      </div>
+    </PatientDashboardLayout>
   );
 }
