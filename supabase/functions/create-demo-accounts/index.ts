@@ -279,19 +279,69 @@ serve(async (req) => {
 
         if (roleError) {
           console.error(`Error adding role for ${account.email}:`, roleError)
-          results.push({
-            email: account.email,
-            status: 'user_created_role_error',
-            userId: userData.user.id,
-            error: roleError.message
-          })
-        } else {
-          results.push({
-            email: account.email,
-            status: 'created',
-            userId: userData.user.id
-          })
         }
+
+        // Create professional profile for health professionals
+        if (['doctor', 'specialist'].includes(account.role)) {
+          const { data: professional, error: professionalError } = await supabaseAdmin
+            .from('professionals')
+            .insert({
+              user_id: userData.user.id,
+              full_name: account.fullName,
+              email: account.email,
+              phone: account.phone,
+              professional_type: account.role === 'doctor' ? 'medecin_generaliste' : 'medecin_specialiste',
+              gender: 'homme',
+              title: 'docteur',
+              birth_date: '1980-05-15',
+              nationality: 'Gabonaise',
+              numero_ordre: account.role === 'doctor' ? '241-MG-2015-001' : '241-CAR-2020-001',
+              status: 'actif',
+              verified: true,
+              documents_verified: true,
+              verification_date: new Date().toISOString()
+            })
+            .select()
+            .single()
+
+          if (!professionalError && professional) {
+            // Add practice location
+            await supabaseAdmin
+              .from('practice_locations')
+              .insert({
+                professional_id: professional.id,
+                name: account.role === 'doctor' ? 'Cabinet Médical du Centre' : 'Centre de Cardiologie',
+                location_type: 'cabinet_prive',
+                address: 'Avenue du Président Léon MBA',
+                city: 'Libreville',
+                province: 'Estuaire',
+                quartier: 'Centre-ville',
+                is_primary: true
+              })
+
+            // Add diploma
+            await supabaseAdmin
+              .from('professional_diplomas')
+              .insert({
+                professional_id: professional.id,
+                title: account.role === 'doctor' ? 'Doctorat en Médecine' : 'Spécialisation en Cardiologie',
+                institution: 'Université des Sciences de la Santé',
+                year_obtained: account.role === 'doctor' ? 2015 : 2020,
+                country: 'Gabon',
+                specialty: account.role === 'specialist' ? 'Cardiologie' : null,
+                verified: true,
+                verification_status: 'verified'
+              })
+
+            console.log(`Professional profile created for ${account.email}`)
+          }
+        }
+
+        results.push({
+          email: account.email,
+          status: 'created',
+          userId: userData.user.id
+        })
       }
     }
 

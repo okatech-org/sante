@@ -5,3 +5,9 @@ verify_jwt = true
 
 [functions.create-demo-accounts]
 verify_jwt = true
+
+[functions.create-demo-messages]
+verify_jwt = true
+
+[functions.create-demo-professional-data]
+verify_jwt = true

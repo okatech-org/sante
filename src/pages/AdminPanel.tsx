@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Shield, UserPlus, Trash2, Users } from "lucide-react";
+import { Shield, UserPlus, Trash2, Users, Database as DatabaseIcon, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
 type AppRole = Database['public']['Enums']['app_role'];
@@ -66,6 +66,8 @@ export default function AdminPanel() {
   const [isLoading, setIsLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [newAdminRole, setNewAdminRole] = useState<AppRole>("admin");
+  const [creatingDemoAccounts, setCreatingDemoAccounts] = useState(false);
+  const [creatingDemoProfessionalData, setCreatingDemoProfessionalData] = useState(false);
 
   const isSuperAdmin = hasRole("super_admin");
 
@@ -174,6 +176,48 @@ export default function AdminPanel() {
     }
   };
 
+  const handleCreateDemoAccounts = async () => {
+    setCreatingDemoAccounts(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-demo-accounts', {
+        body: {}
+      });
+
+      if (error) throw error;
+
+      toast.success("Comptes démo créés avec succès!", {
+        description: `${data.results.length} comptes traités`
+      });
+      
+      loadUsers();
+    } catch (error: any) {
+      console.error('Error creating demo accounts:', error);
+      toast.error("Erreur lors de la création des comptes démo");
+    } finally {
+      setCreatingDemoAccounts(false);
+    }
+  };
+
+  const handleCreateDemoProfessionalData = async () => {
+    setCreatingDemoProfessionalData(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-demo-professional-data', {
+        body: {}
+      });
+
+      if (error) throw error;
+
+      toast.success("Données professionnelles démo créées!", {
+        description: "Conventions, vérifications, téléconsultations et prescriptions ajoutées"
+      });
+    } catch (error: any) {
+      console.error('Error creating demo professional data:', error);
+      toast.error("Erreur lors de la création des données professionnelles");
+    } finally {
+      setCreatingDemoProfessionalData(false);
+    }
+  };
+
   if (!isSuperAdmin) {
     return (
       <SuperAdminLayout>
@@ -205,6 +249,54 @@ export default function AdminPanel() {
             </h1>
             <p className="text-muted-foreground mt-1">Gestion complète du système SANTE.GA</p>
           </div>
+        </div>
+
+        {/* Comptes et données démo */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DatabaseIcon className="h-5 w-5" />
+                Comptes démo
+              </CardTitle>
+              <CardDescription>
+                Créer tous les comptes de démonstration du système
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={handleCreateDemoAccounts} 
+                disabled={creatingDemoAccounts}
+                className="w-full"
+              >
+                <Users className="mr-2 h-4 w-4" />
+                {creatingDemoAccounts ? "Création en cours..." : "Créer les comptes démo"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Stethoscope className="h-5 w-5" />
+                Données professionnelles
+              </CardTitle>
+              <CardDescription>
+                Générer les données démo pour les professionnels de santé
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={handleCreateDemoProfessionalData} 
+                disabled={creatingDemoProfessionalData}
+                className="w-full"
+                variant="secondary"
+              >
+                <Stethoscope className="mr-2 h-4 w-4" />
+                {creatingDemoProfessionalData ? "Création en cours..." : "Générer les données pro"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Ajouter un admin */}
