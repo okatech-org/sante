@@ -379,63 +379,63 @@ export default function Profile() {
                               </Select>
                             </div>
 
-                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-2">
-                              <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                <User className="h-3 w-3 flex-shrink-0" />
+                            <div className="space-y-1 w-full h-full flex flex-col col-span-2">
+                              <Label htmlFor="last_name" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
+                                <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                                 Nom *
                               </Label>
                               <Input
                                 id="last_name"
                                 {...register("last_name")}
                                 placeholder="Votre nom"
-                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                                className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                               {errors.last_name && (
-                                <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
+                                <p className="text-[9px] sm:text-[10px] text-destructive animate-in slide-in-from-top-1">{errors.last_name.message}</p>
                               )}
                             </div>
                           </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="first_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                              <User className="h-3 w-3 flex-shrink-0" />
+                          <div className="space-y-1">
+                            <Label htmlFor="first_name" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
+                              <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                               Prénom *
                             </Label>
                             <Input
                               id="first_name"
                               {...register("first_name")}
                               placeholder="Votre prénom"
-                              className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             />
                             {errors.first_name && (
-                              <p className="text-[10px] text-red-400">{errors.first_name.message}</p>
+                              <p className="text-[9px] sm:text-[10px] text-destructive animate-in slide-in-from-top-1">{errors.first_name.message}</p>
                             )}
                           </div>
 
                           <div className="grid grid-cols-2 gap-2 items-stretch">
-                            <div className="space-y-1.5 w-full h-full flex flex-col">
-                              <Label htmlFor="birth_date" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                <Calendar className="h-3 w-3 flex-shrink-0" />
+                            <div className="space-y-1 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_date" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
+                                <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                                 Date de naissance
                               </Label>
                               <Input
                                 id="birth_date"
                                 type="date"
                                 {...register("birth_date")}
-                                className="bg-muted border-border text-foreground h-8 text-xs w-full"
+                                className="bg-muted/50 border-border text-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                             </div>
 
-                            <div className="space-y-1.5 w-full h-full flex flex-col">
-                              <Label htmlFor="birth_place" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                            <div className="space-y-1 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_place" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
+                                <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
                                 Lieu de naissance
                               </Label>
                               <Input
                                 id="birth_place"
                                 {...register("birth_place")}
-                                placeholder="Selon attestation CNAMGS"
-                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                                placeholder="Selon attestation"
+                                className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                             </div>
                           </div>
@@ -852,85 +852,103 @@ export default function Profile() {
                       </Select>
                     </div>
 
-                    <div className="p-2.5 sm:p-3 bg-muted rounded-lg hover:bg-accent/50 transition-colors">
+                    <div className="p-2.5 sm:p-3 bg-muted/50 rounded-lg hover:bg-accent/30 transition-all duration-300 group">
                       <div className="flex items-center gap-2 mb-2">
-                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
+                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0 group-hover:scale-110 transition-transform" />
                         <h3 className="font-semibold text-foreground text-xs sm:text-sm">Thème de l'interface</h3>
                       </div>
                       <p className="text-[10px] sm:text-xs text-muted-foreground mb-3">Choisissez l'apparence qui vous convient</p>
                       
-                      {/* Aperçu visuel des thèmes en mode mobile */}
+                      {/* Aperçu visuel des thèmes - Optimisé tactile */}
                       <div className="grid grid-cols-3 gap-2 mb-3">
                         <button
+                          type="button"
                           onClick={() => updatePreferences({ theme: 'light' })}
-                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                          className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 touch-manipulation active:scale-95 group/theme ${
                             preferences.theme === 'light' 
-                              ? 'border-primary bg-primary/10 shadow-md' 
-                              : 'border-border hover:border-primary/50'
+                              ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20 scale-105' 
+                              : 'border-border hover:border-primary/50 hover:shadow-md'
                           }`}
                         >
-                          <div className="flex flex-col items-center gap-1.5">
-                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-white to-gray-100 border border-gray-300 flex items-center justify-center">
-                              <Sun className="w-4 h-4 text-yellow-500" />
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-amber-50 to-orange-100 border border-amber-200 flex items-center justify-center shadow-inner group-hover/theme:scale-110 transition-transform">
+                              <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 animate-in spin-in-180 duration-500" />
                             </div>
-                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Clair</span>
+                            <span className="text-[10px] sm:text-xs font-medium text-foreground">Clair</span>
                           </div>
                           {preferences.theme === 'light' && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
+                              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground" strokeWidth={3} />
                             </div>
                           )}
                         </button>
 
                         <button
+                          type="button"
                           onClick={() => updatePreferences({ theme: 'dark' })}
-                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                          className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 touch-manipulation active:scale-95 group/theme ${
                             preferences.theme === 'dark' 
-                              ? 'border-primary bg-primary/10 shadow-md' 
-                              : 'border-border hover:border-primary/50'
+                              ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20 scale-105' 
+                              : 'border-border hover:border-primary/50 hover:shadow-md'
                           }`}
                         >
-                          <div className="flex flex-col items-center gap-1.5">
-                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 flex items-center justify-center">
-                              <Moon className="w-4 h-4 text-blue-400" />
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-inner group-hover/theme:scale-110 transition-transform">
+                              <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 animate-in spin-in-180 duration-500" />
                             </div>
-                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Sombre</span>
+                            <span className="text-[10px] sm:text-xs font-medium text-foreground">Sombre</span>
                           </div>
                           {preferences.theme === 'dark' && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
+                              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground" strokeWidth={3} />
                             </div>
                           )}
                         </button>
 
                         <button
+                          type="button"
                           onClick={() => updatePreferences({ theme: 'system' })}
-                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                          className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 touch-manipulation active:scale-95 group/theme ${
                             preferences.theme === 'system' 
-                              ? 'border-primary bg-primary/10 shadow-md' 
-                              : 'border-border hover:border-primary/50'
+                              ? 'border-primary bg-primary/10 shadow-lg shadow-primary/20 scale-105' 
+                              : 'border-border hover:border-primary/50 hover:shadow-md'
                           }`}
                         >
-                          <div className="flex flex-col items-center gap-1.5">
-                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 border border-gray-400 flex items-center justify-center">
-                              <Palette className="w-4 h-4 text-white" />
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-slate-200 via-slate-400 to-slate-600 border border-slate-400 flex items-center justify-center shadow-inner group-hover/theme:scale-110 transition-transform">
+                              <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-white drop-shadow-md animate-in spin-in-180 duration-500" />
                             </div>
-                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Auto</span>
+                            <span className="text-[10px] sm:text-xs font-medium text-foreground text-center leading-tight">Auto</span>
                           </div>
                           {preferences.theme === 'system' && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary flex items-center justify-center shadow-lg animate-in zoom-in duration-200">
+                              <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground" strokeWidth={3} />
                             </div>
                           )}
                         </button>
                       </div>
 
-                      {/* Description du thème actif */}
-                      <div className="p-2 bg-muted/50 rounded-md">
-                        <p className="text-[9px] sm:text-[10px] text-muted-foreground text-center">
-                          {preferences.theme === 'light' && '☀️ Interface lumineuse adaptée aux environnements bien éclairés'}
-                          {preferences.theme === 'dark' && '🌙 Interface sombre pour réduire la fatigue oculaire'}
-                          {preferences.theme === 'system' && '💻 S\'adapte automatiquement aux préférences de votre appareil'}
+                      {/* Description animée du thème actif */}
+                      <div className="p-2.5 bg-primary/5 border border-primary/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <p className="text-[10px] sm:text-xs text-foreground text-center leading-relaxed">
+                          {preferences.theme === 'light' && (
+                            <span className="flex items-center justify-center gap-1.5">
+                              <Sun className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                              Interface lumineuse pour environnements bien éclairés
+                            </span>
+                          )}
+                          {preferences.theme === 'dark' && (
+                            <span className="flex items-center justify-center gap-1.5">
+                              <Moon className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                              Interface sombre pour réduire la fatigue oculaire
+                            </span>
+                          )}
+                          {preferences.theme === 'system' && (
+                            <span className="flex items-center justify-center gap-1.5">
+                              <Palette className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                              S'adapte aux préférences de votre appareil
+                            </span>
+                          )}
                         </p>
                       </div>
                     </div>
