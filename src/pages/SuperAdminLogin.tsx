@@ -23,17 +23,26 @@ export default function SuperAdminLogin() {
 
     try {
       await authService.signIn(email, password);
-
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue",
-      });
       
-      // Rediriger vers le dashboard approprié selon l'email
-      if (email === "superadmin@sante.ga") {
-        navigate("/dashboard/superadmin");
-      } else {
-        navigate("/dashboard/admin");
+      // Récupérer l'utilisateur et ses rôles
+      const user = await authService.getCurrentUser();
+      
+      if (user) {
+        const roles = await authService.getUserRoles(user.id);
+        
+        toast({
+          title: "Connexion réussie",
+          description: "Bienvenue",
+        });
+        
+        // Rediriger vers le dashboard approprié selon le rôle
+        if (roles.includes('super_admin')) {
+          navigate("/dashboard/superadmin");
+        } else if (roles.includes('admin')) {
+          navigate("/dashboard/admin");
+        } else {
+          navigate("/dashboard/patient");
+        }
       }
     } catch (error: any) {
       toast({
