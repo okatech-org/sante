@@ -120,9 +120,9 @@ export default function Teleconsultation() {
                   {videoEnabled ? (
                     <div className="w-full h-full bg-gradient-to-br from-card to-background flex items-center justify-center">
                       <div className="text-center space-y-4">
-                        <Avatar className="h-32 w-32 mx-auto ring-4 ring-cyan-500/20">
+                        <Avatar className="h-32 w-32 mx-auto ring-4 ring-primary/20">
                           <AvatarImage src={selectedDoctor.avatar} />
-                          <AvatarFallback className="text-4xl bg-cyan-100 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400">
+                          <AvatarFallback className="text-4xl bg-primary/10 text-primary">
                             {selectedDoctor.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -144,7 +144,7 @@ export default function Teleconsultation() {
                       <Clock className="h-3 w-3 mr-2" />
                       <span className="font-mono">00:05:23</span>
                     </Badge>
-                    <Badge className="backdrop-blur-xl bg-cyan-100 dark:bg-cyan-950/30 px-4 py-2 text-cyan-700 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800">
+                    <Badge className="backdrop-blur-xl bg-success/10 px-4 py-2 text-success border-success/20">
                       <CheckCircle2 className="h-3 w-3 mr-2" />
                       En ligne
                     </Badge>
@@ -157,11 +157,11 @@ export default function Teleconsultation() {
           {/* Self Video - Picture in Picture */}
           <div className="absolute bottom-24 right-4 w-48 h-36 lg:w-64 lg:h-48">
             <div className="h-full rounded-xl backdrop-blur-xl bg-card/95 border border-border overflow-hidden">
-              <div className="h-full flex items-center justify-center bg-gradient-to-br from-cyan-50 dark:from-cyan-950/10 to-blue-50 dark:to-blue-950/10">
+              <div className="h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5">
                 {videoEnabled ? (
                   <div className="text-center">
-                    <Avatar className="h-16 w-16 mx-auto ring-2 ring-cyan-500/20">
-                      <AvatarFallback className="text-xl bg-cyan-500 dark:bg-cyan-600 text-white">VU</AvatarFallback>
+                    <Avatar className="h-16 w-16 mx-auto ring-2 ring-primary/20">
+                      <AvatarFallback className="text-xl bg-primary text-primary-foreground">VU</AvatarFallback>
                     </Avatar>
                     <p className="text-xs text-muted-foreground mt-2">Vous</p>
                   </div>
@@ -213,7 +213,7 @@ export default function Teleconsultation() {
             <Button
               size="lg"
               onClick={endConsultation}
-              className="rounded-full h-16 w-16 ml-4 bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700"
+              className="rounded-full h-16 w-16 ml-4 bg-destructive hover:bg-destructive/90"
             >
               <Phone className="h-6 w-6" />
             </Button>
@@ -240,24 +240,24 @@ export default function Teleconsultation() {
         <div className="rounded-xl bg-card border border-border shadow-sm p-4 sm:p-6 mb-6">
           <div className="grid grid-cols-3 gap-3 sm:gap-4">
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 flex items-center justify-center mb-2">
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-cyan-600 dark:text-cyan-400" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
               <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">24</p>
               <p className="text-[10px] sm:text-sm text-muted-foreground">Médecins disponibles</p>
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-blue-100 dark:bg-blue-950/30 flex items-center justify-center mb-2">
-                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-2">
+                <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
               </div>
               <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">~5 min</p>
               <p className="text-[10px] sm:text-sm text-muted-foreground">Temps d'attente moyen</p>
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-amber-100 dark:bg-amber-950/30 flex items-center justify-center mb-2">
-                <Video className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 dark:text-amber-400" />
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-warning/10 flex items-center justify-center mb-2">
+                <Video className="h-5 w-5 sm:h-6 sm:w-6 text-warning" />
               </div>
               <p className="text-xl sm:text-3xl font-bold text-foreground mb-1">3</p>
               <p className="text-[10px] sm:text-sm text-muted-foreground">Consultations ce mois</p>
@@ -286,9 +286,9 @@ export default function Teleconsultation() {
               {mockAvailableDoctors.map((doctor) => (
                 <div key={doctor.id} className="rounded-xl bg-card border border-border hover:shadow-md transition-all p-6">
                   <div className="flex items-start gap-4 mb-4">
-                    <Avatar className="h-16 w-16 ring-2 ring-cyan-200 dark:ring-cyan-800">
+                    <Avatar className="h-16 w-16 ring-2 ring-primary/20">
                       <AvatarImage src={doctor.avatar} />
-                      <AvatarFallback className="text-xl bg-cyan-100 dark:bg-cyan-950/30 text-cyan-600 dark:text-cyan-400">
+                      <AvatarFallback className="text-xl bg-primary/10 text-primary">
                         {doctor.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
@@ -305,12 +305,12 @@ export default function Teleconsultation() {
                           variant={doctor.available ? "default" : "secondary"}
                           className={cn(
                             "gap-1",
-                            doctor.available ? "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800" : "bg-muted text-muted-foreground"
+                            doctor.available ? "bg-success/10 text-success border-success/20" : "bg-muted text-muted-foreground"
                           )}
                         >
                           <div className={cn(
                             "h-2 w-2 rounded-full",
-                            doctor.available ? "bg-cyan-600 dark:bg-cyan-400 animate-pulse" : "bg-muted-foreground"
+                            doctor.available ? "bg-success animate-pulse" : "bg-muted-foreground"
                           )} />
                           {doctor.available ? "Disponible" : "Occupé"}
                         </Badge>
@@ -322,7 +322,7 @@ export default function Teleconsultation() {
                             className={cn(
                               "h-4 w-4",
                               i < Math.floor(doctor.rating) 
-                                ? "fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400" 
+                                ? "fill-warning text-warning" 
                                 : "text-muted"
                             )}
                           />
@@ -364,8 +364,8 @@ export default function Teleconsultation() {
               <div key={consultation.id} className="rounded-xl bg-card border border-border hover:shadow-md transition-all p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="h-12 w-12 rounded-xl bg-cyan-100 dark:bg-cyan-950/30 flex items-center justify-center">
-                      <Video className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Video className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -373,8 +373,8 @@ export default function Teleconsultation() {
                         <Badge 
                           className={cn(
                             consultation.status === "confirmed" 
-                              ? "bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-950/30 dark:text-cyan-400 dark:border-cyan-800" 
-                              : "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800"
+                              ? "bg-success/10 text-success border-success/20" 
+                              : "bg-warning/10 text-warning border-warning/20"
                           )}
                         >
                           {consultation.status === "confirmed" ? (
