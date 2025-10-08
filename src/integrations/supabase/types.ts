@@ -74,6 +74,89 @@ export type Database = {
           },
         ]
       }
+      cnamgs_verifications: {
+        Row: {
+          cnamgs_number: string
+          created_at: string | null
+          fund: string
+          id: string
+          updated_at: string | null
+          user_id: string
+          verification_notes: string | null
+          verification_status: string
+          verified_at: string | null
+        }
+        Insert: {
+          cnamgs_number: string
+          created_at?: string | null
+          fund: string
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          cnamgs_number?: string
+          created_at?: string | null
+          fund?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      cnom_verifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          inscription_date: string | null
+          numero_ordre: string
+          professional_id: string
+          specialty: string | null
+          updated_at: string | null
+          verification_notes: string | null
+          verification_status: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inscription_date?: string | null
+          numero_ordre: string
+          professional_id: string
+          specialty?: string | null
+          updated_at?: string | null
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inscription_date?: string | null
+          numero_ordre?: string
+          professional_id?: string
+          specialty?: string | null
+          updated_at?: string | null
+          verification_notes?: string | null
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cnom_verifications_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consultations: {
         Row: {
           consultation_date: string

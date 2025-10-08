@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus, Link2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,6 +64,7 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
     { icon: TrendingUp, label: "Statistiques", href: "/professional/stats" },
     { icon: Mail, label: "Messages", href: "/professional/messages", badge: 5 },
     { icon: Stethoscope, label: "Télé-expertise", href: "/professional/tele-expertise" },
+    { icon: Link2, label: "Intégrations", href: "/professional/integrations" },
     { icon: Settings, label: "Paramètres", href: "/professional/settings" },
   ];
   
