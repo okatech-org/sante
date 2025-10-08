@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop, Users, ClipboardList, DollarSign, TrendingUp, Mail } from "lucide-react";
 import { useState, ReactNode, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -19,13 +19,14 @@ interface PatientDashboardLayoutProps {
 }
 
 export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps) {
-  const { user, isSuperAdmin } = useAuth();
+  const { user, isSuperAdmin, userRoles } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState('fr');
   
+  const isProfessional = userRoles.includes('doctor') || userRoles.includes('medical_staff');
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
 
   // Charger les préférences depuis la base de données
@@ -112,7 +113,22 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088', badge: undefined }
   ];
 
-  const menuItems = isSuperAdmin ? superAdminMenuItems : patientMenuItems;
+  // Menu items pour professionnels de santé
+  const professionalMenuItems = [
+    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/professional', color: '#00d4ff', badge: undefined },
+    { id: 'agenda', label: 'Agenda & RDV', icon: Calendar, path: '/professional/agenda', color: '#0088ff', badge: '8' },
+    { id: 'patients', label: 'Mes patients', icon: Users, path: '/professional/patients', color: '#00d4ff', badge: undefined },
+    { id: 'teleconsultations', label: 'Téléconsultations', icon: Video, path: '/professional/teleconsultations', color: '#ffaa00', badge: undefined },
+    { id: 'consultations', label: 'Consultations', icon: ClipboardList, path: '/professional/consultations', color: '#ff0088', badge: undefined },
+    { id: 'prescriptions', label: 'Prescriptions', icon: Pill, path: '/professional/prescriptions', color: '#0088ff', badge: undefined },
+    { id: 'finances', label: 'Finances & CNAMGS', icon: DollarSign, path: '/professional/finances', color: '#00d4ff', badge: undefined },
+    { id: 'stats', label: 'Statistiques', icon: TrendingUp, path: '/professional/stats', color: '#ffaa00', badge: undefined },
+    { id: 'messages', label: 'Messages', icon: Mail, path: '/professional/messages', color: '#ff0088', badge: '5' },
+    { id: 'teleexpertise', label: 'Télé-expertise', icon: Stethoscope, path: '/professional/tele-expertise', color: '#0088ff', badge: undefined },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/professional/settings', color: '#00d4ff', badge: undefined }
+  ];
+
+  const menuItems = isSuperAdmin ? superAdminMenuItems : (isProfessional ? professionalMenuItems : patientMenuItems);
 
   const activeMenu = menuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
 
@@ -288,7 +304,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-sidebar-foreground truncate">
-                      {fullName.split(' ')[0]}
+                      {isProfessional ? 'Dr.' : fullName.split(' ')[0]}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {isSuperAdmin ? 'Super Admin' : 'N° ••••7891'}
@@ -346,8 +362,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">{fullName.split(' ')[0]}</p>
-                          <p className="text-xs text-gray-500">{isSuperAdmin ? 'Super Admin' : 'Patient'}</p>
+                          <p className="text-sm font-semibold text-white truncate">{isProfessional ? 'Dr.' : fullName.split(' ')[0]}</p>
+                          <p className="text-xs text-gray-500">{isSuperAdmin ? 'Super Admin' : (isProfessional ? 'Professionnel' : 'Patient')}</p>
                         </div>
                       </div>
                     </div>
