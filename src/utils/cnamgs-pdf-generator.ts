@@ -830,29 +830,6 @@ export const generateCNAMGSPdf = async (
   doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // TEXTE LÉGAL (bloc rose transparent tout en bas)
-  // ═══════════════════════════════════════════════════════════════════════════
-  
-  const legalY = A4.h - 15;
-  
-  // Bloc rose transparent
-  doc.setFillColor(254, 231, 240); // fond rose très clair (accent/10)
-  doc.roundedRect(MARGIN, legalY, A4.w - 2 * MARGIN, 12, 2, 2, "F");
-  
-  doc.setFillColor(230, 59, 122); // accent rose
-  doc.rect(MARGIN, legalY, 1.2, 12, "F");
-  
-  doc.setFontSize(6.5);
-  doc.setFont("helvetica", "italic");
-  doc.setTextColor(100, 8, 46); // accent darker
-  const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires conventionnés.";
-  const footerNote2 = "Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS. Conformément à la loi, vous disposez d'un droit d'accès";
-  const footerNote3 = "et de rectification des informations vous concernant.";
-  doc.text(footerNote, MARGIN + 3, legalY + 4);
-  doc.text(footerNote2, MARGIN + 3, legalY + 7.5);
-  doc.text(footerNote3, MARGIN + 3, legalY + 11);
-
-  // ═══════════════════════════════════════════════════════════════════════════
   // EXPORT
   // ═══════════════════════════════════════════════════════════════════════════
   if (opts?.downloadFileName) {
