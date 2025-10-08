@@ -1,98 +1,198 @@
-import { MainLayout } from "@/components/layout/MainLayout";
-import { Badge } from "@/components/ui/badge";
-import { Shield, Activity, Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
-import { KPICards } from "@/components/superadmin/KPICards";
-import { SystemHealth } from "@/components/superadmin/SystemHealth";
-import { QuickActions } from "@/components/superadmin/QuickActions";
-import { ProvinceAnalytics } from "@/components/superadmin/ProvinceAnalytics";
-import { RecentActivity } from "@/components/superadmin/RecentActivity";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-
-const periods = [
-  { value: "24h", label: "24h" },
-  { value: "7d", label: "7 jours" },
-  { value: "30d", label: "30 jours" },
-  { value: "90d", label: "90 jours" }
-];
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
+import { AdminStatCard } from "@/components/superadmin/AdminStatCard";
+import { AdminActionCard } from "@/components/superadmin/AdminActionCard";
+import { RecentActivityCard } from "@/components/superadmin/RecentActivityCard";
+import { Users, Building2, UserCog, Activity, Settings, Shield, FileText, AlertCircle, CheckCircle, Clock, UserPlus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SuperAdminDashboard() {
   const { user, isSuperAdmin, isLoading } = useAuth();
-  const [selectedPeriod, setSelectedPeriod] = useState("30d");
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    establishments: 0,
+    professionals: 0,
+    pendingApprovals: 0,
+  });
+
+  // Charger les statistiques
+  useEffect(() => {
+    const loadStats = async () => {
+      // Compter les utilisateurs
+      const { count: usersCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      // Compter les établissements (pharmacies pour l'instant)
+      const { count: establishmentsCount } = await supabase
+        .from('pharmacies')
+        .select('*', { count: 'exact', head: true });
+
+      // Compter les professionnels (users avec role doctor ou medical_staff)
+      const { count: professionalsCount } = await supabase
+        .from('user_roles')
+        .select('*', { count: 'exact', head: true })
+        .in('role', ['doctor', 'medical_staff']);
+
+      // Compter les demandes en attente
+      const { count: pendingCount } = await supabase
+        .from('profile_change_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+      setStats({
+        totalUsers: usersCount || 0,
+        establishments: establishmentsCount || 0,
+        professionals: professionalsCount || 0,
+        pendingApprovals: pendingCount || 0,
+      });
+    };
+
+    if (user?.id) {
+      loadStats();
+    }
+  }, [user?.id]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-muted-foreground">Chargement...</div>
-      </div>
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <p>Chargement...</p>
+        </div>
+      </PatientDashboardLayout>
     );
   }
 
-  if (!isSuperAdmin || user?.email !== "superadmin@sante.ga") {
-    return <Navigate to="/dashboard/admin" replace />;
+  if (!isSuperAdmin) {
+    navigate("/dashboard/admin");
+    return null;
   }
 
   return (
-    <div className="theme-superadmin min-h-screen bg-background">
-      <MainLayout>
-        <div className="flex flex-col space-y-8 p-6">
-          {/* Header avec sélecteur de période */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-border/20">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground flex items-center gap-3 mb-2">
-                <div className="p-3 bg-primary/10 rounded-xl backdrop-blur-lg">
-                  <Shield className="h-8 w-8" />
-                </div>
-                Super Admin Dashboard
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                SANTE.GA - Système National de Santé Numérique • {user?.email}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-2">
-                {periods.map((period) => (
-                  <Button
-                    key={period.value}
-                    variant={selectedPeriod === period.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedPeriod(period.value)}
-                    className="backdrop-blur-lg"
-                  >
-                    <Calendar className="h-3 w-3 mr-1" />
-                    {period.label}
-                  </Button>
-                ))}
-              </div>
-              <Badge variant="outline" className="px-4 py-2 text-sm border-primary/30 justify-center backdrop-blur-lg">
-                <Activity className="h-3 w-3 mr-2" />
-                Système Opérationnel
-              </Badge>
-            </div>
-          </div>
+    <PatientDashboardLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <SuperAdminHeader />
 
-          {/* KPI Cards */}
-          <KPICards />
-
-          {/* System Health + Quick Actions */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <SystemHealth />
-            </div>
-            <div>
-              <QuickActions />
-            </div>
-          </div>
-
-          {/* Analytics par Province */}
-          <ProvinceAnalytics />
-
-          {/* Activité Récente */}
-          <RecentActivity />
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          <AdminActionCard
+            title="Gérer les utilisateurs"
+            description="Voir et gérer tous les utilisateurs"
+            icon={Users}
+            color="#00d4ff"
+            onClick={() => navigate('/admin/users')}
+          />
+          <AdminActionCard
+            title="Paramètres système"
+            description="Configuration du système"
+            icon={Settings}
+            color="#ff0088"
+            onClick={() => navigate('/admin/settings')}
+          />
         </div>
-      </MainLayout>
-    </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <AdminStatCard
+            label="Utilisateurs"
+            value={stats.totalUsers}
+            icon={Users}
+            trend="Total des comptes"
+            color="#00d4ff"
+            onClick={() => navigate('/admin/users')}
+          />
+          <AdminStatCard
+            label="Établissements"
+            value={stats.establishments}
+            icon={Building2}
+            trend="Pharmacies et cliniques"
+            color="#0088ff"
+            onClick={() => navigate('/admin/establishments')}
+          />
+          <AdminStatCard
+            label="Professionnels"
+            value={stats.professionals}
+            icon={UserCog}
+            trend="Médecins et personnel"
+            color="#ffaa00"
+            onClick={() => navigate('/admin/professionals')}
+          />
+          <AdminStatCard
+            label="En attente"
+            value={stats.pendingApprovals}
+            icon={Clock}
+            trend="Demandes à traiter"
+            color="#ff0088"
+            onClick={() => navigate('/admin/approvals')}
+          />
+        </div>
+
+        {/* System Health */}
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <h3 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">État du système</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { label: 'Base de données', status: 'En ligne', icon: Activity, color: '#00d4ff' },
+              { label: 'Authentification', status: 'Actif', icon: Shield, color: '#0088ff' },
+              { label: 'Stockage', status: 'Opérationnel', icon: FileText, color: '#ffaa00' },
+              { label: 'API', status: 'Disponible', icon: CheckCircle, color: '#00ff88' },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="text-center p-3 rounded-lg bg-muted/30">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: `${item.color}20` }}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: item.color }} />
+                  </div>
+                  <p className="text-xs sm:text-sm font-medium text-foreground mb-1">{item.label}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{item.status}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div>
+          <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
+            Activité récente
+          </h3>
+          <div className="space-y-2 sm:space-y-3">
+            <RecentActivityCard
+              time="Il y a 5 min"
+              event="Nouvel utilisateur inscrit"
+              user="patient@example.com"
+              icon={UserPlus}
+              color="#00d4ff"
+            />
+            <RecentActivityCard
+              time="Il y a 15 min"
+              event="Demande d'approbation"
+              user="Dr. Martin Okome"
+              icon={Clock}
+              color="#0088ff"
+            />
+            <RecentActivityCard
+              time="Il y a 1h"
+              event="Modification de profil approuvée"
+              user="Jean Mbadinga"
+              icon={CheckCircle}
+              color="#00ff88"
+            />
+            <RecentActivityCard
+              time="Il y a 2h"
+              event="Alerte système"
+              user="Espace de stockage à 75%"
+              icon={AlertCircle}
+              color="#ff0088"
+            />
+          </div>
+        </div>
+      </div>
+    </PatientDashboardLayout>
   );
 }
