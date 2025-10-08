@@ -309,7 +309,7 @@ export default function Profile() {
                       <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
                       Photo de profil
                     </h2>
-                    <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                    <div className="flex items-start gap-4">
                       <div className="relative flex-shrink-0">
                         <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
                           <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
@@ -325,8 +325,8 @@ export default function Profile() {
                           onAvatarUpdate={setAvatarUrl}
                         />
                       </div>
-                      <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
-                        <div className="mb-0.5">
+                      <div className="flex-1 min-w-0">
+                        <div className="mb-1">
                           <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground truncate">
                             {displayLastName}
                           </h3>
