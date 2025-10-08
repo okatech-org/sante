@@ -275,26 +275,46 @@ export default function AdminDemo() {
           navigate('/demo/specialist');
           break;
         case 'nurse':
+          navigate('/demo/nurse');
+          break;
         case 'midwife':
+          navigate('/demo/midwife');
+          break;
         case 'physiotherapist':
+          navigate('/demo/physiotherapist');
+          break;
         case 'psychologist':
+          navigate('/demo/psychologist');
+          break;
         case 'ophthalmologist':
+          navigate('/demo/ophthalmologist');
+          break;
         case 'anesthesiologist':
-          navigate('/dashboard/professional');
+          navigate('/demo/anesthesiologist');
           break;
         case 'pharmacist':
+          navigate('/demo/pharmacist');
+          break;
         case 'pharmacy':
-          navigate('/dashboard/professional');
+          navigate('/demo/pharmacy');
           break;
         case 'laboratory_technician':
+          navigate('/demo/laboratory');
+          break;
         case 'radiologist':
+          navigate('/demo/radiologist');
+          break;
         case 'radiology_center':
-          navigate('/dashboard/professional');
+          navigate('/demo/radiology-center');
           break;
         case 'admin':
+          navigate('/demo/admin');
+          break;
         case 'hospital_admin':
+          navigate('/demo/hospital');
+          break;
         case 'clinic_admin':
-          navigate('/admin');
+          navigate('/demo/clinic');
           break;
         default:
           navigate('/dashboard/patient');
@@ -371,9 +391,23 @@ export default function AdminDemo() {
                       </div>
                       <div className="text-xs text-muted-foreground">
                         🔗 Dashboard: <span className="font-mono text-primary">
-                          {account.role === 'doctor' ? '/demo/doctor' : 
+                          {account.role === 'patient' ? '/dashboard/patient' :
+                           account.role === 'doctor' ? '/demo/doctor' :
                            account.role === 'specialist' ? '/demo/specialist' :
-                           account.role === 'patient' ? '/dashboard/patient' : 
+                           account.role === 'nurse' ? '/demo/nurse' :
+                           account.role === 'midwife' ? '/demo/midwife' :
+                           account.role === 'physiotherapist' ? '/demo/physiotherapist' :
+                           account.role === 'psychologist' ? '/demo/psychologist' :
+                           account.role === 'ophthalmologist' ? '/demo/ophthalmologist' :
+                           account.role === 'anesthesiologist' ? '/demo/anesthesiologist' :
+                           account.role === 'pharmacist' ? '/demo/pharmacist' :
+                           account.role === 'pharmacy' ? '/demo/pharmacy' :
+                           account.role === 'laboratory_technician' ? '/demo/laboratory' :
+                           account.role === 'radiologist' ? '/demo/radiologist' :
+                           account.role === 'radiology_center' ? '/demo/radiology-center' :
+                           account.role === 'admin' ? '/demo/admin' :
+                           account.role === 'hospital_admin' ? '/demo/hospital' :
+                           account.role === 'clinic_admin' ? '/demo/clinic' :
                            '/dashboard/professional'}
                         </span>
                       </div>
