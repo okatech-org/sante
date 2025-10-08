@@ -782,49 +782,69 @@ export const generateCNAMGSPdf = async (
   doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // PIED DE PAGE
+  // COORDONNÉES CNAMGS (bloc gris clair en haut à gauche)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  const footerY = A4.h - 25;
+  const footerY = A4.h - 30;
+  const contactY = footerY + 3;
+  const contactW = 90;
+  const contactH = 18;
   
-  doc.setFillColor(250, 250, 250); // background très clair
-  doc.rect(0, footerY, A4.w, 25, "F");
-  
+  // Bloc gris clair pour les coordonnées
+  doc.setFillColor(248, 249, 250); // muted background
   doc.setDrawColor(226, 232, 240); // border
-  doc.setLineWidth(0.3);
-  doc.line(0, footerY, A4.w, footerY);
+  doc.setLineWidth(0.15);
+  doc.roundedRect(MARGIN, contactY, contactW, contactH, 2, 2, "FD");
+  
+  let contactTextY = contactY + 5;
   
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground
-  doc.text("CNAMGS - Siège Social :", MARGIN, footerY + 5);
+  doc.text("CNAMGS - Siège Social :", MARGIN + 3, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.text("Libreville, Gabon", MARGIN + 35, footerY + 5);
+  doc.text("Libreville, Gabon", MARGIN + 38, contactTextY);
   
+  contactTextY += 4;
   doc.setFont("helvetica", "bold");
-  doc.text("Téléphone :", MARGIN, footerY + 9);
+  doc.text("Téléphone :", MARGIN + 3, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.text("+241 01 XX XX XX", MARGIN + 20, footerY + 9);
+  doc.text("+241 01 XX XX XX", MARGIN + 22, contactTextY);
   
+  contactTextY += 4;
   doc.setFont("helvetica", "bold");
-  doc.text("Email :", MARGIN + 60, footerY + 9);
+  doc.text("Email :", MARGIN + 3, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.text("contact@cnamgs.ga", MARGIN + 70, footerY + 9);
+  doc.text("contact@cnamgs.ga", MARGIN + 13, contactTextY);
   
+  contactTextY += 4;
   doc.setFont("helvetica", "bold");
-  doc.text("Site web :", MARGIN, footerY + 13);
+  doc.text("Site web :", MARGIN + 3, contactTextY);
   doc.setFont("helvetica", "normal");
-  doc.text("www.cnamgs.ga", MARGIN + 16, footerY + 13);
+  doc.text("www.cnamgs.ga", MARGIN + 18, contactTextY);
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TEXTE LÉGAL (bloc rose transparent tout en bas)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  const legalY = A4.h - 15;
+  
+  // Bloc rose transparent
+  doc.setFillColor(254, 231, 240); // fond rose très clair (accent/10)
+  doc.roundedRect(MARGIN, legalY, A4.w - 2 * MARGIN, 12, 2, 2, "F");
+  
+  doc.setFillColor(230, 59, 122); // accent rose
+  doc.rect(MARGIN, legalY, 1.2, 12, "F");
   
   doc.setFontSize(6.5);
   doc.setFont("helvetica", "italic");
-  doc.setTextColor(102, 112, 133); // muted-foreground
+  doc.setTextColor(100, 8, 46); // accent darker
   const footerNote = "Ce document est une attestation officielle de droits. Il doit être présenté à chaque consultation médicale auprès des prestataires conventionnés.";
   const footerNote2 = "Pour toute réclamation ou vérification, contactez le service assuré de la CNAMGS. Conformément à la loi, vous disposez d'un droit d'accès";
   const footerNote3 = "et de rectification des informations vous concernant.";
-  doc.text(footerNote, MARGIN, footerY + 17);
-  doc.text(footerNote2, MARGIN, footerY + 20);
-  doc.text(footerNote3, MARGIN, footerY + 23);
+  doc.text(footerNote, MARGIN + 3, legalY + 4);
+  doc.text(footerNote2, MARGIN + 3, legalY + 7.5);
+  doc.text(footerNote3, MARGIN + 3, legalY + 11);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // EXPORT
