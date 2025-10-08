@@ -340,11 +340,11 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // BLOC COORDONNÉES À GAUCHE - plus compact (ajusté de 0,1cm vers le haut)
+  // BLOC COORDONNÉES À GAUCHE - aligné avec le logo CNAMGS
   const contactW = 75;
   const contactH = 22;
   const contactX = MARGIN;
-  const contactY = 8; // Ajusté de 0,1cm vers le haut
+  const contactY = 6; // Aligné avec le logo CNAMGS
   
   // Bloc gris clair pour les coordonnées
   doc.setFillColor(248, 249, 250); // muted background
