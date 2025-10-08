@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink, Video } from "lucide-react";
+import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink, Video, Sun, Moon } from "lucide-react";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
@@ -847,23 +847,85 @@ export default function Profile() {
 
                     <div className="p-2.5 sm:p-3 bg-muted rounded-lg hover:bg-accent/50 transition-colors">
                       <div className="flex items-center gap-2 mb-2">
-                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#ff0088] flex-shrink-0" />
+                        <Palette className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary flex-shrink-0" />
                         <h3 className="font-semibold text-foreground text-xs sm:text-sm">Thème de l'interface</h3>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">Choisissez l'apparence qui vous convient</p>
-                      <Select 
-                        value={preferences.theme}
-                        onValueChange={(value) => updatePreferences({ theme: value })}
-                      >
-                        <SelectTrigger className="bg-muted border-border text-foreground h-8 sm:h-9 text-xs sm:text-sm w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="light">☀️ Mode Clair</SelectItem>
-                          <SelectItem value="dark">🌙 Mode Sombre</SelectItem>
-                          <SelectItem value="system">💻 Automatique (Système)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mb-3">Choisissez l'apparence qui vous convient</p>
+                      
+                      {/* Aperçu visuel des thèmes en mode mobile */}
+                      <div className="grid grid-cols-3 gap-2 mb-3">
+                        <button
+                          onClick={() => updatePreferences({ theme: 'light' })}
+                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                            preferences.theme === 'light' 
+                              ? 'border-primary bg-primary/10 shadow-md' 
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center gap-1.5">
+                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-white to-gray-100 border border-gray-300 flex items-center justify-center">
+                              <Sun className="w-4 h-4 text-yellow-500" />
+                            </div>
+                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Clair</span>
+                          </div>
+                          {preferences.theme === 'light' && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            </div>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={() => updatePreferences({ theme: 'dark' })}
+                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                            preferences.theme === 'dark' 
+                              ? 'border-primary bg-primary/10 shadow-md' 
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center gap-1.5">
+                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 flex items-center justify-center">
+                              <Moon className="w-4 h-4 text-blue-400" />
+                            </div>
+                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Sombre</span>
+                          </div>
+                          {preferences.theme === 'dark' && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            </div>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={() => updatePreferences({ theme: 'system' })}
+                          className={`relative p-3 rounded-lg border-2 transition-all ${
+                            preferences.theme === 'system' 
+                              ? 'border-primary bg-primary/10 shadow-md' 
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                        >
+                          <div className="flex flex-col items-center gap-1.5">
+                            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 border border-gray-400 flex items-center justify-center">
+                              <Palette className="w-4 h-4 text-white" />
+                            </div>
+                            <span className="text-[9px] sm:text-[10px] font-medium text-foreground">Auto</span>
+                          </div>
+                          {preferences.theme === 'system' && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                            </div>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Description du thème actif */}
+                      <div className="p-2 bg-muted/50 rounded-md">
+                        <p className="text-[9px] sm:text-[10px] text-muted-foreground text-center">
+                          {preferences.theme === 'light' && '☀️ Interface lumineuse adaptée aux environnements bien éclairés'}
+                          {preferences.theme === 'dark' && '🌙 Interface sombre pour réduire la fatigue oculaire'}
+                          {preferences.theme === 'system' && '💻 S\'adapte automatiquement aux préférences de votre appareil'}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="p-2.5 sm:p-3 bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-lg">
