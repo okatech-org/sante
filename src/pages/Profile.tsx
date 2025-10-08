@@ -877,7 +877,7 @@ export default function Profile() {
                     </div>
 
                     {/* Bloc CNAMGS indépendant */}
-                    <div className="rounded-xl backdrop-blur-xl p-3 bg-card border border-border shadow-xl">
+                    <div className="rounded-xl backdrop-blur-xl p-3 bg-card border border-border shadow-xl mt-3">
                       <div className="flex items-center gap-3">
                         <h2 className="text-sm font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
                           <Shield className="w-3.5 h-3.5" style={{ color: '#00d4ff' }} />
