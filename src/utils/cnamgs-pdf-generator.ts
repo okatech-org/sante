@@ -13,6 +13,7 @@ export type CNAMGSData = {
   nom: string; // "PELLEN-LAKOUMBA"
   prenoms: string; // "GUEYLORD ASTED"
   dateNaissance: string; // "01/12/1982"
+  lieuNaissance?: string; // "Libreville"
   age?: string; // "42 ans"
   sexe?: "M" | "F";
   regime: string; // "Secteur Privé"
@@ -669,7 +670,7 @@ export const generateCNAMGSPdf = async (
   
   // DATE DE NAISSANCE et LIEU DE NAISSANCE sur la même ligne
   drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, halfColW);
-  drawInfoBox("LIEU DE NAISSANCE", "Libreville", MARGIN + halfColW + 2, currentY, halfColW);
+  drawInfoBox("LIEU DE NAISSANCE", data.lieuNaissance || "Non renseigné", MARGIN + halfColW + 2, currentY, halfColW);
   currentY += 10.5;
   
   // RÉGIME et QUALITÉ sur la même ligne

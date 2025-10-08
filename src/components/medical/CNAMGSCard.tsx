@@ -247,6 +247,7 @@ export const CNAMGSCard = ({ profile }: CNAMGSCardProps) => {
           nom: nom,
           prenoms: prenoms,
           dateNaissance: dateNaissance,
+          lieuNaissance: profile?.birth_place || "Non renseigné",
           age: age,
           sexe: sexe as "M" | "F",
           regime: "Secteur Privé",
