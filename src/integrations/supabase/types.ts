@@ -292,6 +292,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           birth_date: string | null
+          birth_place: string | null
           blood_group: string | null
           city: string | null
           cnamgs_number: string | null
@@ -317,6 +318,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           birth_date?: string | null
+          birth_place?: string | null
           blood_group?: string | null
           city?: string | null
           cnamgs_number?: string | null
@@ -342,6 +344,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           birth_date?: string | null
+          birth_place?: string | null
           blood_group?: string | null
           city?: string | null
           cnamgs_number?: string | null

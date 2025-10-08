@@ -133,7 +133,7 @@ export default function Profile() {
           email: data.email || "",
           phone: data.phone || "",
           birth_date: data.birth_date || "",
-          birth_place: (data as any).birth_place || "",
+          birth_place: data.birth_place || "",
           gender: data.gender || "",
           province: data.province || "",
           city: data.city || "",
