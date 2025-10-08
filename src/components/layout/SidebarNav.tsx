@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,6 +52,20 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
     { icon: Shield, label: t('nav.audit'), href: "/admin/audit" },
     { icon: Settings, label: t('nav.settings'), href: "/admin/settings" },
   ];
+
+  const doctorNavItems: NavItem[] = [
+    { icon: Home, label: "Tableau de bord", href: "/dashboard/professional" },
+    { icon: Calendar, label: "Agenda & RDV", href: "/professional/agenda", badge: 8 },
+    { icon: Users, label: "Mes patients", href: "/professional/patients" },
+    { icon: Video, label: "Téléconsultations", href: "/professional/teleconsultations" },
+    { icon: ClipboardList, label: "Consultations", href: "/professional/consultations" },
+    { icon: Pill, label: "Prescriptions", href: "/professional/prescriptions" },
+    { icon: DollarSign, label: "Finances & CNAMGS", href: "/professional/finances" },
+    { icon: TrendingUp, label: "Statistiques", href: "/professional/stats" },
+    { icon: Mail, label: "Messages", href: "/professional/messages", badge: 5 },
+    { icon: Stethoscope, label: "Télé-expertise", href: "/professional/tele-expertise" },
+    { icon: Settings, label: "Paramètres", href: "/professional/settings" },
+  ];
   
   // Détermine le menu à afficher selon l'état de connexion et les rôles
   let navItems: NavItem[];
@@ -59,6 +73,8 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
     navItems = publicNavItems;
   } else if (userRoles.includes('super_admin')) {
     navItems = superAdminNavItems;
+  } else if (userRoles.includes('doctor') || userRoles.includes('medical_staff')) {
+    navItems = doctorNavItems;
   } else {
     navItems = patientNavItems;
   }
