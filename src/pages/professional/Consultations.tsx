@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FileText, Search, Filter, Calendar, User, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -7,11 +7,34 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ConsultationDetailsModal } from "@/components/medical/ConsultationDetailsModal";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { ConsultationListItem } from "@/components/professional/ConsultationListItem";
+import { ConsultationsStats } from "@/components/professional/ConsultationsStats";
 
 export default function ProfessionalConsultations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedConsultation, setSelectedConsultation] = useState<any>(null);
 
+  useEffect(() => {
+    document.title = "Consultations | Espace Professionnel - SANTE.GA";
+    const meta = document.querySelector('meta[name="description"]');
+    const content = "Historique des consultations, filtres et accès rapide pour les professionnels de santé.";
+    if (meta) {
+      meta.setAttribute("content", content);
+    } else {
+      const m = document.createElement("meta");
+      m.name = "description";
+      m.content = content;
+      document.head.appendChild(m);
+    }
+    // Canonical
+    let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', window.location.origin + '/professional/consultations');
+  }, []);
   const consultations = [
     {
       id: 1,
@@ -66,55 +89,12 @@ export default function ProfessionalConsultations() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="glass-card">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Aujourd'hui</p>
-                  <p className="text-2xl font-bold">12</p>
-                </div>
-                <FileText className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Ce mois</p>
-                  <p className="text-2xl font-bold">156</p>
-                </div>
-                <Calendar className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Ordonnances émises</p>
-                  <p className="text-2xl font-bold">134</p>
-                </div>
-                <Pill className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-card">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Patients uniques</p>
-                  <p className="text-2xl font-bold">89</p>
-                </div>
-                <User className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <ConsultationsStats today={12} month={156} prescriptions={134} uniquePatients={89} />
         </div>
 
         {/* Recherche et filtres */}
-        <Card className="glass-card">
+        <Card className="rounded-xl backdrop-blur-xl bg-card/80 border border-border shadow-xl">
         <CardHeader>
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
@@ -143,47 +123,11 @@ export default function ProfessionalConsultations() {
 
             <TabsContent value="all" className="space-y-3 mt-4">
               {consultations.map((consultation) => (
-                <Card 
-                  key={consultation.id} 
-                  className="hover:bg-muted/50 transition-colors cursor-pointer"
-                  onClick={() => setSelectedConsultation(consultation)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex gap-4 flex-1">
-                        <div className="flex flex-col items-center justify-center min-w-[80px]">
-                          <FileText className="h-4 w-4 text-muted-foreground mb-1" />
-                          <span className="font-semibold text-sm">{consultation.time}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(consultation.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold">{consultation.patient}</h4>
-                            <Badge variant="outline">{consultation.type}</Badge>
-                            {consultation.prescription && (
-                              <Badge className="bg-green-500/10 text-green-500">
-                                <Pill className="h-3 w-3 mr-1" />
-                                Ordonnance
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm font-medium text-foreground mb-1">{consultation.diagnosis}</p>
-                          <p className="text-sm text-muted-foreground">{consultation.notes}</p>
-                          {consultation.nextVisit && (
-                            <p className="text-xs text-muted-foreground mt-2">
-                              Prochain RDV: {new Date(consultation.nextVisit).toLocaleDateString('fr-FR')}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Voir détails
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ConsultationListItem
+                  key={consultation.id}
+                  consultation={consultation as any}
+                  onSelect={() => setSelectedConsultation(consultation)}
+                />
               ))}
             </TabsContent>
           </Tabs>
