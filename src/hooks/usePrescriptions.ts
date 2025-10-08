@@ -41,10 +41,16 @@ export const usePrescriptions = () => {
           .from("professionals")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profError) throw profError;
-        if (!professional) throw new Error("Profil professionnel non trouvé");
+        if (!professional) {
+          console.log("Profil professionnel non trouvé");
+          setPrescriptions([]);
+          setStats({ total: 0, active: 0, delivered: 0, cnamgsRate: "0%" });
+          setLoading(false);
+          return;
+        }
 
         // Fetch prescriptions
         const { data, error: prescError } = await supabase

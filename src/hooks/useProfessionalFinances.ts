@@ -61,10 +61,25 @@ export const useProfessionalFinances = () => {
           .from("professionals")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profError) throw profError;
-        if (!professional) throw new Error("Profil professionnel non trouvé");
+        if (!professional) {
+          console.log("Profil professionnel non trouvé");
+          setStats({
+            monthRevenue: 0,
+            cnamgsRevenue: 0,
+            pendingAmount: 0,
+            collectionRate: 0,
+            previousMonthRevenue: 0,
+            cashRevenue: 0,
+            mobileMoneyRevenue: 0,
+          });
+          setTransactions([]);
+          setCNAMGSPayments([]);
+          setLoading(false);
+          return;
+        }
 
         const now = new Date();
         const currentMonth = now.getMonth() + 1;
