@@ -270,7 +270,7 @@ export default function Profile() {
             {/* Menu secondaire des sections */}
             <div className="w-full overflow-hidden">
               <div className="rounded-lg sm:rounded-xl backdrop-blur-xl p-0.5 sm:p-1 md:p-1.5 bg-card border border-border shadow-lg">
-                <nav className="flex gap-0.5 sm:gap-1 md:gap-1.5 overflow-x-auto scrollbar-hide">
+                <nav className="flex gap-1 sm:gap-1.5 overflow-x-auto scrollbar-hide pb-1">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -278,25 +278,22 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-2.5 md:px-3.5 py-1.5 sm:py-2 md:py-2 rounded-md sm:rounded-lg transition-all whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-0 ${
-                          isActive ? 'bg-accent text-accent-foreground shadow-sm font-semibold' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground font-medium'
+                        className={`flex flex-col items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl transition-all duration-300 flex-shrink-0 touch-manipulation active:scale-95 min-w-[85px] sm:min-w-0 sm:flex-row sm:gap-2 sm:px-4 ${
+                          isActive 
+                            ? 'bg-primary text-primary-foreground shadow-lg scale-105' 
+                            : 'bg-card/80 hover:bg-card text-muted-foreground hover:text-foreground border border-border/50'
                         }`}
                       >
-                        <div
-                          className={`w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded flex items-center justify-center flex-shrink-0 transition-all ${
-                            isActive ? '' : 'bg-muted'
-                          }`}
-                          style={isActive ? { backgroundColor: `${section.color}20` } : {}}
-                        >
-                          <Icon className="w-3 h-3 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" style={{ color: isActive ? section.color : '' }} />
-                        </div>
-                        <span className="text-[9px] sm:text-[10px] md:text-[11px] lg:text-xs tracking-tight truncate max-w-[60px] sm:max-w-[70px] md:max-w-[90px] lg:max-w-none text-center sm:text-left">
+                        <Icon className={`w-4 h-4 flex-shrink-0 transition-transform ${isActive && 'scale-110'}`} />
+                        <span className="text-[10px] sm:text-xs font-medium text-center leading-tight whitespace-normal max-w-[70px] sm:max-w-none sm:whitespace-nowrap">
                           {section.label}
                         </span>
                       </button>
                     );
                   })}
                 </nav>
+                {/* Scroll indicator for mobile */}
+                <div className="absolute -bottom-1 right-0 w-12 h-full bg-gradient-to-l from-card to-transparent pointer-events-none sm:hidden rounded-r-xl" />
               </div>
             </div>
 
@@ -306,19 +303,21 @@ export default function Profile() {
               {activeSection === "account" && (
                 <>
                   {/* Avatar et informations principales */}
-                  <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-card/95 border border-border/50 shadow-lg hover:shadow-xl transition-all">
-                    <h2 className="text-xs sm:text-sm lg:text-base font-bold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
-                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-4 lg:h-4" style={{ color: '#00d4ff' }} />
-                      Photo de profil
+                  <div className="rounded-xl backdrop-blur-xl p-4 sm:p-5 bg-gradient-to-br from-card/95 to-card/80 border border-border/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <h2 className="text-sm sm:text-base font-bold text-foreground mb-4 flex items-center gap-2.5">
+                      <div className="p-1.5 bg-primary/10 rounded-lg">
+                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                      </div>
+                      <span>Photo de profil</span>
                     </h2>
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="relative flex-shrink-0">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/70 p-[2px] ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
+                    <div className="flex items-center gap-5">
+                      <div className="relative flex-shrink-0 group">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary/70 p-[2px] ring-4 ring-primary/10 group-hover:ring-primary/30 transition-all duration-300 shadow-xl">
                           <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                             {avatarUrl ? (
                               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{initials}</span>
+                              <span className="text-2xl sm:text-3xl font-bold text-foreground">{initials}</span>
                             )}
                           </div>
                         </div>
@@ -327,23 +326,25 @@ export default function Profile() {
                           onAvatarUpdate={setAvatarUrl}
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="mb-1">
-                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground truncate">
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div>
+                          <h3 className="text-xl sm:text-2xl font-bold text-foreground truncate tracking-tight">
                             {displayLastName}
                           </h3>
-                          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-foreground/80 truncate">
+                          <h3 className="text-base sm:text-lg font-semibold text-foreground/80 truncate">
                             {displayFirstName}
                           </h3>
                         </div>
-                        <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground truncate flex items-center gap-1.5">
-                          <Mail className="w-3 h-3 flex-shrink-0" />
-                          {displayEmail}
-                        </p>
-                        <p className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
-                          <Calendar className="w-3 h-3 flex-shrink-0" />
-                          Membre depuis {new Date().getFullYear()}
-                        </p>
+                        <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4 flex-shrink-0 text-primary/60" />
+                            <span className="truncate">{displayEmail}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 flex-shrink-0 text-primary/60" />
+                            <span>Membre depuis {new Date().getFullYear()}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -352,23 +353,25 @@ export default function Profile() {
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-start">
                       {/* Informations personnelles - Optimisé mobile */}
-                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-card/95 border border-border/50 shadow-lg hover:shadow-xl transition-all h-full flex flex-col">
-                        <h2 className="text-xs sm:text-sm font-bold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
-                          <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
-                          Informations personnelles
+                      <div className="rounded-xl backdrop-blur-xl p-4 sm:p-5 bg-card/50 border border-border/50 shadow-lg h-full flex flex-col">
+                        <h2 className="text-base sm:text-lg font-bold text-foreground mb-4 pb-3 border-b border-border/50 flex items-center gap-2.5">
+                          <div className="p-1.5 bg-primary/10 rounded-lg">
+                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                          </div>
+                          <span>Informations personnelles</span>
                         </h2>
-                        <div className="space-y-2.5 sm:space-y-2 flex-1">
-                          <div className="grid grid-cols-3 gap-2 items-stretch">
-                            <div className="space-y-1 w-full h-full flex flex-col col-span-1">
-                              <Label htmlFor="gender" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
-                                <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
+                        <div className="space-y-4 flex-1">
+                          <div className="grid grid-cols-3 gap-3 items-stretch">
+                            <div className="space-y-2 w-full h-full flex flex-col col-span-1">
+                              <Label htmlFor="gender" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                <User className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
                                 Genre
                               </Label>
                               <Select 
                                 value={genderValue || ""}
                                 onValueChange={(value) => setValue("gender", value)}
                               >
-                                <SelectTrigger className="bg-muted/50 border-border text-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation">
+                                <SelectTrigger className="bg-background border-border text-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20">
                                   <SelectValue placeholder="Genre" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -379,63 +382,69 @@ export default function Profile() {
                               </Select>
                             </div>
 
-                            <div className="space-y-1 w-full h-full flex flex-col col-span-2">
-                              <Label htmlFor="last_name" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
-                                <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
-                                Nom *
+                            <div className="space-y-2 w-full h-full flex flex-col col-span-2">
+                              <Label htmlFor="last_name" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                <User className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                                Nom <span className="text-destructive">*</span>
                               </Label>
                               <Input
                                 id="last_name"
                                 {...register("last_name")}
                                 placeholder="Votre nom"
-                                className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                               {errors.last_name && (
-                                <p className="text-[9px] sm:text-[10px] text-destructive animate-in slide-in-from-top-1">{errors.last_name.message}</p>
+                                <p className="text-xs text-destructive animate-in slide-in-from-top-1 flex items-center gap-1">
+                                  <span className="w-1 h-1 rounded-full bg-destructive" />
+                                  {errors.last_name.message}
+                                </p>
                               )}
                             </div>
                           </div>
 
-                          <div className="space-y-1">
-                            <Label htmlFor="first_name" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
-                              <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
-                              Prénom *
+                          <div className="space-y-2">
+                            <Label htmlFor="first_name" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                              <User className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                              Prénom <span className="text-destructive">*</span>
                             </Label>
                             <Input
                               id="first_name"
                               {...register("first_name")}
                               placeholder="Votre prénom"
-                              className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                              className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                             />
                             {errors.first_name && (
-                              <p className="text-[9px] sm:text-[10px] text-destructive animate-in slide-in-from-top-1">{errors.first_name.message}</p>
+                              <p className="text-xs text-destructive animate-in slide-in-from-top-1 flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-destructive" />
+                                {errors.first_name.message}
+                              </p>
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 gap-2 items-stretch">
-                            <div className="space-y-1 w-full h-full flex flex-col">
-                              <Label htmlFor="birth_date" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
-                                <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
+                          <div className="grid grid-cols-2 gap-3 items-stretch">
+                            <div className="space-y-2 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_date" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                <Calendar className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
                                 Date de naissance
                               </Label>
                               <Input
                                 id="birth_date"
                                 type="date"
                                 {...register("birth_date")}
-                                className="bg-muted/50 border-border text-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="bg-background border-border text-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                             </div>
 
-                            <div className="space-y-1 w-full h-full flex flex-col">
-                              <Label htmlFor="birth_place" className="text-muted-foreground text-[10px] sm:text-xs flex items-center gap-1">
-                                <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 flex-shrink-0" />
+                            <div className="space-y-2 w-full h-full flex flex-col">
+                              <Label htmlFor="birth_place" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
                                 Lieu de naissance
                               </Label>
                               <Input
                                 id="birth_place"
                                 {...register("birth_place")}
                                 placeholder="Selon attestation"
-                                className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-8 text-[11px] sm:text-xs w-full touch-manipulation transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                               />
                             </div>
                           </div>
@@ -505,15 +514,17 @@ export default function Profile() {
                       </div>
 
                       {/* Adresse */}
-                      <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 bg-card border border-border shadow-xl h-full flex flex-col">
-                        <h2 className="text-sm sm:text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#0088ff' }} />
-                          Adresse
+                      <div className="rounded-xl backdrop-blur-xl p-4 sm:p-5 bg-card/50 border border-border/50 shadow-lg h-full flex flex-col">
+                        <h2 className="text-base sm:text-lg font-bold text-foreground mb-4 pb-3 border-b border-border/50 flex items-center gap-2.5">
+                          <div className="p-1.5 bg-primary/10 rounded-lg">
+                            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                          </div>
+                          <span>Adresse</span>
                         </h2>
-                        <div className="space-y-2 flex-1">
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="email" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                              <Mail className="h-3 w-3 flex-shrink-0" />
+                        <div className="space-y-4 flex-1">
+                          <div className="space-y-2 w-full">
+                            <Label htmlFor="email" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                              <Mail className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
                               Email
                             </Label>
                             <Input
@@ -521,61 +532,73 @@ export default function Profile() {
                               type="email"
                               {...register("email")}
                               placeholder="exemple@email.com"
-                              className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
                             />
                             {errors.email && (
-                              <p className="text-[10px] text-red-400">{errors.email.message}</p>
+                              <p className="text-xs text-destructive animate-in slide-in-from-top-1 flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-destructive" />
+                                {errors.email.message}
+                              </p>
                             )}
                           </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="phone" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                              <Phone className="h-3 w-3 flex-shrink-0" />
-                              Téléphone *
+                          <div className="space-y-2 w-full">
+                            <Label htmlFor="phone" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                              <Phone className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                              Téléphone <span className="text-destructive">*</span>
                             </Label>
                             <Input
                               id="phone"
                               {...register("phone")}
                               placeholder="+241 XX XX XX XX"
-                              className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
                             />
                             {errors.phone && (
-                              <p className="text-[10px] text-red-400">{errors.phone.message}</p>
+                              <p className="text-xs text-destructive animate-in slide-in-from-top-1 flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-destructive" />
+                                {errors.phone.message}
+                              </p>
                             )}
                           </div>
 
-                            <div className="grid grid-cols-2 gap-2 items-stretch">
-                              <div className="space-y-1.5 w-full h-full flex flex-col">
-                                <Label htmlFor="province" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                            <div className="grid grid-cols-2 gap-3 items-stretch">
+                              <div className="space-y-2 w-full h-full flex flex-col">
+                                <Label htmlFor="province" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                  <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
                                   Province
                                 </Label>
                                 <Input
                                   id="province"
                                   {...register("province")}
                                   placeholder="Ex: Estuaire"
-                                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                                  className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
                                 />
                               </div>
 
-                              <div className="space-y-1.5 w-full h-full flex flex-col">
-                                <Label htmlFor="city" className="text-muted-foreground text-xs">Ville</Label>
+                              <div className="space-y-2 w-full h-full flex flex-col">
+                                <Label htmlFor="city" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                                  <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                                  Ville
+                                </Label>
                                 <Input
                                   id="city"
                                   {...register("city")}
                                   placeholder="Ex: Libreville"
-                                  className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                                  className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
                                 />
                               </div>
                             </div>
 
-                          <div className="space-y-1.5 w-full">
-                            <Label htmlFor="neighborhood" className="text-muted-foreground text-xs">Quartier</Label>
+                          <div className="space-y-2 w-full">
+                            <Label htmlFor="neighborhood" className="text-xs font-medium flex items-center gap-1.5 text-foreground/80">
+                              <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                              Quartier
+                            </Label>
                             <Input
                               id="neighborhood"
                               {...register("neighborhood")}
                               placeholder="Ex: Nombakele"
-                              className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              className="bg-background border-border text-foreground placeholder:text-muted-foreground h-11 text-sm w-full touch-manipulation transition-all hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
                             />
                           </div>
                         </div>
@@ -603,31 +626,31 @@ export default function Profile() {
                       </div>
                     </div>
 
-                    <div className="flex justify-end mt-3">
+                    {/* Save Button - Sticky on mobile */}
+                    <div className="sticky bottom-20 sm:static mt-5 pt-4 pb-2 bg-gradient-to-t from-background via-background to-transparent sm:bg-none">
                       <Button
                         type="submit"
                         disabled={saving || saveSuccess}
-                        className={`w-full sm:w-auto px-6 sm:px-8 h-11 sm:h-10 text-sm sm:text-sm font-semibold transition-all touch-manipulation active:scale-95 ${
+                        className={`w-full sm:w-auto px-8 h-12 sm:h-11 text-sm font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 touch-manipulation active:scale-95 ml-auto flex ${
                           saveSuccess 
-                            ? 'bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/20' 
-                            : 'bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/20'
-                        } text-primary-foreground`}
+                            ? 'bg-green-500 hover:bg-green-600' 
+                            : 'bg-primary hover:bg-primary/90'
+                        }`}
                       >
                         {saving ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            <span className="animate-pulse">Enregistrement...</span>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            <span>Enregistrement...</span>
                           </>
                         ) : saveSuccess ? (
                           <>
-                            <Check className="mr-2 h-4 w-4 animate-in zoom-in" />
+                            <Check className="mr-2 h-5 w-5 animate-in zoom-in duration-300" />
                             <span>Sauvegardé !</span>
                           </>
                         ) : (
                           <>
-                            <Save className="mr-2 h-4 w-4" />
-                            <span className="hidden sm:inline">Enregistrer les modifications</span>
-                            <span className="sm:hidden">Enregistrer</span>
+                            <Save className="mr-2 h-5 w-5" />
+                            <span>Enregistrer les modifications</span>
                           </>
                         )}
                       </Button>
