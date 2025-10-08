@@ -38,10 +38,16 @@ export const useAgenda = () => {
           .from("professionals")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profError) throw profError;
-        if (!professional) throw new Error("Profil professionnel non trouvé");
+        if (!professional) {
+          console.log("Profil professionnel non trouvé");
+          setAppointments([]);
+          setStats({ patients: 0, consultations: 0, teleconsultations: 0, revenue: 0 });
+          setLoading(false);
+          return;
+        }
 
         // Get today's date range
         const today = new Date();
