@@ -329,7 +329,7 @@ export const generateCNAMGSPdf = async (
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // EN-TÊTE OFFICIEL (Fond blanc avec textes noirs/gris pour meilleur contraste)
+  // EN-TÊTE OFFICIEL (Coordonnées à gauche, Logo et texte à droite)
   // ═══════════════════════════════════════════════════════════════════════════
   
   // Fond blanc
@@ -340,22 +340,70 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
+  // BLOC COORDONNÉES À GAUCHE
+  const contactW = 75;
+  const contactH = 27;
+  const contactX = MARGIN;
+  const contactY = 4;
+  
+  // Bloc gris clair pour les coordonnées
+  doc.setFillColor(248, 249, 250); // muted background
+  doc.setDrawColor(226, 232, 240); // border
+  doc.setLineWidth(0.15);
+  doc.roundedRect(contactX, contactY, contactW, contactH, 2, 2, "FD");
+  
+  let contactTextY = contactY + 5;
+  
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(38, 43, 51); // foreground
+  doc.text("CNAMGS - Siège Social :", contactX + 2, contactTextY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.5);
+  doc.text("Libreville, Gabon", contactX + 34, contactTextY);
+  
+  contactTextY += 4.5;
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.text("Téléphone :", contactX + 2, contactTextY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.5);
+  doc.text("+241 01 XX XX XX", contactX + 18, contactTextY);
+  
+  contactTextY += 4.5;
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.text("Email :", contactX + 2, contactTextY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.5);
+  doc.text("contact@cnamgs.ga", contactX + 11, contactTextY);
+  
+  contactTextY += 4.5;
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.text("Site web :", contactX + 2, contactTextY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6.5);
+  doc.text("www.cnamgs.ga", contactX + 15, contactTextY);
+  
+  // LOGO ET TEXTE À DROITE
   // Charger et afficher le logo CNAMGS
   const headerLogoData = await loadImageAsDataUrl('/cnamgs_header_logo.png');
   if (headerLogoData) {
     const logoW = 60; // Largeur du logo en mm
     const logoH = 14; // Hauteur proportionnelle
-    const logoX = (A4.w - logoW) / 2; // Centrer horizontalement
+    const logoX = (A4.w + contactX + contactW - logoW) / 2 + 10; // Centrer dans l'espace de droite
     const logoY = 6; // Position verticale
     doc.addImage(headerLogoData, "PNG", logoX, logoY, logoW, logoH);
   }
   
   // Sous-titre (en gras)
   doc.setFontSize(9);
-  doc.setFont("helvetica", "bold"); // Changed to bold
+  doc.setFont("helvetica", "bold");
   doc.setTextColor(102, 112, 133); // muted-foreground - gris
-  doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", A4.w / 2, 24, { align: "center" });
-  doc.text("ET DE GARANTIE SOCIALE", A4.w / 2, 29, { align: "center" });
+  const centerX = (A4.w + contactX + contactW) / 2 + 10;
+  doc.text("CAISSE NATIONALE D'ASSURANCE MALADIE", centerX, 24, { align: "center" });
+  doc.text("ET DE GARANTIE SOCIALE", centerX, 29, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
   // TITRE DU DOCUMENT
@@ -780,48 +828,6 @@ export const generateCNAMGSPdf = async (
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
-  
-  // ═══════════════════════════════════════════════════════════════════════════
-  // COORDONNÉES CNAMGS (bloc gris clair en haut à gauche)
-  // ═══════════════════════════════════════════════════════════════════════════
-  
-  const footerY = A4.h - 30;
-  const contactY = footerY + 3;
-  const contactW = 90;
-  const contactH = 18;
-  
-  // Bloc gris clair pour les coordonnées
-  doc.setFillColor(248, 249, 250); // muted background
-  doc.setDrawColor(226, 232, 240); // border
-  doc.setLineWidth(0.15);
-  doc.roundedRect(MARGIN, contactY, contactW, contactH, 2, 2, "FD");
-  
-  let contactTextY = contactY + 5;
-  
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(38, 43, 51); // foreground
-  doc.text("CNAMGS - Siège Social :", MARGIN + 3, contactTextY);
-  doc.setFont("helvetica", "normal");
-  doc.text("Libreville, Gabon", MARGIN + 38, contactTextY);
-  
-  contactTextY += 4;
-  doc.setFont("helvetica", "bold");
-  doc.text("Téléphone :", MARGIN + 3, contactTextY);
-  doc.setFont("helvetica", "normal");
-  doc.text("+241 01 XX XX XX", MARGIN + 22, contactTextY);
-  
-  contactTextY += 4;
-  doc.setFont("helvetica", "bold");
-  doc.text("Email :", MARGIN + 3, contactTextY);
-  doc.setFont("helvetica", "normal");
-  doc.text("contact@cnamgs.ga", MARGIN + 13, contactTextY);
-  
-  contactTextY += 4;
-  doc.setFont("helvetica", "bold");
-  doc.text("Site web :", MARGIN + 3, contactTextY);
-  doc.setFont("helvetica", "normal");
-  doc.text("www.cnamgs.ga", MARGIN + 18, contactTextY);
   
   // ═══════════════════════════════════════════════════════════════════════════
   // TEXTE LÉGAL (bloc rose transparent tout en bas)
