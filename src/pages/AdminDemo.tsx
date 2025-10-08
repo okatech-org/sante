@@ -266,7 +266,7 @@ export default function AdminDemo() {
       // Navigation intelligente vers le dashboard approprié
       switch (account.role) {
         case 'patient':
-          navigate('/dashboard');
+          navigate('/dashboard/patient');
           break;
         case 'doctor':
           navigate('/demo/doctor');
@@ -297,7 +297,7 @@ export default function AdminDemo() {
           navigate('/admin');
           break;
         default:
-          navigate('/dashboard');
+          navigate('/dashboard/patient');
       }
     } catch (error) {
       console.error("Error during quick login:", error);
@@ -373,7 +373,7 @@ export default function AdminDemo() {
                         🔗 Dashboard: <span className="font-mono text-primary">
                           {account.role === 'doctor' ? '/demo/doctor' : 
                            account.role === 'specialist' ? '/demo/specialist' :
-                           account.role === 'patient' ? '/dashboard' : 
+                           account.role === 'patient' ? '/dashboard/patient' : 
                            '/dashboard/professional'}
                         </span>
                       </div>
