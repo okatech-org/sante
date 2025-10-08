@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   Menu,
   Home,
@@ -39,7 +41,12 @@ import {
   Send,
   CheckSquare,
   Square,
-  X
+  X,
+  LogOut,
+  Moon,
+  Sun,
+  Languages,
+  ChevronDown
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +54,7 @@ import { supabase } from "@/integrations/supabase/client";
 import logoSante from "@/assets/logo_sante.png";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useTheme } from "next-themes";
 
 interface Message {
   id: string;
@@ -78,6 +86,8 @@ interface Message {
 export default function Support() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('messages');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -91,8 +101,17 @@ export default function Support() {
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [repliedMessageIds, setRepliedMessageIds] = useState<Set<string>>(new Set());
   const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
+  const [profileData, setProfileData] = useState<{
+    full_name: string;
+    language: string;
+    theme: string;
+  }>({
+    full_name: 'Utilisateur',
+    language: 'fr',
+    theme: 'system'
+  });
 
-  const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
+  const fullName = profileData.full_name;
 
   useEffect(() => {
     loadAvatar();
@@ -120,14 +139,52 @@ export default function Support() {
     if (user?.id) {
       const { data } = await supabase
         .from('profiles')
-        .select('avatar_url')
+        .select('avatar_url, full_name, language, theme')
         .eq('id', user.id)
         .single();
       
-      if (data?.avatar_url) {
-        setAvatarUrl(data.avatar_url);
+      if (data) {
+        if (data.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+        setProfileData({
+          full_name: data.full_name || 'Utilisateur',
+          language: data.language || 'fr',
+          theme: data.theme || 'system'
+        });
+        if (data.language) {
+          setLanguage(data.language as 'fr' | 'en' | 'es' | 'ar' | 'pt');
+        }
+        if (data.theme) {
+          setTheme(data.theme);
+        }
       }
     }
+  };
+
+  const handleLanguageChange = async (newLanguage: 'fr' | 'en' | 'es' | 'ar' | 'pt') => {
+    setLanguage(newLanguage);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
 
   const loadMessages = async () => {
@@ -599,12 +656,12 @@ export default function Support() {
               <Film className="h-12 w-12 text-gray-600" />
             </div>
           )}
-          <div className="p-3 bg-[#1a1f2e]">
-            <p className="text-white text-sm font-medium truncate">{attachment.name}</p>
+          <div className="p-3 bg-card">
+            <p className="text-foreground text-sm font-medium truncate">{attachment.name}</p>
             <div className="flex items-center justify-between mt-1">
-              <p className="text-gray-400 text-xs">{attachment.size}</p>
+              <p className="text-muted-foreground text-xs">{attachment.size}</p>
               {attachment.duration && (
-                <p className="text-gray-400 text-xs">⏱ {attachment.duration}</p>
+                <p className="text-muted-foreground text-xs">⏱ {attachment.duration}</p>
               )}
             </div>
           </div>
@@ -614,23 +671,23 @@ export default function Support() {
 
     // PDF and other documents
     return (
-      <Card key={index} className="p-4 bg-white/5 border-white/10 hover:bg-white/10 transition-colors cursor-pointer group">
+      <Card key={index} className="p-4 bg-card border-border hover:bg-accent/50 transition-colors cursor-pointer group">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-lg bg-red-500/10 text-red-400">
             {getAttachmentIcon(attachment.type)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate group-hover:text-[#00d4ff] transition-colors">
+            <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
               {attachment.name}
             </p>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {attachment.size}
             </p>
           </div>
           <Button
             size="sm"
             variant="ghost"
-            className="text-[#00d4ff] hover:text-[#0088ff] hover:bg-white/5"
+            className="text-primary hover:text-primary hover:bg-accent"
             onClick={() => {
               toast.success("Téléchargement en cours...");
             }}
@@ -643,26 +700,17 @@ export default function Support() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background étoilé */}
-      <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div className="absolute inset-0 opacity-40" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
-        }} />
-      </div>
-
+    <div className="min-h-screen relative overflow-hidden bg-background">
       <div className="relative flex">
         {/* Sidebar Desktop */}
         <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-sidebar border border-border shadow-2xl flex flex-col">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-white">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-foreground">SANTE.GA</h1>
               </div>
-              <p className="text-xs text-gray-500">Votre santé à portée de clic</p>
+              <p className="text-xs text-muted-foreground">Votre santé à portée de clic</p>
             </div>
 
             <nav className="space-y-1 flex-1 overflow-y-auto">
@@ -677,13 +725,13 @@ export default function Support() {
                       if (item.path) navigate(item.path);
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-white/5'
+                          isActive ? '' : 'bg-muted'
                         }`}
                         style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                       >
@@ -704,19 +752,68 @@ export default function Support() {
               })}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/10">
-              <div className="p-3 rounded-lg bg-white/5">
+            <div className="mt-auto pt-6 border-t border-border space-y-3">
+              {/* Theme & Language Controls */}
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    <DropdownMenuItem onClick={() => handleThemeChange("light")}>
+                      Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
+                      Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange("system")}>
+                      Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Languages className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
+                      Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
+                      English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleLogout}
+                  className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Profile Section */}
+              <div className="p-3 rounded-lg bg-muted">
                 <div className="flex items-center gap-3">
                   {avatarUrl ? (
                     <img src={avatarUrl} alt={fullName} className="w-10 h-10 rounded-full object-cover" />
                   ) : (
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground">
                       {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{fullName.split(' ')[0]}</p>
-                    <p className="text-xs text-gray-500">Patient</p>
+                    <p className="text-sm font-medium text-foreground truncate">{fullName.split(' ')[0]}</p>
+                    <p className="text-xs text-muted-foreground">Patient</p>
                   </div>
                 </div>
               </div>
@@ -725,27 +822,27 @@ export default function Support() {
         </aside>
 
         {/* Mobile Header */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-border">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-white tracking-tight">SANTE.GA</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
             </div>
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent text-accent-foreground hover:bg-accent/80 transition-all">
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+              <SheetContent side="left" className="w-72 bg-sidebar border-border p-0">
                 <div className="h-full flex flex-col p-6">
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-white tracking-tight">SANTE.GA</h1>
+                      <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
                     </div>
-                    <p className="text-xs text-gray-500 ml-1">Votre santé à portée de clic</p>
+                    <p className="text-xs text-muted-foreground ml-1">Votre santé à portée de clic</p>
                   </div>
 
                   <nav className="space-y-1 flex-1 overflow-y-auto">
@@ -761,13 +858,13 @@ export default function Support() {
                             setMobileMenuOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                            isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-white/5'
+                                isActive ? '' : 'bg-muted'
                               }`}
                               style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                             >
@@ -787,6 +884,72 @@ export default function Support() {
                       );
                     })}
                   </nav>
+
+                  {/* Mobile Theme, Language & Logout */}
+                  <div className="mt-auto pt-6 border-t border-border space-y-3">
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover">
+                          <DropdownMenuItem onClick={() => handleThemeChange("light")}>
+                            Clair
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
+                            Sombre
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange("system")}>
+                            Système
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Languages className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover">
+                          <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
+                            Français
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
+                            English
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleLogout}
+                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-muted">
+                      <div className="flex items-center gap-3">
+                        {avatarUrl ? (
+                          <img src={avatarUrl} alt={fullName} className="w-10 h-10 rounded-full object-cover" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground">
+                            {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{fullName.split(' ')[0]}</p>
+                          <p className="text-xs text-muted-foreground">Patient</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -800,10 +963,10 @@ export default function Support() {
             <div className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
                     <span className="bg-gradient-to-r from-[#ffaa00] via-[#ff8800] to-[#ff6600] bg-clip-text text-transparent">Messages</span>
                   </h1>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-1 truncate">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
                     Communications des professionnels de santé
                   </p>
                 </div>
@@ -837,7 +1000,7 @@ export default function Support() {
                         checked={selectedMessageIds.size === filteredMessages.length}
                         onCheckedChange={toggleSelectAll}
                       />
-                      <span className="text-sm text-white">
+                      <span className="text-sm text-foreground">
                         {selectedMessageIds.size} message(s) sélectionné(s)
                       </span>
                     </div>
@@ -846,7 +1009,7 @@ export default function Support() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setSelectedMessageIds(new Set())}
-                        className="text-gray-400 hover:text-white"
+                        className="text-muted-foreground hover:text-foreground"
                       >
                         <X className="h-4 w-4 mr-1" />
                         Annuler
@@ -865,21 +1028,21 @@ export default function Support() {
                 )}
                 
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <Input
                     placeholder="Rechercher..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 sm:pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-9 sm:h-10 text-sm"
+                    className="pl-9 sm:pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground h-9 sm:h-10 text-sm"
                   />
                 </div>
 
                 {/* Tabs Filter */}
-                <div className="bg-white/5 border border-white/10 rounded-lg p-1 grid grid-cols-5 w-full">
+                <div className="bg-muted border border-border rounded-lg p-1 grid grid-cols-5 w-full">
                   <button
                     onClick={() => setSelectedTab("all")}
                     className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                      selectedTab === "all" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                      selectedTab === "all" ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     <Inbox className="h-4 w-4" />
@@ -888,7 +1051,7 @@ export default function Support() {
                   <button
                     onClick={() => setSelectedTab("unread")}
                     className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                      selectedTab === "unread" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                      selectedTab === "unread" ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     <MailOpen className="h-4 w-4" />
@@ -897,7 +1060,7 @@ export default function Support() {
                   <button
                     onClick={() => setSelectedTab("starred")}
                     className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                      selectedTab === "starred" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                      selectedTab === "starred" ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     <Star className="h-4 w-4" />
@@ -906,7 +1069,7 @@ export default function Support() {
                   <button
                     onClick={() => setSelectedTab("replied")}
                     className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                      selectedTab === "replied" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                      selectedTab === "replied" ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     <Send className="h-4 w-4" />
@@ -915,7 +1078,7 @@ export default function Support() {
                   <button
                     onClick={() => setSelectedTab("trash")}
                     className={`flex items-center justify-center gap-1 px-1.5 py-2 rounded-md text-xs sm:text-sm transition-colors ${
-                      selectedTab === "trash" ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'
+                      selectedTab === "trash" ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -932,21 +1095,21 @@ export default function Support() {
                 <ScrollArea className="flex-1">
                   {loading ? (
                     <div className="flex items-center justify-center h-full py-12">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ffaa00]" />
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
                     </div>
                   ) : filteredMessages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center p-6 py-12">
-                      <Inbox className="h-12 w-12 text-gray-500 mb-3" />
-                      <p className="text-gray-400">Aucun message</p>
+                      <Inbox className="h-12 w-12 text-muted-foreground mb-3" />
+                      <p className="text-muted-foreground">Aucun message</p>
                     </div>
                   ) : (
                     <>
                       {filteredMessages.map((message) => (
                         <div
                           key={message.id}
-                          className={`mx-3 my-3 p-3 sm:p-4 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all ${
-                            selectedMessage?.id === message.id ? 'bg-white/10 border-white/20' : ''
-                          } ${!message.is_read ? 'border-l-4 border-l-[#ffaa00]' : ''}`}
+                          className={`mx-3 my-3 p-3 sm:p-4 bg-card border border-border rounded-lg hover:bg-accent/50 transition-all ${
+                            selectedMessage?.id === message.id ? 'bg-accent border-border' : ''
+                          } ${!message.is_read ? 'border-l-4 border-l-primary' : ''}`}
                         >
                           <div className="flex items-start gap-2 sm:gap-3">
                             <Checkbox
@@ -971,7 +1134,7 @@ export default function Support() {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between mb-1">
                                   <p className={`text-xs sm:text-sm font-medium truncate ${
-                                    !message.is_read ? 'text-white' : 'text-gray-300'
+                                    !message.is_read ? 'text-foreground' : 'text-muted-foreground'
                                   }`}>
                                     {message.sender_name}
                                   </p>
@@ -985,14 +1148,14 @@ export default function Support() {
                                           toggleStar(message.id, message.is_starred);
                                         }
                                       }}
-                                      className="p-1 hover:bg-white/5 rounded transition-colors"
+                                      className="p-1 hover:bg-accent/50 rounded transition-colors"
                                       title={message.deleted_at ? "Restaurer" : "Marquer comme favori"}
                                     >
                                       {message.deleted_at ? (
-                                        <RefreshCw className="h-4 w-4 text-green-400" />
+                                        <RefreshCw className="h-4 w-4 text-green-500" />
                                       ) : (
                                         <Star className={`h-4 w-4 ${
-                                          message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                          message.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground'
                                         }`} />
                                       )}
                                     </button>
@@ -1002,33 +1165,33 @@ export default function Support() {
                                           e.stopPropagation();
                                           handleDeleteMessage(message.id);
                                         }}
-                                        className="p-1 hover:bg-white/5 rounded transition-colors"
+                                        className="p-1 hover:bg-accent/50 rounded transition-colors"
                                         title="Supprimer"
                                       >
-                                        <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-400" />
+                                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                                       </button>
                                     )}
                                   </div>
                                 </div>
                                 <p className={`text-xs sm:text-sm truncate mb-1 ${
-                                  !message.is_read ? 'text-white font-medium' : 'text-gray-400'
+                                  !message.is_read ? 'text-foreground font-medium' : 'text-muted-foreground'
                                 }`}>
                                   {message.subject}
                                 </p>
                                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                  <Badge variant="outline" className="text-[10px] sm:text-xs border-white/20 text-gray-400 px-1.5 py-0">
+                                  <Badge variant="outline" className="text-[10px] sm:text-xs border-border text-muted-foreground px-1.5 py-0">
                                     {getCategoryLabel(message.category)}
                                   </Badge>
                                   {message.priority !== 'normal' && (
                                     <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${getPriorityColor(message.priority)}`} />
                                   )}
                                   {message.attachments && message.attachments.length > 0 && (
-                                    <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/5 px-1.5 py-0">
+                                    <Badge variant="secondary" className="text-[10px] sm:text-xs bg-muted px-1.5 py-0">
                                       <Paperclip className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                                       {message.attachments.length}
                                     </Badge>
                                   )}
-                                  <span className="text-[10px] sm:text-xs text-gray-500">
+                                  <span className="text-[10px] sm:text-xs text-muted-foreground">
                                     {format(new Date(message.created_at), 'dd MMM', { locale: fr })}
                                   </span>
                                 </div>
@@ -1044,7 +1207,7 @@ export default function Support() {
 
               {/* Message Detail Dialog - Centered floating modal */}
               <Dialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[90vh] p-0 bg-[#1a1f2e] border border-white/20 overflow-hidden animate-in fade-in-0 zoom-in-95">
+                <DialogContent className="max-w-2xl max-h-[90vh] p-0 bg-card border border-border overflow-hidden animate-in fade-in-0 zoom-in-95">
                   {selectedMessage && (
                     <>
                       {/* Accessibility titles - hidden but required for screen readers */}
@@ -1057,24 +1220,24 @@ export default function Support() {
                       
                       <div className="flex flex-col h-full max-h-[90vh]">
                         {/* Message Header */}
-                        <div className="p-4 sm:p-6 border-b border-white/10 flex-shrink-0">
+                        <div className="p-4 sm:p-6 border-b border-border flex-shrink-0">
                           <div className="flex items-start gap-3 sm:gap-4">
                           <div className={`p-3 rounded-lg flex-shrink-0 ${
                             selectedMessage.sender_type === 'doctor' ? 'bg-blue-500/10 text-blue-400' :
                             selectedMessage.sender_type === 'hospital' ? 'bg-green-500/10 text-green-400' :
                             selectedMessage.sender_type === 'pharmacy' ? 'bg-purple-500/10 text-purple-400' :
                             selectedMessage.sender_type === 'laboratory' ? 'bg-orange-500/10 text-orange-400' :
-                            'bg-gray-500/10 text-gray-400'
+                            'bg-muted text-muted-foreground'
                           }`}>
                             {getSenderIcon(selectedMessage.sender_type)}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
-                                <h2 className="font-semibold text-white text-lg sm:text-xl">
+                                <h2 className="font-semibold text-foreground text-lg sm:text-xl">
                                   {selectedMessage.sender_name}
                                 </h2>
-                                <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                                   {format(new Date(selectedMessage.created_at), 'dd MMMM yyyy à HH:mm', { locale: fr })}
                                 </p>
                               </div>
@@ -1083,20 +1246,20 @@ export default function Support() {
                                   e.stopPropagation();
                                   toggleStar(selectedMessage.id, selectedMessage.is_starred);
                                 }}
-                                className="flex-shrink-0 p-2 hover:bg-white/5 rounded-lg transition-colors"
+                                className="flex-shrink-0 p-2 hover:bg-accent/50 rounded-lg transition-colors"
                               >
                                 <Star className={`h-5 w-5 ${
-                                  selectedMessage.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-gray-500'
+                                  selectedMessage.is_starred ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground'
                                 }`} />
                               </button>
                             </div>
                             
                             <div className="mt-3">
-                              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
+                              <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
                                 {selectedMessage.subject}
                               </h3>
                               <div className="flex items-center gap-2 flex-wrap">
-                                <Badge variant="outline" className="text-xs border-white/20 text-gray-400">
+                                <Badge variant="outline" className="text-xs border-border text-muted-foreground">
                                   {getCategoryLabel(selectedMessage.category)}
                                 </Badge>
                                 {selectedMessage.priority !== 'normal' && (
@@ -1115,7 +1278,7 @@ export default function Support() {
                       {/* Message Content */}
                       <ScrollArea className="flex-1 p-4 sm:p-6">
                         <div className="prose prose-invert max-w-none">
-                          <p className="text-sm sm:text-base text-gray-300 whitespace-pre-wrap leading-relaxed">
+                          <p className="text-sm sm:text-base text-foreground whitespace-pre-wrap leading-relaxed">
                             {selectedMessage.content}
                           </p>
                         </div>
@@ -1123,7 +1286,7 @@ export default function Support() {
                         {/* Attachments */}
                         {selectedMessage.attachments && selectedMessage.attachments.length > 0 && (
                           <div className="mt-6">
-                            <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                            <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                               <Paperclip className="h-4 w-4" />
                               Pièces jointes ({selectedMessage.attachments.length})
                             </h4>
@@ -1137,21 +1300,21 @@ export default function Support() {
 
                         {/* Reply Section */}
                         {selectedMessage.allow_reply && !selectedMessage.deleted_at && selectedMessage.sender_id && (
-                          <div className="mt-6 pt-6 border-t border-white/10">
-                            <h4 className="text-sm font-semibold text-white mb-3">Répondre</h4>
+                          <div className="mt-6 pt-6 border-t border-border">
+                            <h4 className="text-sm font-semibold text-foreground mb-3">Répondre</h4>
                             <div className="space-y-3">
                               <Textarea
                                 placeholder="Écrivez votre réponse..."
                                 value={replyContent}
                                 onChange={(e) => setReplyContent(e.target.value)}
-                                className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-gray-500 resize-none"
+                                className="min-h-[120px] bg-muted border-border text-foreground placeholder:text-muted-foreground resize-none"
                               />
                               <div className="flex justify-end gap-2">
                                 <Button
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setReplyContent("")}
-                                  className="border-white/10 text-gray-400 hover:text-white hover:bg-white/5"
+                                  className="border-border text-muted-foreground hover:text-foreground hover:bg-accent"
                                 >
                                   Annuler
                                 </Button>
@@ -1168,7 +1331,7 @@ export default function Support() {
                           </div>
                         )}
                         {selectedMessage.allow_reply && !selectedMessage.deleted_at && !selectedMessage.sender_id && (
-                          <div className="mt-6 pt-6 border-t border-white/10">
+                          <div className="mt-6 pt-6 border-t border-border">
                             <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                               <p className="text-yellow-400 text-sm">
                                 ℹ️ Ce message système ne permet pas de réponse directe. Veuillez contacter le professionnel de santé via les coordonnées indiquées dans le message.
@@ -1179,7 +1342,7 @@ export default function Support() {
                       </ScrollArea>
 
                       {/* Footer with action buttons */}
-                      <div className="p-4 sm:p-6 border-t border-white/10 flex-shrink-0">
+                      <div className="p-4 sm:p-6 border-t border-border flex-shrink-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           {selectedMessage && !selectedMessage.deleted_at && (
                             <>
@@ -1221,7 +1384,7 @@ export default function Support() {
                             onClick={handleCloseDialog}
                             variant="outline"
                             size="sm"
-                            className="border-white/10 text-gray-400 hover:text-white hover:bg-white/5"
+                            className="border-border text-muted-foreground hover:text-foreground hover:bg-accent"
                           >
                             Fermer
                           </Button>
