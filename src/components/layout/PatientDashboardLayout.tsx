@@ -85,16 +85,18 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     }
   };
   
-  // Menu items pour super admin
+  // Menu items pour super admin - harmonisé avec SuperAdminLayout
   const superAdminMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Shield, path: '/dashboard/superadmin', color: '#ff0088', badge: undefined },
     { id: 'project', label: 'Projet', icon: FileHeart, path: '/admin/project', color: '#00d4ff', badge: undefined },
     { id: 'users', label: 'Utilisateurs', icon: Home, path: '/admin/users', color: '#0088ff', badge: undefined },
-    { id: 'approvals', label: 'Approbations', icon: AlertCircle, path: '/admin/approvals', color: '#ffaa00', badge: undefined },
+    { id: 'approvals', label: 'Approbations', icon: AlertCircle, path: '/admin/approvals', color: '#ffaa00', badge: '43' },
     { id: 'establishments', label: 'Établissements', icon: Stethoscope, path: '/admin/establishments', color: '#00d4ff', badge: undefined },
     { id: 'professionals', label: 'Professionnels', icon: Heart, path: '/admin/professionals', color: '#0088ff', badge: undefined },
-    { id: 'audit', label: 'Audit', icon: Activity, path: '/admin/audit', color: '#ffaa00', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/settings', color: '#ff0088', badge: undefined }
+    { id: 'cartography', label: 'Cartographie Santé', icon: Activity, path: '/cartography', color: '#ffaa00', badge: undefined },
+    { id: 'demo', label: 'Démo', icon: Stethoscope, path: '/admin/demo', color: '#ff0088', badge: undefined },
+    { id: 'audit', label: 'Audit', icon: Activity, path: '/admin/audit', color: '#00d4ff', badge: undefined },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/settings', color: '#0088ff', badge: undefined }
   ];
 
   // Menu items pour patient
