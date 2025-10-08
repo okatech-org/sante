@@ -270,7 +270,7 @@ export default function Profile() {
             {/* Menu secondaire des sections */}
             <div className="w-full overflow-hidden">
               <div className="rounded-xl backdrop-blur-xl p-1.5 sm:p-2 bg-card border border-border shadow-xl">
-                <nav className="flex gap-1 overflow-x-auto scrollbar-hide pb-0.5 sm:pb-1">
+                <nav className="flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide pb-0.5 sm:pb-1">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -278,19 +278,19 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all whitespace-nowrap text-xs sm:text-sm flex-shrink-0 ${
-                          isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+                        className={`flex items-center gap-2 sm:gap-2.5 md:gap-3 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg transition-all whitespace-nowrap text-xs sm:text-sm md:text-base flex-shrink-0 ${
+                          isActive ? 'bg-accent text-accent-foreground shadow-md' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                         }`}
                       >
                         <div
-                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md flex items-center justify-center ${
+                          className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-md flex items-center justify-center ${
                             isActive ? '' : 'bg-muted'
                           }`}
                           style={isActive ? { backgroundColor: `${section.color}20` } : {}}
                         >
-                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: isActive ? section.color : '' }} />
+                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5" style={{ color: isActive ? section.color : '' }} />
                         </div>
-                        <span className="font-medium hidden xs:inline">{section.label}</span>
+                        <span className="font-medium hidden sm:inline">{section.label}</span>
                       </button>
                     );
                   })}
