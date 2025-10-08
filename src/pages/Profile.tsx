@@ -878,14 +878,16 @@ export default function Profile() {
 
                     {/* Bloc CNAMGS indépendant */}
                     <div className="rounded-xl backdrop-blur-xl p-3 bg-card border border-border shadow-xl">
-                      <h2 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
-                        <Shield className="w-3.5 h-3.5" style={{ color: '#00d4ff' }} />
-                        Assurance CNAMGS
-                      </h2>
-                      <div className="space-y-1">
-                        <p className="text-[10px] text-muted-foreground mb-1.5">
+                      <div className="flex items-center justify-between mb-2">
+                        <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                          <Shield className="w-3.5 h-3.5" style={{ color: '#00d4ff' }} />
+                          Assurance CNAMGS
+                        </h2>
+                        <p className="text-[10px] text-muted-foreground">
                           Saisissez votre numéro d'assuré pour faciliter vos remboursements
                         </p>
+                      </div>
+                      <div className="space-y-1">
                         <Input
                           id="cnamgs_number"
                           {...register("cnamgs_number")}
