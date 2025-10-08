@@ -653,22 +653,6 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-2 flex-1">
                           <div className="grid grid-cols-3 gap-2 items-stretch">
-                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-2">
-                              <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                                <User className="h-3 w-3 flex-shrink-0" />
-                                Nom *
-                              </Label>
-                              <Input
-                                id="last_name"
-                                {...register("last_name")}
-                                placeholder="Votre nom"
-                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
-                              />
-                              {errors.last_name && (
-                                <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
-                              )}
-                            </div>
-
                             <div className="space-y-1.5 w-full h-full flex flex-col col-span-1">
                               <Label htmlFor="gender" className="text-muted-foreground text-xs flex items-center gap-1.5">
                                 <User className="h-3 w-3 flex-shrink-0" />
@@ -687,6 +671,22 @@ export default function Profile() {
                                   <SelectItem value="other">Autre</SelectItem>
                                 </SelectContent>
                               </Select>
+                            </div>
+
+                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-2">
+                              <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
+                                <User className="h-3 w-3 flex-shrink-0" />
+                                Nom *
+                              </Label>
+                              <Input
+                                id="last_name"
+                                {...register("last_name")}
+                                placeholder="Votre nom"
+                                className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                              />
+                              {errors.last_name && (
+                                <p className="text-[10px] text-red-400">{errors.last_name.message}</p>
+                              )}
                             </div>
                           </div>
 
