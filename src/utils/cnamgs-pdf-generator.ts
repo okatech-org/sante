@@ -652,13 +652,14 @@ export const generateCNAMGSPdf = async (
   doc.setTextColor(102, 112, 133);
   doc.text("STATUT", statutX + 2, currentY + 3.2);
   
-  const isActif = data.statut !== "Inactif";
+  const statut = data.statut || "ACTIF";
+  const isActif = statut !== "Inactif";
   doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68);
   doc.roundedRect(statutX + 2, currentY + 4.5, 16, 3.5, 2, 2, "F");
   doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text(data.statut, statutX + 4, currentY + 7.2);
+  doc.text(statut, statutX + 4, currentY + 7.2);
   currentY += 10.5;
   
   // NOM sur une ligne séparée
