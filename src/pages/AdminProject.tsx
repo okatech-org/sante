@@ -86,9 +86,9 @@ export default function AdminProject() {
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             {/* Tabs Navigation - Enhanced with better UX */}
-            <div className="sticky top-[110px] sm:top-[130px] z-10 backdrop-blur-xl bg-background/95 pb-4 border-b border-border/50 shadow-sm rounded-xl">
-              <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1 sm:gap-2 p-1.5 bg-muted/50 rounded-xl">
+            <div className="sticky top-[110px] sm:top-[130px] z-10 backdrop-blur-2xl bg-gradient-to-r from-background via-background/98 to-background pb-4 border-b-2 border-primary/10 shadow-lg rounded-2xl animate-in fade-in-50 duration-500">
+              <ScrollArea className="w-full rounded-xl">
+                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1.5 sm:gap-2 p-2 bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl shadow-inner border border-border/30">
                   <TabsTrigger 
                     value="overview" 
                     className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
