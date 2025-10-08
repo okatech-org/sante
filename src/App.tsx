@@ -24,6 +24,10 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
 import DemoHospitalDashboard from "./pages/demo/DemoHospitalDashboard";
 import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
+import DemoAdmissions from "./pages/demo/hospital/DemoAdmissions";
+import DemoPharmacy from "./pages/demo/hospital/DemoPharmacy";
+import DemoLaboratory from "./pages/demo/hospital/DemoLaboratory";
+import DemoEmergency from "./pages/demo/hospital/DemoEmergency";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import ProfessionalAgenda from "./pages/professional/Agenda";
 import ProfessionalPatients from "./pages/professional/Patients";
@@ -210,6 +214,10 @@ const App = () => (
             <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
             <Route path="/demo/hospital" element={<DemoHospitalDashboard />} />
             <Route path="/demo/clinic" element={<DemoClinicDashboard />} />
+            <Route path="/demo/hospital/admissions" element={<DemoAdmissions />} />
+            <Route path="/demo/hospital/pharmacy" element={<DemoPharmacy />} />
+            <Route path="/demo/hospital/laboratory" element={<DemoLaboratory />} />
+            <Route path="/demo/hospital/emergency" element={<DemoEmergency />} />
             
             {/* Routes professionnelles */}
             <Route path="/professional/agenda" element={
