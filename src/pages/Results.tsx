@@ -320,13 +320,13 @@ export default function Results() {
   const getResultIcon = (status: string) => {
     switch (status) {
       case "normal":
-        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
+        return <CheckCircle2 className="h-4 w-4 text-success" />;
       case "high":
-        return <TrendingUp className="h-4 w-4 text-red-600" />;
+        return <TrendingUp className="h-4 w-4 text-destructive" />;
       case "low":
-        return <TrendingDown className="h-4 w-4 text-blue-600" />;
+        return <TrendingDown className="h-4 w-4 text-secondary" />;
       default:
-        return <Minus className="h-4 w-4 text-gray-600" />;
+        return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -384,7 +384,7 @@ export default function Results() {
                     </div>
                     {item.badge && (
                       <span
-                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground"
                         style={{ backgroundColor: item.color }}
                       >
                         {item.badge}
@@ -438,7 +438,7 @@ export default function Results() {
                 </DropdownMenu>
 
                 {/* Logout Button */}
-                <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300" title="Déconnexion">
+                <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-destructive/10 hover:bg-destructive/20 transition-colors text-destructive hover:text-destructive" title="Déconnexion">
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
@@ -446,7 +446,7 @@ export default function Results() {
               {/* User Profile Card */}
               <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold bg-primary">
                     {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -512,7 +512,7 @@ export default function Results() {
                           </div>
                           {item.badge && (
                             <span
-                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground"
                               style={{ backgroundColor: item.color }}
                             >
                               {item.badge}
@@ -573,7 +573,7 @@ export default function Results() {
                     {/* User Profile Card */}
                     <div className="p-3 rounded-lg bg-sidebar-accent/30">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold bg-primary">
                           {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -594,61 +594,61 @@ export default function Results() {
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="space-y-6">
               {/* Header */}
-              <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-[#1a1f2e]/80 border border-white/10 shadow-2xl">
-                <h1 className="text-2xl sm:text-3xl font-bold text-white">Mes Résultats d'Analyses</h1>
-                <p className="text-gray-400 mt-2">
+              <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 lg:p-8 bg-card/80 border border-border shadow-2xl">
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Mes Résultats d'Analyses</h1>
+                <p className="text-muted-foreground mt-2">
                   Consultez vos résultats d'examens médicaux et biologiques
                 </p>
               </div>
 
               {/* Statistiques rapides */}
-              <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10 shadow-xl">
+              <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Eye className="h-6 w-6 text-green-600" />
+                    <div className="h-12 w-12 rounded-full bg-success/20 flex items-center justify-center">
+                      <Eye className="h-6 w-6 text-success" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Résultats disponibles</p>
-                      <p className="text-2xl font-bold text-white">{availableResults.length}</p>
+                      <p className="text-sm text-muted-foreground">Résultats disponibles</p>
+                      <p className="text-2xl font-bold text-foreground">{availableResults.length}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-orange-500/20 flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-orange-600" />
+                    <div className="h-12 w-12 rounded-full bg-warning/20 flex items-center justify-center">
+                      <Clock className="h-6 w-6 text-warning" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">En attente</p>
-                      <p className="text-2xl font-bold text-white">{pendingResults.length}</p>
+                      <p className="text-sm text-muted-foreground">En attente</p>
+                      <p className="text-2xl font-bold text-foreground">{pendingResults.length}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-[#00d4ff]/20 flex items-center justify-center">
-                      <TestTube className="h-6 w-6 text-[#00d4ff]" />
+                    <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <TestTube className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Total</p>
-                      <p className="text-2xl font-bold text-white">{mockResults.length}</p>
+                      <p className="text-sm text-muted-foreground">Total</p>
+                      <p className="text-2xl font-bold text-foreground">{mockResults.length}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Barre de recherche */}
-              <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
+              <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Rechercher par type, laboratoire ou numéro..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                      className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
-                  <Button variant="outline" className="sm:w-auto bg-white/5 border-white/10 text-white hover:bg-white/10">
+                  <Button variant="outline" className="sm:w-auto">
                     <Filter className="h-4 w-4 mr-2" />
                     Filtres
                   </Button>
@@ -657,21 +657,21 @@ export default function Results() {
 
               {/* Tabs */}
               <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-                <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-[#1a1f2e]/80 border border-white/10">
-                  <TabsList className="grid w-full grid-cols-4 bg-white/5">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">Tous ({mockResults.length})</TabsTrigger>
-                    <TabsTrigger value="available" className="data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">Disponibles ({availableResults.length})</TabsTrigger>
-                    <TabsTrigger value="pending" className="data-[state=active]:bg-[#ffaa00]/20 data-[state=active]:text-[#ffaa00]">En attente ({pendingResults.length})</TabsTrigger>
-                    <TabsTrigger value="viewed" className="data-[state=active]:bg-[#0088ff]/20 data-[state=active]:text-[#0088ff]">Consultés</TabsTrigger>
+                <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border">
+                  <TabsList className="grid w-full grid-cols-4 bg-muted">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">Tous ({mockResults.length})</TabsTrigger>
+                    <TabsTrigger value="available" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">Disponibles ({availableResults.length})</TabsTrigger>
+                    <TabsTrigger value="pending" className="data-[state=active]:bg-warning/20 data-[state=active]:text-warning">En attente ({pendingResults.length})</TabsTrigger>
+                    <TabsTrigger value="viewed" className="data-[state=active]:bg-secondary/20 data-[state=active]:text-secondary">Consultés</TabsTrigger>
                   </TabsList>
                 </div>
 
                 <TabsContent value={selectedTab} className="space-y-4 mt-6">
                   {filteredResults.length === 0 ? (
-                    <div className="rounded-xl backdrop-blur-xl p-12 text-center bg-[#1a1f2e]/80 border border-white/10">
-                      <TestTube className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                      <h3 className="text-lg font-semibold mb-2 text-white">Aucun résultat trouvé</h3>
-                      <p className="text-gray-400">
+                    <div className="rounded-xl backdrop-blur-xl p-12 text-center bg-card/80 border border-border">
+                      <TestTube className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-semibold mb-2 text-foreground">Aucun résultat trouvé</h3>
+                      <p className="text-muted-foreground">
                         {searchQuery 
                           ? "Essayez avec d'autres termes de recherche"
                           : "Vous n'avez pas encore de résultats dans cette catégorie"}
@@ -679,19 +679,19 @@ export default function Results() {
                     </div>
                   ) : (
                     filteredResults.map((result) => (
-                      <div key={result.id} className="rounded-xl backdrop-blur-xl p-6 bg-[#1a1f2e]/80 border border-white/10 hover:bg-[#1a1f2e]/90 transition-all shadow-xl">
+                      <div key={result.id} className="rounded-xl backdrop-blur-xl p-6 bg-card/80 border border-border hover:bg-card/90 transition-all shadow-xl">
                         {/* En-tête */}
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-start gap-4 flex-1">
-                            <div className="h-12 w-12 rounded-full bg-[#00d4ff]/20 flex items-center justify-center flex-shrink-0">
-                              {result.type === "blood" && <TestTube className="h-6 w-6 text-[#00d4ff]" />}
-                              {result.type === "imaging" && <Activity className="h-6 w-6 text-[#00d4ff]" />}
-                              {result.type === "urine" && <TestTube className="h-6 w-6 text-[#00d4ff]" />}
-                              {!["blood", "imaging", "urine"].includes(result.type) && <FileText className="h-6 w-6 text-[#00d4ff]" />}
+                            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                              {result.type === "blood" && <TestTube className="h-6 w-6 text-primary" />}
+                              {result.type === "imaging" && <Activity className="h-6 w-6 text-primary" />}
+                              {result.type === "urine" && <TestTube className="h-6 w-6 text-primary" />}
+                              {!["blood", "imaging", "urine"].includes(result.type) && <FileText className="h-6 w-6 text-primary" />}
                             </div>
                           <div className="flex-1">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
-                              <h3 className="font-semibold text-lg text-white">{result.title}</h3>
+                              <h3 className="font-semibold text-lg text-foreground">{result.title}</h3>
                               {getStatusBadge(result.status)}
                               {getTypeBadge(result.type)}
                               {result.urgent && (
@@ -741,30 +741,30 @@ export default function Results() {
                       {result.status !== "pending" && (
                         <div className="space-y-3">
                           {result.results && result.results.length > 0 && (
-                            <div className="border border-white/10 rounded-lg p-4 bg-white/5">
-                              <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
-                                <Activity className="h-4 w-4 text-[#00d4ff]" />
+                            <div className="border border-border rounded-lg p-4 bg-muted">
+                              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                                <Activity className="h-4 w-4 text-primary" />
                                 Paramètres analysés
                               </h4>
                               <div className="space-y-2">
                                 {result.results.map((item, index) => (
                                   <div 
                                     key={index}
-                                    className="flex items-center justify-between p-2 rounded bg-[#1a1f2e]/50"
+                                    className="flex items-center justify-between p-2 rounded bg-card/50"
                                   >
                                     <div className="flex items-center gap-2">
                                       {getResultIcon(item.status)}
-                                      <span className="font-medium text-white">{item.parameter}</span>
+                                      <span className="font-medium text-foreground">{item.parameter}</span>
                                     </div>
                                     <div className="flex items-center gap-4 text-sm">
                                       <span className={
-                                        item.status === "high" ? "text-red-500 font-semibold" :
-                                        item.status === "low" ? "text-blue-500 font-semibold" :
-                                        "text-white"
+                                        item.status === "high" ? "text-destructive font-semibold" :
+                                        item.status === "low" ? "text-secondary font-semibold" :
+                                        "text-foreground"
                                       }>
                                         {item.value} {item.unit}
                                       </span>
-                                      <span className="text-gray-400">
+                                      <span className="text-muted-foreground">
                                         Norme: {item.referenceRange}
                                       </span>
                                     </div>
@@ -776,9 +776,9 @@ export default function Results() {
 
                           {/* Conclusion */}
                           {result.conclusion && (
-                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                              <p className="text-sm text-gray-300">
-                                <span className="font-semibold text-white">Conclusion:</span>{" "}
+                            <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-4">
+                              <p className="text-sm text-muted-foreground">
+                                <span className="font-semibold text-foreground">Conclusion:</span>{" "}
                                 {result.conclusion}
                               </p>
                             </div>
@@ -786,11 +786,11 @@ export default function Results() {
 
                           {/* Recommandations */}
                           {result.recommendations && (
-                            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                            <div className="bg-success/10 border border-success/30 rounded-lg p-4">
                               <div className="flex items-start gap-2">
-                                <AlertCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                <p className="text-sm text-gray-300">
-                                  <span className="font-semibold text-white">Recommandations:</span>{" "}
+                                <AlertCircle className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                                <p className="text-sm text-muted-foreground">
+                                  <span className="font-semibold text-foreground">Recommandations:</span>{" "}
                                   {result.recommendations}
                                 </p>
                               </div>
