@@ -266,11 +266,11 @@ export default function Profile() {
 
   return (
     <PatientDashboardLayout>
-      <div className="space-y-3 max-w-6xl mx-auto">
+      <div className="space-y-2 sm:space-y-3 w-full">
             {/* Menu secondaire des sections */}
             <div className="w-full overflow-hidden">
-              <div className="rounded-xl backdrop-blur-xl p-2 bg-card border border-border shadow-xl">
-                <nav className="flex gap-1 overflow-x-auto scrollbar-hide pb-1">
+              <div className="rounded-xl backdrop-blur-xl p-1.5 sm:p-2 bg-card border border-border shadow-xl">
+                <nav className="flex gap-1 overflow-x-auto scrollbar-hide pb-0.5 sm:pb-1">
                   {settingsSections.map((section) => {
                     const Icon = section.icon;
                     const isActive = activeSection === section.id;
@@ -278,19 +278,19 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap text-sm flex-shrink-0 ${
+                        className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all whitespace-nowrap text-xs sm:text-sm flex-shrink-0 ${
                           isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                         }`}
                       >
                         <div
-                          className={`w-7 h-7 rounded-md flex items-center justify-center ${
+                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md flex items-center justify-center ${
                             isActive ? '' : 'bg-muted'
                           }`}
                           style={isActive ? { backgroundColor: `${section.color}20` } : {}}
                         >
-                          <Icon className="w-4 h-4" style={{ color: isActive ? section.color : '' }} />
+                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: isActive ? section.color : '' }} />
                         </div>
-                        <span className="font-medium hidden sm:inline">{section.label}</span>
+                        <span className="font-medium hidden xs:inline">{section.label}</span>
                       </button>
                     );
                   })}
@@ -299,24 +299,24 @@ export default function Profile() {
             </div>
 
             {/* Contenu principal */}
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {/* Section Compte (Profil + Sécurité) */}
               {activeSection === "account" && (
                 <>
                   {/* Avatar et informations principales */}
                   <div className="rounded-xl backdrop-blur-xl p-3 sm:p-4 lg:p-5 bg-card border border-border shadow-xl">
-                    <h2 className="text-sm sm:text-base lg:text-lg font-bold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
-                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: '#00d4ff' }} />
+                    <h2 className="text-xs sm:text-sm lg:text-base font-bold text-foreground mb-2 sm:mb-3 flex items-center gap-2">
+                      <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" style={{ color: '#00d4ff' }} />
                       Photo de profil
                     </h2>
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4">
                       <div className="relative flex-shrink-0">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
                           <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                             {avatarUrl ? (
                               <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">{initials}</span>
+                              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{initials}</span>
                             )}
                           </div>
                         </div>
@@ -326,16 +326,16 @@ export default function Profile() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="mb-1">
-                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground truncate">
+                        <div className="mb-0.5 sm:mb-1">
+                          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-foreground truncate">
                             {displayLastName}
                           </h3>
-                          <h3 className="text-base sm:text-lg lg:text-xl font-bold text-foreground truncate">
+                          <h3 className="text-sm sm:text-base lg:text-lg font-bold text-foreground truncate">
                             {displayFirstName}
                           </h3>
                         </div>
-                        <p className="text-xs sm:text-sm text-muted-foreground truncate">{displayEmail}</p>
-                        <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">Membre depuis {new Date().getFullYear()}</p>
+                        <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground truncate">{displayEmail}</p>
+                        <p className="text-[9px] sm:text-[10px] lg:text-xs text-muted-foreground mt-0.5 sm:mt-1">Membre depuis {new Date().getFullYear()}</p>
                       </div>
                     </div>
                   </div>

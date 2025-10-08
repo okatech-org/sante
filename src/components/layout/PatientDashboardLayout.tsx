@@ -328,8 +328,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-72 pt-20 md:pt-6">
-          <div className="p-4 lg:p-6 max-w-7xl">
+        <main className="flex-1 md:ml-72 pt-16 md:pt-4">
+          <div className="p-2 sm:p-3 md:p-4 lg:p-6 max-w-7xl mx-auto w-full">
             {children}
           </div>
         </main>
