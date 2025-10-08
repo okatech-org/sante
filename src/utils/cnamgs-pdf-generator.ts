@@ -637,21 +637,9 @@ export const generateCNAMGSPdf = async (
   };
   
   // Informations en colonne à gauche de la carte - plus compact
-  drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, infoColW);
-  currentY += 10.5;
-  
-  drawInfoBox("NOM ET PRÉNOMS", `${data.nom} ${data.prenoms}`, MARGIN, currentY, infoColW);
-  currentY += 10.5;
-  
-  drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, infoColW);
-  currentY += 10.5;
-  
-  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
-  currentY += 10.5;
-  
-  // QUALITÉ et STATUT sur la même ligne (2 colonnes) - plus compact
+  // NUMÉRO D'ASSURÉ et STATUT sur la même ligne (2 colonnes)
   const halfColW = (infoColW - 2) / 2;
-  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, halfColW);
+  drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, halfColW);
   
   // Statut badge
   const statutX = MARGIN + halfColW + 2;
@@ -670,7 +658,28 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text(data.statut || "ACTIF", statutX + 10, currentY + 7.2, { align: "center" });
+  doc.text(data.statut, statutX + 4, currentY + 7.2);
+  currentY += 10.5;
+  
+  // NOM sur une ligne séparée
+  drawInfoBox("NOM", data.nom, MARGIN, currentY, infoColW);
+  currentY += 10.5;
+  
+  // PRÉNOMS sur sa propre ligne
+  drawInfoBox("PRÉNOMS", data.prenoms, MARGIN, currentY, infoColW);
+  currentY += 10.5;
+  
+  // DATE DE NAISSANCE et LIEU DE NAISSANCE sur la même ligne
+  drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, halfColW);
+  drawInfoBox("LIEU DE NAISSANCE", "Libreville", MARGIN + halfColW + 2, currentY, halfColW);
+  currentY += 10.5;
+  
+  // RÉGIME
+  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
+  currentY += 10.5;
+  
+  // QUALITÉ
+  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, infoColW);
   
   currentY += 13;
   
