@@ -229,6 +229,28 @@ export const professionalRegistrationSchema = z.object({
     
   acceptProfessionalCode: z.boolean()
     .refine((val) => val === true, "Vous devez accepter le code de déontologie"),
+  
+  // Étape 6 : Diplômes et Documents
+  diplomaTitle: z.string()
+    .min(5, "Le titre du diplôme doit contenir au moins 5 caractères")
+    .max(200, "Le titre ne peut pas dépasser 200 caractères"),
+  
+  diplomaInstitution: z.string()
+    .min(3, "Le nom de l'établissement est requis")
+    .max(200, "Le nom ne peut pas dépasser 200 caractères"),
+  
+  diplomaYear: z.number()
+    .min(1950, "Année invalide")
+    .max(new Date().getFullYear(), "L'année ne peut pas être dans le futur"),
+  
+  diplomaCountry: z.string()
+    .min(2, "Le pays est requis")
+    .max(100, "Le pays ne peut pas dépasser 100 caractères"),
+  
+  professionalExperience: z.string()
+    .max(1000, "L'expérience ne peut pas dépasser 1000 caractères")
+    .optional()
+    .or(z.literal("")),
 }).refine((data) => data.password === data.passwordConfirm, {
   message: "Les mots de passe ne correspondent pas",
   path: ["passwordConfirm"],
