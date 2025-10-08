@@ -205,6 +205,77 @@ export type Database = {
         }
         Relationships: []
       }
+      practice_locations: {
+        Row: {
+          address: string
+          arrondissement: string | null
+          city: string
+          created_at: string
+          email: string | null
+          geographical_landmark: string | null
+          id: string
+          is_primary: boolean | null
+          latitude: number | null
+          location_type: Database["public"]["Enums"]["practice_location_type"]
+          longitude: number | null
+          name: string
+          opening_hours: Json | null
+          phone: string | null
+          professional_id: string
+          province: string
+          quartier: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          arrondissement?: string | null
+          city: string
+          created_at?: string
+          email?: string | null
+          geographical_landmark?: string | null
+          id?: string
+          is_primary?: boolean | null
+          latitude?: number | null
+          location_type: Database["public"]["Enums"]["practice_location_type"]
+          longitude?: number | null
+          name: string
+          opening_hours?: Json | null
+          phone?: string | null
+          professional_id: string
+          province: string
+          quartier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          arrondissement?: string | null
+          city?: string
+          created_at?: string
+          email?: string | null
+          geographical_landmark?: string | null
+          id?: string
+          is_primary?: boolean | null
+          latitude?: number | null
+          location_type?: Database["public"]["Enums"]["practice_location_type"]
+          longitude?: number | null
+          name?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          professional_id?: string
+          province?: string
+          quartier?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "practice_locations_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prescription_pharmacy_requests: {
         Row: {
           created_at: string | null
@@ -245,6 +316,417 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      professional_availability: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          id: string
+          professional_id: string
+          time_slots: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          id?: string
+          professional_id: string
+          time_slots: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          professional_id?: string
+          time_slots?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_availability_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_conventions: {
+        Row: {
+          convention_number: string | null
+          created_at: string
+          end_date: string | null
+          id: string
+          organization: string
+          professional_id: string
+          start_date: string | null
+          status: Database["public"]["Enums"]["convention_status"]
+          tiers_payant_enabled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          convention_number?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          organization: string
+          professional_id: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["convention_status"]
+          tiers_payant_enabled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          convention_number?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          organization?: string
+          professional_id?: string
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["convention_status"]
+          tiers_payant_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_conventions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_diplomas: {
+        Row: {
+          country: string
+          created_at: string
+          document_url: string | null
+          id: string
+          institution: string
+          professional_id: string
+          specialty: string | null
+          title: string
+          updated_at: string
+          verification_notes: string | null
+          verification_status: string | null
+          verified: boolean | null
+          year_obtained: number
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          institution: string
+          professional_id: string
+          specialty?: string | null
+          title: string
+          updated_at?: string
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified?: boolean | null
+          year_obtained: number
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          institution?: string
+          professional_id?: string
+          specialty?: string | null
+          title?: string
+          updated_at?: string
+          verification_notes?: string | null
+          verification_status?: string | null
+          verified?: boolean | null
+          year_obtained?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_diplomas_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_leaves: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          professional_id: string
+          reason: string | null
+          replacement_professional_id: string | null
+          start_date: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          professional_id: string
+          reason?: string | null
+          replacement_professional_id?: string | null
+          start_date: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          professional_id?: string
+          reason?: string | null
+          replacement_professional_id?: string | null
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_leaves_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_leaves_replacement_professional_id_fkey"
+            columns: ["replacement_professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_services: {
+        Row: {
+          available: boolean | null
+          conventional_price: number | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          normal_price: number
+          professional_id: string
+          service_name: string
+          service_type: Database["public"]["Enums"]["consultation_type_enum"]
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean | null
+          conventional_price?: number | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          normal_price: number
+          professional_id: string
+          service_name: string
+          service_type: Database["public"]["Enums"]["consultation_type_enum"]
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean | null
+          conventional_price?: number | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          normal_price?: number
+          professional_id?: string
+          service_name?: string
+          service_type?: Database["public"]["Enums"]["consultation_type_enum"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_statistics: {
+        Row: {
+          average_rating: number | null
+          cash_revenue: number | null
+          cnamgs_revenue: number | null
+          created_at: string
+          home_visits: number | null
+          id: string
+          mobile_money_revenue: number | null
+          period_month: number
+          period_year: number
+          professional_id: string
+          punctuality_rate: number | null
+          teleconsultations: number | null
+          total_consultations: number | null
+          total_revenue: number | null
+          total_reviews: number | null
+          updated_at: string
+        }
+        Insert: {
+          average_rating?: number | null
+          cash_revenue?: number | null
+          cnamgs_revenue?: number | null
+          created_at?: string
+          home_visits?: number | null
+          id?: string
+          mobile_money_revenue?: number | null
+          period_month: number
+          period_year: number
+          professional_id: string
+          punctuality_rate?: number | null
+          teleconsultations?: number | null
+          total_consultations?: number | null
+          total_revenue?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Update: {
+          average_rating?: number | null
+          cash_revenue?: number | null
+          cnamgs_revenue?: number | null
+          created_at?: string
+          home_visits?: number | null
+          id?: string
+          mobile_money_revenue?: number | null
+          period_month?: number
+          period_year?: number
+          professional_id?: string
+          punctuality_rate?: number | null
+          teleconsultations?: number | null
+          total_consultations?: number | null
+          total_revenue?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_statistics_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_trainings: {
+        Row: {
+          certificate_url: string | null
+          created_at: string
+          date: string
+          duration_hours: number | null
+          id: string
+          organizer: string
+          professional_id: string
+          title: string
+        }
+        Insert: {
+          certificate_url?: string | null
+          created_at?: string
+          date: string
+          duration_hours?: number | null
+          id?: string
+          organizer: string
+          professional_id: string
+          title: string
+        }
+        Update: {
+          certificate_url?: string | null
+          created_at?: string
+          date?: string
+          duration_hours?: number | null
+          id?: string
+          organizer?: string
+          professional_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_trainings_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          documents_verified: boolean | null
+          email: string
+          emergency_phone: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          last_activity: string | null
+          missing_documents: string[] | null
+          nationality: string | null
+          numero_ordre: string | null
+          phone: string
+          photo_url: string | null
+          professional_type: Database["public"]["Enums"]["professional_type"]
+          status: Database["public"]["Enums"]["professional_status"]
+          title: string | null
+          updated_at: string
+          user_id: string
+          verification_date: string | null
+          verified: boolean | null
+          whatsapp_phone: string | null
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          documents_verified?: boolean | null
+          email: string
+          emergency_phone?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          last_activity?: string | null
+          missing_documents?: string[] | null
+          nationality?: string | null
+          numero_ordre?: string | null
+          phone: string
+          photo_url?: string | null
+          professional_type: Database["public"]["Enums"]["professional_type"]
+          status?: Database["public"]["Enums"]["professional_status"]
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          verification_date?: string | null
+          verified?: boolean | null
+          whatsapp_phone?: string | null
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          documents_verified?: boolean | null
+          email?: string
+          emergency_phone?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          last_activity?: string | null
+          missing_documents?: string[] | null
+          nationality?: string | null
+          numero_ordre?: string | null
+          phone?: string
+          photo_url?: string | null
+          professional_type?: Database["public"]["Enums"]["professional_type"]
+          status?: Database["public"]["Enums"]["professional_status"]
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_date?: string | null
+          verified?: boolean | null
+          whatsapp_phone?: string | null
+        }
+        Relationships: []
       }
       profile_change_requests: {
         Row: {
@@ -504,6 +986,39 @@ export type Database = {
         | "pharmacy"
         | "laboratory"
         | "hospital"
+      consultation_type_enum:
+        | "cabinet"
+        | "teleconsultation"
+        | "visite_domicile"
+        | "urgence"
+      convention_status:
+        | "non_conventionne"
+        | "en_cours"
+        | "conventionne"
+        | "suspendu"
+        | "expire"
+      practice_location_type:
+        | "cabinet_prive"
+        | "hopital_public"
+        | "clinique_privee"
+        | "centre_sante"
+        | "domicile"
+      professional_status:
+        | "en_validation"
+        | "actif"
+        | "suspendu"
+        | "inactif"
+        | "rejete"
+      professional_type:
+        | "medecin_generaliste"
+        | "medecin_specialiste"
+        | "infirmier"
+        | "ipa"
+        | "dentiste"
+        | "sage_femme"
+        | "pharmacien"
+        | "psychologue"
+        | "kinesitherapeute"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -641,6 +1156,44 @@ export const Constants = {
         "pharmacy",
         "laboratory",
         "hospital",
+      ],
+      consultation_type_enum: [
+        "cabinet",
+        "teleconsultation",
+        "visite_domicile",
+        "urgence",
+      ],
+      convention_status: [
+        "non_conventionne",
+        "en_cours",
+        "conventionne",
+        "suspendu",
+        "expire",
+      ],
+      practice_location_type: [
+        "cabinet_prive",
+        "hopital_public",
+        "clinique_privee",
+        "centre_sante",
+        "domicile",
+      ],
+      professional_status: [
+        "en_validation",
+        "actif",
+        "suspendu",
+        "inactif",
+        "rejete",
+      ],
+      professional_type: [
+        "medecin_generaliste",
+        "medecin_specialiste",
+        "infirmier",
+        "ipa",
+        "dentiste",
+        "sage_femme",
+        "pharmacien",
+        "psychologue",
+        "kinesitherapeute",
       ],
     },
   },
