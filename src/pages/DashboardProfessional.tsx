@@ -1,8 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Users, Activity, DollarSign, MessageSquare, ChevronRight, Edit } from "lucide-react";
+import { Calendar, Video, Stethoscope, Users, Activity, DollarSign, MessageSquare, ChevronRight, Edit, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
@@ -214,6 +215,79 @@ export default function DashboardProfessional() {
               <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
             </div>
           </div>
+        </div>
+
+        {/* CNAMGS & CNOM Verification Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+            <h3 className="text-lg font-semibold mb-4">Conventionnement CNAMGS</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Statut</span>
+                <Badge variant="default">Conventionné</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">N° Convention</span>
+                <span className="text-sm font-mono">CONV-2024-001</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Tiers-payant</span>
+                <Badge variant="outline" className="text-green-600">Actif</Badge>
+              </div>
+              <Button variant="outline" className="w-full mt-2" onClick={() => navigate('/professional/settings')}>
+                Voir détails
+              </Button>
+            </div>
+          </div>
+
+          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+            <h3 className="text-lg font-semibold mb-4">Vérification CNOM</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Statut</span>
+                <Badge variant="default">Vérifié</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">N° Ordre</span>
+                <span className="text-sm font-mono">{profileData?.numero_ordre || 'Non renseigné'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Spécialité</span>
+                <span className="text-sm">Cardiologie</span>
+              </div>
+              <Button variant="outline" className="w-full mt-2" onClick={() => navigate('/professional/settings')}>
+                Voir détails
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Prescriptions Électroniques */}
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Prescriptions Électroniques</h3>
+            <Button variant="outline" size="sm" onClick={() => navigate('/professional/prescriptions')}>
+              Voir tout
+            </Button>
+          </div>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="text-center p-3 rounded-lg bg-muted/30">
+              <p className="text-2xl font-bold text-foreground">89</p>
+              <p className="text-xs text-muted-foreground">Actives</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-muted/30">
+              <p className="text-2xl font-bold text-foreground">45</p>
+              <p className="text-xs text-muted-foreground">Ce mois</p>
+            </div>
+            <div className="text-center p-3 rounded-lg bg-muted/30">
+              <p className="text-2xl font-bold text-foreground">78%</p>
+              <p className="text-xs text-muted-foreground">CNAMGS</p>
+            </div>
+          </div>
+          <Button className="w-full" onClick={() => navigate('/professional/prescriptions')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Créer une ordonnance
+          </Button>
         </div>
 
         {/* Prochains RDV & Messages Grid */}
