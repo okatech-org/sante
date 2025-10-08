@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,12 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink } from "lucide-react";
+import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink, LogOut, Moon, Sun, Languages } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
 import logoSante from "@/assets/logo_sante.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
@@ -38,6 +41,8 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 export default function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
@@ -236,6 +241,14 @@ export default function Profile() {
 
       setPreferences({ ...preferences, ...updates });
       
+      // Update language and theme if changed
+      if (updates.language) {
+        setLanguage(updates.language as 'fr' | 'en' | 'es' | 'ar' | 'pt');
+      }
+      if (updates.theme) {
+        setTheme(updates.theme);
+      }
+      
       toast({
         title: "Succès",
         description: "Préférences mises à jour avec succès",
@@ -248,6 +261,31 @@ export default function Profile() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleLanguageChange = async (newLanguage: 'fr' | 'en' | 'es' | 'ar' | 'pt') => {
+    setLanguage(newLanguage);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
 
   if (loading) {
@@ -268,28 +306,19 @@ export default function Profile() {
   const initials = displayFullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background sombre avec étoiles */}
-      <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div className="absolute inset-0 opacity-40" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
-        }} />
-      </div>
-
+    <div className="min-h-screen relative overflow-hidden bg-background">
       {/* Container avec sidebar */}
       <div className="relative flex">
         {/* Sidebar Desktop et Tablette */}
         <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar border border-border shadow-2xl flex flex-col">
             {/* Logo */}
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-white">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-foreground">SANTE.GA</h1>
               </div>
-              <p className="text-xs text-gray-500">Votre santé à portée de clic</p>
+              <p className="text-xs text-muted-foreground">Votre santé à portée de clic</p>
             </div>
 
             {/* Menu */}
@@ -305,13 +334,13 @@ export default function Profile() {
                       if (item.path) navigate(item.path);
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-white/5'
+                          isActive ? '' : 'bg-muted'
                         }`}
                         style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                       >
@@ -332,18 +361,66 @@ export default function Profile() {
               })}
             </nav>
 
-            {/* User Profile */}
-            <div className="mt-auto pt-4 border-t border-white/10">
-              <div className="p-3 rounded-lg bg-white/5">
+            {/* Theme, Language & Logout Controls */}
+            <div className="mt-auto pt-4 border-t border-border space-y-3">
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    <DropdownMenuItem onClick={() => handleThemeChange("light")}>
+                      Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
+                      Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange("system")}>
+                      Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Languages className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
+                      Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
+                      English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleLogout}
+                  className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* User Profile */}
+              <div className="p-3 rounded-lg bg-muted">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground">
                     {initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {fullName.split(' ')[0]}
                     </p>
-                    <p className="text-xs text-gray-500">Paramètres</p>
+                    <p className="text-xs text-muted-foreground">Paramètres</p>
                   </div>
                 </div>
               </div>
@@ -352,28 +429,28 @@ export default function Profile() {
         </aside>
 
         {/* Mobile Header avec menu hamburger */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-border">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-white tracking-tight">SANTE.GA</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
             </div>
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent text-accent-foreground hover:bg-accent/80 transition-all">
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+              <SheetContent side="left" className="w-72 bg-sidebar border-border p-0">
                 <div className="h-full flex flex-col p-6">
                   {/* Logo */}
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-white tracking-tight">SANTE.GA</h1>
+                      <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
                     </div>
-                    <p className="text-xs text-gray-500 ml-1">Votre santé à portée de clic</p>
+                    <p className="text-xs text-muted-foreground ml-1">Votre santé à portée de clic</p>
                   </div>
 
                   {/* Menu Mobile */}
@@ -390,13 +467,13 @@ export default function Profile() {
                             setMobileMenuOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                            isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-white/5'
+                                isActive ? '' : 'bg-muted'
                               }`}
                               style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                             >
@@ -417,16 +494,64 @@ export default function Profile() {
                     })}
                   </nav>
 
-                  {/* User Profile Mobile */}
-                  <div className="mt-auto pt-6 border-t border-white/10">
-                    <div className="p-3 rounded-xl bg-white/5">
+                  {/* Mobile Theme, Language & Logout */}
+                  <div className="mt-auto pt-6 border-t border-border space-y-3">
+                    <div className="flex items-center gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover">
+                          <DropdownMenuItem onClick={() => handleThemeChange("light")}>
+                            Clair
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
+                            Sombre
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange("system")}>
+                            Système
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-9 w-9">
+                            <Languages className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover">
+                          <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
+                            Français
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
+                            English
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleLogout}
+                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* User Profile Mobile */}
+                    <div className="p-3 rounded-xl bg-muted">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff] text-lg">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground text-lg">
                           {initials}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">{fullName}</p>
-                          <p className="text-xs text-gray-500">Paramètres</p>
+                          <p className="text-sm font-semibold text-foreground truncate">{fullName}</p>
+                          <p className="text-xs text-muted-foreground">Paramètres</p>
                         </div>
                       </div>
                     </div>
