@@ -340,9 +340,9 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // BLOC COORDONNÉES À GAUCHE
+  // BLOC COORDONNÉES À GAUCHE - plus compact
   const contactW = 75;
-  const contactH = 27;
+  const contactH = 22;
   const contactX = MARGIN;
   const contactY = 4;
   
@@ -352,7 +352,7 @@ export const generateCNAMGSPdf = async (
   doc.setLineWidth(0.15);
   doc.roundedRect(contactX, contactY, contactW, contactH, 2, 2, "FD");
   
-  let contactTextY = contactY + 5;
+  let contactTextY = contactY + 4;
   
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
@@ -362,7 +362,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(6.5);
   doc.text("Libreville, Gabon", contactX + 34, contactTextY);
   
-  contactTextY += 4.5;
+  contactTextY += 4;
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
   doc.text("Téléphone :", contactX + 2, contactTextY);
@@ -370,7 +370,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(6.5);
   doc.text("+241 01 XX XX XX", contactX + 18, contactTextY);
   
-  contactTextY += 4.5;
+  contactTextY += 4;
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
   doc.text("Email :", contactX + 2, contactTextY);
@@ -378,7 +378,7 @@ export const generateCNAMGSPdf = async (
   doc.setFontSize(6.5);
   doc.text("contact@cnamgs.ga", contactX + 11, contactTextY);
   
-  contactTextY += 4.5;
+  contactTextY += 4;
   doc.setFontSize(7);
   doc.setFont("helvetica", "bold");
   doc.text("Site web :", contactX + 2, contactTextY);
@@ -409,26 +409,26 @@ export const generateCNAMGSPdf = async (
   // TITRE DU DOCUMENT
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Fond très clair (background: 0 0% 98%)
+  // Fond très clair (background: 0 0% 98%) - plus compact
   doc.setFillColor(250, 250, 250);
-  doc.rect(0, 35, A4.w, 18, "F");
+  doc.rect(0, 35, A4.w, 15, "F");
   
   // Bordure gauche turquoise (#17CCB9)
   doc.setFillColor(23, 204, 185);
-  doc.rect(0, 35, 1.2, 18, "F");
+  doc.rect(0, 35, 1.2, 15, "F");
   
   // Titre (foreground: 210 20% 15%)
-  doc.setFontSize(16);
+  doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground color
-  doc.text("ATTESTATION DE DROITS", MARGIN, 44);
+  doc.text("ATTESTATION DE DROITS", MARGIN, 42);
   
   // Numéro d'attestation (muted-foreground: 215 16% 47%)
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground
   const numAttestation = data.numeroAttestation || `2025/CNAMGS/${data.numero.replace(/-/g, '')}`;
-  doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 50);
+  doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 47);
 
   // Charger les images pour la carte (à utiliser plus tard)
   const armoiriesData = assets?.armoiriesUrl
@@ -445,35 +445,35 @@ export const generateCNAMGSPdf = async (
   const cardImageData = await captureSVGAsImage();
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MESSAGE PERSONNALISÉ (pleine largeur)
+  // MESSAGE PERSONNALISÉ (pleine largeur) - plus compact
   // ═══════════════════════════════════════════════════════════════════════════
   
-  let currentY = HEADER_H + 8;
+  let currentY = HEADER_H + 5;
   const messageWidth = A4.w - 2 * MARGIN;
   
   // Encadré message personnalisé (card: 0 0% 100% avec border)
   doc.setFillColor(255, 255, 255); // card background
   doc.setDrawColor(226, 232, 240); // border color (214 32% 91%)
   doc.setLineWidth(0.15);
-  doc.roundedRect(MARGIN, currentY, messageWidth, 40, 3, 3, "FD");
+  doc.roundedRect(MARGIN, currentY, messageWidth, 34, 3, 3, "FD");
   
-  currentY += 5;
+  currentY += 4;
   
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("VOTRE ATTESTATION DE DROITS", MARGIN + 3, currentY);
   
-  currentY += 8;
+  currentY += 6;
   
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(38, 43, 51); // foreground
   
   const salutation = data.sexe === "F" ? "Chère madame" : "Cher monsieur";
   doc.text(`${salutation} ${data.nom},`, MARGIN + 3, currentY);
   
-  currentY += 6;
+  currentY += 5;
   
   const messageLines = [
     "Pour être mieux suivi, respectez le parcours de soins coordonné et présentez cette attestation lors de chaque",
@@ -483,38 +483,38 @@ export const generateCNAMGSPdf = async (
     "CNAMGS pour mettre à jour vos droits et votre carte d'assuré."
   ];
   
-  doc.setFontSize(9.5);
+  doc.setFontSize(8.5);
   messageLines.forEach(line => {
     doc.text(line, MARGIN + 3, currentY);
-    currentY += line === "" ? 3 : 5;
+    currentY += line === "" ? 2.5 : 4;
   });
   
-  currentY += 4;
+  currentY += 3;
   
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   doc.setFont("helvetica", "italic");
   doc.setTextColor(0, 161, 254); // secondary blue (#00A1FE)
   doc.text("Avec toute notre attention,", MARGIN + 3, currentY);
-  currentY += 4.5;
+  currentY += 3.5;
   doc.text("Votre correspondant CNAMGS", MARGIN + 3, currentY);
   
-  currentY += 12;
+  currentY += 8;
   
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 1 : Informations de l'Assuré (avec carte CNAMGS)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Titre de section (primary-light background) - largeur totale
+  // Titre de section (primary-light background) - largeur totale - plus compact
   doc.setFillColor(210, 239, 235); // primary-light (173 70% 85%)
-  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 6, "F");
   doc.setFillColor(23, 204, 185); // primary turquoise
-  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  doc.rect(MARGIN, currentY, 0.8, 6, "F");
   
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4.5);
-  currentY += 10;
+  doc.text("INFORMATIONS DE L'ASSURÉ", MARGIN + 3, currentY + 4);
+  currentY += 8;
   
   // Position de la carte dans cette section (à droite)
   const CARD_Y = currentY;
@@ -615,39 +615,39 @@ export const generateCNAMGSPdf = async (
   const infoColW = A4.w - CARD.w - 3 * MARGIN - 5;
   
   const drawInfoBox = (label: string, value: string, x: number, y: number, w: number) => {
-    // Fond (card white avec border subtile)
+    // Fond (card white avec border subtile) - plus compact
     doc.setFillColor(255, 255, 255); // card
     doc.setDrawColor(226, 232, 240); // border (214 32% 91%)
     doc.setLineWidth(0.12);
-    doc.roundedRect(x, y, w, 10, 2, 2, "FD");
+    doc.roundedRect(x, y, w, 9, 2, 2, "FD");
     
     // Label (muted-foreground)
-    doc.setFontSize(7);
+    doc.setFontSize(6.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(102, 112, 133); // muted-foreground (215 16% 47%)
-    doc.text(label, x + 2, y + 3.5);
+    doc.text(label, x + 2, y + 3.2);
     
     // Valeur (foreground)
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(38, 43, 51); // foreground (210 20% 15%)
-    doc.text(value, x + 2, y + 7.5);
+    doc.text(value, x + 2, y + 6.8);
   };
   
-  // Informations en colonne à gauche de la carte
+  // Informations en colonne à gauche de la carte - plus compact
   drawInfoBox("NUMÉRO D'ASSURÉ", data.numero, MARGIN, currentY, infoColW);
-  currentY += 12;
+  currentY += 10.5;
   
   drawInfoBox("NOM ET PRÉNOMS", `${data.nom} ${data.prenoms}`, MARGIN, currentY, infoColW);
-  currentY += 12;
+  currentY += 10.5;
   
   drawInfoBox("DATE DE NAISSANCE", data.dateNaissance, MARGIN, currentY, infoColW);
-  currentY += 12;
+  currentY += 10.5;
   
   drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
-  currentY += 12;
+  currentY += 10.5;
   
-  // QUALITÉ et STATUT sur la même ligne (2 colonnes)
+  // QUALITÉ et STATUT sur la même ligne (2 colonnes) - plus compact
   const halfColW = (infoColW - 2) / 2;
   drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, halfColW);
   
@@ -656,21 +656,21 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(255, 255, 255);
   doc.setDrawColor(226, 232, 240);
   doc.setLineWidth(0.12);
-  doc.roundedRect(statutX, currentY, halfColW, 10, 2, 2, "FD");
-  doc.setFontSize(7);
+  doc.roundedRect(statutX, currentY, halfColW, 9, 2, 2, "FD");
+  doc.setFontSize(6.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133);
-  doc.text("STATUT", statutX + 2, currentY + 3.5);
+  doc.text("STATUT", statutX + 2, currentY + 3.2);
   
   const isActif = data.statut !== "Inactif";
   doc.setFillColor(isActif ? 230 : 239, isActif ? 59 : 68, isActif ? 122 : 68);
-  doc.roundedRect(statutX + 2, currentY + 5, 18, 4, 2, 2, "F");
-  doc.setFontSize(7);
+  doc.roundedRect(statutX + 2, currentY + 4.5, 16, 3.5, 2, 2, "F");
+  doc.setFontSize(6.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text(data.statut || "ACTIF", statutX + 11, currentY + 8, { align: "center" });
+  doc.text(data.statut || "ACTIF", statutX + 10, currentY + 7.2, { align: "center" });
   
-  currentY += 15;
+  currentY += 13;
   
   // S'assurer qu'on passe en dessous de la carte
   currentY = Math.max(currentY, CARD_Y + CARD.h + 5);
@@ -679,39 +679,39 @@ export const generateCNAMGSPdf = async (
   // SECTION 2 : Droits et Taux de Couverture (pleine largeur)
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Titre de section
+  // Titre de section - plus compact
   doc.setFillColor(210, 239, 235); // primary-light
-  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 6, "F");
   doc.setFillColor(23, 204, 185); // primary turquoise
-  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  doc.rect(MARGIN, currentY, 0.8, 6, "F");
   
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4.5);
-  currentY += 10;
+  doc.text("DROITS ET TAUX DE COUVERTURE", MARGIN + 3, currentY + 4);
+  currentY += 8;
   
-  // Tableau des couvertures
+  // Tableau des couvertures - plus compact
   const tableX = MARGIN;
   const tableW = A4.w - 2 * MARGIN;
   const col1W = tableW * 0.5;
   const col2W = tableW * 0.25;
   const col3W = tableW * 0.25;
-  const rowH = 8;
+  const rowH = 7;
   
   // En-tête du tableau (primary turquoise)
   doc.setFillColor(23, 204, 185); // primary turquoise
   doc.rect(tableX, currentY, tableW, rowH, "F");
   
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text("Type de Prestation", tableX + 3, currentY + 5.5);
-  doc.text("Taux de Couverture", tableX + col1W + 3, currentY + 5.5);
-  doc.text("Ticket Modérateur", tableX + col1W + col2W + 3, currentY + 5.5);
+  doc.text("Type de Prestation", tableX + 3, currentY + 4.8);
+  doc.text("Taux de Couverture", tableX + col1W + 3, currentY + 4.8);
+  doc.text("Ticket Modérateur", tableX + col1W + col2W + 3, currentY + 4.8);
   currentY += rowH;
   
-  // Lignes du tableau
+  // Lignes du tableau - plus compact
   data.couvertures.forEach((couv, idx) => {
     // Fond alterné (muted vs white)
     if (idx % 2 === 0) {
@@ -725,92 +725,92 @@ export const generateCNAMGSPdf = async (
     doc.line(tableX, currentY + rowH, tableX + tableW, currentY + rowH);
     
     // Contenu
-    doc.setFontSize(8);
+    doc.setFontSize(7.5);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(38, 43, 51); // foreground
-    doc.text(couv.type, tableX + 3, currentY + 5.5);
+    doc.text(couv.type, tableX + 3, currentY + 4.8);
     
     doc.setFont("helvetica", "bold");
     doc.setTextColor(23, 204, 185); // primary turquoise
-    doc.setFontSize(10);
-    doc.text(couv.taux, tableX + col1W + 3, currentY + 5.5);
+    doc.setFontSize(9);
+    doc.text(couv.taux, tableX + col1W + 3, currentY + 4.8);
     
     doc.setFont("helvetica", "normal");
     doc.setTextColor(38, 43, 51); // foreground
-    doc.setFontSize(8);
-    doc.text(couv.ticket, tableX + col1W + col2W + 3, currentY + 5.5);
+    doc.setFontSize(7.5);
+    doc.text(couv.ticket, tableX + col1W + col2W + 3, currentY + 4.8);
     
     currentY += rowH;
   });
   
-  currentY += 8;
+  currentY += 6;
   
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3 : Période de Validité
   // ═══════════════════════════════════════════════════════════════════════════
   
-  // Titre de section
+  // Titre de section - plus compact
   doc.setFillColor(210, 239, 235); // primary-light
-  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 7, "F");
+  doc.rect(MARGIN, currentY, A4.w - 2 * MARGIN, 6, "F");
   doc.setFillColor(23, 204, 185); // primary turquoise
-  doc.rect(MARGIN, currentY, 0.8, 7, "F");
+  doc.rect(MARGIN, currentY, 0.8, 6, "F");
   
-  doc.setFontSize(9);
+  doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
-  doc.text("PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4.5);
-  currentY += 10;
+  doc.text("PÉRIODE DE VALIDITÉ", MARGIN + 3, currentY + 4);
+  currentY += 8;
   
-  // Grille validité (4 colonnes)
+  // Grille validité (4 colonnes) - plus compact
   const validiteColW = (A4.w - 2 * MARGIN) / 4;
   drawInfoBox("DATE DE DÉBUT", data.dateDebut || "01/01/2025", MARGIN, currentY, validiteColW - 2);
   drawInfoBox("DATE DE FIN", data.dateFin || "31/12/2025", MARGIN + validiteColW, currentY, validiteColW - 2);
   drawInfoBox("DATE D'ÉDITION", new Date().toLocaleDateString("fr-FR"), MARGIN + 2 * validiteColW, currentY, validiteColW - 2);
   drawInfoBox("EMPLOYEUR", data.employeur, MARGIN + 3 * validiteColW, currentY, validiteColW - 2);
   
-  currentY += 15;
+  currentY += 12;
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // AVERTISSEMENT (fond rose opaque #E63B7A du design system)
+  // AVERTISSEMENT (fond rose opaque #E63B7A du design system) - plus compact
   // ═══════════════════════════════════════════════════════════════════════════
   
   doc.setFillColor(254, 231, 240); // fond rose très clair (accent/10)
-  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 22, 2, 2, "F");
+  doc.roundedRect(MARGIN, currentY, A4.w - 2 * MARGIN, 18, 2, 2, "F");
   
   doc.setFillColor(230, 59, 122); // accent rose
-  doc.rect(MARGIN, currentY, 1.5, 22, "F");
+  doc.rect(MARGIN, currentY, 1.5, 18, "F");
   
-  doc.setFontSize(8);
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(139, 10, 61); // accent dark
-  doc.text("IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 5);
+  doc.text("IMPORTANT - MENTIONS LÉGALES", MARGIN + 3, currentY + 4.5);
   
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.5);
+  doc.setFontSize(7);
   doc.setTextColor(100, 8, 46); // accent darker
   const warningText = "Cette attestation est valable uniquement auprès des prestataires conventionnés CNAMGS.";
   const warningText2 = "Le système de tiers-payant s'applique selon les tarifs conventionnés. Tout dépassement (GAP)";
   const warningText3 = "reste à votre charge. Toute attestation de droits antérieure est à détruire.";
-  doc.text(warningText, MARGIN + 3, currentY + 9);
-  doc.text(warningText2, MARGIN + 3, currentY + 12.5);
-  doc.text(warningText3, MARGIN + 3, currentY + 16);
+  doc.text(warningText, MARGIN + 3, currentY + 8);
+  doc.text(warningText2, MARGIN + 3, currentY + 11);
+  doc.text(warningText3, MARGIN + 3, currentY + 14);
   
   doc.setFont("helvetica", "italic");
-  doc.setFontSize(6.8);
+  doc.setFontSize(6.5);
   doc.setTextColor(80, 5, 37); // accent darkest
-  doc.text("La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations.", MARGIN + 3, currentY + 19.5);
+  doc.text("La loi rend passible d'amende et/ou d'emprisonnement quiconque se rend coupable de fraudes ou de fausses déclarations.", MARGIN + 3, currentY + 17);
   
-  currentY += 26;
+  currentY += 22;
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // SIGNATURE
+  // SIGNATURE - plus compact
   // ═══════════════════════════════════════════════════════════════════════════
   
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text(`Fait à Libreville, le ${new Date().toLocaleDateString("fr-FR")}`, A4.w - MARGIN, currentY, { align: "right" });
-  currentY += 15;
+  currentY += 8;
   
   // Ligne de signature
   const signatureX = A4.w - MARGIN - 50;
@@ -818,13 +818,13 @@ export const generateCNAMGSPdf = async (
   doc.setLineWidth(0.4);
   doc.line(signatureX, currentY, A4.w - MARGIN, currentY);
   
-  currentY += 5;
-  doc.setFontSize(8);
+  currentY += 4;
+  doc.setFontSize(7.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(23, 204, 185); // primary turquoise
   doc.text("Le Directeur Général", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
-  currentY += 3.5;
-  doc.setFontSize(7);
+  currentY += 3;
+  doc.setFontSize(6.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground
   doc.text("CNAMGS", (signatureX + A4.w - MARGIN) / 2, currentY, { align: "center" });
