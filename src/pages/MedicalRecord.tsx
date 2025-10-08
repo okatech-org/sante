@@ -74,15 +74,15 @@ export default function MedicalRecord() {
   const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
 
   const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', color: '#ffaa00' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088' }
+    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', colorClass: 'text-primary bg-primary/10' },
+    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', colorClass: 'text-secondary bg-secondary/10', badgeClass: 'bg-secondary' },
+    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', colorClass: 'text-primary bg-primary/10' },
+    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', colorClass: 'text-warning bg-warning/10', badgeClass: 'bg-warning' },
+    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', colorClass: 'text-accent bg-accent/10', badgeClass: 'bg-accent' },
+    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', colorClass: 'text-secondary bg-secondary/10' },
+    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', colorClass: 'text-primary bg-primary/10' },
+    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', colorClass: 'text-warning bg-warning/10', badgeClass: 'bg-warning' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', colorClass: 'text-accent bg-accent/10', badgeClass: 'bg-accent' }
   ];
 
   useEffect(() => {
@@ -224,18 +224,16 @@ export default function MedicalRecord() {
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-muted/30'
+                          isActive ? item.colorClass : 'bg-muted/30'
                         }`}
-                        style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                       >
-                        <Icon className="w-5 h-5" style={{ color: isActive ? item.color : '' }} />
+                        <Icon className={`w-5 h-5 ${isActive ? item.colorClass.split(' ')[0] : ''}`} />
                       </div>
                       <span className="text-sm font-medium">{item.label}</span>
                     </div>
                     {item.badge && (
                       <span
-                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                        style={{ backgroundColor: item.color }}
+                        className={`px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground ${item.badgeClass || 'bg-primary'}`}
                       >
                         {item.badge}
                       </span>
@@ -321,18 +319,16 @@ export default function MedicalRecord() {
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-muted/30'
+                                isActive ? item.colorClass : 'bg-muted/30'
                               }`}
-                              style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                             >
-                              <Icon className="w-5 h-5" style={{ color: isActive ? item.color : '' }} />
+                              <Icon className={`w-5 h-5 ${isActive ? item.colorClass.split(' ')[0] : ''}`} />
                             </div>
                             <span className="text-sm font-medium">{item.label}</span>
                           </div>
                           {item.badge && (
                             <span
-                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                              style={{ backgroundColor: item.color }}
+                              className={`px-2.5 py-1 text-xs font-semibold rounded-full text-primary-foreground ${item.badgeClass || 'bg-primary'}`}
                             >
                               {item.badge}
                             </span>
