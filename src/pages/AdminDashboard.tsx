@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Lock, AlertTriangle } from "lucide-react";
@@ -18,13 +18,13 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <SuperAdminLayout>
         <div className="container max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
             <p className="text-muted-foreground">Chargement...</p>
           </div>
         </div>
-      </MainLayout>
+      </SuperAdminLayout>
     );
   }
 
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* En-tête */}
         <div className="space-y-2">
@@ -137,6 +137,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 }

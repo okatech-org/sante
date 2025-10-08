@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,15 +122,16 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Paramètres système</h1>
-          <p className="text-muted-foreground">
-            Configuration avancée de la plateforme SANTE.GA
-          </p>
+    <SuperAdminLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Paramètres système</h1>
+            <p className="text-muted-foreground">
+              Configuration avancée de la plateforme SANTE.GA
+            </p>
+          </div>
         </div>
-      </div>
 
       <Tabs defaultValue="system" className="space-y-4">
         <TabsList className="grid w-full grid-cols-6">
@@ -644,6 +646,7 @@ export default function AdminSettings() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </SuperAdminLayout>
   );
 }
