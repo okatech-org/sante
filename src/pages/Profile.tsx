@@ -11,14 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, Home, Video, FileHeart, Pill, Activity, Settings, Menu, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink, LogOut, Moon, Sun, Languages } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Loader2, User, Mail, Phone, MapPin, Calendar, Save, Lock, Bell, Eye, Shield, Palette, HelpCircle, MessageCircle, Book, Check, AlertCircle, ExternalLink, Video } from "lucide-react";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
-import logoSante from "@/assets/logo_sante.png";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { useTheme } from "next-themes";
+import { useNavigate } from "react-router-dom";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
@@ -48,8 +46,6 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [activeSection, setActiveSection] = useState("account");
-  const [activeMenu, setActiveMenu] = useState('settings');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [preferences, setPreferences] = useState({
@@ -80,18 +76,6 @@ export default function Profile() {
   const displayLastName = lastName || fallbackLastName;
   const displayFullName = `${displayFirstName} ${displayLastName}`.trim() || fullName;
   const displayEmail = currentEmail || user?.email || "";
-
-  const menuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
-    { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
-    { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
-    { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
-    { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
-    { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
-    { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', color: '#ffaa00' },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088' }
-  ];
 
   const settingsSections = [
     { id: "account", label: "Compte", icon: User, color: "#00d4ff" },
@@ -267,308 +251,22 @@ export default function Profile() {
     }
   };
 
-  const handleLanguageChange = async (newLanguage: 'fr' | 'en' | 'es' | 'ar' | 'pt') => {
-    setLanguage(newLanguage);
-    if (user?.id) {
-      await supabase
-        .from('profiles')
-        .update({ language: newLanguage })
-        .eq('id', user.id);
-    }
-  };
-
-  const handleThemeChange = async (newTheme: string) => {
-    setTheme(newTheme);
-    if (user?.id) {
-      await supabase
-        .from('profiles')
-        .update({ theme: newTheme })
-        .eq('id', user.id);
-    }
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0f1419] via-[#1a1f2e] to-[#0f1419] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
-          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
-        }} />
-        <div className="flex items-center justify-center min-h-screen relative z-10">
-          <Loader2 className="h-8 w-8 animate-spin text-[#00d4ff]" />
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
-      </div>
+      </PatientDashboardLayout>
     );
   }
 
   const initials = displayFullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background">
-      {/* Container avec sidebar */}
-      <div className="relative flex">
-        {/* Sidebar Desktop et Tablette */}
-        <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar border border-border shadow-2xl flex flex-col">
-            {/* Logo */}
-            <div className="mb-6">
-              <div className="flex items-center gap-3 mb-2">
-                <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-foreground">SANTE.GA</h1>
-              </div>
-              <p className="text-xs text-muted-foreground">Votre santé à portée de clic</p>
-            </div>
-
-            {/* Menu */}
-            <nav className="space-y-1 flex-1 overflow-y-auto">
-              {menuItems.map(item => {
-                const Icon = item.icon;
-                const isActive = activeMenu === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveMenu(item.id);
-                      if (item.path) navigate(item.path);
-                    }}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-muted'
-                        }`}
-                        style={isActive ? { backgroundColor: `${item.color}20` } : {}}
-                      >
-                        <Icon className="w-5 h-5" style={{ color: isActive ? item.color : '' }} />
-                      </div>
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </div>
-                    {item.badge && (
-                      <span
-                        className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                        style={{ backgroundColor: item.color }}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-
-            {/* Theme, Language & Logout Controls */}
-            <div className="mt-auto pt-4 border-t border-border space-y-3">
-              <div className="flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9">
-                      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-popover">
-                    <DropdownMenuItem onClick={() => handleThemeChange("light")}>
-                      Clair
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
-                      Sombre
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleThemeChange("system")}>
-                      Système
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9">
-                      <Languages className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="bg-popover">
-                    <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
-                      Français
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
-                      English
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleLogout}
-                  className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* User Profile */}
-              <div className="p-3 rounded-lg bg-muted">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground">
-                    {initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {fullName.split(' ')[0]}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Paramètres</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Mobile Header avec menu hamburger */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-border">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
-            </div>
-            
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent text-accent-foreground hover:bg-accent/80 transition-all">
-                  <Menu className="w-6 h-6" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-sidebar border-border p-0">
-                <div className="h-full flex flex-col p-6">
-                  {/* Logo */}
-                  <div className="mb-8 mt-6">
-                    <div className="flex items-center gap-3 mb-2">
-                      <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-foreground tracking-tight">SANTE.GA</h1>
-                    </div>
-                    <p className="text-xs text-muted-foreground ml-1">Votre santé à portée de clic</p>
-                  </div>
-
-                  {/* Menu Mobile */}
-                  <nav className="space-y-1 flex-1 overflow-y-auto">
-                    {menuItems.map(item => {
-                      const Icon = item.icon;
-                      const isActive = activeMenu === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            setActiveMenu(item.id);
-                            if (item.path) navigate(item.path);
-                            setMobileMenuOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-muted'
-                              }`}
-                              style={isActive ? { backgroundColor: `${item.color}20` } : {}}
-                            >
-                              <Icon className="w-5 h-5" style={{ color: isActive ? item.color : '' }} />
-                            </div>
-                            <span className="text-sm font-medium">{item.label}</span>
-                          </div>
-                          {item.badge && (
-                            <span
-                              className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                              style={{ backgroundColor: item.color }}
-                            >
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </nav>
-
-                  {/* Mobile Theme, Language & Logout */}
-                  <div className="mt-auto pt-6 border-t border-border space-y-3">
-                    <div className="flex items-center gap-2">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-9 w-9">
-                            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-popover">
-                          <DropdownMenuItem onClick={() => handleThemeChange("light")}>
-                            Clair
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
-                            Sombre
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleThemeChange("system")}>
-                            Système
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-9 w-9">
-                            <Languages className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-popover">
-                          <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
-                            Français
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
-                            English
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleLogout}
-                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <LogOut className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    {/* User Profile Mobile */}
-                    <div className="p-3 rounded-xl bg-muted">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold bg-primary text-primary-foreground text-lg">
-                          {initials}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-foreground truncate">{fullName}</p>
-                          <p className="text-xs text-muted-foreground">Paramètres</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <main className="flex-1 md:ml-72 p-3 lg:p-4 pt-16 md:pt-4 min-w-0">
-          <div className="space-y-3 max-w-6xl mx-auto">
+    <PatientDashboardLayout>
+      <div className="space-y-3 max-w-6xl mx-auto">
             {/* Menu secondaire des sections */}
             <div className="w-full overflow-hidden">
               <div className="rounded-xl backdrop-blur-xl p-2 bg-card border border-border shadow-xl">
@@ -1314,8 +1012,6 @@ export default function Profile() {
               )}
             </div>
           </div>
-        </main>
-      </div>
-    </div>
-  );
-}
+        </PatientDashboardLayout>
+      );
+    }
