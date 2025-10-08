@@ -34,6 +34,7 @@ import ProfessionalMessages from "./pages/professional/Messages";
 import ProfessionalTeleExpertise from "./pages/professional/TeleExpertise";
 import ProfessionalSettings from "./pages/professional/Settings";
 import ProfessionalIntegrations from "./pages/professional/Integrations";
+import TeleconsultationSession from "./pages/professional/TeleconsultationSession";
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
 import Prescriptions from "./pages/Prescriptions";
@@ -260,6 +261,11 @@ const App = () => (
             <Route path="/professional/integrations" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
                 <ProfessionalIntegrations />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/teleconsultation/:sessionId" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <TeleconsultationSession />
               </ProtectedRoute>
             } />
           <Route path="*" element={<NotFound />} />
