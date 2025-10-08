@@ -728,9 +728,10 @@ export default function Profile() {
                               <Input
                                 id="birth_place"
                                 {...register("birth_place")}
-                                placeholder="Ex: Libreville"
+                                placeholder="Selon attestation CNAMGS"
                                 className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
                               />
+                              <p className="text-[9px] text-muted-foreground">Doit correspondre à votre attestation CNAMGS</p>
                             </div>
                           </div>
 
