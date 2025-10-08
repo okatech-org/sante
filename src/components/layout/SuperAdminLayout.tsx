@@ -32,8 +32,8 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex h-screen w-64 flex-col border-r bg-sidebar sticky top-0">
+      {/* Desktop & Tablet Sidebar */}
+      <aside className="hidden md:flex h-screen w-64 flex-col border-r bg-sidebar sticky top-0">
         {/* Logo / Brand */}
         <div className="border-b p-4">
           <Link to="/dashboard/superadmin" className="flex items-center gap-2">
@@ -86,8 +86,8 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
         </div>
       </aside>
 
-      {/* Mobile/Tablet Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-sidebar-border">
+      {/* Mobile Header (only on small screens) */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-sidebar-border">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
@@ -164,7 +164,7 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto lg:pt-0 pt-20">
+      <main className="flex-1 overflow-y-auto md:pt-0 pt-20">
         <div className="container max-w-7xl mx-auto px-4 py-6">
           {children}
         </div>
