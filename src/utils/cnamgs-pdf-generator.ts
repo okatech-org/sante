@@ -674,12 +674,9 @@ export const generateCNAMGSPdf = async (
   drawInfoBox("LIEU DE NAISSANCE", "Libreville", MARGIN + halfColW + 2, currentY, halfColW);
   currentY += 10.5;
   
-  // RÉGIME
-  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, infoColW);
-  currentY += 10.5;
-  
-  // QUALITÉ
-  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN, currentY, infoColW);
+  // RÉGIME et QUALITÉ sur la même ligne
+  drawInfoBox("RÉGIME", data.regime, MARGIN, currentY, halfColW);
+  drawInfoBox("QUALITÉ", data.qualite || "Assuré Principal", MARGIN + halfColW + 2, currentY, halfColW);
   
   currentY += 13;
   
