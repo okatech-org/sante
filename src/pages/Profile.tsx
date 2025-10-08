@@ -133,7 +133,7 @@ export default function Profile() {
           email: data.email || "",
           phone: data.phone || "",
           birth_date: data.birth_date || "",
-          birth_place: data.birth_place || "",
+          birth_place: (data as any).birth_place || "",
           gender: data.gender || "",
           province: data.province || "",
           city: data.city || "",
@@ -652,8 +652,8 @@ export default function Profile() {
                           Informations personnelles
                         </h2>
                         <div className="space-y-2 flex-1">
-                          <div className="grid grid-cols-2 gap-2 items-stretch">
-                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                          <div className="grid grid-cols-3 gap-2 items-stretch">
+                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-2">
                               <Label htmlFor="last_name" className="text-muted-foreground text-xs flex items-center gap-1.5">
                                 <User className="h-3 w-3 flex-shrink-0" />
                                 Nom *
@@ -669,7 +669,7 @@ export default function Profile() {
                               )}
                             </div>
 
-                            <div className="space-y-1.5 w-full h-full flex flex-col">
+                            <div className="space-y-1.5 w-full h-full flex flex-col col-span-1">
                               <Label htmlFor="gender" className="text-muted-foreground text-xs flex items-center gap-1.5">
                                 <User className="h-3 w-3 flex-shrink-0" />
                                 Genre
