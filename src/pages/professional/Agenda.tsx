@@ -67,52 +67,10 @@ export default function ProfessionalAgenda() {
     }
   };
 
-  const fullName = (user?.user_metadata as any)?.full_name || 'Dr. Pierre KOMBILA';
-  const profession = (user?.user_metadata as any)?.profession || 'Médecin';
-  const specialty = (user?.user_metadata as any)?.specialty || 'Cardiologie';
-  const orderNumber = (user?.user_metadata as any)?.order_number || 'Non renseigné';
 
   return (
     <PatientDashboardLayout>
       <div className="space-y-6">
-        {/* Header Card avec profil médecin */}
-        <Card className="rounded-3xl backdrop-blur-xl bg-card/40 border border-border/30 shadow-2xl overflow-hidden">
-          <div className="p-8">
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center gap-6">
-                <div className="relative group">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center text-4xl font-bold text-foreground border-4 border-primary/50 shadow-lg">
-                    {fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)}
-                  </div>
-                  <button className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                    <Camera className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-foreground mb-2">{fullName.toUpperCase()}</h1>
-                  <div className="grid grid-cols-2 gap-x-12 gap-y-2">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Profession</p>
-                      <p className="text-lg font-semibold text-foreground">{profession}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Spécialité</p>
-                      <p className="text-lg font-semibold text-foreground">{specialty}</p>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <p className="text-sm text-muted-foreground">Numéro d'ordre</p>
-                    <p className="text-lg font-semibold text-foreground">{orderNumber}</p>
-                  </div>
-                </div>
-              </div>
-              <Button variant="outline" className="rounded-xl">
-                Modifier
-              </Button>
-            </div>
-          </div>
-        </Card>
-
         {/* Statistiques */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
