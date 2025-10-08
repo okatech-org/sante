@@ -883,15 +883,9 @@ export default function Profile() {
                         Assurance CNAMGS
                       </h2>
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor="cnamgs_number" className="text-muted-foreground text-xs flex items-center gap-1.5">
-                            <Shield className="h-3 w-3 flex-shrink-0" />
-                            Numéro d'assuré CNAMGS
-                          </Label>
-                          <p className="text-[10px] text-muted-foreground">
-                            Saisissez votre numéro d'assuré pour faciliter vos remboursements
-                          </p>
-                        </div>
+                        <p className="text-[10px] text-muted-foreground mb-1.5">
+                          Saisissez votre numéro d'assuré pour faciliter vos remboursements
+                        </p>
                         <Input
                           id="cnamgs_number"
                           {...register("cnamgs_number")}
