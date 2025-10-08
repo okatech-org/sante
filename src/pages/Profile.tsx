@@ -878,22 +878,22 @@ export default function Profile() {
 
                     {/* Bloc CNAMGS indépendant */}
                     <div className="rounded-xl backdrop-blur-xl p-3 bg-card border border-border shadow-xl">
-                      <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-sm font-bold text-foreground flex items-center gap-2 whitespace-nowrap">
                           <Shield className="w-3.5 h-3.5" style={{ color: '#00d4ff' }} />
                           Assurance CNAMGS
                         </h2>
-                        <p className="text-[10px] text-muted-foreground">
+                        <div className="flex-1">
+                          <Input
+                            id="cnamgs_number"
+                            {...register("cnamgs_number")}
+                            placeholder="GA2384567891"
+                            className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
+                          />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground whitespace-nowrap">
                           Saisissez votre numéro d'assuré pour faciliter vos remboursements
                         </p>
-                      </div>
-                      <div className="space-y-1">
-                        <Input
-                          id="cnamgs_number"
-                          {...register("cnamgs_number")}
-                          placeholder="GA2384567891"
-                          className="bg-muted border-border text-foreground placeholder:text-muted-foreground h-8 text-xs w-full"
-                        />
                       </div>
                     </div>
 
