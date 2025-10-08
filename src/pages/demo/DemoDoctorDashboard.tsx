@@ -509,8 +509,8 @@ export default function DemoDoctorDashboard() {
 
       {/* Modals */}
       <AppointmentModal 
-        open={showAppointmentModal}
-        onClose={() => setShowAppointmentModal(false)}
+        open={showAppointmentModal} 
+        onOpenChange={setShowAppointmentModal}
       />
       <PrescriptionModal 
         open={showPrescriptionModal}

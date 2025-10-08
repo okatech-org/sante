@@ -23,6 +23,16 @@ import DashboardProfessional from "./pages/DashboardProfessional";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
 import DashboardAdmin from "./pages/DashboardAdmin";
+import ProfessionalAgenda from "./pages/professional/Agenda";
+import ProfessionalPatients from "./pages/professional/Patients";
+import ProfessionalTeleconsultations from "./pages/professional/Teleconsultations";
+import ProfessionalConsultations from "./pages/professional/Consultations";
+import ProfessionalPrescriptions from "./pages/professional/Prescriptions";
+import ProfessionalFinances from "./pages/professional/Finances";
+import ProfessionalStatistics from "./pages/professional/Statistics";
+import ProfessionalMessages from "./pages/professional/Messages";
+import ProfessionalTeleExpertise from "./pages/professional/TeleExpertise";
+import ProfessionalSettings from "./pages/professional/Settings";
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
 import Prescriptions from "./pages/Prescriptions";
@@ -192,8 +202,60 @@ const App = () => (
               <AdminSettings />
             </ProtectedRoute>
           } />
-          <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
-          <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
+            <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
+            <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
+            
+            {/* Routes professionnelles */}
+            <Route path="/professional/agenda" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalAgenda />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/patients" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalPatients />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/teleconsultations" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalTeleconsultations />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/consultations" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalConsultations />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/prescriptions" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalPrescriptions />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/finances" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalFinances />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/stats" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalStatistics />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/messages" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalMessages />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/tele-expertise" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalTeleExpertise />
+              </ProtectedRoute>
+            } />
+            <Route path="/professional/settings" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <ProfessionalSettings />
+              </ProtectedRoute>
+            } />
           <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

@@ -14,10 +14,11 @@ import { cn } from "@/lib/utils";
 
 interface AppointmentModalProps {
   open: boolean;
-  onClose: () => void;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function AppointmentModal({ open, onClose }: AppointmentModalProps) {
+export function AppointmentModal({ open, onOpenChange }: AppointmentModalProps) {
+  const onClose = () => onOpenChange(false);
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState({
     patientName: "",
