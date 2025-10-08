@@ -1,13 +1,11 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Users, Activity, Pill, CircleCheck, FileHeart, AlertCircle, LayoutDashboard, ClipboardList, DollarSign, BarChart3, MessageSquare, Network, Settings, ChevronRight, Edit } from "lucide-react";
+import { Calendar, Video, Stethoscope, Users, Activity, DollarSign, MessageSquare, ChevronRight, Edit } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { QuickActionCard } from "@/components/dashboard/patient/QuickActionCard";
-import { StatCard } from "@/components/dashboard/patient/StatCard";
-import { ReminderCard } from "@/components/dashboard/patient/ReminderCard";
-import { MedicalDocumentCard } from "@/components/dashboard/patient/MedicalDocumentCard";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
 
 export default function DashboardProfessional() {
   const { user } = useAuth();
@@ -52,243 +50,216 @@ export default function DashboardProfessional() {
     loadProfile();
   }, [user?.id]);
 
-  const menuItems = [
-    { icon: LayoutDashboard, title: "Tableau de bord", route: "/professional/dashboard" },
-    { icon: Calendar, title: "Agenda & RDV", route: "/professional/agenda", badge: "8" },
-    { icon: Users, title: "Mes patients", route: "/professional/patients" },
-    { icon: Video, title: "Téléconsultations", route: "/professional/teleconsultations" },
-    { icon: Stethoscope, title: "Consultations", route: "/professional/consultations" },
-    { icon: ClipboardList, title: "Prescriptions", route: "/professional/prescriptions" },
-    { icon: DollarSign, title: "Finances & CNAMGS", route: "/professional/finances" },
-    { icon: BarChart3, title: "Statistiques", route: "/professional/statistics" },
-    { icon: MessageSquare, title: "Messages", route: "/professional/messages", badge: "5" },
-    { icon: Network, title: "Télé-expertise", route: "/professional/tele-expertise" },
-    { icon: Settings, title: "Paramètres", route: "/professional/settings" },
-  ];
-
-  useEffect(() => {
-    // Animation des progress bars au chargement
-    setTimeout(() => {
-      const progressBar = document.querySelector('.progress-fill');
-      if (progressBar) {
-        (progressBar as HTMLElement).style.width = '100%';
-      }
-    }, 100);
-  }, []);
+  // Séparer le nom et le prénom
+  const nameParts = fullName.split(' ');
+  const firstName = nameParts.slice(0, -1).join(' ') || 'Pierre';
+  const lastName = nameParts[nameParts.length - 1] || 'KOMBILA';
 
   return (
-    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Glassmorphic Sidebar - Hidden on mobile */}
-      <aside className="hidden md:block w-80 border-r border-border/50 bg-card/30 backdrop-blur-xl sticky top-0 h-screen overflow-y-auto">
-        <div className="p-6 space-y-4">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Menu Professionnel
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">Accès rapide</p>
-          </div>
-          
-          <div className="space-y-3">
-            {menuItems.map((item, index) => (
-              <QuickActionCard
-                key={index}
-                icon={item.icon}
-                title={item.title}
-                badge={item.badge}
-                onClick={() => navigate(item.route)}
-              />
-            ))}
-          </div>
-        </div>
-      </aside>
+    <PatientDashboardLayout>
+      <div className="space-y-6">
+        {/* Header Card avec dégradé coloré */}
+        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl relative">
+          {/* Bouton Modifier en haut à droite */}
+          <Button
+            onClick={() => navigate('/professional/settings')}
+            variant="outline"
+            size="sm"
+            className="absolute top-4 right-4 gap-2"
+          >
+            <Edit className="w-4 h-4" />
+            Modifier
+          </Button>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="container mx-auto p-4 sm:p-6 space-y-6">
-          {/* Header Card avec dégradé coloré */}
-          <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl relative">
-            {/* Bouton Modifier en haut à droite */}
-            <Button
-              onClick={() => navigate('/professional/settings')}
-              variant="outline"
-              size="sm"
-              className="absolute top-4 right-4 gap-2"
-            >
-              <Edit className="w-4 h-4" />
-              Modifier
-            </Button>
-
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-              {/* Photo d'identité */}
-              <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
-                  <div className="w-full h-full rounded-full bg-card flex items-center justify-center overflow-hidden">
-                    {avatarUrl ? (
-                      <img 
-                        src={avatarUrl} 
-                        alt="Photo de profil" 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-4xl sm:text-5xl font-bold text-card-foreground">
-                        {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    )}
-                  </div>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            {/* Photo d'identité */}
+            <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                <div className="w-full h-full rounded-full bg-card flex items-center justify-center overflow-hidden">
+                  {avatarUrl ? (
+                    <img 
+                      src={avatarUrl} 
+                      alt="Photo de profil" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-4xl sm:text-5xl font-bold text-card-foreground">
+                      {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
                 </div>
               </div>
+              <AvatarUpload
+                currentAvatarUrl={avatarUrl || undefined}
+                onAvatarUpdate={setAvatarUrl}
+              />
+            </div>
 
-              {/* Informations professionnelles */}
-              <div className="flex-1 space-y-3 sm:space-y-4">
-                {/* Nom complet */}
+            {/* Informations professionnelles */}
+            <div className="flex-1 space-y-3 sm:space-y-4">
+              {/* Nom complet - Bloc séparé */}
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-xl sm:text-2xl font-bold text-foreground uppercase tracking-wide">{lastName}</p>
+                <p className="text-base sm:text-xl font-normal text-foreground mt-1">{firstName}</p>
+              </div>
+
+              {/* Type professionnel et Numéro d'ordre */}
+              <div className="grid grid-cols-2 gap-3">
                 <div className="bg-muted/30 rounded-xl p-3">
-                  <p className="text-xl sm:text-2xl font-bold text-foreground">{fullName}</p>
-                  <p className="text-base sm:text-lg font-normal text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Profession</p>
+                  <p className="text-base sm:text-xl font-bold text-foreground">
                     {profileData?.professional_type || 'Médecin'}
                   </p>
                 </div>
 
-                {/* Numéro d'ordre */}
                 <div className="bg-muted/30 rounded-xl p-3">
-                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Numéro d'ordre</p>
-                  <p className="text-base sm:text-xl font-bold text-foreground font-mono">
-                    {profileData?.numero_ordre || 'Non renseigné'}
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Spécialité</p>
+                  <p className="text-base sm:text-xl font-bold text-foreground">
+                    Cardiologie
                   </p>
                 </div>
               </div>
+
+              {/* Numéro d'ordre */}
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Numéro d'ordre</p>
+                <p className="text-base sm:text-xl font-bold text-foreground font-mono">
+                  {profileData?.numero_ordre || 'Non renseigné'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { label: 'Patients', value: '89', icon: Users, trend: 'Ce mois', color: '#00d4ff' },
+              { label: 'Consultations', value: '156', icon: Stethoscope, trend: 'Ce mois', color: '#0088ff' },
+              { label: 'Téléconsultations', value: '24', icon: Video, trend: 'Ce mois', color: '#ffaa00' },
+              { label: 'Revenus', value: '2.5M', icon: DollarSign, trend: 'Ce mois', color: '#ff0088' }
+            ].map((stat, idx) => {
+              const Icon = stat.icon;
+              return (
+                <div key={idx} className="text-center">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: `${stat.color}20` }}>
+                    <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: stat.color }} />
+                  </div>
+                  <p className="text-[10px] sm:text-xs mb-1 text-muted-foreground font-medium">{stat.label}</p>
+                  <p className="text-base sm:text-2xl font-bold text-foreground mb-0.5">{stat.value}</p>
+                  <p className="text-[9px] sm:text-xs text-muted-foreground">{stat.trend}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
+          <div onClick={() => navigate('/professional/agenda')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                  <Calendar className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Mon Agenda</h3>
+                  <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
+                    8 RDV aujourd'hui
+                  </span>
+                </div>
+              </div>
+              <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
-            <div className="grid grid-cols-4 gap-3 sm:gap-4">
+          <div onClick={() => navigate('/professional/patients')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
+                  <Users className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Mes Patients</h3>
+                  <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
+                    89 patients actifs
+                  </span>
+                </div>
+              </div>
+              <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
+            </div>
+          </div>
+        </div>
+
+        {/* Prochains RDV & Messages Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Prochains RDV */}
+          <div>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
+              Prochains Rendez-vous
+            </h3>
+            <div className="space-y-2 sm:space-y-3">
               {[
-                { label: 'Patients', value: '89', icon: Users, trend: 'Ce mois', color: '#00d4ff' },
-                { label: 'Consultations', value: '156', icon: Stethoscope, trend: 'Ce mois', color: '#0088ff' },
-                { label: 'Téléconsultations', value: '24', icon: Video, trend: 'Ce mois', color: '#ffaa00' },
-                { label: 'Revenus', value: '2.5M', icon: DollarSign, trend: 'Ce mois', color: '#ff0088' }
-              ].map((stat, idx) => {
-                const Icon = stat.icon;
+                { time: '14h30', patient: 'Marie MOUSSAVOU', type: 'Consultation', icon: Stethoscope, color: '#00d4ff' },
+                { time: '15h00', patient: 'Jean NZENGUE', type: 'Téléconsultation', icon: Video, color: '#0088ff' },
+                { time: '16h00', patient: 'Claire OBAME', type: 'Suivi', icon: Activity, color: '#ffaa00' }
+              ].map((rdv, idx) => {
+                const Icon = rdv.icon;
                 return (
-                  <div key={idx} className="text-center">
-                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: `${stat.color}20` }}>
-                      <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: stat.color }} />
+                  <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${rdv.color}20` }}>
+                          <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: rdv.color }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-0.5">{rdv.time}</p>
+                          <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight">{rdv.patient}</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">{rdv.type}</p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-[10px] sm:text-xs mb-1 text-muted-foreground font-medium">{stat.label}</p>
-                    <p className="text-base sm:text-2xl font-bold text-foreground mb-0.5">{stat.value}</p>
-                    <p className="text-[9px] sm:text-xs text-muted-foreground">{stat.trend}</p>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-4">
-            <div onClick={() => navigate('/professional/agenda')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Calendar className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Mon Agenda</h3>
-                    <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
-                      8 RDV aujourd'hui
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
-              </div>
-            </div>
-
-            <div onClick={() => navigate('/professional/patients')} className="group rounded-xl backdrop-blur-xl p-3 sm:p-6 cursor-pointer hover:scale-[1.02] transition-all duration-300 bg-card/80 border border-border hover:bg-card/90 shadow-xl">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <div className="w-8 h-8 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
-                    <Users className="w-4 h-4 sm:w-7 sm:h-7 text-[#00d4ff]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-card-foreground text-xs sm:text-lg mb-0.5 sm:mb-2">Mes Patients</h3>
-                    <span className="inline-block px-1.5 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-xs rounded-full bg-[#ff0088]/20 text-[#ff0088]">
-                      89 patients actifs
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight className="hidden sm:block w-6 h-6 text-muted-foreground group-hover:translate-x-1 transition-transform flex-shrink-0" />
-              </div>
-            </div>
-          </div>
-
-          {/* Prochains RDV & Messages Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-            {/* Prochains RDV */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
-                Prochains Rendez-vous
-              </h3>
-              <div className="space-y-2 sm:space-y-3">
-                {[
-                  { time: '14h30', patient: 'Marie MOUSSAVOU', type: 'Consultation', icon: Stethoscope, color: '#00d4ff' },
-                  { time: '15h00', patient: 'Jean NZENGUE', type: 'Téléconsultation', icon: Video, color: '#0088ff' },
-                  { time: '16h00', patient: 'Claire OBAME', type: 'Suivi', icon: Activity, color: '#ffaa00' }
-                ].map((rdv, idx) => {
-                  const Icon = rdv.icon;
-                  return (
-                    <div key={idx} className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${rdv.color}20` }}>
-                            <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: rdv.color }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-0.5">{rdv.time}</p>
-                            <p className="text-xs sm:text-sm font-semibold text-card-foreground leading-tight">{rdv.patient}</p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground">{rdv.type}</p>
-                          </div>
-                        </div>
+          {/* Messages récents */}
+          <div>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
+              Messages Récents
+            </h3>
+            <div className="space-y-2 sm:space-y-3">
+              {[
+                { patient: 'Marie MOUSSAVOU', message: 'Demande de report de RDV', time: 'Il y a 2h', unread: true },
+                { patient: 'Jean NZENGUE', message: 'Question sur l\'ordonnance', time: 'Il y a 5h', unread: true },
+                { patient: 'Claire OBAME', message: 'Remerciements', time: 'Hier', unread: false }
+              ].map((msg, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => navigate('/professional/messages')}
+                  className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-xs sm:text-sm font-semibold text-card-foreground">{msg.patient}</p>
+                        {msg.unread && (
+                          <span className="w-2 h-2 rounded-full bg-[#ff0088]"></span>
+                        )}
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Messages récents */}
-            <div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-foreground">
-                Messages Récents
-              </h3>
-              <div className="space-y-2 sm:space-y-3">
-                {[
-                  { patient: 'Marie MOUSSAVOU', message: 'Demande de report de RDV', time: 'Il y a 2h', unread: true },
-                  { patient: 'Jean NZENGUE', message: 'Question sur l\'ordonnance', time: 'Il y a 5h', unread: true },
-                  { patient: 'Claire OBAME', message: 'Remerciements', time: 'Hier', unread: false }
-                ].map((msg, idx) => (
-                  <div 
-                    key={idx} 
-                    onClick={() => navigate('/professional/messages')}
-                    className="p-2.5 sm:p-5 rounded-xl hover:scale-[1.02] transition-all cursor-pointer bg-card/80 hover:bg-card/90 border border-border shadow-xl backdrop-blur-xl"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="text-xs sm:text-sm font-semibold text-card-foreground">{msg.patient}</p>
-                          {msg.unread && (
-                            <span className="w-2 h-2 rounded-full bg-[#ff0088]"></span>
-                          )}
-                        </div>
-                        <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1">{msg.message}</p>
-                        <p className="text-[9px] sm:text-xs text-muted-foreground/70 mt-1">{msg.time}</p>
-                      </div>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1">{msg.message}</p>
+                      <p className="text-[9px] sm:text-xs text-muted-foreground/70 mt-1">{msg.time}</p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </PatientDashboardLayout>
   );
 }
