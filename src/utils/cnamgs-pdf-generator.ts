@@ -340,11 +340,11 @@ export const generateCNAMGSPdf = async (
   doc.setFillColor(230, 59, 122);
   doc.rect(0, 0, A4.w, 1.5, "F");
   
-  // BLOC COORDONNÉES À GAUCHE - plus compact
+  // BLOC COORDONNÉES À GAUCHE - plus compact (déplacé de 1cm vers le bas)
   const contactW = 75;
   const contactH = 22;
   const contactX = MARGIN;
-  const contactY = 4;
+  const contactY = 14; // +10mm = ~1cm vers le bas
   
   // Bloc gris clair pour les coordonnées
   doc.setFillColor(248, 249, 250); // muted background
@@ -406,29 +406,31 @@ export const generateCNAMGSPdf = async (
   doc.text("ET DE GARANTIE SOCIALE", centerX, 29, { align: "center" });
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // TITRE DU DOCUMENT
+  // TITRE DU DOCUMENT (même largeur que les autres blocs)
   // ═══════════════════════════════════════════════════════════════════════════
+  
+  const titleBlockW = A4.w - 2 * MARGIN; // Même largeur que les autres blocs
   
   // Fond très clair (background: 0 0% 98%) - plus compact
   doc.setFillColor(250, 250, 250);
-  doc.rect(0, 35, A4.w, 15, "F");
+  doc.rect(MARGIN, 35, titleBlockW, 15, "F");
   
   // Bordure gauche turquoise (#17CCB9)
   doc.setFillColor(23, 204, 185);
-  doc.rect(0, 35, 1.2, 15, "F");
+  doc.rect(MARGIN, 35, 1.2, 15, "F");
   
   // Titre (foreground: 210 20% 15%)
   doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(38, 43, 51); // foreground color
-  doc.text("ATTESTATION DE DROITS", MARGIN, 42);
+  doc.text("ATTESTATION DE DROITS", MARGIN + 3, 42);
   
   // Numéro d'attestation (muted-foreground: 215 16% 47%)
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(102, 112, 133); // muted-foreground
   const numAttestation = data.numeroAttestation || `2025/CNAMGS/${data.numero.replace(/-/g, '')}`;
-  doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN, 47);
+  doc.text(`N° ATTESTATION : ${numAttestation}`, MARGIN + 3, 47);
 
   // Charger les images pour la carte (à utiliser plus tard)
   const armoiriesData = assets?.armoiriesUrl
