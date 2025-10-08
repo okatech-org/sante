@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "next-themes";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,12 +31,23 @@ import {
   Activity,
   Bell,
   Settings,
-  FileHeart
+  FileHeart,
+  LogOut,
+  Sun,
+  Moon,
+  Globe,
+  Laptop
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import logoSante from "@/assets/logo_sante.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Prescription {
   id: string;
@@ -144,6 +156,7 @@ const mockPrescriptions: Prescription[] = [
 export default function Prescriptions() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -152,38 +165,81 @@ export default function Prescriptions() {
   const [previewPrescription, setPreviewPrescription] = useState<Prescription | null>(null);
   const [sendToPharmacyOpen, setSendToPharmacyOpen] = useState(false);
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string | null>(null);
+  const [language, setLanguage] = useState('fr');
+  const [profileData, setProfileData] = useState<{
+    full_name: string;
+  } | null>(null);
 
-  const fullName = (user?.user_metadata as any)?.full_name || 'Utilisateur';
+  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Utilisateur';
+
+  // Charger les préférences et le profil depuis la base de données
+  useEffect(() => {
+    const loadProfileAndPreferences = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, language, theme, avatar_url')
+          .eq('id', user.id)
+          .single();
+        
+        if (data && !error) {
+          setProfileData({
+            full_name: data.full_name,
+          });
+          if (data.language) setLanguage(data.language);
+          if (data.theme) setTheme(data.theme);
+          if (data.avatar_url) setAvatarUrl(data.avatar_url);
+        }
+      }
+    };
+    loadProfileAndPreferences();
+  }, [user?.id, setTheme]);
+
+  // Sauvegarder les préférences
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (user?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', user.id);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Déconnexion réussie - À bientôt !");
+      navigate('/');
+    } catch (error) {
+      toast.error("Erreur lors de la déconnexion");
+    }
+  };
+
+  const activePrescriptions = mockPrescriptions.filter(p => p.status === "active");
+  const expiredPrescriptions = mockPrescriptions.filter(p => p.status === "expired");
 
   const menuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff' },
     { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
     { id: 'teleconsult', label: 'Téléconsultation', icon: Video, path: '/teleconsultation', color: '#00d4ff' },
     { id: 'dossier', label: 'Dossier Médical', icon: FileHeart, path: '/medical-record', color: '#ffaa00' },
-    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: '1', path: '/prescriptions', color: '#ff0088' },
+    { id: 'ordonnances', label: 'Mes ordonnances', icon: Pill, badge: activePrescriptions.length.toString(), path: '/prescriptions', color: '#ff0088' },
     { id: 'resultats', label: 'Résultats d\'analyses', icon: Activity, path: '/results', color: '#0088ff' },
     { id: 'cnamgs', label: 'Droits CNAMGS', icon: Shield, path: '/reimbursements', color: '#00d4ff' },
     { id: 'messages', label: 'Messages', icon: Bell, badge: '3', path: '/messages', color: '#ffaa00' },
     { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088' }
   ];
-
-  useEffect(() => {
-    loadAvatar();
-  }, [user?.id]);
-
-  const loadAvatar = async () => {
-    if (user?.id) {
-      const { data } = await supabase
-        .from('profiles')
-        .select('avatar_url')
-        .eq('id', user.id)
-        .single();
-      
-      if (data?.avatar_url) {
-        setAvatarUrl(data.avatar_url);
-      }
-    }
-  };
 
   const filteredPrescriptions = mockPrescriptions.filter(prescription => {
     const matchesSearch = 
@@ -199,9 +255,6 @@ export default function Prescriptions() {
 
     return matchesSearch && matchesTab;
   });
-
-  const activePrescriptions = mockPrescriptions.filter(p => p.status === "active");
-  const expiredPrescriptions = mockPrescriptions.filter(p => p.status === "expired");
 
   const handleDownload = (id: string) => {
     toast.success(`Téléchargement de l'ordonnance ${id}...`);
@@ -243,28 +296,31 @@ export default function Prescriptions() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background étoilé */}
-      <div className="fixed inset-0 bg-[#0f1419] -z-10">
-        <div className="absolute inset-0 opacity-40" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, rgba(255,255,255,0.06) 1px, transparent 1px)',
+    <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Background avec effet étoiles */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-20 dark:opacity-40" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, hsl(var(--foreground) / 0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, hsl(var(--foreground) / 0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, hsl(var(--foreground) / 0.06) 1px, transparent 1px)',
           backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
           backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
         }} />
       </div>
 
+      {/* Container avec sidebar */}
       <div className="relative flex">
-        {/* Sidebar Desktop */}
-        <aside className="hidden md:block w-64 h-screen fixed left-0 top-0 p-4 z-40">
-          <div className="h-full rounded-2xl backdrop-blur-xl p-6 bg-[#1a1f2e]/90 border border-white/10 shadow-2xl flex flex-col">
-            <div className="mb-8">
+        {/* Sidebar Desktop et Tablette */}
+        <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar/90 border border-sidebar-border shadow-2xl flex flex-col">
+            {/* Logo */}
+            <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
-                <h1 className="text-2xl font-bold text-white">SANTE.GA</h1>
+                <h1 className="text-2xl font-bold text-sidebar-foreground">SANTE.GA</h1>
               </div>
-              <p className="text-xs text-gray-500">Votre santé à portée de clic</p>
+              <p className="text-xs text-muted-foreground">Votre santé à portée de clic</p>
             </div>
 
+            {/* Menu */}
             <nav className="space-y-1 flex-1 overflow-y-auto">
               {menuItems.map(item => {
                 const Icon = item.icon;
@@ -277,13 +333,13 @@ export default function Prescriptions() {
                       if (item.path) navigate(item.path);
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                      isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                          isActive ? '' : 'bg-white/5'
+                          isActive ? '' : 'bg-sidebar-accent/30'
                         }`}
                         style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                       >
@@ -304,19 +360,63 @@ export default function Prescriptions() {
               })}
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/10">
-              <div className="p-3 rounded-lg bg-white/5">
+            {/* User Profile */}
+            <div className="mt-auto pt-4 border-t border-sidebar-border space-y-2">
+              {/* Theme, Language & Logout Controls */}
+              <div className="flex items-center gap-2 px-2">
+                {/* Theme Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      {theme === 'dark' ? <Moon className="w-4 h-4" /> : theme === 'light' ? <Sun className="w-4 h-4" /> : <Laptop className="w-4 h-4" />}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem onClick={() => handleThemeChange('light')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                      <Sun className="w-4 h-4 mr-2" />Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange('dark')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                      <Moon className="w-4 h-4 mr-2" />Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleThemeChange('system')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                      <Laptop className="w-4 h-4 mr-2" />Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Language Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      <Globe className="w-4 h-4" />
+                      <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem onClick={() => handleLanguageChange('fr')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                      🇫🇷 Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleLanguageChange('en')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                      🇬🇧 English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Logout Button */}
+                <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300" title="Déconnexion">
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* User Profile Card */}
+              <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
-                  {avatarUrl ? (
-                    <img src={avatarUrl} alt={fullName} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
-                      {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </div>
-                  )}
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                    {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{fullName.split(' ')[0]}</p>
-                    <p className="text-xs text-gray-500">Patient</p>
+                    <p className="text-sm font-medium text-sidebar-foreground truncate">{fullName.split(' ')[0]}</p>
+                    <p className="text-xs text-muted-foreground">Patient</p>
                   </div>
                 </div>
               </div>
@@ -324,28 +424,28 @@ export default function Prescriptions() {
           </div>
         </aside>
 
-        {/* Mobile Header */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1f2e]/95 backdrop-blur-xl border-b border-white/10">
+        {/* Mobile Header avec menu hamburger - visible uniquement sur mobile */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar/95 backdrop-blur-xl border-b border-sidebar-border">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-              <h1 className="text-xl font-bold text-white tracking-tight">SANTE.GA</h1>
+              <h1 className="text-xl font-bold text-sidebar-foreground tracking-tight">SANTE.GA</h1>
             </div>
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/10 text-white hover:bg-white/20 transition-all">
+                <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent/30 text-sidebar-foreground hover:bg-sidebar-accent transition-all">
                   <Menu className="w-6 h-6" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 bg-[#1a1f2e] border-white/10 p-0">
+              <SheetContent side="left" className="w-72 bg-sidebar border-sidebar-border p-0">
                 <div className="h-full flex flex-col p-6">
                   <div className="mb-8 mt-6">
                     <div className="flex items-center gap-3 mb-2">
                       <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
-                      <h1 className="text-2xl font-bold text-white tracking-tight">SANTE.GA</h1>
+                      <h1 className="text-2xl font-bold text-sidebar-foreground tracking-tight">SANTE.GA</h1>
                     </div>
-                    <p className="text-xs text-gray-500 ml-1">Votre santé à portée de clic</p>
+                    <p className="text-xs text-muted-foreground ml-1">Votre santé à portée de clic</p>
                   </div>
 
                   <nav className="space-y-1 flex-1 overflow-y-auto">
@@ -361,13 +461,13 @@ export default function Prescriptions() {
                             setMobileMenuOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                            isActive ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                            isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div
                               className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                                isActive ? '' : 'bg-white/5'
+                                isActive ? '' : 'bg-sidebar-accent/30'
                               }`}
                               style={isActive ? { backgroundColor: `${item.color}20` } : {}}
                             >
@@ -387,6 +487,67 @@ export default function Prescriptions() {
                       );
                     })}
                   </nav>
+
+                  {/* Contrôles Mobile : Theme, Language, Logout */}
+                  <div className="mt-auto pt-4 border-t border-sidebar-border space-y-2">
+                    <div className="flex items-center gap-2 px-2">
+                      {/* Theme Selector */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                            {theme === 'dark' ? <Moon className="w-4 h-4" /> : theme === 'light' ? <Sun className="w-4 h-4" /> : <Laptop className="w-4 h-4" />}
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover border-border">
+                          <DropdownMenuItem onClick={() => handleThemeChange('light')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                            <Sun className="w-4 h-4 mr-2" />Clair
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange('dark')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                            <Moon className="w-4 h-4 mr-2" />Sombre
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleThemeChange('system')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                            <Laptop className="w-4 h-4 mr-2" />Système
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* Language Selector */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                            <Globe className="w-4 h-4" />
+                            <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover border-border">
+                          <DropdownMenuItem onClick={() => handleLanguageChange('fr')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                            🇫🇷 Français
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleLanguageChange('en')} className="text-popover-foreground hover:bg-accent cursor-pointer">
+                            🇬🇧 English
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* Logout Button */}
+                      <button onClick={handleLogout} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300" title="Déconnexion">
+                        <LogOut className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* User Profile Card */}
+                    <div className="p-3 rounded-lg bg-sidebar-accent/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]">
+                          {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-sidebar-foreground truncate">{fullName.split(' ')[0]}</p>
+                          <p className="text-xs text-muted-foreground">Patient</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -394,71 +555,71 @@ export default function Prescriptions() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64 pt-20 md:pt-0">
+        <main className="flex-1 md:ml-72 pt-20 md:pt-0">
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="space-y-6">
               {/* Header */}
               <div>
-                <h1 className="text-3xl font-bold text-white">
+                <h1 className="text-3xl font-bold text-foreground">
                   Mes <span className="bg-gradient-to-r from-[#00d4ff] via-[#0088ff] to-[#ff0088] bg-clip-text text-transparent">Ordonnances</span>
                 </h1>
-                <p className="text-gray-400 mt-2">
+                <p className="text-muted-foreground mt-2">
                   Consultez et gérez vos prescriptions médicales
                 </p>
               </div>
 
               {/* Statistiques */}
               <div className="grid gap-4 md:grid-cols-3">
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
                       <CheckCircle className="h-6 w-6 text-green-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Ordonnances actives</p>
-                      <p className="text-2xl font-bold text-white">{activePrescriptions.length}</p>
+                      <p className="text-sm text-muted-foreground">Ordonnances actives</p>
+                      <p className="text-2xl font-bold text-foreground">{activePrescriptions.length}</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
                       <XCircle className="h-6 w-6 text-red-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Expirées</p>
-                      <p className="text-2xl font-bold text-white">{expiredPrescriptions.length}</p>
+                      <p className="text-sm text-muted-foreground">Expirées</p>
+                      <p className="text-2xl font-bold text-foreground">{expiredPrescriptions.length}</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="p-6 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+                <Card className="p-6 bg-card/50 border-border backdrop-blur-sm">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-[#ff0088]/10 flex items-center justify-center">
                       <FileText className="h-6 w-6 text-[#ff0088]" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Total</p>
-                      <p className="text-2xl font-bold text-white">{mockPrescriptions.length}</p>
+                      <p className="text-sm text-muted-foreground">Total</p>
+                      <p className="text-2xl font-bold text-foreground">{mockPrescriptions.length}</p>
                     </div>
                   </div>
                 </Card>
               </div>
 
               {/* Recherche */}
-              <Card className="p-4 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
+              <Card className="p-4 bg-card/50 border-border backdrop-blur-sm">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Rechercher par médicament, médecin ou numéro..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                      className="pl-10 bg-background/50 border-border"
                     />
                   </div>
-                  <Button variant="outline" className="sm:w-auto border-white/10 bg-white/5 text-white hover:bg-white/10">
+                  <Button variant="outline" className="sm:w-auto">
                     <Filter className="h-4 w-4 mr-2" />
                     Filtres
                   </Button>
@@ -467,7 +628,7 @@ export default function Prescriptions() {
 
               {/* Tabs */}
               <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-                <TabsList className="grid w-full grid-cols-4 bg-[#1a1f2e]/50 border border-white/10">
+                <TabsList className="grid w-full grid-cols-4 bg-card/50 border border-border">
                   <TabsTrigger value="all" className="data-[state=active]:bg-[#00d4ff]/20 data-[state=active]:text-[#00d4ff]">
                     Toutes ({mockPrescriptions.length})
                   </TabsTrigger>
@@ -484,9 +645,9 @@ export default function Prescriptions() {
 
                 <TabsContent value={selectedTab} className="mt-6">
                   {filteredPrescriptions.length === 0 ? (
-                    <Card className="p-12 text-center bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm">
-                      <FileText className="h-12 w-12 mx-auto text-gray-500 mb-4" />
-                      <h3 className="text-lg font-semibold mb-2 text-white">Aucune ordonnance trouvée</h3>
+                    <Card className="p-12 text-center bg-card/50 border-border backdrop-blur-sm">
+                      <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-semibold mb-2 text-foreground">Aucune ordonnance trouvée</h3>
                       <p className="text-gray-400">
                         {searchQuery 
                           ? "Essayez avec d'autres termes de recherche"
@@ -496,7 +657,7 @@ export default function Prescriptions() {
                   ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {filteredPrescriptions.map((prescription) => (
-                      <Card key={prescription.id} className="p-4 bg-[#1a1f2e]/50 border-white/10 backdrop-blur-sm hover:bg-[#1a1f2e]/70 transition-all">
+                      <Card key={prescription.id} className="p-4 bg-card/50 border-border backdrop-blur-sm hover:bg-card/70 transition-all">
                         {/* En-tête */}
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-start gap-3 min-w-0 flex-1">
@@ -505,10 +666,10 @@ export default function Prescriptions() {
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <h3 className="font-semibold text-base text-white">{prescription.id}</h3>
+                                <h3 className="font-semibold text-base text-foreground">{prescription.id}</h3>
                                 {getStatusBadge(prescription.status)}
                               </div>
-                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-400">
+                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                   <User className="h-3 w-3" />
                                   <span className="truncate">{prescription.doctor}</span>
