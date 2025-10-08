@@ -237,14 +237,14 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle />
               <LanguageToggle />
-              <Link to="/login/patient">
+              <Link to="/dashboard/patient">
                 <Button variant="ghost" className="hover-scale">
-                  {t('landing.cta.login') || "Se connecter"}
+                  Patient
                 </Button>
               </Link>
-              <Link to="/register">
+              <Link to="/dashboard/professional">
                 <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-accent to-accent/90">
-                  {t('landing.hero.patient') || "S'inscrire"}
+                  Professionnel
                 </Button>
               </Link>
             </div>
@@ -291,14 +291,14 @@ export default function Landing() {
                     </a>
                     
                     <div className="flex flex-col gap-3 mt-6">
-                      <Link to="/login/patient" onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/dashboard/patient" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="outline" className="w-full">
-                          {t('landing.cta.login') || "Se connecter"}
+                          Patient
                         </Button>
                       </Link>
-                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/dashboard/professional" onClick={() => setMobileMenuOpen(false)}>
                         <Button className="w-full bg-gradient-to-r from-accent to-accent/90">
-                          {t('landing.hero.patient') || "S'inscrire"}
+                          Professionnel
                         </Button>
                       </Link>
                     </div>
