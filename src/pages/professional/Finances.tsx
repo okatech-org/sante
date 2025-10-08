@@ -1,58 +1,49 @@
-import { DollarSign, CreditCard, TrendingUp, Clock, Download } from "lucide-react";
+import { DollarSign, CreditCard, TrendingUp, Clock, Download, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { useProfessionalFinances } from "@/hooks/useProfessionalFinances";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProfessionalFinances() {
-  const transactions = [
-    {
-      id: 1,
-      date: "2025-02-01",
-      patient: "Marie MOUSSAVOU",
-      type: "CNAMGS",
-      amount: 20000,
-      status: "paid",
-      invoice: "FACT-2025-001"
-    },
-    {
-      id: 2,
-      date: "2025-02-01",
-      patient: "Jean NZENGUE",
-      type: "Espèces",
-      amount: 25000,
-      status: "paid",
-      invoice: "FACT-2025-002"
-    },
-    {
-      id: 3,
-      date: "2025-02-01",
-      patient: "Claire OBAME",
-      type: "Mobile Money",
-      amount: 15000,
-      status: "pending",
-      invoice: "FACT-2025-003"
-    }
-  ];
+  const { stats, transactions, cnamgsPayments, loading, error } = useProfessionalFinances();
+  const { toast } = useToast();
 
-  const cnamgsPayments = [
-    {
-      id: 1,
-      period: "Janvier 2025",
-      amount: 850000,
-      consultations: 45,
-      status: "pending",
-      expected: "2025-03-15"
-    },
-    {
-      id: 2,
-      period: "Décembre 2024",
-      amount: 920000,
-      consultations: 52,
-      status: "paid",
-      paidDate: "2025-02-10"
-    }
-  ];
+  const handleExport = () => {
+    toast({
+      title: "Export en cours",
+      description: "Vos données financières sont en cours d'export...",
+    });
+    
+    // Generate CSV content
+    const csvContent = [
+      ["Date", "Patient", "Type", "Montant", "Statut", "Facture"],
+      ...transactions.map(t => [
+        t.date,
+        t.patient,
+        t.type,
+        t.amount.toString(),
+        t.status,
+        t.invoice
+      ])
+    ].map(row => row.join(",")).join("\n");
+
+    // Create download link
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `finances-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export réussi",
+      description: "Vos données ont été exportées avec succès.",
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -72,6 +63,45 @@ export default function ProfessionalFinances() {
     }
   };
 
+  if (loading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <PatientDashboardLayout>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </PatientDashboardLayout>
+    );
+  }
+
+  const revenueGrowth = stats.previousMonthRevenue > 0
+    ? ((stats.monthRevenue - stats.previousMonthRevenue) / stats.previousMonthRevenue * 100).toFixed(0)
+    : "0";
+
+  const cnamgsPercentage = stats.monthRevenue > 0
+    ? Math.round((stats.cnamgsRevenue / stats.monthRevenue) * 100)
+    : 0;
+
+  const cashPercentage = stats.monthRevenue > 0
+    ? Math.round((stats.cashRevenue / stats.monthRevenue) * 100)
+    : 0;
+
+  const mobileMoneyPercentage = stats.monthRevenue > 0
+    ? Math.round((stats.mobileMoneyRevenue / stats.monthRevenue) * 100)
+    : 0;
+
+  // Calculate average payment delay (mock value for now)
+  const avgDelay = 47;
+
   return (
     <PatientDashboardLayout>
       <div className="space-y-6">
@@ -82,8 +112,12 @@ export default function ProfessionalFinances() {
               <DollarSign className="w-7 h-7 text-green-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Revenus Mois</p>
-            <p className="text-3xl font-bold text-foreground mb-1">4.8M</p>
-            <p className="text-xs text-green-500">+12% vs mois dernier</p>
+            <p className="text-3xl font-bold text-foreground mb-1">
+              {(stats.monthRevenue / 1000000).toFixed(1)}M
+            </p>
+            <p className={`text-xs ${Number(revenueGrowth) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {Number(revenueGrowth) >= 0 ? '+' : ''}{revenueGrowth}% vs mois dernier
+            </p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -91,8 +125,10 @@ export default function ProfessionalFinances() {
               <CreditCard className="w-7 h-7 text-blue-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Part CNAMGS</p>
-            <p className="text-3xl font-bold text-foreground mb-1">2.9M</p>
-            <p className="text-xs text-muted-foreground">60% du total</p>
+            <p className="text-3xl font-bold text-foreground mb-1">
+              {(stats.cnamgsRevenue / 1000000).toFixed(1)}M
+            </p>
+            <p className="text-xs text-muted-foreground">{cnamgsPercentage}% du total</p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -100,8 +136,10 @@ export default function ProfessionalFinances() {
               <Clock className="w-7 h-7 text-yellow-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">En attente</p>
-            <p className="text-3xl font-bold text-foreground mb-1">850K</p>
-            <p className="text-xs text-muted-foreground">Délai: 47j</p>
+            <p className="text-3xl font-bold text-foreground mb-1">
+              {Math.round(stats.pendingAmount / 1000)}K
+            </p>
+            <p className="text-xs text-muted-foreground">Délai: {avgDelay}j</p>
           </div>
 
           <div className="rounded-2xl backdrop-blur-xl p-6 text-center bg-card/40 border border-border/30 shadow-xl">
@@ -109,8 +147,10 @@ export default function ProfessionalFinances() {
               <TrendingUp className="w-7 h-7 text-green-500" />
             </div>
             <p className="text-xs mb-2 text-muted-foreground font-medium">Taux collecte</p>
-            <p className="text-3xl font-bold text-foreground mb-1">92%</p>
-            <p className="text-xs text-green-500">Excellent</p>
+            <p className="text-3xl font-bold text-foreground mb-1">{stats.collectionRate}%</p>
+            <p className={`text-xs ${stats.collectionRate >= 85 ? 'text-green-500' : stats.collectionRate >= 70 ? 'text-yellow-500' : 'text-red-500'}`}>
+              {stats.collectionRate >= 85 ? 'Excellent' : stats.collectionRate >= 70 ? 'Bon' : 'À améliorer'}
+            </p>
           </div>
         </div>
 
@@ -122,7 +162,7 @@ export default function ProfessionalFinances() {
                 <h2 className="text-2xl font-bold text-foreground">Évolution des revenus</h2>
                 <p className="text-sm text-muted-foreground">Revenus des 6 derniers mois</p>
               </div>
-              <Button variant="outline" className="rounded-xl">
+              <Button variant="outline" className="rounded-xl" onClick={handleExport}>
                 <Download className="mr-2 h-4 w-4" />
                 Exporter
               </Button>
@@ -140,7 +180,12 @@ export default function ProfessionalFinances() {
             <div className="p-6">
               <h3 className="text-xl font-bold text-foreground mb-4">Transactions Récentes</h3>
               <div className="space-y-3">
-                {transactions.map((transaction) => (
+                {transactions.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">
+                    Aucune transaction récente
+                  </p>
+                ) : (
+                  transactions.map((transaction) => (
                   <div key={transaction.id} className="rounded-xl backdrop-blur-xl p-4 bg-card/60 border border-border/20">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -158,7 +203,8 @@ export default function ProfessionalFinances() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </Card>
@@ -168,7 +214,12 @@ export default function ProfessionalFinances() {
             <div className="p-6">
               <h3 className="text-xl font-bold text-foreground mb-4">Remboursements CNAMGS</h3>
               <div className="space-y-3">
-                {cnamgsPayments.map((payment) => (
+                {cnamgsPayments.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">
+                    Aucun remboursement CNAMGS
+                  </p>
+                ) : (
+                  cnamgsPayments.map((payment) => (
                   <div key={payment.id} className="rounded-xl backdrop-blur-xl p-4 bg-card/60 border border-border/20">
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -194,7 +245,8 @@ export default function ProfessionalFinances() {
                       )}
                     </div>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </Card>
@@ -208,23 +260,29 @@ export default function ProfessionalFinances() {
               <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-muted-foreground">Espèces</p>
-                  <span className="text-xs text-muted-foreground">30%</span>
+                  <span className="text-xs text-muted-foreground">{cashPercentage}%</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground">1.44M F</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {(stats.cashRevenue / 1000000).toFixed(2)}M F
+                </p>
               </div>
               <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-muted-foreground">CNAMGS</p>
-                  <span className="text-xs text-muted-foreground">60%</span>
+                  <span className="text-xs text-muted-foreground">{cnamgsPercentage}%</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground">2.88M F</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {(stats.cnamgsRevenue / 1000000).toFixed(2)}M F
+                </p>
               </div>
               <div className="rounded-xl backdrop-blur-xl p-5 bg-card/60 border border-border/20 text-center">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-medium text-muted-foreground">Mobile Money</p>
-                  <span className="text-xs text-muted-foreground">10%</span>
+                  <span className="text-xs text-muted-foreground">{mobileMoneyPercentage}%</span>
                 </div>
-                <p className="text-2xl font-bold text-foreground">480K F</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {Math.round(stats.mobileMoneyRevenue / 1000)}K F
+                </p>
               </div>
             </div>
           </div>
