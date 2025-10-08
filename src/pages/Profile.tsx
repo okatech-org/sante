@@ -278,19 +278,19 @@ export default function Profile() {
                       <button
                         key={section.id}
                         onClick={() => setActiveSection(section.id)}
-                        className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-1.5 md:gap-2 px-1.5 sm:px-2.5 md:px-3.5 py-1.5 sm:py-2 md:py-2 rounded-md sm:rounded-lg transition-all whitespace-nowrap flex-shrink-0 min-w-[40px] sm:min-w-0 ${
+                        className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-2.5 md:px-3.5 py-1.5 sm:py-2 md:py-2 rounded-md sm:rounded-lg transition-all whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-0 ${
                           isActive ? 'bg-accent text-accent-foreground shadow-sm font-semibold' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground font-medium'
                         }`}
                       >
                         <div
-                          className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded flex items-center justify-center flex-shrink-0 transition-all ${
+                          className={`w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded flex items-center justify-center flex-shrink-0 transition-all ${
                             isActive ? '' : 'bg-muted'
                           }`}
                           style={isActive ? { backgroundColor: `${section.color}20` } : {}}
                         >
-                          <Icon className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" style={{ color: isActive ? section.color : '' }} />
+                          <Icon className="w-3 h-3 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" style={{ color: isActive ? section.color : '' }} />
                         </div>
-                        <span className="hidden sm:inline text-[10px] md:text-[11px] lg:text-xs tracking-tight truncate max-w-[70px] md:max-w-[90px] lg:max-w-none">
+                        <span className="text-[9px] sm:text-[10px] md:text-[11px] lg:text-xs tracking-tight truncate max-w-[60px] sm:max-w-[70px] md:max-w-[90px] lg:max-w-none text-center sm:text-left">
                           {section.label}
                         </span>
                       </button>
