@@ -85,13 +85,14 @@ export default function AdminProject() {
 
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            {/* Tabs Navigation - Enhanced with better UX */}
-            <div className="sticky top-[110px] sm:top-[130px] z-10 backdrop-blur-2xl bg-gradient-to-r from-background via-background/98 to-background pb-4 border-b-2 border-primary/10 shadow-lg rounded-2xl animate-in fade-in-50 duration-500">
-              <ScrollArea className="w-full rounded-xl">
-                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-1.5 sm:gap-2 p-2 bg-gradient-to-br from-muted/60 to-muted/40 rounded-xl shadow-inner border border-border/30">
+            {/* Tabs Navigation - Enhanced with premium UX */}
+            <div className="sticky top-[110px] sm:top-[130px] z-20 backdrop-blur-2xl bg-gradient-to-br from-background/98 via-card/95 to-background/98 pb-5 border-b-2 border-primary/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl animate-in fade-in-50 slide-in-from-top-3 duration-700">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-2xl opacity-50" />
+              <ScrollArea className="w-full rounded-xl relative z-10">
+                <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-9 gap-2 sm:gap-2.5 p-2.5 bg-gradient-to-br from-muted/70 via-muted/60 to-muted/50 rounded-xl shadow-[inset_0_2px_8px_rgba(0,0,0,0.06)] border border-border/40 backdrop-blur-sm">
                   <TabsTrigger 
                     value="overview" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(23,204,185,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-primary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-primary/30"
                   >
                     <FileText className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">{t('project.overview')}</span>
@@ -99,42 +100,42 @@ export default function AdminProject() {
                   </TabsTrigger>
                   <TabsTrigger 
                     value="features" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-secondary data-[state=active]:to-secondary/90 data-[state=active]:text-secondary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(0,161,254,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-secondary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-secondary/30"
                   >
                     <Activity className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.features')}</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="architecture" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-accent data-[state=active]:to-accent/90 data-[state=active]:text-accent-foreground data-[state=active]:shadow-[0_4px_20px_rgba(230,59,122,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-accent/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-accent/30"
                   >
                     <Layers className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.architecture')}</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="backend" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(23,204,185,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-primary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-primary/30"
                   >
                     <Database className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.backend')}
                   </TabsTrigger>
                   <TabsTrigger 
                     value="frontend" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-secondary data-[state=active]:to-secondary/90 data-[state=active]:text-secondary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(0,161,254,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-secondary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-secondary/30"
                   >
                     <Code className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.frontend')}
                   </TabsTrigger>
                   <TabsTrigger 
                     value="implementation" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-accent data-[state=active]:to-accent/90 data-[state=active]:text-accent-foreground data-[state=active]:shadow-[0_4px_20px_rgba(230,59,122,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-accent/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-accent/30"
                   >
                     <Workflow className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.implementation')}</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="backend-cursor" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(23,204,185,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-primary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-primary/30"
                   >
                     <Server className="h-4 w-4 mr-1 sm:mr-2" />
                     <span className="hidden sm:inline">{t('project.backend')} Cursor</span>
@@ -142,14 +143,14 @@ export default function AdminProject() {
                   </TabsTrigger>
                   <TabsTrigger 
                     value="security" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-secondary data-[state=active]:to-secondary/90 data-[state=active]:text-secondary-foreground data-[state=active]:shadow-[0_4px_20px_rgba(0,161,254,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-secondary/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-secondary/30"
                   >
                     <Shield className="h-4 w-4 mr-1 sm:mr-2" />
                     <span>{t('project.security')}</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="roadmap" 
-                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-lg"
+                    className="whitespace-nowrap text-xs sm:text-sm data-[state=active]:bg-gradient-to-br data-[state=active]:from-accent data-[state=active]:to-accent/90 data-[state=active]:text-accent-foreground data-[state=active]:shadow-[0_4px_20px_rgba(230,59,122,0.4)] data-[state=active]:scale-105 transition-all duration-500 hover:scale-[1.03] hover:bg-accent/10 hover:shadow-md active:scale-95 rounded-xl font-medium data-[state=active]:font-semibold border border-transparent data-[state=active]:border-accent/30"
                   >
                     <GitBranch className="h-4 w-4 mr-1 sm:mr-2" />
                     {t('project.roadmap')}
