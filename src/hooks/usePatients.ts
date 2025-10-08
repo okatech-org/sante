@@ -41,10 +41,16 @@ export const usePatients = (searchQuery: string = "") => {
           .from("professionals")
           .select("id")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         if (profError) throw profError;
-        if (!professional) throw new Error("Profil professionnel non trouvé");
+        if (!professional) {
+          console.log("Profil professionnel non trouvé");
+          setPatients([]);
+          setStats({ total: 0, active: 0, newThisMonth: 0, upcomingAppointments: 0 });
+          setLoading(false);
+          return;
+        }
 
         // Get all appointments for this professional to find unique patients
         const { data: appointments, error: aptError } = await supabase
