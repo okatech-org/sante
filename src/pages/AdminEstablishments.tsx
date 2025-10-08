@@ -35,7 +35,6 @@ import {
   Search, 
   Filter,
   Eye,
-  Edit,
   CheckCircle2,
   XCircle,
   Shield,
@@ -43,47 +42,61 @@ import {
   Mail,
   MapPin,
   Clock,
-  Users as UsersIcon,
   Activity,
-  Plus
+  Plus,
+  Bed,
+  AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Establishment {
   id: string;
-  name: string;
-  type: 'hospital' | 'clinic' | 'health_center' | 'medical_center';
+  raison_sociale: string;
+  type_etablissement: 'chu' | 'chr' | 'polyclinique' | 'clinique' | 'centre_medical' | 'hopital_departemental' | 'hopital_confessionnel';
+  secteur: 'public' | 'prive' | 'confessionnel' | 'militaire' | 'parapublic';
+  telephone_standard: string | null;
   email: string | null;
-  phone: string;
-  address: string;
-  city: string;
   province: string;
-  is_24_7: boolean;
-  has_emergency: boolean;
-  has_laboratory: boolean;
-  has_imaging: boolean;
-  bed_capacity?: number;
-  status: 'active' | 'inactive' | 'suspended';
-  created_at: string;
+  ville: string;
+  adresse_rue: string | null;
+  nombre_lits_total: number;
+  service_urgences_actif: boolean;
+  statut: 'actif' | 'suspendu' | 'en_maintenance' | 'en_validation';
+  taux_occupation: number | null;
+  cnamgs_conventionne: boolean;
+  satisfaction_moyenne: number | null;
 }
 
 const establishmentTypes: Record<string, string> = {
-  hospital: "Hôpital",
-  clinic: "Clinique",
-  health_center: "Centre de Santé",
-  medical_center: "Centre Médical",
+  chu: "CHU",
+  chr: "CHR",
+  polyclinique: "Polyclinique",
+  clinique: "Clinique",
+  centre_medical: "Centre Médical",
+  hopital_departemental: "Hôpital Départemental",
+  hopital_confessionnel: "Hôpital Confessionnel"
+};
+
+const establishmentSectors: Record<string, string> = {
+  public: "Public",
+  prive: "Privé",
+  confessionnel: "Confessionnel",
+  militaire: "Militaire",
+  parapublic: "Parapublic"
 };
 
 const statusLabels: Record<string, string> = {
-  active: "Actif",
-  inactive: "Inactif",
-  suspended: "Suspendu",
+  actif: "Actif",
+  suspendu: "Suspendu",
+  en_maintenance: "En Maintenance",
+  en_validation: "En Validation"
 };
 
 const statusColors: Record<string, string> = {
-  active: "bg-success text-success-foreground",
-  inactive: "bg-secondary text-secondary-foreground",
-  suspended: "bg-destructive text-destructive-foreground",
+  actif: "bg-green-500/10 text-green-600 border-green-500/20",
+  suspendu: "bg-red-500/10 text-red-600 border-red-500/20",
+  en_maintenance: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  en_validation: "bg-blue-500/10 text-blue-600 border-blue-500/20"
 };
 
 export default function AdminEstablishments() {
@@ -95,6 +108,7 @@ export default function AdminEstablishments() {
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterProvince, setFilterProvince] = useState<string>("all");
+  const [filterSector, setFilterSector] = useState<string>("all");
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
@@ -109,135 +123,18 @@ export default function AdminEstablishments() {
 
   useEffect(() => {
     filterEstablishments();
-  }, [establishments, searchTerm, filterType, filterStatus, filterProvince]);
+  }, [establishments, searchTerm, filterType, filterStatus, filterProvince, filterSector]);
 
   const loadEstablishments = async () => {
     try {
       setIsLoading(true);
-      
-      // Données mockées pour démonstration
-      const mockData: Establishment[] = [
-        {
-          id: "1",
-          name: "CHU de Libreville",
-          type: "hospital",
-          email: "contact@chu-libreville.ga",
-          phone: "+241 011 76 14 68",
-          address: "Boulevard Triomphal",
-          city: "Libreville",
-          province: "Estuaire",
-          is_24_7: true,
-          has_emergency: true,
-          has_laboratory: true,
-          has_imaging: true,
-          bed_capacity: 450,
-          status: "active",
-          created_at: new Date("2023-01-15").toISOString(),
-        },
-        {
-          id: "2",
-          name: "Polyclinique Dr. Chambrier",
-          type: "clinic",
-          email: "info@chambrier.ga",
-          phone: "+241 011 76 14 68",
-          address: "Montagne Sainte",
-          city: "Libreville",
-          province: "Estuaire",
-          is_24_7: true,
-          has_emergency: true,
-          has_laboratory: true,
-          has_imaging: true,
-          bed_capacity: 120,
-          status: "active",
-          created_at: new Date("2022-06-10").toISOString(),
-        },
-        {
-          id: "3",
-          name: "Centre Hospitalier Régional de Franceville",
-          type: "hospital",
-          email: "chr.franceville@sante.ga",
-          phone: "+241 067 12 34 56",
-          address: "Avenue de l'Indépendance",
-          city: "Franceville",
-          province: "Haut-Ogooué",
-          is_24_7: true,
-          has_emergency: true,
-          has_laboratory: true,
-          has_imaging: false,
-          bed_capacity: 200,
-          status: "active",
-          created_at: new Date("2023-03-20").toISOString(),
-        },
-        {
-          id: "4",
-          name: "Clinique Sainte-Marie",
-          type: "clinic",
-          email: "contact@saintemarie.ga",
-          phone: "+241 011 45 67 89",
-          address: "Quartier Batterie IV",
-          city: "Libreville",
-          province: "Estuaire",
-          is_24_7: false,
-          has_emergency: false,
-          has_laboratory: true,
-          has_imaging: false,
-          bed_capacity: 45,
-          status: "active",
-          created_at: new Date("2023-08-05").toISOString(),
-        },
-        {
-          id: "5",
-          name: "Centre de Santé d'Owendo",
-          type: "health_center",
-          email: "cs.owendo@sante.ga",
-          phone: "+241 062 89 01 23",
-          address: "Route Nationale",
-          city: "Owendo",
-          province: "Estuaire",
-          is_24_7: false,
-          has_emergency: false,
-          has_laboratory: false,
-          has_imaging: false,
-          status: "active",
-          created_at: new Date("2022-11-12").toISOString(),
-        },
-        {
-          id: "6",
-          name: "Centre Médical Port-Gentil",
-          type: "medical_center",
-          email: "cm.portgentil@sante.ga",
-          phone: "+241 055 34 56 78",
-          address: "Boulevard de l'Océan",
-          city: "Port-Gentil",
-          province: "Ogooué-Maritime",
-          is_24_7: true,
-          has_emergency: true,
-          has_laboratory: true,
-          has_imaging: true,
-          bed_capacity: 80,
-          status: "active",
-          created_at: new Date("2023-02-28").toISOString(),
-        },
-        {
-          id: "7",
-          name: "Clinique Les Mimosas",
-          type: "clinic",
-          email: "info@mimosas.ga",
-          phone: "+241 011 23 45 67",
-          address: "Quartier Glass",
-          city: "Libreville",
-          province: "Estuaire",
-          is_24_7: false,
-          has_emergency: false,
-          has_laboratory: true,
-          has_imaging: false,
-          bed_capacity: 30,
-          status: "suspended",
-          created_at: new Date("2021-09-15").toISOString(),
-        },
-      ];
+      const { data, error } = await supabase
+        .from('establishments')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      setEstablishments(mockData);
+      if (error) throw error;
+      setEstablishments(data || []);
     } catch (error: any) {
       console.error('Error loading establishments:', error);
       toast.error("Erreur lors du chargement des établissements");
@@ -252,24 +149,28 @@ export default function AdminEstablishments() {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(e => 
-        e.name.toLowerCase().includes(term) ||
+        e.raison_sociale.toLowerCase().includes(term) ||
         e.email?.toLowerCase().includes(term) ||
-        e.phone.includes(term) ||
-        e.city.toLowerCase().includes(term) ||
-        e.address.toLowerCase().includes(term)
+        e.telephone_standard?.includes(term) ||
+        e.ville.toLowerCase().includes(term) ||
+        e.adresse_rue?.toLowerCase().includes(term)
       );
     }
 
     if (filterType !== "all") {
-      filtered = filtered.filter(e => e.type === filterType);
+      filtered = filtered.filter(e => e.type_etablissement === filterType);
     }
 
     if (filterStatus !== "all") {
-      filtered = filtered.filter(e => e.status === filterStatus);
+      filtered = filtered.filter(e => e.statut === filterStatus);
     }
 
     if (filterProvince !== "all") {
       filtered = filtered.filter(e => e.province === filterProvince);
+    }
+
+    if (filterSector !== "all") {
+      filtered = filtered.filter(e => e.secteur === filterSector);
     }
 
     setFilteredEstablishments(filtered);
@@ -280,12 +181,19 @@ export default function AdminEstablishments() {
     setShowDetailsDialog(true);
   };
 
-  const handleStatusChange = async (establishmentId: string, newStatus: 'active' | 'inactive' | 'suspended') => {
+  const handleStatusChange = async (establishmentId: string, newStatus: 'actif' | 'suspendu' | 'en_maintenance' | 'en_validation') => {
     try {
-      // TODO: Implémenter le changement de statut réel
+      const { error } = await supabase
+        .from('establishments')
+        .update({ statut: newStatus })
+        .eq('id', establishmentId);
+
+      if (error) throw error;
+
       setEstablishments(prev => 
-        prev.map(e => e.id === establishmentId ? { ...e, status: newStatus } : e)
+        prev.map(e => e.id === establishmentId ? { ...e, statut: newStatus } : e)
       );
+      setShowDetailsDialog(false);
       toast.success("Statut modifié avec succès");
     } catch (error: any) {
       console.error('Error changing status:', error);
@@ -297,10 +205,11 @@ export default function AdminEstablishments() {
 
   const stats = {
     total: establishments.length,
-    active: establishments.filter(e => e.status === 'active').length,
-    hospitals: establishments.filter(e => e.type === 'hospital').length,
-    clinics: establishments.filter(e => e.type === 'clinic').length,
-    emergency_24_7: establishments.filter(e => e.is_24_7 && e.has_emergency).length,
+    active: establishments.filter(e => e.statut === 'actif').length,
+    hospitals: establishments.filter(e => e.type_etablissement === 'chu' || e.type_etablissement === 'chr').length,
+    clinics: establishments.filter(e => e.type_etablissement === 'clinique' || e.type_etablissement === 'polyclinique').length,
+    emergency_24_7: establishments.filter(e => e.service_urgences_actif).length,
+    cnamgs: establishments.filter(e => e.cnamgs_conventionne).length
   };
 
   if (!isAdmin) {
@@ -331,20 +240,20 @@ export default function AdminEstablishments() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <Building2 className="h-8 w-8 text-primary" />
-              Gestion des Établissements
+              Gestion des Établissements de Santé
             </h1>
             <p className="text-muted-foreground mt-1">
-              Administrez tous les établissements de santé du Gabon
+              Administrez tous les établissements de santé du réseau SANTE.GA
             </p>
           </div>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            Ajouter un établissement
+            Nouvel Établissement
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Total</CardDescription>
@@ -354,12 +263,12 @@ export default function AdminEstablishments() {
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Actifs</CardDescription>
-              <CardTitle className="text-3xl text-success">{stats.active}</CardTitle>
+              <CardTitle className="text-3xl text-green-600">{stats.active}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Hôpitaux</CardDescription>
+              <CardDescription>CHU/CHR</CardDescription>
               <CardTitle className="text-3xl">{stats.hospitals}</CardTitle>
             </CardHeader>
           </Card>
@@ -375,12 +284,18 @@ export default function AdminEstablishments() {
               <CardTitle className="text-3xl">{stats.emergency_24_7}</CardTitle>
             </CardHeader>
           </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>CNAMGS</CardDescription>
+              <CardTitle className="text-3xl">{stats.cnamgs}</CardTitle>
+            </CardHeader>
+          </Card>
         </div>
 
         {/* Filtres */}
         <Card>
           <CardContent className="pt-6">
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-5 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="search">
                   <Search className="h-4 w-4 inline mr-2" />
@@ -405,10 +320,30 @@ export default function AdminEstablishments() {
                   </SelectTrigger>
                   <SelectContent className="bg-background">
                     <SelectItem value="all">Tous les types</SelectItem>
-                    <SelectItem value="hospital">Hôpitaux</SelectItem>
-                    <SelectItem value="clinic">Cliniques</SelectItem>
-                    <SelectItem value="health_center">Centres de Santé</SelectItem>
-                    <SelectItem value="medical_center">Centres Médicaux</SelectItem>
+                    <SelectItem value="chu">CHU</SelectItem>
+                    <SelectItem value="chr">CHR</SelectItem>
+                    <SelectItem value="polyclinique">Polycliniques</SelectItem>
+                    <SelectItem value="clinique">Cliniques</SelectItem>
+                    <SelectItem value="centre_medical">Centres Médicaux</SelectItem>
+                    <SelectItem value="hopital_departemental">Hôpitaux Départementaux</SelectItem>
+                    <SelectItem value="hopital_confessionnel">Hôpitaux Confessionnels</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="filter-sector">Secteur</Label>
+                <Select value={filterSector} onValueChange={setFilterSector}>
+                  <SelectTrigger id="filter-sector">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background">
+                    <SelectItem value="all">Tous les secteurs</SelectItem>
+                    <SelectItem value="public">Public</SelectItem>
+                    <SelectItem value="prive">Privé</SelectItem>
+                    <SelectItem value="confessionnel">Confessionnel</SelectItem>
+                    <SelectItem value="militaire">Militaire</SelectItem>
+                    <SelectItem value="parapublic">Parapublic</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -436,9 +371,10 @@ export default function AdminEstablishments() {
                   </SelectTrigger>
                   <SelectContent className="bg-background">
                     <SelectItem value="all">Tous les statuts</SelectItem>
-                    <SelectItem value="active">Actifs</SelectItem>
-                    <SelectItem value="inactive">Inactifs</SelectItem>
-                    <SelectItem value="suspended">Suspendus</SelectItem>
+                    <SelectItem value="actif">Actifs</SelectItem>
+                    <SelectItem value="en_validation">En Validation</SelectItem>
+                    <SelectItem value="en_maintenance">En Maintenance</SelectItem>
+                    <SelectItem value="suspendu">Suspendus</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -452,6 +388,7 @@ export default function AdminEstablishments() {
                   setFilterType("all");
                   setFilterStatus("all");
                   setFilterProvince("all");
+                  setFilterSector("all");
                 }}
               >
                 Réinitialiser
@@ -485,8 +422,10 @@ export default function AdminEstablishments() {
                     <TableRow>
                       <TableHead>Nom</TableHead>
                       <TableHead>Type</TableHead>
+                      <TableHead>Secteur</TableHead>
                       <TableHead>Contact</TableHead>
                       <TableHead>Localisation</TableHead>
+                      <TableHead>Capacité</TableHead>
                       <TableHead>Services</TableHead>
                       <TableHead>Statut</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -496,32 +435,29 @@ export default function AdminEstablishments() {
                     {filteredEstablishments.map((establishment) => (
                       <TableRow key={establishment.id}>
                         <TableCell className="font-medium">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Building2 className="h-4 w-4 text-muted-foreground" />
-                              {establishment.name}
-                            </div>
-                            {establishment.bed_capacity && (
-                              <div className="text-xs text-muted-foreground mt-1">
-                                {establishment.bed_capacity} lits
-                              </div>
-                            )}
-                          </div>
+                          {establishment.raison_sociale}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {establishmentTypes[establishment.type]}
+                            {establishmentTypes[establishment.type_etablissement]}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-1 text-sm">
-                              <Phone className="h-3 w-3 text-muted-foreground" />
-                              {establishment.phone}
-                            </div>
+                          <Badge variant="secondary">
+                            {establishmentSectors[establishment.secteur]}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm space-y-1">
+                            {establishment.telephone_standard && (
+                              <div className="flex items-center gap-1">
+                                <Phone className="h-3 w-3" />
+                                {establishment.telephone_standard}
+                              </div>
+                            )}
                             {establishment.email && (
-                              <div className="flex items-center gap-1 text-sm">
-                                <Mail className="h-3 w-3 text-muted-foreground" />
+                              <div className="flex items-center gap-1">
+                                <Mail className="h-3 w-3" />
                                 {establishment.email}
                               </div>
                             )}
@@ -530,53 +466,45 @@ export default function AdminEstablishments() {
                         <TableCell>
                           <div className="text-sm">
                             <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3 text-muted-foreground" />
-                              {establishment.city}
-                            </div>
-                            <div className="text-xs text-muted-foreground pl-4">
-                              {establishment.province}
+                              <MapPin className="h-3 w-3" />
+                              {establishment.ville}, {establishment.province}
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {establishment.is_24_7 && (
-                              <Badge variant="secondary" className="text-xs">
+                          <div className="flex items-center gap-1 text-sm">
+                            <Bed className="h-3 w-3" />
+                            {establishment.nombre_lits_total} lits
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            {establishment.service_urgences_actif && (
+                              <Badge variant="destructive" className="text-xs">
                                 <Clock className="h-3 w-3 mr-1" />
                                 24/7
                               </Badge>
                             )}
-                            {establishment.has_emergency && (
-                              <Badge variant="secondary" className="text-xs">
-                                <Activity className="h-3 w-3 mr-1" />
-                                Urgences
+                            {establishment.cnamgs_conventionne && (
+                              <Badge variant="default" className="text-xs">
+                                CNAMGS
                               </Badge>
                             )}
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={statusColors[establishment.status]} variant="secondary">
-                            {statusLabels[establishment.status]}
+                          <Badge variant="outline" className={statusColors[establishment.statut]}>
+                            {statusLabels[establishment.statut]}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openDetailsDialog(establishment)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            {isSuperAdmin && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openDetailsDialog(establishment)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -588,144 +516,77 @@ export default function AdminEstablishments() {
         </Card>
       </div>
 
-      {/* Dialog Détails */}
+      {/* Details Dialog */}
       <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Building2 className="h-5 w-5" />
-              Détails de l'établissement
+              {selectedEstablishment?.raison_sociale}
             </DialogTitle>
             <DialogDescription>
-              Informations complètes et services disponibles
+              Détails de l'établissement et actions administratives
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedEstablishment && (
             <div className="space-y-6">
-              {/* En-tête */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-2xl font-semibold">{selectedEstablishment.name}</h3>
-                  <Badge variant="outline" className="mt-2">
-                    {establishmentTypes[selectedEstablishment.type]}
-                  </Badge>
-                </div>
-                <Badge className={statusColors[selectedEstablishment.status]}>
-                  {statusLabels[selectedEstablishment.status]}
-                </Badge>
-              </div>
-
-              {/* Informations principales */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Capacité</Label>
-                  <p className="font-medium">
-                    {selectedEstablishment.bed_capacity 
-                      ? `${selectedEstablishment.bed_capacity} lits` 
-                      : 'Non spécifiée'}
-                  </p>
+                  <Label className="text-muted-foreground">Type</Label>
+                  <p className="font-medium">{establishmentTypes[selectedEstablishment.type_etablissement]}</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Date d'ajout</Label>
-                  <p className="font-medium">
-                    {new Date(selectedEstablishment.created_at).toLocaleDateString('fr-FR')}
-                  </p>
+                  <Label className="text-muted-foreground">Secteur</Label>
+                  <p className="font-medium">{establishmentSectors[selectedEstablishment.secteur]}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Ville</Label>
+                  <p className="font-medium">{selectedEstablishment.ville}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Province</Label>
+                  <p className="font-medium">{selectedEstablishment.province}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Capacité</Label>
+                  <p className="font-medium">{selectedEstablishment.nombre_lits_total} lits</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Taux d'occupation</Label>
+                  <p className="font-medium">{selectedEstablishment.taux_occupation || 'N/A'}%</p>
                 </div>
               </div>
 
-              {/* Contact */}
-              <div>
-                <Label className="text-xs text-muted-foreground mb-2 block">Coordonnées</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{selectedEstablishment.phone}</span>
-                  </div>
-                  {selectedEstablishment.email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span>{selectedEstablishment.email}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Adresse */}
-              <div>
-                <Label className="text-xs text-muted-foreground mb-2 block">Adresse</Label>
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div>
-                    <p>{selectedEstablishment.address}</p>
-                    <p>{selectedEstablishment.city}, {selectedEstablishment.province}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Services disponibles */}
-              <div>
-                <Label className="text-xs text-muted-foreground mb-3 block">Services & Équipements</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 p-3 rounded-lg border">
-                    {selectedEstablishment.is_24_7 ? (
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                    ) : (
-                      <XCircle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <span className="text-sm">Ouvert 24h/24, 7j/7</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 rounded-lg border">
-                    {selectedEstablishment.has_emergency ? (
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                    ) : (
-                      <XCircle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <span className="text-sm">Service d'urgences</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 rounded-lg border">
-                    {selectedEstablishment.has_laboratory ? (
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                    ) : (
-                      <XCircle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <span className="text-sm">Laboratoire d'analyses</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-3 rounded-lg border">
-                    {selectedEstablishment.has_imaging ? (
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                    ) : (
-                      <XCircle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                    <span className="text-sm">Imagerie médicale</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions administrateur */}
-              {isSuperAdmin && selectedEstablishment.status !== 'suspended' && (
-                <div className="pt-4 border-t">
-                  <Label className="text-xs text-muted-foreground mb-3 block">Actions administratives</Label>
-                  <div className="flex gap-2">
+              {isSuperAdmin && (
+                <div className="space-y-3 pt-4 border-t">
+                  <Label>Actions administratives</Label>
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       variant="outline"
-                      onClick={() => {
-                        handleStatusChange(
-                          selectedEstablishment.id,
-                          selectedEstablishment.status === 'active' ? 'inactive' : 'active'
-                        );
-                        setShowDetailsDialog(false);
-                      }}
+                      size="sm"
+                      onClick={() => handleStatusChange(selectedEstablishment.id, 'actif')}
+                      disabled={selectedEstablishment.statut === 'actif'}
                     >
-                      {selectedEstablishment.status === 'active' ? 'Désactiver' : 'Activer'}
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      Activer
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleStatusChange(selectedEstablishment.id, 'en_maintenance')}
+                      disabled={selectedEstablishment.statut === 'en_maintenance'}
+                    >
+                      <AlertCircle className="h-4 w-4 mr-2" />
+                      Maintenance
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => {
-                        handleStatusChange(selectedEstablishment.id, 'suspended');
-                        setShowDetailsDialog(false);
-                      }}
+                      size="sm"
+                      onClick={() => handleStatusChange(selectedEstablishment.id, 'suspendu')}
+                      disabled={selectedEstablishment.statut === 'suspendu'}
                     >
+                      <XCircle className="h-4 w-4 mr-2" />
                       Suspendre
                     </Button>
                   </div>

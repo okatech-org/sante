@@ -56,6 +56,353 @@ export type Database = {
         }
         Relationships: []
       }
+      establishment_equipment: {
+        Row: {
+          annee_installation: number | null
+          categorie: string
+          created_at: string | null
+          derniere_maintenance: string | null
+          disponible_24h: boolean | null
+          establishment_id: string
+          etat_fonctionnement: string | null
+          id: string
+          marque: string | null
+          modele: string | null
+          prochaine_maintenance: string | null
+          type_equipement: string
+          updated_at: string | null
+        }
+        Insert: {
+          annee_installation?: number | null
+          categorie: string
+          created_at?: string | null
+          derniere_maintenance?: string | null
+          disponible_24h?: boolean | null
+          establishment_id: string
+          etat_fonctionnement?: string | null
+          id?: string
+          marque?: string | null
+          modele?: string | null
+          prochaine_maintenance?: string | null
+          type_equipement: string
+          updated_at?: string | null
+        }
+        Update: {
+          annee_installation?: number | null
+          categorie?: string
+          created_at?: string | null
+          derniere_maintenance?: string | null
+          disponible_24h?: boolean | null
+          establishment_id?: string
+          etat_fonctionnement?: string | null
+          id?: string
+          marque?: string | null
+          modele?: string | null
+          prochaine_maintenance?: string | null
+          type_equipement?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_equipment_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_services: {
+        Row: {
+          actif: boolean | null
+          code: string
+          created_at: string | null
+          establishment_id: string
+          horaires: Json | null
+          id: string
+          nom: string
+          nombre_infirmiers: number | null
+          nombre_lits: number | null
+          nombre_medecins: number | null
+          responsable_nom: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actif?: boolean | null
+          code: string
+          created_at?: string | null
+          establishment_id: string
+          horaires?: Json | null
+          id?: string
+          nom: string
+          nombre_infirmiers?: number | null
+          nombre_lits?: number | null
+          nombre_medecins?: number | null
+          responsable_nom?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actif?: boolean | null
+          code?: string
+          created_at?: string | null
+          establishment_id?: string
+          horaires?: Json | null
+          id?: string
+          nom?: string
+          nombre_infirmiers?: number | null
+          nombre_lits?: number | null
+          nombre_medecins?: number | null
+          responsable_nom?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_services_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_statistics: {
+        Row: {
+          consultations_jour: number | null
+          created_at: string | null
+          date: string
+          establishment_id: string
+          hospitalisations_jour: number | null
+          id: string
+          lits_occupes: number | null
+          operations_jour: number | null
+          recettes_assurances: number | null
+          recettes_cnamgs: number | null
+          recettes_especes: number | null
+          recettes_jour: number | null
+          taux_occupation: number | null
+          urgences_jour: number | null
+        }
+        Insert: {
+          consultations_jour?: number | null
+          created_at?: string | null
+          date: string
+          establishment_id: string
+          hospitalisations_jour?: number | null
+          id?: string
+          lits_occupes?: number | null
+          operations_jour?: number | null
+          recettes_assurances?: number | null
+          recettes_cnamgs?: number | null
+          recettes_especes?: number | null
+          recettes_jour?: number | null
+          taux_occupation?: number | null
+          urgences_jour?: number | null
+        }
+        Update: {
+          consultations_jour?: number | null
+          created_at?: string | null
+          date?: string
+          establishment_id?: string
+          hospitalisations_jour?: number | null
+          id?: string
+          lits_occupes?: number | null
+          operations_jour?: number | null
+          recettes_assurances?: number | null
+          recettes_cnamgs?: number | null
+          recettes_especes?: number | null
+          recettes_jour?: number | null
+          taux_occupation?: number | null
+          urgences_jour?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_statistics_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_users: {
+        Row: {
+          actif: boolean | null
+          created_at: string | null
+          establishment_id: string
+          id: string
+          permissions: Json | null
+          role: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          actif?: boolean | null
+          created_at?: string | null
+          establishment_id: string
+          id?: string
+          permissions?: Json | null
+          role: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          actif?: boolean | null
+          created_at?: string | null
+          establishment_id?: string
+          id?: string
+          permissions?: Json | null
+          role?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_users_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishments: {
+        Row: {
+          adresse_arrondissement: string | null
+          adresse_quartier: string | null
+          adresse_rue: string | null
+          capital: number | null
+          cnamgs_conventionne: boolean | null
+          cnamgs_date_debut: string | null
+          cnamgs_date_fin: string | null
+          cnamgs_numero_convention: string | null
+          cnamgs_tiers_payant_actif: boolean | null
+          code_postal: string | null
+          created_at: string | null
+          date_inscription: string | null
+          directeur_general_email: string | null
+          directeur_general_nom: string | null
+          directeur_general_telephone: string | null
+          directeur_medical_nom: string | null
+          directeur_medical_numero_ordre: string | null
+          email: string | null
+          forme_juridique: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          nombre_avis: number | null
+          nombre_blocs_operatoires: number | null
+          nombre_lits_total: number | null
+          nombre_salles_consultation: number | null
+          numero_autorisation: string
+          numero_rccm: string | null
+          province: string
+          raison_sociale: string
+          repere_geographique: string | null
+          satisfaction_moyenne: number | null
+          secteur: Database["public"]["Enums"]["establishment_sector"]
+          service_urgences_actif: boolean | null
+          site_web: string | null
+          statut: Database["public"]["Enums"]["establishment_status"] | null
+          taux_occupation: number | null
+          telephone_standard: string | null
+          telephone_urgences: string | null
+          type_etablissement: Database["public"]["Enums"]["establishment_type"]
+          updated_at: string | null
+          ville: string
+          whatsapp_business: string | null
+        }
+        Insert: {
+          adresse_arrondissement?: string | null
+          adresse_quartier?: string | null
+          adresse_rue?: string | null
+          capital?: number | null
+          cnamgs_conventionne?: boolean | null
+          cnamgs_date_debut?: string | null
+          cnamgs_date_fin?: string | null
+          cnamgs_numero_convention?: string | null
+          cnamgs_tiers_payant_actif?: boolean | null
+          code_postal?: string | null
+          created_at?: string | null
+          date_inscription?: string | null
+          directeur_general_email?: string | null
+          directeur_general_nom?: string | null
+          directeur_general_telephone?: string | null
+          directeur_medical_nom?: string | null
+          directeur_medical_numero_ordre?: string | null
+          email?: string | null
+          forme_juridique?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          nombre_avis?: number | null
+          nombre_blocs_operatoires?: number | null
+          nombre_lits_total?: number | null
+          nombre_salles_consultation?: number | null
+          numero_autorisation: string
+          numero_rccm?: string | null
+          province: string
+          raison_sociale: string
+          repere_geographique?: string | null
+          satisfaction_moyenne?: number | null
+          secteur: Database["public"]["Enums"]["establishment_sector"]
+          service_urgences_actif?: boolean | null
+          site_web?: string | null
+          statut?: Database["public"]["Enums"]["establishment_status"] | null
+          taux_occupation?: number | null
+          telephone_standard?: string | null
+          telephone_urgences?: string | null
+          type_etablissement: Database["public"]["Enums"]["establishment_type"]
+          updated_at?: string | null
+          ville: string
+          whatsapp_business?: string | null
+        }
+        Update: {
+          adresse_arrondissement?: string | null
+          adresse_quartier?: string | null
+          adresse_rue?: string | null
+          capital?: number | null
+          cnamgs_conventionne?: boolean | null
+          cnamgs_date_debut?: string | null
+          cnamgs_date_fin?: string | null
+          cnamgs_numero_convention?: string | null
+          cnamgs_tiers_payant_actif?: boolean | null
+          code_postal?: string | null
+          created_at?: string | null
+          date_inscription?: string | null
+          directeur_general_email?: string | null
+          directeur_general_nom?: string | null
+          directeur_general_telephone?: string | null
+          directeur_medical_nom?: string | null
+          directeur_medical_numero_ordre?: string | null
+          email?: string | null
+          forme_juridique?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          nombre_avis?: number | null
+          nombre_blocs_operatoires?: number | null
+          nombre_lits_total?: number | null
+          nombre_salles_consultation?: number | null
+          numero_autorisation?: string
+          numero_rccm?: string | null
+          province?: string
+          raison_sociale?: string
+          repere_geographique?: string | null
+          satisfaction_moyenne?: number | null
+          secteur?: Database["public"]["Enums"]["establishment_sector"]
+          service_urgences_actif?: boolean | null
+          site_web?: string | null
+          statut?: Database["public"]["Enums"]["establishment_status"] | null
+          taux_occupation?: number | null
+          telephone_standard?: string | null
+          telephone_urgences?: string | null
+          type_etablissement?: Database["public"]["Enums"]["establishment_type"]
+          updated_at?: string | null
+          ville?: string
+          whatsapp_business?: string | null
+        }
+        Relationships: []
+      }
       medical_history: {
         Row: {
           condition_name: string
@@ -997,6 +1344,25 @@ export type Database = {
         | "conventionne"
         | "suspendu"
         | "expire"
+      establishment_sector:
+        | "public"
+        | "prive"
+        | "confessionnel"
+        | "militaire"
+        | "parapublic"
+      establishment_status:
+        | "actif"
+        | "suspendu"
+        | "en_maintenance"
+        | "en_validation"
+      establishment_type:
+        | "chu"
+        | "chr"
+        | "polyclinique"
+        | "clinique"
+        | "centre_medical"
+        | "hopital_departemental"
+        | "hopital_confessionnel"
       practice_location_type:
         | "cabinet_prive"
         | "hopital_public"
@@ -1169,6 +1535,28 @@ export const Constants = {
         "conventionne",
         "suspendu",
         "expire",
+      ],
+      establishment_sector: [
+        "public",
+        "prive",
+        "confessionnel",
+        "militaire",
+        "parapublic",
+      ],
+      establishment_status: [
+        "actif",
+        "suspendu",
+        "en_maintenance",
+        "en_validation",
+      ],
+      establishment_type: [
+        "chu",
+        "chr",
+        "polyclinique",
+        "clinique",
+        "centre_medical",
+        "hopital_departemental",
+        "hopital_confessionnel",
       ],
       practice_location_type: [
         "cabinet_prive",
