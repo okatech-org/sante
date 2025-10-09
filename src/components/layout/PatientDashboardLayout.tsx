@@ -423,7 +423,17 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
 
                   {renderMenu()}
 
-                  <div className="mt-auto pt-6 border-t border-white/10">
+                  <div className="mt-auto pt-6 border-t border-white/10 space-y-3">
+                    {/* Logout Button */}
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span className="text-sm font-medium">Déconnexion</span>
+                    </button>
+
+                    {/* User Profile */}
                     <div className="p-3 rounded-xl bg-white/5">
                       <div className="flex items-center gap-3">
                         <div 
