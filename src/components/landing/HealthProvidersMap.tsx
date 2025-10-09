@@ -359,20 +359,20 @@ export default function HealthProvidersMap() {
   return (
     <div className="h-[600px] w-full relative">
       {/* Filtres par type - Interface sur toute la largeur */}
-      <div className="absolute bottom-4 left-4 right-4 z-[1000]">
-        <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-2 sm:p-3">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <h3 className="text-[10px] sm:text-xs font-bold text-foreground/80 dark:text-foreground/90 flex items-center gap-1 sm:gap-2 uppercase tracking-wide">
+      <div className="absolute bottom-4 left-2 right-2 sm:left-4 sm:right-4 z-[1000] overflow-hidden">
+        <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-2 sm:p-3 max-w-full">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-[10px] sm:text-xs font-bold text-foreground/80 dark:text-foreground/90 flex items-center gap-1 sm:gap-2 uppercase tracking-wide flex-shrink-0">
               <Layers className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
               <span className="hidden sm:inline">Filtrer par type</span>
               <span className="sm:hidden">Filtres</span>
             </h3>
-            <div className="flex overflow-x-auto gap-1.5 sm:gap-2 scrollbar-hide flex-nowrap w-full">
+            <div className="flex overflow-x-auto gap-1.5 sm:gap-2 scrollbar-hide pb-1">
               <Button
                 size="sm"
                 variant={selectedType === null ? "default" : "outline"}
                 onClick={() => setSelectedType(null)}
-                className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg font-medium"
+                className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg font-medium whitespace-nowrap flex-shrink-0"
               >
                 Tous
               </Button>
@@ -382,7 +382,7 @@ export default function HealthProvidersMap() {
                   size="sm"
                   variant={selectedType === type.id ? "default" : "outline"}
                   onClick={() => setSelectedType(type.id)}
-                  className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg flex items-center gap-1 sm:gap-1.5 font-medium"
+                  className="h-6 sm:h-7 px-2 sm:px-3 text-[10px] sm:text-xs rounded-lg flex items-center gap-1 sm:gap-1.5 font-medium whitespace-nowrap flex-shrink-0"
                   title={type.label}
                 >
                   <span className="text-xs sm:text-base">{type.icon}</span>
