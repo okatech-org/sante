@@ -387,7 +387,17 @@ export default function Cartography() {
 
         {/* Main Content */}
         <main className="flex-1 space-y-3 md:space-y-4 min-w-0">
-          {/* Results Header - Compact mobile */}
+          {/* Map View - En premier */}
+          {(viewMode === 'map' || viewMode === 'both') && (
+            <div className={cn(
+              "rounded-lg overflow-hidden transition-all",
+              viewMode === 'map' ? 'h-[70vh] md:h-[calc(100vh-400px)]' : 'h-[400px] md:h-[600px]'
+            )}>
+              <HealthProvidersMap />
+            </div>
+          )}
+
+          {/* Results Header - En dessous de la carte */}
           <div className="backdrop-blur-xl bg-card/80 rounded-lg md:rounded-xl border p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
               <div className="font-semibold text-base md:text-lg">
@@ -454,16 +464,6 @@ export default function Cartography() {
               </Dialog>
             </div>
           </div>
-
-          {/* Map View - Hauteur adaptée mobile */}
-          {(viewMode === 'map' || viewMode === 'both') && (
-            <div className={cn(
-              "rounded-lg overflow-hidden transition-all",
-              viewMode === 'map' ? 'h-[70vh] md:h-[calc(100vh-400px)]' : 'h-[400px] md:h-[600px]'
-            )}>
-              <HealthProvidersMap />
-            </div>
-          )}
 
           {/* List View */}
           {(viewMode === 'list' || viewMode === 'both') && (
