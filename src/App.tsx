@@ -68,6 +68,7 @@ import Cartography from "./pages/Cartography";
 import MedicalRecord from "./pages/MedicalRecord";
 import Support from "./pages/Support";
 import Teleconsultation from "./pages/Teleconsultation";
+import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
 import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
 
 const queryClient = new QueryClient();
@@ -212,6 +213,11 @@ const App = () => (
           <Route path="/admin/settings" element={
             <ProtectedRoute requiredRoles={['super_admin']}>
               <AdminSettings />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/architecture" element={
+            <ProtectedRoute requiredRoles={['super_admin']}>
+              <MultiEstablishmentArchitecture />
             </ProtectedRoute>
           } />
             <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />

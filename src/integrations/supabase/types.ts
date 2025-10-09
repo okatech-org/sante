@@ -403,6 +403,76 @@ export type Database = {
           },
         ]
       }
+      establishment_staff: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          end_date: string | null
+          establishment_id: string
+          id: string
+          is_admin: boolean | null
+          permissions: string[] | null
+          professional_id: string
+          role_in_establishment: string
+          schedule: Json | null
+          start_date: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          establishment_id: string
+          id?: string
+          is_admin?: boolean | null
+          permissions?: string[] | null
+          professional_id: string
+          role_in_establishment: string
+          schedule?: Json | null
+          start_date?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          end_date?: string | null
+          establishment_id?: string
+          id?: string
+          is_admin?: boolean | null
+          permissions?: string[] | null
+          professional_id?: string
+          role_in_establishment?: string
+          schedule?: Json | null
+          start_date?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_staff_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "establishment_staff_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "establishment_staff_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professional_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_statistics: {
         Row: {
           consultations_jour: number | null
@@ -1127,6 +1197,59 @@ export type Database = {
           },
         ]
       }
+      professional_profiles: {
+        Row: {
+          bio: string | null
+          consultation_fee: number | null
+          created_at: string | null
+          diplomas: Json | null
+          id: string
+          ordre_number: string | null
+          ordre_verified: boolean | null
+          profession_type: string
+          specialization: string | null
+          updated_at: string | null
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          diplomas?: Json | null
+          id?: string
+          ordre_number?: string | null
+          ordre_verified?: boolean | null
+          profession_type: string
+          specialization?: string | null
+          updated_at?: string | null
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          diplomas?: Json | null
+          id?: string
+          ordre_number?: string | null
+          ordre_verified?: boolean | null
+          profession_type?: string
+          specialization?: string | null
+          updated_at?: string | null
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professional_services: {
         Row: {
           available: boolean | null
@@ -1417,6 +1540,7 @@ export type Database = {
           notification_push: boolean | null
           notification_sms: boolean | null
           phone: string
+          profile_type: string | null
           profile_visibility: string | null
           province: string | null
           theme: string | null
@@ -1443,6 +1567,7 @@ export type Database = {
           notification_push?: boolean | null
           notification_sms?: boolean | null
           phone: string
+          profile_type?: string | null
           profile_visibility?: string | null
           province?: string | null
           theme?: string | null
@@ -1469,6 +1594,7 @@ export type Database = {
           notification_push?: boolean | null
           notification_sms?: boolean | null
           phone?: string
+          profile_type?: string | null
           profile_visibility?: string | null
           province?: string | null
           theme?: string | null
@@ -1653,6 +1779,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_user_establishments: {
+        Args: { _user_id: string }
+        Returns: {
+          establishment_id: string
+          establishment_name: string
+          is_admin: boolean
+          permissions: string[]
+          role_in_establishment: string
+          status: string
+        }[]
+      }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
@@ -1669,6 +1806,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_establishment_admin: {
+        Args: { _establishment_id: string; _user_id: string }
         Returns: boolean
       }
     }
