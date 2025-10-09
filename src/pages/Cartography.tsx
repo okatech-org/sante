@@ -7,7 +7,6 @@ import CartographyFilterPanel from "@/components/cartography/CartographyFilterPa
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
-import CartographyStats from "@/components/cartography/CartographyStats";
 import QuickFilters from "@/components/cartography/QuickFilters";
 import SearchGuide from "@/components/cartography/SearchGuide";
 import { Button } from "@/components/ui/button";
@@ -74,8 +73,6 @@ export default function Cartography() {
     setFilteredProviders(filtered);
   }, [providers, filters, sortBy]);
 
-  const stats = useMemo(() => calculateStats(providers), [providers]);
-
   const content = (
     <div className="space-y-6">
       {/* Hero Section avec recherche guidée */}
@@ -137,11 +134,6 @@ export default function Cartography() {
             <ArrowDown className="h-5 w-5" />
           </div>
         </div>
-      </div>
-
-      {/* Stats avec animation */}
-      <div className="animate-fade-in">
-        <CartographyStats stats={stats} provinces={provincesData.provinces} />
       </div>
 
       {/* Résultats Section */}
