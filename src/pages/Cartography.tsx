@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
@@ -12,7 +13,11 @@ import SearchGuide from "@/components/cartography/SearchGuide";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone } from "lucide-react";
+import { LanguageToggle } from "@/components/language/LanguageToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import logoSante from "@/assets/logo_sante.png";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
 import { filterProviders, sortProviders, calculateStats } from "@/utils/cartography-filters";
@@ -21,13 +26,16 @@ import provincesData from "@/data/cartography-provinces.json";
 import { cn } from "@/lib/utils";
 
 export default function Cartography() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin, user } = useAuth();
+  const navigate = useNavigate();
   const [providers, setProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
   const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
   const [userLocation, setUserLocation] = useState<Coordonnees | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [viewMode, setViewMode] = useState<'both' | 'map' | 'list'>('both');
   const [sortBy, setSortBy] = useState('distance');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   
   const [filters, setFilters] = useState<CartographyFilters>({
     types: [],
@@ -40,6 +48,15 @@ export default function Cartography() {
     searchText: ''
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Detect scroll for header background
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const getUserLocation = () => {
     if (!navigator.geolocation) {
@@ -67,6 +84,14 @@ export default function Cartography() {
     );
   };
 
+  const menuItems = [
+    { label: "Accueil", icon: Home, path: "/" },
+    { label: "Services", icon: Stethoscope, path: "/services" },
+    { label: "Rendez-vous", icon: Calendar, path: "/appointments" },
+    { label: "Cartographie", icon: MapPin, path: "/cartography" },
+    { label: "Support", icon: Phone, path: "/support" }
+  ];
+
   useEffect(() => {
     let filtered = filterProviders(providers, filters);
     filtered = sortProviders(filtered, sortBy);
@@ -74,8 +99,171 @@ export default function Cartography() {
   }, [providers, filters, sortBy]);
 
   const content = (
-    <div className="space-y-6">
-      {/* Hero Section avec recherche guidée */}
+    <div className="min-h-screen">
+      {/* Header / Barre de menu */}
+      <header className={cn(
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
+        scrolled 
+          ? "bg-background/95 backdrop-blur-lg shadow-md" 
+          : "bg-background/80 backdrop-blur-sm"
+      )}>
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img src={logoSante} alt="Logo" className="h-10 w-auto" />
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                  e-Santé Gabon
+                </h1>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-6">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.path === "/cartography";
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary",
+                      isActive 
+                        ? "text-primary" 
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Actions Desktop */}
+            <div className="hidden lg:flex items-center gap-3">
+              <ThemeToggle />
+              <LanguageToggle />
+              
+              {user ? (
+                <Button
+                  onClick={() => navigate('/dashboard/patient')}
+                  variant="default"
+                  size="sm"
+                  className="gap-2"
+                >
+                  Mon Espace
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => navigate('/login/patient')}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    Connexion
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/register/patient')}
+                    variant="default"
+                    size="sm"
+                  >
+                    S'inscrire
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <nav className="flex flex-col gap-4 mt-8">
+                  {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = item.path === "/cartography";
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                          isActive 
+                            ? "bg-primary/10 text-primary" 
+                            : "text-foreground hover:bg-muted"
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+
+                  <div className="border-t pt-4 mt-4 space-y-3">
+                    <div className="flex items-center justify-between px-4">
+                      <span className="text-sm text-muted-foreground">Thème</span>
+                      <ThemeToggle />
+                    </div>
+                    <div className="flex items-center justify-between px-4">
+                      <span className="text-sm text-muted-foreground">Langue</span>
+                      <LanguageToggle />
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4 mt-4 space-y-2">
+                    {user ? (
+                      <Button
+                        onClick={() => {
+                          navigate('/dashboard/patient');
+                          setMobileMenuOpen(false);
+                        }}
+                        variant="default"
+                        className="w-full"
+                      >
+                        Mon Espace
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={() => {
+                            navigate('/login/patient');
+                            setMobileMenuOpen(false);
+                          }}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Connexion
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            navigate('/register/patient');
+                            setMobileMenuOpen(false);
+                          }}
+                          variant="default"
+                          className="w-full"
+                        >
+                          S'inscrire
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="space-y-6 p-2 sm:p-4 md:p-6">
+        {/* Hero Section avec recherche guidée */}
       <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-lg md:shadow-2xl">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
@@ -322,12 +510,13 @@ export default function Cartography() {
         </main>
       </div>
 
-      {/* Provider Details Modal */}
-      <CartographyProviderModal
-        provider={selectedProvider}
-        userLocation={userLocation}
-        onClose={() => setSelectedProvider(null)}
-      />
+        {/* Provider Details Modal */}
+        <CartographyProviderModal
+          provider={selectedProvider}
+          userLocation={userLocation}
+          onClose={() => setSelectedProvider(null)}
+        />
+      </div>
     </div>
   );
 
@@ -336,7 +525,7 @@ export default function Cartography() {
       {content}
     </SuperAdminLayout>
   ) : (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {content}
     </div>
   );
