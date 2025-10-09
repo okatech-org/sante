@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Heart, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -9,14 +9,34 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, userRoles } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
+
+  // Détermine le lien du tableau de bord selon le contexte
+  const getDashboardLink = () => {
+    // Si on est sur une page démo, retourner vers cette démo
+    if (location.pathname.startsWith('/demo/doctor')) return '/demo/doctor';
+    if (location.pathname.startsWith('/demo/specialist')) return '/demo/specialist';
+    if (location.pathname.startsWith('/demo/hospital')) return '/demo/hospital';
+    if (location.pathname.startsWith('/demo/clinic')) return '/demo/clinic';
+    
+    // Si on est connecté et on a un rôle professionnel
+    if (user && (userRoles.includes('doctor') || userRoles.includes('medical_staff'))) {
+      return '/dashboard/professional';
+    }
+    
+    // Par défaut, dashboard patient
+    return '/dashboard/patient';
+  };
+
+  const dashboardLink = getDashboardLink();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -35,9 +55,9 @@ export function Header() {
 
         {/* Navigation Desktop */}
         <nav className="hidden md:flex items-center gap-6">
-          {user ? (
+          {user || location.pathname.startsWith('/demo') ? (
             <>
-              <Link to="/dashboard/patient" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={dashboardLink} className="text-sm font-medium hover:text-primary transition-colors">
                 Tableau de bord
               </Link>
               <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors">
@@ -104,9 +124,9 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <nav className="flex flex-col gap-4 mt-8">
-                {user ? (
+                {user || location.pathname.startsWith('/demo') ? (
                   <>
-                    <Link to="/dashboard/patient" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                    <Link to={dashboardLink} className="text-sm font-medium hover:text-primary transition-colors py-2">
                       Tableau de bord
                     </Link>
                     <Link to="/appointments" className="text-sm font-medium hover:text-primary transition-colors py-2">
