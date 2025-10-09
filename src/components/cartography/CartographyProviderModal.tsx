@@ -252,40 +252,53 @@ export default function CartographyProviderModal({
               </div>
             )}
 
-            {/* Contact & Localisation - Grid compact */}
-            <div className="grid gap-3">
+            {/* Contact & Localisation - Bloc fusionné et optimisé */}
+            <div className="bg-muted/30 rounded-lg p-3 space-y-3">
               {/* Localisation */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <MapPin className="h-3.5 w-3.5 text-primary" />
-                  Localisation
+                  <span>Localisation</span>
                 </div>
-                <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
-                <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
+                <p className="text-xs leading-relaxed pl-5">{provider.adresse_descriptive}</p>
+                <p className="text-xs text-muted-foreground pl-5">{provider.ville}, {provider.province}</p>
               </div>
 
+              <div className="h-px bg-border" />
+
               {/* Contact */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+              <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Phone className="h-3.5 w-3.5 text-primary" />
-                  Contact
+                  <span>Contact</span>
                 </div>
-                {provider.telephones.slice(0, 2).map((tel, index) => (
-                  <a
-                    key={index}
-                    href={`tel:${tel}`}
-                    className="flex items-center gap-2 text-xs text-primary hover:underline"
-                  >
-                    <Phone className="h-3 w-3" />
-                    {tel}
-                  </a>
-                ))}
-                {provider.horaires && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                    <Clock className="h-3 w-3" />
-                    {provider.horaires}
-                  </div>
-                )}
+                <div className="space-y-1.5 pl-5">
+                  {provider.telephones.slice(0, 2).map((tel, index) => (
+                    <a
+                      key={index}
+                      href={`tel:${tel}`}
+                      className="flex items-center gap-2 text-xs text-primary hover:underline"
+                    >
+                      <Phone className="h-3 w-3" />
+                      {tel}
+                    </a>
+                  ))}
+                  {provider.email && (
+                    <a
+                      href={`mailto:${provider.email}`}
+                      className="flex items-center gap-2 text-xs text-primary hover:underline"
+                    >
+                      <Mail className="h-3 w-3" />
+                      {provider.email}
+                    </a>
+                  )}
+                  {provider.horaires && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                      <Clock className="h-3 w-3" />
+                      {provider.horaires}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
