@@ -267,24 +267,19 @@ export default function Cartography() {
       <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-lg md:shadow-2xl">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
-        <div className="relative p-4 md:p-8 space-y-4 md:space-y-6">
+        <div className="relative p-3 md:p-6 space-y-3 md:space-y-4">
           {/* Header - Compact sur mobile */}
           <div className="text-center space-y-1 md:space-y-2">
-            <div className="flex items-center justify-center gap-2">
-              <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <MapPin className="h-4 w-4 md:h-6 md:w-6 text-primary-foreground" />
-              </div>
-            </div>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold">
               Trouvez votre professionnel de santé
             </h1>
-            <p className="text-xs md:text-base text-muted-foreground max-w-2xl mx-auto px-2">
-              {providers.length} établissements au Gabon
+            <p className="text-xs md:text-sm text-muted-foreground">
+              {providers.length} établissements disponibles
             </p>
           </div>
 
           {/* Barre de recherche - Priority 1 */}
-          <div className="flex justify-center animate-fade-in">
+          <div className="flex justify-center">
             <CartographySmartSearch
               providers={providers}
               onSearch={(text) => setFilters({ ...filters, searchText: text })}
@@ -293,19 +288,17 @@ export default function Cartography() {
             />
           </div>
 
-          {/* Quick Filters - Visible sur mobile mais compact */}
-          <div className="animate-fade-in" style={{ animationDelay: "50ms" }}>
-            <QuickFilters
-              selectedType={filters.types[0] || null}
-              onFilterSelect={(type) => setFilters({ 
-                ...filters, 
-                types: type ? [type] : [] 
-              })}
-            />
-          </div>
+          {/* Quick Filters - Compact */}
+          <QuickFilters
+            selectedType={filters.types[0] || null}
+            onFilterSelect={(type) => setFilters({ 
+              ...filters, 
+              types: type ? [type] : [] 
+            })}
+          />
 
-          {/* Search Guide - Caché sur petit mobile, visible tablette+ */}
-          <div className="hidden sm:block animate-fade-in" style={{ animationDelay: "100ms" }}>
+          {/* Search Guide - Caché sur mobile */}
+          <div className="hidden md:block">
             <SearchGuide
               onPreferenceSelect={(pref) => setFilters({
                 ...filters,
@@ -317,7 +310,7 @@ export default function Cartography() {
           </div>
 
           {/* Actions rapides mobiles */}
-          <div className="flex sm:hidden gap-2 pt-2">
+          <div className="flex md:hidden gap-2">
             <Button
               onClick={getUserLocation}
               variant="outline"
@@ -333,15 +326,9 @@ export default function Cartography() {
               size="sm"
               className="flex-1 gap-2"
             >
-              Voir résultats
+              Résultats
               <ArrowDown className="h-4 w-4" />
             </Button>
-          </div>
-
-          {/* Scroll indicator - Desktop seulement */}
-          <div className="hidden md:flex flex-col items-center gap-2 text-muted-foreground animate-bounce pt-2">
-            <span className="text-sm font-medium">Voir les résultats</span>
-            <ArrowDown className="h-5 w-5" />
           </div>
         </div>
       </div>
