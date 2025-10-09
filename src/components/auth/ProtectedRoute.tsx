@@ -25,9 +25,24 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
     return <Navigate to="/login" replace />;
   }
 
+  // Check if user is a healthcare establishment (CHU, clinic, hospital)
+  const isEstablishment = user.email?.includes('hopital') || 
+                          user.email?.includes('chu') || 
+                          user.email?.includes('clinique') ||
+                          user.email?.includes('.demo@sante.ga');
+
+  // Redirect establishments to their demo dashboard
+  if (isEstablishment && window.location.pathname.includes('/dashboard/patient')) {
+    return <Navigate to="/demo/hospital" replace />;
+  }
+
   if (requiredRoles && requiredRoles.length > 0) {
     const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
     if (!hasRequiredRole) {
+      // Redirect based on user type
+      if (isEstablishment) {
+        return <Navigate to="/demo/hospital" replace />;
+      }
       return <Navigate to="/dashboard/patient" replace />;
     }
   }
