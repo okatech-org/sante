@@ -7,7 +7,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CartographyProvider, Coordonnees } from "@/types/cartography";
-import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle } from "lucide-react";
+import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle, Video, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { formatDistance } from "@/utils/distance";
 import { toast } from "sonner";
 
@@ -41,7 +43,11 @@ export default function CartographyProviderModal({
   userLocation,
   onClose
 }: CartographyProviderModalProps) {
+  const navigate = useNavigate();
+  
   if (!provider) return null;
+  
+  const hasAccount = provider.has_account ?? false;
 
   const handleCall = (phone: string) => {
     window.location.href = `tel:${phone}`;
@@ -253,7 +259,45 @@ export default function CartographyProviderModal({
             </section>
           )}
 
-          {/* Actions */}
+          {/* Actions selon le type d'établissement */}
+          {(provider.type === 'hopital' || provider.type === 'clinique' || 
+            provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
+            <section>
+              <h3 className="font-semibold mb-3">📅 Prendre rendez-vous</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=physical`) : null}
+                  disabled={!hasAccount}
+                  className={cn(
+                    "flex-1",
+                    !hasAccount && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Consultation physique
+                </Button>
+                <Button
+                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=video`) : null}
+                  disabled={!hasAccount}
+                  variant="secondary"
+                  className={cn(
+                    "flex-1",
+                    !hasAccount && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <Video className="h-4 w-4 mr-2" />
+                  Visio-consultation
+                </Button>
+              </div>
+              {!hasAccount && (
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  Cet établissement n'est pas encore inscrit sur la plateforme
+                </p>
+              )}
+            </section>
+          )}
+
+          {/* Actions générales */}
           <div className="flex gap-2 pt-4 border-t">
             <Button
               className="flex-1"

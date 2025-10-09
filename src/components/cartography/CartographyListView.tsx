@@ -204,7 +204,11 @@ export default function CartographyListView({
       {/* Vue Mobile - Cards */}
       <div className="md:hidden space-y-2">
         {currentProviders.map((provider) => (
-          <Card key={provider.id} className="p-3 hover:shadow-md transition-shadow">
+          <Card 
+            key={provider.id} 
+            className="p-3 hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => onProviderClick(provider.id)}
+          >
             <div className="space-y-2">
               {/* Header avec type et nom */}
               <div className="flex items-start gap-2">
