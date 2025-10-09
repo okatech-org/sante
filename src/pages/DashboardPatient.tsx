@@ -168,12 +168,33 @@ export default function DashboardPatient() {
                 </div>
               </div>
 
-              {/* Numéro CNAMGS */}
-              <div className="bg-muted/30 rounded-xl p-3">
-                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Numéro CNAMGS</p>
-                <p className="text-base sm:text-xl font-bold text-foreground font-mono">
-                  {profileData?.cnamgs_number || 'Non renseigné'}
-                </p>
+              {/* Actions cartographie */}
+              <div className="grid grid-cols-2 gap-3">
+                <div 
+                  onClick={() => navigate('/cartography')}
+                  className="bg-muted/30 rounded-xl p-3 cursor-pointer hover:bg-muted/50 transition-all group"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#00d4ff] group-hover:scale-110 transition-transform" />
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium">Carte des soins</p>
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold text-foreground">
+                    Voir la carte
+                  </p>
+                </div>
+
+                <div 
+                  onClick={() => navigate('/cartography')}
+                  className="bg-muted/30 rounded-xl p-3 cursor-pointer hover:bg-muted/50 transition-all group"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-[#0088ff] group-hover:scale-110 transition-transform" />
+                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium">Recherche avancée</p>
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold text-foreground">
+                    Trouver un professionnel
+                  </p>
+                </div>
               </div>
             </div>
           </div>
