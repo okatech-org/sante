@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Users, Plus, Search, Filter, MoreVertical, Edit, Trash2, UserPlus,
-  CheckCircle, XCircle, AlertCircle, Eye, Shield, Building2
+  CheckCircle, XCircle, AlertCircle, Eye, Shield, Building2, Calendar, Clock, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { HospitalDashboardLayout } from '@/components/layout/HospitalDashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,73 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function DemoStaffManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
+
+  // Obtenir les dates de la semaine actuelle
+  const getWeekDates = (offset: number = 0) => {
+    const today = new Date();
+    const currentDay = today.getDay();
+    const diff = today.getDate() - currentDay + (currentDay === 0 ? -6 : 1) + (offset * 7);
+    const monday = new Date(today.setDate(diff));
+    
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      dates.push(date);
+    }
+    return dates;
+  };
+
+  const weekDates = getWeekDates(currentWeekOffset);
+  const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+  // Créneaux horaires
+  const timeSlots = Array.from({ length: 14 }, (_, i) => {
+    const hour = i + 7;
+    return `${hour.toString().padStart(2, '0')}:00`;
+  });
+
+  // Planning exemple pour chaque membre
+  const scheduleData = {
+    '1': { // Dr. OBAME Jean
+      'Lun': [{ start: '08:00', end: '16:00', type: 'consultation', label: 'Consultations' }],
+      'Mar': [{ start: '08:00', end: '16:00', type: 'consultation', label: 'Consultations' }],
+      'Mer': [{ start: '08:00', end: '16:00', type: 'consultation', label: 'Consultations' }],
+      'Jeu': [{ start: '08:00', end: '16:00', type: 'consultation', label: 'Consultations' }],
+      'Ven': [{ start: '08:00', end: '16:00', type: 'consultation', label: 'Consultations' }],
+    },
+    '2': { // Inf. NDONG Marie
+      'Lun': [{ start: '08:00', end: '18:00', type: 'nursing', label: 'Soins' }],
+      'Mar': [{ start: '08:00', end: '18:00', type: 'nursing', label: 'Soins' }],
+      'Mer': [{ start: '08:00', end: '18:00', type: 'nursing', label: 'Soins' }],
+      'Jeu': [{ start: '08:00', end: '18:00', type: 'nursing', label: 'Soins' }],
+      'Ven': [{ start: '08:00', end: '18:00', type: 'nursing', label: 'Soins' }],
+    },
+    '3': { // Dr. ELLA Sophie
+      'Mar': [{ start: '09:00', end: '17:00', type: 'surgery', label: 'Chirurgie' }],
+      'Mer': [{ start: '09:00', end: '17:00', type: 'surgery', label: 'Chirurgie' }],
+      'Jeu': [{ start: '09:00', end: '17:00', type: 'surgery', label: 'Chirurgie' }],
+    },
+    '4': { // MOUKAGNI Paul
+      'Lun': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+      'Mar': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+      'Mer': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+      'Jeu': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+      'Ven': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+      'Sam': [{ start: '07:00', end: '15:00', type: 'admin', label: 'Admission' }],
+    },
+  };
+
+  const getScheduleColor = (type: string) => {
+    const colors = {
+      consultation: 'bg-blue-500/20 border-blue-500/40 text-blue-700',
+      nursing: 'bg-green-500/20 border-green-500/40 text-green-700',
+      surgery: 'bg-purple-500/20 border-purple-500/40 text-purple-700',
+      admin: 'bg-orange-500/20 border-orange-500/40 text-orange-700',
+    };
+    return colors[type as keyof typeof colors] || 'bg-gray-500/20 border-gray-500/40 text-gray-700';
+  };
 
   // Données exemple établissement
   const establishment = {
@@ -164,6 +231,7 @@ export default function DemoStaffManagement() {
               Permissions
             </TabsTrigger>
             <TabsTrigger value="schedule" className="gap-2">
+              <Calendar className="h-4 w-4" />
               Planning
             </TabsTrigger>
           </TabsList>
@@ -361,6 +429,159 @@ export default function DemoStaffManagement() {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Onglet Planning */}
+          <TabsContent value="schedule" className="space-y-4">
+            {/* Navigation semaine */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setCurrentWeekOffset(prev => prev - 1)}
+                    className="gap-2"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Semaine précédente
+                  </Button>
+                  
+                  <div className="text-center">
+                    <h3 className="font-bold text-lg">
+                      {weekDates[0].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} - {weekDates[6].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Planning hebdomadaire du personnel
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    {currentWeekOffset !== 0 && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setCurrentWeekOffset(0)}
+                      >
+                        Aujourd&apos;hui
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setCurrentWeekOffset(prev => prev + 1)}
+                      className="gap-2"
+                    >
+                      Semaine suivante
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Planning pour chaque membre */}
+            {staffMembers.map(member => (
+              <Card key={member.id}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-primary-foreground font-bold shrink-0">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <CardTitle className="text-base">{member.name}</CardTitle>
+                        <p className="text-xs text-muted-foreground">{member.role}</p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Edit className="h-3 w-3" />
+                      Modifier planning
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-8 gap-2">
+                    {/* En-tête des jours */}
+                    <div className="text-xs font-medium text-muted-foreground flex items-end pb-2">
+                      <Clock className="h-3 w-3" />
+                    </div>
+                    {weekDays.map((day, idx) => {
+                      const date = weekDates[idx];
+                      const isToday = date.toDateString() === new Date().toDateString();
+                      return (
+                        <div key={day} className={`text-center pb-2 ${isToday ? 'text-primary font-bold' : ''}`}>
+                          <div className="text-xs font-medium">{day}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {date.getDate()}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Grille horaire simplifiée */}
+                    <div className="col-span-8 grid grid-cols-8 gap-2 min-h-[100px]">
+                      <div className="text-xs text-muted-foreground space-y-1">
+                        <div>7h</div>
+                        <div>12h</div>
+                        <div>17h</div>
+                      </div>
+                      
+                      {weekDays.map((day) => {
+                        const daySchedule = scheduleData[member.id as keyof typeof scheduleData]?.[day];
+                        return (
+                          <div key={day} className="relative border rounded-md bg-muted/20 min-h-[100px] p-1">
+                            {daySchedule?.map((slot, idx) => (
+                              <div
+                                key={idx}
+                                className={`rounded px-2 py-1 text-xs font-medium border ${getScheduleColor(slot.type)}`}
+                              >
+                                <div className="font-semibold">{slot.label}</div>
+                                <div className="text-[10px] opacity-80">
+                                  {slot.start} - {slot.end}
+                                </div>
+                              </div>
+                            ))}
+                            {!daySchedule && (
+                              <div className="absolute inset-0 flex items-center justify-center text-[10px] text-muted-foreground">
+                                Repos
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Légende */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Légende</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-blue-500/20 border border-blue-500/40"></div>
+                    <span className="text-xs">Consultations</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-green-500/20 border border-green-500/40"></div>
+                    <span className="text-xs">Soins infirmiers</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-purple-500/20 border border-purple-500/40"></div>
+                    <span className="text-xs">Chirurgie</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded bg-orange-500/20 border border-orange-500/40"></div>
+                    <span className="text-xs">Administration</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
