@@ -95,7 +95,7 @@ export default function CartographyProviderModal({
 
   return (
     <Dialog open={!!provider} onOpenChange={onClose}>
-      <DialogContent className="max-w-md sm:max-w-lg p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl z-[2147483647]" >
+      <DialogContent className="max-w-md sm:max-w-lg p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl z-[2147483647] m-4" >
         {/* Header compact avec gradient */}
         <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 sm:p-5 border-b">
           <DialogHeader className="space-y-2">
