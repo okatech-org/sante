@@ -2,75 +2,92 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "next-themes";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+
+// Pages
 import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import About from "./pages/About";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
-import About from "./pages/About";
-import ForProfessionals from "./pages/ForProfessionals";
 import Awareness from "./pages/Awareness";
+import ForProfessionals from "./pages/ForProfessionals";
+
+// Auth Pages
 import LoginPatient from "./pages/LoginPatient";
 import LoginProfessional from "./pages/LoginProfessional";
 import Register from "./pages/Register";
 import RegisterPatient from "./pages/RegisterPatient";
 import RegisterProfessional from "./pages/RegisterProfessional";
+
+// Dashboard Pages
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
-import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
-import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
-import DemoHospitalDashboard from "./pages/demo/DemoHospitalDashboard";
-import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
-import DemoAdmissions from "./pages/demo/hospital/DemoAdmissions";
-import DemoPharmacy from "./pages/demo/hospital/DemoPharmacy";
-import DemoLaboratory from "./pages/demo/hospital/DemoLaboratory";
-import DemoEmergency from "./pages/demo/hospital/DemoEmergency";
-import DemoPlanning from "./pages/demo/hospital/DemoPlanning";
-import DemoFinances from "./pages/demo/hospital/DemoFinances";
-import DemoStatistics from "./pages/demo/hospital/DemoStatistics";
-import DemoSettings from "./pages/demo/hospital/DemoSettings";
-import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
 import DashboardAdmin from "./pages/DashboardAdmin";
+
+// Professional Pages
 import ProfessionalAgenda from "./pages/professional/Agenda";
-import ProfessionalPatients from "./pages/professional/Patients";
-import ProfessionalTeleconsultations from "./pages/professional/Teleconsultations";
 import ProfessionalConsultations from "./pages/professional/Consultations";
+import ProfessionalTeleconsultations from "./pages/professional/Teleconsultations";
+import TeleconsultationSession from "./pages/professional/TeleconsultationSession";
+import ProfessionalTeleExpertise from "./pages/professional/TeleExpertise";
+import ProfessionalPatients from "./pages/professional/Patients";
 import ProfessionalPrescriptions from "./pages/professional/Prescriptions";
+import ProfessionalMessages from "./pages/professional/Messages";
 import ProfessionalFinances from "./pages/professional/Finances";
 import ProfessionalStatistics from "./pages/professional/Statistics";
-import ProfessionalMessages from "./pages/professional/Messages";
-import ProfessionalTeleExpertise from "./pages/professional/TeleExpertise";
 import ProfessionalSettings from "./pages/professional/Settings";
 import ProfessionalIntegrations from "./pages/professional/Integrations";
-import TeleconsultationSession from "./pages/professional/TeleconsultationSession";
+import SelectEstablishment from "./pages/professional/SelectEstablishment";
+
+// Patient Pages
 import Appointments from "./pages/Appointments";
 import AppointmentConfirmation from "./pages/AppointmentConfirmation";
-import Prescriptions from "./pages/Prescriptions";
-import Results from "./pages/Results";
-import Providers from "./pages/Providers";
-import Reimbursements from "./pages/Reimbursements";
 import Profile from "./pages/Profile";
+import MedicalRecord from "./pages/MedicalRecord";
+import Results from "./pages/Results";
+import Prescriptions from "./pages/Prescriptions";
+import Teleconsultation from "./pages/Teleconsultation";
+import Reimbursements from "./pages/Reimbursements";
+import Cartography from "./pages/Cartography";
+import Providers from "./pages/Providers";
+import Support from "./pages/Support";
+
+// Admin Pages
+import SuperAdminLogin from "./pages/SuperAdminLogin";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import AdminUsers from "./pages/AdminUsers";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminEstablishments from "./pages/AdminEstablishments";
 import AdminProfessionals from "./pages/AdminProfessionals";
-import SuperAdminLogin from "./pages/SuperAdminLogin";
-import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminDemo from "./pages/AdminDemo";
 import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
-import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
-import Cartography from "./pages/Cartography";
-import MedicalRecord from "./pages/MedicalRecord";
-import Support from "./pages/Support";
-import Teleconsultation from "./pages/Teleconsultation";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
-import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
+
+// Demo Pages
+import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
+import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
+import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
+import DemoHospitalDashboard from "./pages/demo/DemoHospitalDashboard";
+import DemoAdmissions from "./pages/demo/hospital/DemoAdmissions";
+import DemoEmergency from "./pages/demo/hospital/DemoEmergency";
+import DemoLaboratory from "./pages/demo/hospital/DemoLaboratory";
+import DemoPharmacy from "./pages/demo/hospital/DemoPharmacy";
+import DemoPlanning from "./pages/demo/hospital/DemoPlanning";
+import DemoFinances from "./pages/demo/hospital/DemoFinances";
+import DemoStatistics from "./pages/demo/hospital/DemoStatistics";
+import DemoSettings from "./pages/demo/hospital/DemoSettings";
+import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
+
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -236,6 +253,11 @@ const App = () => (
             <Route path="/demo/hospital/staff" element={<DemoStaffManagement />} />
             
             {/* Routes professionnelles */}
+            <Route path="/professional/select-establishment" element={
+              <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
+                <SelectEstablishment />
+              </ProtectedRoute>
+            } />
             <Route path="/professional/agenda" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
                 <ProfessionalAgenda />
