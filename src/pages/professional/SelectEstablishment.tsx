@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, ChevronRight, MapPin, Users, Calendar, 
-  Shield, Briefcase, Clock, Star, Check
+  Shield, Briefcase, Clock, Star, Check, Home, Settings, LogOut, Sun, Moon, Laptop, Globe
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,14 +10,24 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import logoSante from '@/assets/logo_sante.png';
 
 export default function SelectEstablishment() {
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [selectedEstablishment, setSelectedEstablishment] = useState<string | null>(null);
   const [userEstablishments, setUserEstablishments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
+  const [language, setLanguage] = useState('fr');
 
   useEffect(() => {
     loadUserEstablishments();
@@ -163,6 +173,36 @@ export default function SelectEstablishment() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success('Déconnexion réussie');
+      navigate('/');
+    } catch (error) {
+      toast.error('Erreur lors de la déconnexion');
+    }
+  };
+
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (authUser?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', authUser.id);
+    }
+  };
+
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    if (authUser?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', authUser.id);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5 flex items-center justify-center">
@@ -197,8 +237,155 @@ export default function SelectEstablishment() {
   const initials = displayName.split(' ').map(n => n[0]).join('').slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Background avec effet étoiles */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-20 dark:opacity-40" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, hsl(var(--foreground) / 0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, hsl(var(--foreground) / 0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, hsl(var(--foreground) / 0.06) 1px, transparent 1px)',
+          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
+          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
+        }} />
+      </div>
+
+      <div className="relative flex">
+        {/* Sidebar Desktop - Glassmorphic */}
+        <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar/90 border border-sidebar-border shadow-2xl flex flex-col">
+            {/* Logo */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
+                <h1 className="text-2xl font-bold text-sidebar-foreground">
+                  SANTE.GA
+                </h1>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Sélection d'établissement
+              </p>
+            </div>
+
+            {/* Navigation */}
+            <nav className="space-y-1 flex-1 overflow-y-auto">
+              <button
+                onClick={() => navigate('/dashboard/professional')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30">
+                  <Home className="w-5 h-5" />
+                </div>
+                <span className="text-sm font-medium">Tableau de bord</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/professional/settings')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30">
+                  <Settings className="w-5 h-5" />
+                </div>
+                <span className="text-sm font-medium">Paramètres</span>
+              </button>
+            </nav>
+
+            {/* User Profile & Controls */}
+            <div className="mt-auto pt-4 border-t border-sidebar-border space-y-2">
+              {/* Theme, Language & Logout Controls */}
+              <div className="flex items-center gap-2 px-2">
+                {/* Theme Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      {theme === 'dark' ? (
+                        <Moon className="w-4 h-4" />
+                      ) : theme === 'light' ? (
+                        <Sun className="w-4 h-4" />
+                      ) : (
+                        <Laptop className="w-4 h-4" />
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('light')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Sun className="w-4 h-4 mr-2" />
+                      Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('dark')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Moon className="w-4 h-4 mr-2" />
+                      Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('system')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Laptop className="w-4 h-4 mr-2" />
+                      Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Language Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      <Globe className="w-4 h-4" />
+                      <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('fr')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇫🇷 Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('en')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇬🇧 English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Logout Button */}
+                <button 
+                  onClick={handleLogout}
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                  title="Déconnexion"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* User Profile Card */}
+              <div className="p-3 rounded-lg bg-sidebar-accent/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-sidebar-foreground truncate">
+                      Dr. {displayName.split(' ')[0]}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Professionnel
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div className="flex-1 md:ml-72">
+          <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
@@ -419,6 +606,8 @@ export default function SelectEstablishment() {
               </span>
             </CardContent>
           </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
