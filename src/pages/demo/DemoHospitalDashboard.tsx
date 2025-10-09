@@ -1663,6 +1663,7 @@ export default function DemoHospitalDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      </div>
     </HospitalDashboardLayout>
   );
 }
