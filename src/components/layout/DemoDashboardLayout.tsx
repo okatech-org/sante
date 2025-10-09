@@ -344,19 +344,21 @@ export const DemoDashboardLayout = ({ children, demoType = 'doctor' }: DemoDashb
                       >
                         🇫🇷 Français
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleLanguageChange('en')}
-                        className="text-popover-foreground hover:bg-accent cursor-pointer"
-                      >
-                        🇬🇧 English
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <button
-                    onClick={() => navigate('/admin/demo')}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground"
+                  <DropdownMenuItem 
+                    onClick={() => handleLanguageChange('en')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
                   >
+                    🇬🇧 English
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Exit Demo Button Mobile */}
+              <button
+                onClick={() => navigate('/admin/demo')}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                title="Quitter la démo"
+              >
                     <LogOut className="w-4 h-4" />
                   </button>
                 </div>

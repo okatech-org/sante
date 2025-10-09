@@ -350,6 +350,15 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Logout Button Mobile */}
+              <button 
+                onClick={handleSignOut}
+                className="w-9 h-9 rounded-lg flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                title="Déconnexion"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
