@@ -55,40 +55,60 @@ export default function SelectEstablishment() {
       const { data: staffData, error } = await supabase
         .from('establishment_staff')
         .select(`
-          *,
-          establishments (
-            id,
-            raison_sociale,
-            type_etablissement,
-            ville,
-            province,
-            secteur
-          )
+          id,
+          establishment_id,
+          role_in_establishment,
+          is_admin,
+          permissions,
+          status,
+          schedule,
+          updated_at
         `)
         .eq('professional_id', professionalProfile.id)
         .eq('status', 'active')
         .order('is_admin', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur establishment_staff:', error);
+        throw error;
+      }
 
-      const formattedEstablishments = staffData?.map((staff: any, index: number) => ({
-        id: staff.establishment_id,
-        name: staff.establishments.raison_sociale,
-        type: getEstablishmentTypeLabel(staff.establishments.type_etablissement),
-        city: staff.establishments.ville,
-        province: staff.establishments.province,
-        role: staff.role_in_establishment,
-        isAdmin: staff.is_admin,
-        permissions: staff.permissions || [],
-        schedule: staff.schedule || { days: [], hours: '' },
-        stats: {
-          patients: 0,
-          consultations: 0,
-          team: staff.is_admin ? 5 : null
-        },
-        isPrimary: index === 0,
-        lastAccess: staff.updated_at
-      })) || [];
+      // Charger les détails des établissements séparément
+      const establishmentIds = staffData?.map(s => s.establishment_id) || [];
+      
+      const { data: establishmentsData, error: estError } = await supabase
+        .from('establishments')
+        .select('id, raison_sociale, type_etablissement, ville, province, secteur')
+        .in('id', establishmentIds);
+
+      if (estError) {
+        console.error('Erreur establishments:', estError);
+        throw estError;
+      }
+
+      // Fusionner les données
+      const formattedEstablishments = staffData?.map((staff: any, index: number) => {
+        const establishment = establishmentsData?.find(e => e.id === staff.establishment_id);
+        
+        return {
+          id: staff.establishment_id,
+          name: establishment?.raison_sociale || 'Établissement',
+          type: getEstablishmentTypeLabel(establishment?.type_etablissement || ''),
+          city: establishment?.ville || '',
+          province: establishment?.province || '',
+          role: staff.role_in_establishment,
+          isAdmin: staff.is_admin,
+          permissions: staff.permissions || [],
+          schedule: staff.schedule || { days: [], hours: '' },
+          stats: {
+            patients: 0,
+            consultations: 0,
+            team: staff.is_admin ? 5 : null
+          },
+          isPrimary: index === 0,
+          lastAccess: staff.updated_at
+        };
+      }) || [];
 
       setUserEstablishments(formattedEstablishments);
     } catch (error) {
