@@ -76,26 +76,26 @@ export default function Cartography() {
   const content = (
     <div className="space-y-6">
       {/* Hero Section avec recherche guidée */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-lg md:shadow-2xl">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
-        <div className="relative p-6 md:p-8 space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-3">
+        <div className="relative p-4 md:p-8 space-y-4 md:space-y-6">
+          {/* Header - Compact sur mobile */}
+          <div className="text-center space-y-2 md:space-y-3">
             <div className="flex items-center justify-center gap-2">
-              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl animate-scale-in">
-                <MapPin className="h-7 w-7 text-primary-foreground" />
+              <div className="h-10 w-10 md:h-14 md:w-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                <MapPin className="h-5 w-5 md:h-7 md:w-7 text-primary-foreground" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
               Trouvez votre professionnel de santé
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Recherchez facilement parmi {providers.length} établissements de santé au Gabon
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+              {providers.length} établissements au Gabon
             </p>
           </div>
 
-          {/* Barre de recherche intelligente */}
+          {/* Barre de recherche - Priority 1 */}
           <div className="flex justify-center animate-fade-in">
             <CartographySmartSearch
               providers={providers}
@@ -105,8 +105,8 @@ export default function Cartography() {
             />
           </div>
 
-          {/* Quick Filters */}
-          <div className="animate-fade-in" style={{ animationDelay: "100ms" }}>
+          {/* Quick Filters - Visible sur mobile mais compact */}
+          <div className="animate-fade-in" style={{ animationDelay: "50ms" }}>
             <QuickFilters
               selectedType={filters.types[0] || null}
               onFilterSelect={(type) => setFilters({ 
@@ -116,8 +116,8 @@ export default function Cartography() {
             />
           </div>
 
-          {/* Search Guide */}
-          <div className="animate-fade-in" style={{ animationDelay: "200ms" }}>
+          {/* Search Guide - Caché sur petit mobile, visible tablette+ */}
+          <div className="hidden sm:block animate-fade-in" style={{ animationDelay: "100ms" }}>
             <SearchGuide
               onPreferenceSelect={(pref) => setFilters({
                 ...filters,
@@ -128,8 +128,30 @@ export default function Cartography() {
             />
           </div>
 
-          {/* Scroll indicator */}
-          <div className="flex flex-col items-center gap-2 text-muted-foreground animate-bounce pt-4">
+          {/* Actions rapides mobiles */}
+          <div className="flex sm:hidden gap-2 pt-2">
+            <Button
+              onClick={getUserLocation}
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-2"
+            >
+              <Locate className="h-4 w-4" />
+              Ma position
+            </Button>
+            <Button
+              onClick={() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' })}
+              variant="default"
+              size="sm"
+              className="flex-1 gap-2"
+            >
+              Voir résultats
+              <ArrowDown className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Scroll indicator - Desktop seulement */}
+          <div className="hidden md:flex flex-col items-center gap-2 text-muted-foreground animate-bounce pt-2">
             <span className="text-sm font-medium">Voir les résultats</span>
             <ArrowDown className="h-5 w-5" />
           </div>
@@ -137,7 +159,7 @@ export default function Cartography() {
       </div>
 
       {/* Résultats Section */}
-      <div className="flex gap-6">
+      <div id="results" className="flex gap-4 md:gap-6">
         {/* Desktop Sidebar avec filtres avancés */}
         <aside className="hidden lg:block w-80 flex-shrink-0">
           <div className="sticky top-4 space-y-4">
@@ -176,11 +198,11 @@ export default function Cartography() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 space-y-4">
-          {/* Results Header avec info */}
-          <div className="backdrop-blur-xl bg-card/80 rounded-xl border p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="font-semibold text-lg">
+        <main className="flex-1 space-y-3 md:space-y-4 min-w-0">
+          {/* Results Header - Compact mobile */}
+          <div className="backdrop-blur-xl bg-card/80 rounded-lg md:rounded-xl border p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
+              <div className="font-semibold text-base md:text-lg">
                 {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''}
               </div>
               {filteredProviders.length > 0 && (
@@ -188,7 +210,7 @@ export default function Cartography() {
                   onClick={getUserLocation}
                   variant="outline"
                   size="sm"
-                  className="gap-2"
+                  className="gap-2 ml-auto sm:ml-0"
                 >
                   <Locate className="h-4 w-4" />
                   <span className="hidden sm:inline">Localiser</span>
@@ -196,58 +218,60 @@ export default function Cartography() {
               )}
             </div>
 
-            {/* View Switcher avec tabs */}
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)}>
-              <TabsList className="bg-muted/50">
-                <TabsTrigger value="map" className="gap-2">
-                  <Map className="h-4 w-4" />
-                  <span className="hidden sm:inline">Carte</span>
-                </TabsTrigger>
-                <TabsTrigger value="list" className="gap-2">
-                  <List className="h-4 w-4" />
-                  <span className="hidden sm:inline">Liste</span>
-                </TabsTrigger>
-                <TabsTrigger value="both" className="gap-2 hidden md:flex">
-                  <LayoutGrid className="h-4 w-4" />
-                  Les deux
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            {/* View Switcher - Simplifié mobile */}
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)} className="flex-1 sm:flex-none">
+                <TabsList className="bg-muted/50 w-full sm:w-auto grid grid-cols-2 sm:flex">
+                  <TabsTrigger value="map" className="gap-2">
+                    <Map className="h-4 w-4" />
+                    <span>Carte</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="list" className="gap-2">
+                    <List className="h-4 w-4" />
+                    <span>Liste</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="both" className="gap-2 hidden md:flex">
+                    <LayoutGrid className="h-4 w-4" />
+                    Les deux
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
 
-            {/* Mobile Filter Button */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="lg:hidden gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filtres
-                  {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
-                    <span className="h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
-                      {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
-                    </span>
-                  )}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="w-full sm:max-w-md overflow-y-auto max-h-[90vh]">
-                <DialogHeader>
-                  <DialogTitle>Filtres de recherche</DialogTitle>
-                </DialogHeader>
-                <div className="pt-2">
-                  <CartographyFilterPanel
-                    filters={filters}
-                    onFiltersChange={setFilters}
-                    provinces={provincesData.provinces}
-                    hasUserLocation={!!userLocation}
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+              {/* Mobile Filter Button */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="lg:hidden gap-2 flex-shrink-0">
+                    <Filter className="h-4 w-4" />
+                    <span className="hidden xs:inline">Filtres</span>
+                    {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
+                      <span className="h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                        {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
+                      </span>
+                    )}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-[95vw] sm:max-w-md overflow-y-auto max-h-[85vh] p-4">
+                  <DialogHeader>
+                    <DialogTitle>Filtres de recherche</DialogTitle>
+                  </DialogHeader>
+                  <div className="pt-2">
+                    <CartographyFilterPanel
+                      filters={filters}
+                      onFiltersChange={setFilters}
+                      provinces={provincesData.provinces}
+                      hasUserLocation={!!userLocation}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
 
-          {/* Map View */}
+          {/* Map View - Hauteur adaptée mobile */}
           {(viewMode === 'map' || viewMode === 'both') && (
             <div className={cn(
               "rounded-lg overflow-hidden transition-all",
-              viewMode === 'map' ? 'h-[calc(100vh-400px)]' : 'h-[600px]'
+              viewMode === 'map' ? 'h-[70vh] md:h-[calc(100vh-400px)]' : 'h-[400px] md:h-[600px]'
             )}>
               <HealthProvidersMap />
             </div>
@@ -265,18 +289,19 @@ export default function Cartography() {
             </div>
           )}
 
-          {/* Empty State */}
+          {/* Empty State - Compact mobile */}
           {filteredProviders.length === 0 && (
-            <div className="text-center py-16 px-4">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-muted mb-4">
-                <Map className="h-8 w-8 text-muted-foreground" />
+            <div className="text-center py-12 md:py-16 px-4">
+              <div className="inline-flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full bg-muted mb-3 md:mb-4">
+                <Map className="h-6 w-6 md:h-8 md:w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Aucun résultat trouvé</h3>
-              <p className="text-muted-foreground mb-6">
-                Essayez de modifier vos filtres ou votre recherche
+              <h3 className="text-base md:text-lg font-semibold mb-2">Aucun résultat</h3>
+              <p className="text-sm text-muted-foreground mb-4 md:mb-6">
+                Modifiez vos filtres
               </p>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={() => {
                   setFilters({
                     types: [],
@@ -290,7 +315,7 @@ export default function Cartography() {
                   });
                 }}
               >
-                Réinitialiser les filtres
+                Réinitialiser
               </Button>
             </div>
           )}
@@ -311,7 +336,7 @@ export default function Cartography() {
       {content}
     </SuperAdminLayout>
   ) : (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-2 sm:p-4">
       {content}
     </div>
   );
