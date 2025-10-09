@@ -253,7 +253,7 @@ export default function CartographyProviderModal({
             )}
 
             {/* Contact & Localisation - Grid compact */}
-            <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {/* Localisation */}
               <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
                 <div className="flex items-center gap-2 text-sm font-semibold">
