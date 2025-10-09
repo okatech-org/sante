@@ -119,7 +119,7 @@ const App = () => (
             } />
             <Route path="/dashboard/professional" element={
               <ProtectedRoute requiredRoles={['doctor', 'hospital', 'pharmacy', 'laboratory', 'medical_staff']}>
-                <DashboardProfessional />
+                <Navigate to="/demo/doctor" replace />
               </ProtectedRoute>
             } />
             <Route path="/dashboard/admin" element={

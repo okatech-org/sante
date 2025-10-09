@@ -6,14 +6,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar, Users, FileText, Activity, Clock, TrendingUp, Video, MapPin,
   Phone, Mail, CreditCard, AlertCircle, CheckCircle, XCircle, Plus,
-  Stethoscope, Pill, ClipboardList, LineChart, Settings, Bell, Building2
+  Stethoscope, Pill, ClipboardList, LineChart, Settings, Bell, Building2, Edit, ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppointmentModal } from "@/components/professional/AppointmentModal";
 import { PrescriptionModal } from "@/components/professional/PrescriptionModal";
 import { PatientListModal } from "@/components/professional/PatientListModal";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { useProfessionalStats } from "@/hooks/useProfessionalStats";
+import { supabase } from "@/integrations/supabase/client";
+import { CNAMGSVerificationCard } from "@/components/professional/CNAMGSVerificationCard";
+import { CNOMVerificationCard } from "@/components/professional/CNOMVerificationCard";
 
 export default function DemoDoctorDashboard() {
   const { user } = useAuth();
@@ -21,45 +26,91 @@ export default function DemoDoctorDashboard() {
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [showPatientListModal, setShowPatientListModal] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [professionalId, setProfessionalId] = useState<string | undefined>();
+  const [profileData, setProfileData] = useState<{
+    full_name: string;
+    professional_type?: string;
+    numero_ordre?: string;
+  } | null>(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [establishmentCount, setEstablishmentCount] = useState<number>(0);
+  
+  const fullName = profileData?.full_name || 'Dr. Pierre KOMBILA';
+  const { stats, loading } = useProfessionalStats(professionalId);
 
-  const stats = [
-    { 
-      title: "Patients aujourd'hui", 
-      value: "12", 
-      change: "+2 vs hier",
-      trend: "up",
-      icon: Users, 
-      color: "text-blue-600",
-      bgColor: "bg-blue-50"
-    },
-    { 
-      title: "RDV en attente", 
-      value: "5", 
-      change: "2 urgents",
-      trend: "neutral",
-      icon: Clock, 
-      color: "text-orange-600",
-      bgColor: "bg-orange-50"
-    },
-    { 
-      title: "Consultations mois", 
-      value: "248", 
-      change: "+18%",
-      trend: "up",
-      icon: Activity, 
-      color: "text-green-600",
-      bgColor: "bg-green-50"
-    },
-    { 
-      title: "Téléconsultations", 
-      value: "32", 
-      change: "+5 cette semaine",
-      trend: "up",
-      icon: Video, 
-      color: "text-purple-600",
-      bgColor: "bg-purple-50"
-    },
-  ];
+  // Charger le profil depuis la base de données
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (user?.id) {
+        // Charger le profil de base
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, avatar_url')
+          .eq('id', user.id)
+          .single();
+        
+        // Charger les infos professionnelles
+        const { data: professional } = await supabase
+          .from('professionals')
+          .select('id, professional_type, numero_ordre')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (profile) {
+          setProfileData({
+            full_name: profile.full_name,
+            professional_type: professional?.professional_type,
+            numero_ordre: professional?.numero_ordre,
+          });
+          if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
+        }
+        
+        if (professional?.id) {
+          setProfessionalId(professional.id);
+          loadUpcomingAppointments(professional.id);
+          
+          // Charger le nombre d'établissements
+          const { data: profileData } = await supabase
+            .from('professional_profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+            
+          if (profileData) {
+            const { count } = await supabase
+              .from('establishment_staff')
+              .select('*', { count: 'exact', head: true })
+              .eq('professional_id', profileData.id)
+              .eq('status', 'active');
+            
+            setEstablishmentCount(count || 0);
+          }
+        }
+      }
+    };
+    loadProfile();
+  }, [user?.id]);
+
+  const loadUpcomingAppointments = async (profId: string) => {
+    const { data } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        patient:profiles!appointments_patient_id_fkey(full_name)
+      `)
+      .eq('professional_id', profId)
+      .gte('appointment_date', new Date().toISOString())
+      .order('appointment_date', { ascending: true })
+      .limit(3);
+
+    if (data) setUpcomingAppointments(data);
+  };
+
+  // Séparer le nom et le prénom
+  const nameParts = fullName.split(' ');
+  const firstName = nameParts.slice(0, -1).join(' ') || 'Pierre';
+  const lastName = nameParts[nameParts.length - 1] || 'KOMBILA';
 
   const todayAppointments = [
     {
@@ -187,29 +238,118 @@ export default function DemoDoctorDashboard() {
   return (
     <DemoDashboardLayout demoType="doctor">
       <div className="flex flex-col space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Tableau de bord Médecin</h1>
-            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+        {/* Header Card avec profil professionnel */}
+        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl relative">
+          {/* Bouton Modifier en haut à droite */}
+          <Button
+            onClick={() => navigate('/professional/settings')}
+            variant="outline"
+            size="sm"
+            className="absolute top-4 right-4 gap-2"
+          >
+            <Edit className="w-4 h-4" />
+            Modifier
+          </Button>
+
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            {/* Photo d'identité */}
+            <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-[#00d4ff] to-[#0088ff] p-1">
+                <div className="w-full h-full rounded-full bg-card flex items-center justify-center overflow-hidden">
+                  {avatarUrl ? (
+                    <img 
+                      src={avatarUrl} 
+                      alt="Photo de profil" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-4xl sm:text-5xl font-bold text-card-foreground">
+                      {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <AvatarUpload
+                currentAvatarUrl={avatarUrl || undefined}
+                onAvatarUpdate={setAvatarUrl}
+              />
+            </div>
+
+            {/* Informations professionnelles */}
+            <div className="flex-1 space-y-3 sm:space-y-4">
+              {/* Nom complet */}
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-xl sm:text-2xl font-bold text-foreground uppercase tracking-wide">{lastName}</p>
+                <p className="text-base sm:text-xl font-normal text-foreground mt-1">{firstName}</p>
+              </div>
+
+              {/* Type professionnel et Spécialité */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-muted/30 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Profession</p>
+                  <p className="text-base sm:text-xl font-bold text-foreground">
+                    {profileData?.professional_type || 'medecin_specialiste'}
+                  </p>
+                </div>
+
+                <div className="bg-muted/30 rounded-xl p-3">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Spécialité</p>
+                  <p className="text-base sm:text-xl font-bold text-foreground">
+                    Cardiologie
+                  </p>
+                </div>
+              </div>
+
+              {/* Numéro d'ordre */}
+              <div className="bg-muted/30 rounded-xl p-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Numéro d'ordre</p>
+                <p className="text-base sm:text-xl font-bold text-foreground font-mono">
+                  {profileData?.numero_ordre || 'GA-MED-2010-567'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Emplacement */}
+          <div className="mt-4 pt-4 border-t border-border/50">
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Stethoscope className="h-4 w-4" />
-              Dr. medecin.demo • Cabinet Montagne Sainte, Libreville
+              Cabinet Montagne Sainte, Libreville
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Bell className="h-4 w-4 mr-2" />
-              3 nouvelles
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/demo/doctor/establishments')}>
-              <Building2 className="h-4 w-4 mr-2" />
-              Mes établissements
-            </Button>
-            <Button onClick={() => setShowAppointmentModal(true)}>
-              <Calendar className="h-4 w-4 mr-2" />
-              Nouveau RDV
-            </Button>
+        </div>
+
+        {/* Sélecteur d'établissements - Visible si plusieurs établissements */}
+        {establishmentCount > 1 && (
+          <div 
+            onClick={() => navigate('/professional/select-establishment')}
+            className="rounded-xl backdrop-blur-xl p-4 bg-gradient-to-r from-primary to-purple-600 cursor-pointer hover:scale-[1.02] transition-all duration-300 shadow-xl border border-primary/20"
+          >
+            <div className="flex items-center justify-between text-primary-foreground">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Multi-Établissements</h3>
+                  <p className="text-xs sm:text-sm opacity-90">Vous intervenez dans {establishmentCount} établissements</p>
+                </div>
+              </div>
+              <ChevronRight className="w-6 h-6 opacity-80" />
+            </div>
           </div>
+        )}
+
+        {/* Actions rapides */}
+        <div className="flex items-center justify-end gap-2">
+          <Button variant="outline" size="sm">
+            <Bell className="h-4 w-4 mr-2" />
+            3 nouvelles
+          </Button>
+          <Button onClick={() => setShowAppointmentModal(true)}>
+            <Calendar className="h-4 w-4 mr-2" />
+            Nouveau RDV
+          </Button>
         </div>
 
         {/* Alertes urgentes */}
@@ -239,27 +379,28 @@ export default function DemoDoctorDashboard() {
           </div>
         )}
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
+        {/* Stats Grid - Stats réelles depuis la DB */}
+        <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { label: 'Patients', value: loading ? '...' : stats.month.patients, icon: Users, trend: 'Ce mois', color: '#00d4ff' },
+              { label: 'Consultations', value: loading ? '...' : stats.month.consultations, icon: Stethoscope, trend: 'Ce mois', color: '#0088ff' },
+              { label: 'Téléconsultations', value: loading ? '...' : stats.today.teleconsultations, icon: Video, trend: "Aujourd'hui", color: '#ffaa00' },
+              { label: 'RDV Aujourd\'hui', value: loading ? '...' : stats.today.appointments, icon: Calendar, trend: 'En cours', color: '#ff0088' }
+            ].map((stat, idx) => {
+              const Icon = stat.icon;
+              return (
+                <div key={idx} className="text-center">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: `${stat.color}20` }}>
+                    <Icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: stat.color }} />
+                  </div>
+                  <p className="text-[10px] sm:text-xs mb-1 text-muted-foreground font-medium">{stat.label}</p>
+                  <p className="text-base sm:text-2xl font-bold text-foreground mb-0.5">{stat.value}</p>
+                  <p className="text-[9px] sm:text-xs text-muted-foreground">{stat.trend}</p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                  {stat.trend === "up" && <TrendingUp className="h-3 w-3 text-green-600" />}
-                  {stat.change}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+              );
+            })}
+          </div>
         </div>
 
         {/* Main Content */}
@@ -380,6 +521,42 @@ export default function DemoDoctorDashboard() {
                 </p>
               </CardContent>
             </Card>
+
+            {/* CNAMGS & CNOM Verification Cards */}
+            {professionalId && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <CNAMGSVerificationCard professionalId={professionalId} />
+                <CNOMVerificationCard professionalId={professionalId} />
+              </div>
+            )}
+
+            {/* Prescriptions Électroniques */}
+            <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Prescriptions Électroniques</h3>
+                <Button variant="outline" size="sm" onClick={() => navigate('/professional/prescriptions')}>
+                  Voir tout
+                </Button>
+              </div>
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-2xl font-bold text-foreground">89</p>
+                  <p className="text-xs text-muted-foreground">Actives</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-2xl font-bold text-foreground">45</p>
+                  <p className="text-xs text-muted-foreground">Ce mois</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-2xl font-bold text-foreground">78%</p>
+                  <p className="text-xs text-muted-foreground">CNAMGS</p>
+                </div>
+              </div>
+              <Button className="w-full" onClick={() => setShowPrescriptionModal(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Créer une ordonnance
+              </Button>
+            </div>
           </TabsContent>
 
           {/* Tab: Finances */}
