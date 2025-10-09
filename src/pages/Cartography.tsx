@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import CartographySearchBar from "@/components/cartography/CartographySearchBar";
 import CartographyFilterPanel from "@/components/cartography/CartographyFilterPanel";
-import CartographyMapView from "@/components/cartography/CartographyMapView";
+import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
 import CartographyStats from "@/components/cartography/CartographyStats";
@@ -221,14 +221,10 @@ export default function Cartography() {
           {/* Map View */}
           {(viewMode === 'map' || viewMode === 'both') && (
             <div className={cn(
-              "rounded-lg overflow-hidden border shadow-lg transition-all",
-              viewMode === 'map' ? 'h-[calc(100vh-400px)]' : 'h-[500px]'
+              "rounded-lg overflow-hidden transition-all",
+              viewMode === 'map' ? 'h-[calc(100vh-400px)]' : 'h-[600px]'
             )}>
-              <CartographyMapView
-                providers={filteredProviders}
-                userLocation={userLocation}
-                onMarkerClick={(id) => setSelectedProvider(providers.find(p => p.id === id) || null)}
-              />
+              <HealthProvidersMap />
             </div>
           )}
 
