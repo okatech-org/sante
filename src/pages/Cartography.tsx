@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import CartographySearchBar from "@/components/cartography/CartographySearchBar";
+import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
 import CartographyFilterPanel from "@/components/cartography/CartographyFilterPanel";
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographyListView from "@/components/cartography/CartographyListView";
@@ -10,7 +10,7 @@ import CartographyProviderModal from "@/components/cartography/CartographyProvid
 import CartographyStats from "@/components/cartography/CartographyStats";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Map, List, LayoutGrid, Filter, MapPin } from "lucide-react";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate } from "lucide-react";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
 import { filterProviders, sortProviders, calculateStats } from "@/utils/cartography-filters";
@@ -76,23 +76,37 @@ export default function Cartography() {
     <div className="space-y-6">
       {/* Header avec effet glassmorphism */}
       <header className="backdrop-blur-xl bg-card/80 rounded-2xl border p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row items-center gap-4 justify-between">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
               <MapPin className="h-6 w-6 text-primary-foreground" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                 Cartographie Santé
               </h1>
               <p className="text-sm text-muted-foreground">Gabon • {filteredProviders.length} résultats</p>
             </div>
+            <Button
+              onClick={getUserLocation}
+              variant="outline"
+              size="sm"
+              className="gap-2 hidden sm:flex"
+            >
+              <Locate className="h-4 w-4" />
+              Ma position
+            </Button>
           </div>
-          <CartographySearchBar
-            onSearch={(text) => setFilters({ ...filters, searchText: text })}
-            onGeolocate={getUserLocation}
-            providers={providers}
-          />
+
+          {/* Barre de recherche intelligente */}
+          <div className="flex justify-center">
+            <CartographySmartSearch
+              providers={providers}
+              onSearch={(text) => setFilters({ ...filters, searchText: text })}
+              onProviderSelect={(provider) => setSelectedProvider(provider)}
+              searchQuery={filters.searchText}
+            />
+          </div>
         </div>
       </header>
 
