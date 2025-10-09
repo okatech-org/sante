@@ -31,9 +31,9 @@ import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLa
 export default function DemoHospitalDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
 
-  // Données de démonstration pour CHU/CHR
+  // Données de démonstration pour CHU OWENDO
   const hospitalData = {
-    name: "CHU Libreville",
+    name: "CHU OWENDO",
     type: "CHU",
     sector: "public",
     capacity: {
