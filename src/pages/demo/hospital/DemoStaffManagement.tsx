@@ -160,11 +160,11 @@ export default function DemoStaffManagement() {
   const pendingRequests = [
     {
       id: '1',
-      name: 'Dr. MBOUMBA Pierre',
-      email: 'mboumba@sante.ga',
-      profession: 'Cardiologue',
-      requestedRole: 'Consultant Externe',
-      requestDate: '2025-02-01',
+      name: 'Dr. Pierre KOMBILA',
+      email: 'p.kombila@sante.ga',
+      profession: 'Médecin Généraliste',
+      requestedRole: 'Médecin Consultant',
+      requestDate: '2025-10-09',
       status: 'pending'
     }
   ];
