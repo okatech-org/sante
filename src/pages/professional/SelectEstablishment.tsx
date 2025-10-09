@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, ChevronRight, MapPin, Users, Calendar, 
@@ -7,22 +7,61 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SelectEstablishment() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedEstablishment, setSelectedEstablishment] = useState<string | null>(null);
+  const [userEstablishments, setUserEstablishments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
-  // Profil utilisateur
-  const user = {
-    id: '1',
-    name: 'Dr. OBAME Jean',
-    email: 'obame@sante.ga',
-    profession: 'Médecin Généraliste',
-    photo: null
+  useEffect(() => {
+    loadUserEstablishments();
+  }, [user]);
+
+  const loadUserEstablishments = async () => {
+    if (!user?.id) return;
+
+    try {
+      // Charger le profil utilisateur
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single();
+
+      setUserProfile(profile);
+
+      // Charger les établissements de l'utilisateur via la fonction
+      const { data: establishments, error } = await supabase
+        .rpc('get_user_establishments', { _user_id: user.id });
+
+      if (error) {
+        console.error('Error loading establishments:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger vos établissements",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (establishments && establishments.length > 0) {
+        setUserEstablishments(establishments);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Établissements de l'utilisateur
-  const userEstablishments = [
+  const userEstablishmentsDemo = [
     {
       id: '1',
       name: 'CHU Owendo',
@@ -116,9 +155,23 @@ export default function SelectEstablishment() {
 
   const handleContinue = () => {
     if (selectedEstablishment) {
-      navigate('/professional/dashboard');
+      navigate('/dashboard/professional');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const displayName = userProfile?.full_name || 'Professionnel';
+  const firstName = displayName.split(' ').slice(0, -1).join(' ') || displayName;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5">
@@ -127,11 +180,11 @@ export default function SelectEstablishment() {
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-xl">
-              {user.name.split(' ').map(n => n[0]).join('')}
+              {displayName.split(' ').map(n => n[0]).join('')}
             </div>
           </div>
           <h1 className="text-4xl font-bold mb-3">
-            Bonjour, {user.name.split(' ')[1]} 👋
+            Bonjour, {firstName} 👋
           </h1>
           <p className="text-xl text-muted-foreground">
             Sélectionnez l'établissement dans lequel vous souhaitez travailler
@@ -157,17 +210,32 @@ export default function SelectEstablishment() {
 
         {/* Liste Établissements */}
         <div className="grid gap-6">
-          {userEstablishments.map((establishment) => {
-            const isSelected = selectedEstablishment === establishment.id;
+          {userEstablishments.length === 0 ? (
+            <Card className="text-center py-12">
+              <CardContent className="pt-6">
+                <Building2 className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">Aucun établissement</h3>
+                <p className="text-muted-foreground mb-4">
+                  Vous n'êtes actuellement lié à aucun établissement
+                </p>
+                <Button variant="outline" onClick={() => navigate('/dashboard/professional')}>
+                  Retour au dashboard
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            userEstablishments.map((establishment, idx) => {
+            const isSelected = selectedEstablishment === establishment.establishment_id;
+            const isPrimary = idx === 0; // Premier établissement est principal
             
             return (
               <Card
-                key={establishment.id}
-                onClick={() => setSelectedEstablishment(establishment.id)}
+                key={establishment.establishment_id}
+                onClick={() => setSelectedEstablishment(establishment.establishment_id)}
                 className={`
                   cursor-pointer transition-all hover:shadow-xl border-2
                   ${isSelected ? 'border-primary ring-4 ring-primary/20' : 'border-border'}
-                  ${establishment.isPrimary ? 'ring-2 ring-yellow-400' : ''}
+                  ${isPrimary ? 'ring-2 ring-yellow-400' : ''}
                 `}
               >
                 <CardContent className="pt-6">
@@ -175,7 +243,7 @@ export default function SelectEstablishment() {
                     <div className="flex items-start gap-4 flex-1">
                       <div className={`
                         w-16 h-16 rounded-xl flex items-center justify-center text-primary-foreground shadow-md
-                        ${establishment.isPrimary 
+                        ${isPrimary 
                           ? 'bg-gradient-to-br from-yellow-500 to-orange-600' 
                           : 'bg-gradient-to-br from-primary to-purple-600'
                         }
@@ -186,9 +254,9 @@ export default function SelectEstablishment() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h3 className="text-2xl font-bold">
-                            {establishment.name}
+                            {establishment.establishment_name}
                           </h3>
-                          {establishment.isPrimary && (
+                          {isPrimary && (
                             <Badge variant="outline" className="bg-yellow-500/20 text-yellow-700 border-yellow-500/30 gap-1">
                               <Star className="h-3 w-3 fill-current" />
                               PRINCIPAL
@@ -197,15 +265,11 @@ export default function SelectEstablishment() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {establishment.city}, {establishment.province}
-                          </span>
-                          <Badge variant="secondary" className="text-xs">
-                            {establishment.type}
+                          <Badge variant="secondary" className="text-xs capitalize">
+                            {establishment.establishment_name.includes('CHU') ? 'CHU' : establishment.establishment_name.includes('Clinique') ? 'Clinique Privée' : 'Établissement'}
                           </Badge>
                           <span className="text-xs">
-                            Dernière connexion: {formatLastAccess(establishment.lastAccess)}
+                            Statut: {establishment.status}
                           </span>
                         </div>
 
@@ -214,10 +278,10 @@ export default function SelectEstablishment() {
                           <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg border border-primary/20">
                             <Briefcase className="h-4 w-4 text-primary" />
                             <span className="text-sm font-semibold">
-                              {establishment.role}
+                              {establishment.role_in_establishment}
                             </span>
                           </div>
-                          {establishment.isAdmin && (
+                          {establishment.is_admin && (
                             <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 rounded-lg border border-destructive/20">
                               <Shield className="h-4 w-4 text-destructive" />
                               <span className="text-sm font-semibold text-destructive">
@@ -227,78 +291,26 @@ export default function SelectEstablishment() {
                           )}
                         </div>
 
-                        {/* Planning */}
-                        <div className="bg-muted rounded-lg p-4 mb-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-semibold">
-                              Planning
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {establishment.schedule.days.map((day, idx) => (
-                              <Badge key={idx} variant="outline" className="bg-background">
-                                {day}
-                              </Badge>
-                            ))}
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            <Clock className="inline h-3 w-3 mr-1" />
-                            {establishment.schedule.hours}
-                          </p>
-                          <p className="text-xs text-primary font-medium mt-2">
-                            Prochain shift: {new Date(establishment.schedule.nextShift).toLocaleDateString('fr-FR', { 
-                              weekday: 'long', 
-                              day: 'numeric', 
-                              month: 'long',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
-                        </div>
-
-                        {/* Statistiques */}
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="text-center p-3 bg-primary/5 rounded-lg">
-                            <div className="text-2xl font-bold text-primary">
-                              {establishment.stats.patients}
-                            </div>
-                            <div className="text-xs text-muted-foreground font-medium">Patients</div>
-                          </div>
-                          <div className="text-center p-3 bg-green-500/10 rounded-lg">
-                            <div className="text-2xl font-bold text-green-700">
-                              {establishment.stats.consultations}
-                            </div>
-                            <div className="text-xs text-muted-foreground font-medium">Consultations</div>
-                          </div>
-                          {establishment.stats.team && (
-                            <div className="text-center p-3 bg-purple-500/10 rounded-lg">
-                              <div className="text-2xl font-bold text-purple-700">
-                                {establishment.stats.team}
-                              </div>
-                              <div className="text-xs text-muted-foreground font-medium">Équipe</div>
-                            </div>
-                          )}
-                        </div>
-
                         {/* Permissions */}
-                        <div className="mt-4">
-                          <p className="text-xs font-semibold text-muted-foreground mb-2">
-                            Vos permissions:
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {establishment.permissions.slice(0, 5).map((perm, idx) => (
-                              <Badge key={idx} variant="secondary" className="text-xs">
-                                {perm}
-                              </Badge>
-                            ))}
-                            {establishment.permissions.length > 5 && (
-                              <Badge variant="secondary" className="text-xs">
-                                +{establishment.permissions.length - 5} autres
-                              </Badge>
-                            )}
+                        {establishment.permissions && establishment.permissions.length > 0 && (
+                          <div className="mt-4">
+                            <p className="text-xs font-semibold text-muted-foreground mb-2">
+                              Vos permissions:
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                              {establishment.permissions.slice(0, 5).map((perm: string, idx: number) => (
+                                <Badge key={idx} variant="secondary" className="text-xs">
+                                  {perm}
+                                </Badge>
+                              ))}
+                              {establishment.permissions.length > 5 && (
+                                <Badge variant="secondary" className="text-xs">
+                                  +{establishment.permissions.length - 5} autres
+                                </Badge>
+                              )}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
 
@@ -332,7 +344,8 @@ export default function SelectEstablishment() {
                 )}
               </Card>
             );
-          })}
+          })
+          )}
         </div>
 
         {/* Footer Info */}
