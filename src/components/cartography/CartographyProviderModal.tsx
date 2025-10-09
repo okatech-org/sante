@@ -95,44 +95,38 @@ export default function CartographyProviderModal({
 
   return (
     <Dialog open={!!provider} onOpenChange={onClose}>
-      <DialogContent className="max-w-md sm:max-w-lg p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl">
-        {/* Header compact avec gradient */}
-        <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 sm:p-5 border-b">
-          <DialogHeader className="space-y-2">
-            <div className="flex items-start justify-between gap-3">
-              <DialogTitle className="text-lg sm:text-xl font-bold leading-tight pr-8">
-                {provider.nom}
-              </DialogTitle>
-            </div>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl z-[100]">
+        {/* Contenu unique avec toutes les infos */}
+        <div className="p-6 sm:p-8 space-y-6">
+          {/* En-tête */}
+          <DialogHeader className="space-y-3">
+            <DialogTitle className="text-2xl sm:text-3xl font-bold leading-tight">
+              {provider.nom}
+            </DialogTitle>
             
-            <div className="flex flex-wrap gap-1.5">
-              <Badge variant="secondary" className="text-xs">
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="text-sm">
                 {TYPE_LABELS[provider.type]}
               </Badge>
               {hasAccount && (
-                <Badge className="bg-green-600 text-xs">✓ Inscrit</Badge>
+                <Badge className="bg-green-600 text-sm">✓ Inscrit</Badge>
               )}
               {provider.ouvert_24_7 && (
-                <Badge className="bg-purple-600 text-xs">24/7</Badge>
+                <Badge className="bg-purple-600 text-sm">24/7</Badge>
               )}
               {provider.conventionnement.cnamgs && (
-                <Badge className="bg-blue-600 text-xs">CNAMGS</Badge>
+                <Badge className="bg-blue-600 text-sm">CNAMGS</Badge>
               )}
             </div>
 
             {/* Distance badge */}
             {provider.distance && userLocation && (
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full text-xs font-semibold text-primary w-fit">
-                <Navigation className="h-3 w-3" />
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-sm font-semibold text-primary w-fit">
+                <Navigation className="h-4 w-4" />
                 {formatDistance(provider.distance)}
               </div>
             )}
           </DialogHeader>
-        </div>
-
-        {/* Scrollable content */}
-        <div className="overflow-y-auto max-h-[60vh] sm:max-h-[65vh]">
-          <div className="p-4 sm:p-5 space-y-4">
             {/* Actions RDV - Pour établissements médicaux */}
             {(provider.type === 'hopital' || provider.type === 'clinique' || 
               provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
@@ -381,40 +375,36 @@ export default function CartographyProviderModal({
                 </div>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Fixed bottom actions */}
-        <div className="border-t bg-background/80 backdrop-blur-sm p-3 sm:p-4">
-          <div className="grid grid-cols-3 gap-2">
-            <Button
-              size="sm"
-              onClick={() => handleCall(provider.telephones[0])}
-              className="gap-1.5"
-            >
-              <Phone className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline text-xs">Appeler</span>
-            </Button>
-            {provider.coordonnees && (
+          {/* Actions rapides en bas */}
+          <div className="border-t pt-6">
+            <div className="grid grid-cols-3 gap-3">
               <Button
-                size="sm"
-                variant="secondary"
-                onClick={handleDirections}
-                className="gap-1.5"
+                onClick={() => handleCall(provider.telephones[0])}
+                className="gap-2"
               >
-                <Navigation className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline text-xs">Itinéraire</span>
+                <Phone className="h-4 w-4" />
+                <span className="text-sm">Appeler</span>
               </Button>
-            )}
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={handleShare}
-              className="gap-1.5"
-            >
-              <Share2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline text-xs">Partager</span>
-            </Button>
+              {provider.coordonnees && (
+                <Button
+                  variant="secondary"
+                  onClick={handleDirections}
+                  className="gap-2"
+                >
+                  <Navigation className="h-4 w-4" />
+                  <span className="text-sm">Itinéraire</span>
+                </Button>
+              )}
+              <Button 
+                variant="outline" 
+                onClick={handleShare}
+                className="gap-2"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="text-sm">Partager</span>
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
