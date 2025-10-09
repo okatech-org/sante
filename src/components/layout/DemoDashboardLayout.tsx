@@ -3,7 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { 
   Home, Calendar, Users, Video, ClipboardList, Pill, 
   DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings,
-  Activity, TestTube, UserSearch, BarChart3, Sun, Moon, Laptop, LogOut
+  Activity, TestTube, UserSearch, BarChart3, Sun, Moon, Laptop, LogOut, Globe
 } from "lucide-react";
 import logoSante from "@/assets/logo_sante.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -27,6 +27,11 @@ export const DemoDashboardLayout = ({ children, demoType = 'doctor' }: DemoDashb
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [language, setLanguage] = useState('fr');
+
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+  };
 
   // Menu items selon le type de démo
   const getDemoMenuItems = () => {
@@ -219,6 +224,29 @@ export const DemoDashboardLayout = ({ children, demoType = 'doctor' }: DemoDashb
                   </DropdownMenuContent>
                 </DropdownMenu>
 
+                {/* Language Toggle */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      <Globe className="w-4 h-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('fr')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇫🇷 Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('en')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇬🇧 English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 {/* Exit Demo Button */}
                 <button 
                   onClick={() => navigate('/admin/demo')}
@@ -301,7 +329,31 @@ export const DemoDashboardLayout = ({ children, demoType = 'doctor' }: DemoDashb
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <button 
+
+                  {/* Language Toggle Mobile */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                        <Globe className="w-4 h-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-popover border-border">
+                      <DropdownMenuItem 
+                        onClick={() => handleLanguageChange('fr')}
+                        className="text-popover-foreground hover:bg-accent cursor-pointer"
+                      >
+                        🇫🇷 Français
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => handleLanguageChange('en')}
+                        className="text-popover-foreground hover:bg-accent cursor-pointer"
+                      >
+                        🇬🇧 English
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <button
                     onClick={() => navigate('/admin/demo')}
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground"
                   >

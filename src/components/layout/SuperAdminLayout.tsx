@@ -289,6 +289,69 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
               </h1>
             </div>
             
+            <div className="flex items-center gap-2">
+              {/* Theme Toggle Mobile */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                    {theme === 'dark' ? (
+                      <Moon className="w-4 h-4" />
+                    ) : theme === 'light' ? (
+                      <Sun className="w-4 h-4" />
+                    ) : (
+                      <Laptop className="w-4 h-4" />
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-popover border-border">
+                  <DropdownMenuItem 
+                    onClick={() => handleThemeChange('light')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
+                  >
+                    <Sun className="w-4 h-4 mr-2" />
+                    Clair
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleThemeChange('dark')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
+                  >
+                    <Moon className="w-4 h-4 mr-2" />
+                    Sombre
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleThemeChange('system')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
+                  >
+                    <Laptop className="w-4 h-4 mr-2" />
+                    Système
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Language Toggle Mobile */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                    <Globe className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-popover border-border">
+                  <DropdownMenuItem 
+                    onClick={() => handleLanguageChange('fr')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
+                  >
+                    🇫🇷 Français
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => handleLanguageChange('en')}
+                    className="text-popover-foreground hover:bg-accent cursor-pointer"
+                  >
+                    🇬🇧 English
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <button className="w-10 h-10 rounded-lg flex items-center justify-center bg-sidebar-accent/30 text-sidebar-foreground hover:bg-sidebar-accent transition-all">
