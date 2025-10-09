@@ -188,7 +188,10 @@ export default function CartographyProviderModal({
                     )}
                   >
                     <FileText className="h-3.5 w-3.5 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs leading-tight text-left">Envoyer ordonnance</span>
+                    <span className="text-xs leading-tight text-left">
+                      <span className="block">Envoyer</span>
+                      <span className="block">ordonnance</span>
+                    </span>
                   </Button>
                   <Button
                     size="sm"
@@ -201,7 +204,10 @@ export default function CartographyProviderModal({
                     )}
                   >
                     <ShoppingCart className="h-3.5 w-3.5 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-xs leading-tight text-left">Commander médicaments</span>
+                    <span className="text-xs leading-tight text-left">
+                      <span className="block">Commander</span>
+                      <span className="block">médicaments</span>
+                    </span>
                   </Button>
                 </div>
                 {!hasAccount && (
