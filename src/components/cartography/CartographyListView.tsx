@@ -11,8 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronUp, ChevronDown, Phone, Navigation, Eye } from "lucide-react";
+import { ChevronUp, ChevronDown, Phone, Navigation, Eye, MapPin } from "lucide-react";
 import { formatDistance } from "@/utils/distance";
+import { cn } from "@/lib/utils";
 
 interface CartographyListViewProps {
   providers: CartographyProvider[];
@@ -77,152 +78,241 @@ export default function CartographyListView({
   };
 
   return (
-    <Card className="w-full">
-      <div className="p-4 border-b">
-        <h3 className="font-semibold text-lg">
-          {providers.length} résultat{providers.length > 1 ? 's' : ''}
-        </h3>
-      </div>
-
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">Type</TableHead>
-              <TableHead>
-                <SortButton field="nom" label="Nom" />
-              </TableHead>
-              <TableHead>
-                <SortButton field="ville" label="Ville" />
-              </TableHead>
-              <TableHead>Services</TableHead>
-              <TableHead>Téléphone</TableHead>
-              <TableHead>
-                <SortButton field="distance" label="Distance" />
-              </TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentProviders.map((provider) => (
-              <TableRow key={provider.id} className="hover:bg-accent/50">
-                <TableCell>
-                  <div className="text-2xl" title={TYPE_LABELS[provider.type]}>
-                    {TYPE_ICONS[provider.type]}
+    <>
+      {/* Vue Mobile - Cards */}
+      <div className="md:hidden space-y-3">
+        {currentProviders.map((provider) => (
+          <Card key={provider.id} className="p-4 hover:shadow-md transition-shadow">
+            <div className="space-y-3">
+              {/* Header avec type et nom */}
+              <div className="flex items-start gap-3">
+                <div className="text-3xl flex-shrink-0">
+                  {TYPE_ICONS[provider.type]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-base line-clamp-2 mb-1">
+                    {provider.nom}
+                  </h3>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{provider.ville}</span>
                   </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="font-medium">{provider.nom}</div>
-                    <div className="flex flex-wrap gap-1">
-                      {provider.ouvert_24_7 && (
-                        <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
-                      )}
-                      {provider.conventionnement.cnamgs && (
-                        <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
-                      )}
-                      {provider.equipements_specialises?.some(e => 
-                        e.includes('IRM') || e.includes('Scanner')
-                      ) && (
-                        <Badge variant="default" className="text-xs bg-purple-600">
-                          Imagerie
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="text-sm">{provider.ville}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {provider.adresse_descriptive?.substring(0, 30) || provider.ville}
-                    {provider.adresse_descriptive && provider.adresse_descriptive.length > 30 && '...'}
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="text-xs text-muted-foreground max-w-xs">
-                    {provider.services && provider.services.length > 0 ? (
-                      <>
-                        {provider.services.slice(0, 2).join(', ')}
-                        {provider.services.length > 2 && ` +${provider.services.length - 2}`}
-                      </>
-                    ) : (
-                      <span className="text-muted-foreground/50">Non spécifié</span>
-                    )}
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="flex flex-col gap-1">
-                    {provider.telephones && provider.telephones.length > 0 ? (
-                      <>
-                        <a
-                          href={`tel:${provider.telephones[0]}`}
-                          className="text-sm text-primary hover:underline flex items-center gap-1"
-                        >
-                          <Phone className="h-3 w-3" />
-                          {provider.telephones[0]}
-                        </a>
-                        {provider.telephones.length > 1 && (
-                          <span className="text-xs text-muted-foreground">
-                            +{provider.telephones.length - 1} autre{provider.telephones.length > 2 ? 's' : ''}
-                          </span>
-                        )}
-                      </>
-                    ) : (
-                      <span className="text-xs text-muted-foreground/50">Non disponible</span>
-                    )}
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="text-sm font-medium">
+                </div>
+                {provider.distance && (
+                  <div className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-lg flex-shrink-0">
                     {formatDistance(provider.distance)}
                   </div>
-                </TableCell>
-                
-                <TableCell className="text-right">
-                  <div className="flex gap-1 justify-end">
-                    {provider.coordonnees && (
+                )}
+              </div>
+
+              {/* Badges */}
+              <div className="flex flex-wrap gap-1.5">
+                {provider.ouvert_24_7 && (
+                  <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
+                )}
+                {provider.conventionnement.cnamgs && (
+                  <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
+                )}
+                {provider.equipements_specialises?.some(e => 
+                  e.includes('IRM') || e.includes('Scanner')
+                ) && (
+                  <Badge variant="default" className="text-xs bg-purple-600">
+                    Imagerie
+                  </Badge>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-2">
+                {provider.telephones && provider.telephones.length > 0 && (
+                  <Button
+                    onClick={() => handleCall(provider.telephones[0])}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-2"
+                  >
+                    <Phone className="h-4 w-4" />
+                    Appeler
+                  </Button>
+                )}
+                {provider.coordonnees && (
+                  <Button
+                    onClick={() => handleDirections(provider)}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-2"
+                  >
+                    <Navigation className="h-4 w-4" />
+                    Itinéraire
+                  </Button>
+                )}
+                <Button
+                  onClick={() => onProviderClick(provider.id)}
+                  variant="default"
+                  size="sm"
+                  className="flex-1 gap-2"
+                >
+                  <Eye className="h-4 w-4" />
+                  Détails
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Vue Desktop - Table */}
+      <Card className="w-full hidden md:block">
+        <div className="p-4 border-b">
+          <h3 className="font-semibold text-lg">
+            {providers.length} résultat{providers.length > 1 ? 's' : ''}
+          </h3>
+        </div>
+
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">Type</TableHead>
+                <TableHead>
+                  <SortButton field="nom" label="Nom" />
+                </TableHead>
+                <TableHead>
+                  <SortButton field="ville" label="Ville" />
+                </TableHead>
+                <TableHead>Services</TableHead>
+                <TableHead>Téléphone</TableHead>
+                <TableHead>
+                  <SortButton field="distance" label="Distance" />
+                </TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentProviders.map((provider) => (
+                <TableRow key={provider.id} className="hover:bg-accent/50">
+                  <TableCell>
+                    <div className="text-2xl" title={TYPE_LABELS[provider.type]}>
+                      {TYPE_ICONS[provider.type]}
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-medium">{provider.nom}</div>
+                      <div className="flex flex-wrap gap-1">
+                        {provider.ouvert_24_7 && (
+                          <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
+                        )}
+                        {provider.conventionnement.cnamgs && (
+                          <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
+                        )}
+                        {provider.equipements_specialises?.some(e => 
+                          e.includes('IRM') || e.includes('Scanner')
+                        ) && (
+                          <Badge variant="default" className="text-xs bg-purple-600">
+                            Imagerie
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell>
+                    <div className="text-sm">{provider.ville}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {provider.adresse_descriptive?.substring(0, 30) || provider.ville}
+                      {provider.adresse_descriptive && provider.adresse_descriptive.length > 30 && '...'}
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell>
+                    <div className="text-xs text-muted-foreground max-w-xs">
+                      {provider.services && provider.services.length > 0 ? (
+                        <>
+                          {provider.services.slice(0, 2).join(', ')}
+                          {provider.services.length > 2 && ` +${provider.services.length - 2}`}
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground/50">Non spécifié</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      {provider.telephones && provider.telephones.length > 0 ? (
+                        <>
+                          <a
+                            href={`tel:${provider.telephones[0]}`}
+                            className="text-sm text-primary hover:underline flex items-center gap-1"
+                          >
+                            <Phone className="h-3 w-3" />
+                            {provider.telephones[0]}
+                          </a>
+                          {provider.telephones.length > 1 && (
+                            <span className="text-xs text-muted-foreground">
+                              +{provider.telephones.length - 1} autre{provider.telephones.length > 2 ? 's' : ''}
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-xs text-muted-foreground/50">Non disponible</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell>
+                    <div className="text-sm font-medium">
+                      {formatDistance(provider.distance)}
+                    </div>
+                  </TableCell>
+                  
+                  <TableCell className="text-right">
+                    <div className="flex gap-1 justify-end">
+                      {provider.coordonnees && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDirections(provider)}
+                          title="Itinéraire"
+                        >
+                          <Navigation className="h-4 w-4" />
+                        </Button>
+                      )}
                       <Button
                         size="sm"
-                        variant="ghost"
-                        onClick={() => handleDirections(provider)}
-                        title="Itinéraire"
+                        variant="default"
+                        onClick={() => onProviderClick(provider.id)}
                       >
-                        <Navigation className="h-4 w-4" />
+                        <Eye className="h-4 w-4 mr-1" />
+                        Voir
                       </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={() => onProviderClick(provider.id)}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      Voir
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Card>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="p-4 border-t flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
+        <div className={cn(
+          "p-3 md:p-4 border-t flex flex-col sm:flex-row items-center justify-between gap-3",
+          "md:rounded-b-lg bg-card"
+        )}>
+          <div className="text-xs md:text-sm text-muted-foreground">
             Page {currentPage} sur {totalPages}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
+              className="flex-1 sm:flex-none"
             >
               Précédent
             </Button>
@@ -231,12 +321,13 @@ export default function CartographyListView({
               size="sm"
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
+              className="flex-1 sm:flex-none"
             >
               Suivant
             </Button>
           </div>
         </div>
       )}
-    </Card>
+    </>
   );
 }
