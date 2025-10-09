@@ -30,7 +30,25 @@ export default function LoginPatient() {
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
     try {
-      await authService.signIn(data.identifier, data.password);
+      const { user } = await authService.signIn(data.identifier, data.password);
+      
+      if (!user) {
+        throw new Error("Erreur lors de la connexion");
+      }
+
+      // Vérifier que l'utilisateur a un rôle patient (ou aucun rôle)
+      const userRoles = await authService.getUserRoles(user.id);
+      const professionalRoles = ['doctor', 'medical_staff', 'pharmacy', 'laboratory', 'hospital'];
+      const hasProfessionalRole = userRoles.some(role => professionalRoles.includes(role));
+
+      if (hasProfessionalRole) {
+        // Déconnecter l'utilisateur
+        await authService.signOut();
+        toast.error("Accès refusé", {
+          description: "Cet espace est réservé aux patients. Veuillez utiliser l'espace professionnel.",
+        });
+        return;
+      }
       
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur votre espace patient",
