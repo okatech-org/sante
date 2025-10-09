@@ -193,19 +193,6 @@ export default function CartographyProviderModal({
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/advice`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <Phone className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Conseil pharmacie</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
                     onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/medications`) : null}
                     disabled={!hasAccount}
                     className={cn(
@@ -215,19 +202,6 @@ export default function CartographyProviderModal({
                   >
                     <ShoppingCart className="h-3.5 w-3.5 mr-2" />
                     <span className="text-xs">Commander médicaments</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/parapharmacy`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <Package className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Parapharmacie</span>
                   </Button>
                 </div>
                 {!hasAccount && (
