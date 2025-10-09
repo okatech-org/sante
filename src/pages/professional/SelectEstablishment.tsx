@@ -76,26 +76,41 @@ export default function SelectEstablishment() {
       // Charger les détails des établissements séparément
       const establishmentIds = staffData?.map(s => s.establishment_id) || [];
       
-      const { data: establishmentsData, error: estError } = await supabase
-        .from('establishments')
-        .select('id, raison_sociale, type_etablissement, ville, province, secteur')
-        .in('id', establishmentIds);
-
-      if (estError) {
-        console.error('Erreur establishments:', estError);
-        throw estError;
+      if (establishmentIds.length === 0) {
+        setUserEstablishments([]);
+        setLoading(false);
+        return;
       }
 
-      // Fusionner les données
+      let establishmentsData: any[] = [];
+      
+      try {
+        const { data, error: estError } = await supabase
+          .from('establishments')
+          .select('id, raison_sociale, type_etablissement, ville, province, secteur')
+          .in('id', establishmentIds);
+
+        if (estError) {
+          console.error('Erreur establishments:', estError);
+          // Continue avec données partielles
+        } else {
+          establishmentsData = data || [];
+        }
+      } catch (estException) {
+        console.error('Exception establishments:', estException);
+        // Continue avec données partielles même en cas d'erreur
+      }
+
+      // Fusionner les données - afficher même si les détails des établissements ne sont pas disponibles
       const formattedEstablishments = staffData?.map((staff: any, index: number) => {
         const establishment = establishmentsData?.find(e => e.id === staff.establishment_id);
         
         return {
           id: staff.establishment_id,
-          name: establishment?.raison_sociale || 'Établissement',
-          type: getEstablishmentTypeLabel(establishment?.type_etablissement || ''),
-          city: establishment?.ville || '',
-          province: establishment?.province || '',
+          name: establishment?.raison_sociale || `Établissement (${staff.establishment_id.substring(0, 8)})`,
+          type: establishment ? getEstablishmentTypeLabel(establishment.type_etablissement) : 'Non renseigné',
+          city: establishment?.ville || 'Non renseigné',
+          province: establishment?.province || 'Non renseigné',
           role: staff.role_in_establishment,
           isAdmin: staff.is_admin,
           permissions: staff.permissions || [],
