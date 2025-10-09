@@ -296,14 +296,14 @@ export default function CartographyProviderModal({
                   <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                     Services & Conventionnement
                   </h3>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
                     {provider.services.slice(0, 4).map((service, index) => (
-                      <Badge key={index} variant="outline" className="text-[10px] px-2 py-0.5">
+                      <Badge key={index} variant="outline" className="text-[10px] px-2 py-0.5 whitespace-nowrap">
                         {service}
                       </Badge>
                     ))}
                     {provider.services.length > 4 && (
-                      <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                      <Badge variant="secondary" className="text-[10px] px-2 py-0.5 whitespace-nowrap">
                         +{provider.services.length - 4}
                       </Badge>
                     )}
