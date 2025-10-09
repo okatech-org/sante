@@ -1,4 +1,4 @@
-import { Home, Users, Activity, Pill, DollarSign, Calendar, Settings, LogOut, Sun, Moon, Laptop, Menu, Building2, TestTube, Ambulance, BarChart3 } from "lucide-react";
+import { Home, Users, Activity, Pill, DollarSign, Calendar, Settings, LogOut, Sun, Moon, Laptop, Menu, Building2, TestTube, Ambulance, BarChart3, UserCog } from "lucide-react";
 import { useState, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -46,6 +46,7 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
     { id: 'emergency', label: 'Urgences', icon: Ambulance, path: '/demo/hospital/emergency', color: '#ff0088' },
     { id: 'laboratory', label: 'Laboratoire', icon: TestTube, path: '/demo/hospital/laboratory', color: '#ffaa00' },
     { id: 'pharmacy', label: 'Pharmacie', icon: Pill, path: '/demo/hospital/pharmacy', color: '#00d4ff' },
+    { id: 'staff', label: 'Personnel', icon: UserCog, path: '/demo/hospital/staff', color: '#8b5cf6' },
     { id: 'planning', label: 'Planning', icon: Calendar, path: '/demo/hospital/planning', color: '#0088ff' },
     { id: 'finances', label: 'Finances', icon: DollarSign, path: '/demo/hospital/finances', color: '#ffaa00' },
     { id: 'statistics', label: 'Statistiques', icon: BarChart3, path: '/demo/hospital/statistics', color: '#ff0088' },
