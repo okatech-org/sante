@@ -1,19 +1,13 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CircleCheck, FileHeart, AlertCircle, MapPin, ChevronRight, Edit } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CircleCheck, FileHeart, AlertCircle, MapPin, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { EditProfileModal } from "@/components/profile/EditProfileModal";
-import { EditMedicalInfoModal } from "@/components/profile/EditMedicalInfoModal";
-
 import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 
 export default function DashboardPatient() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [editMedicalOpen, setEditMedicalOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<{
     full_name: string;
@@ -100,18 +94,7 @@ export default function DashboardPatient() {
     <PatientDashboardLayout>
       <div className="space-y-6">
         {/* Header Card avec dégradé coloré */}
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl relative">
-          {/* Bouton Modifier en haut à droite */}
-          <Button
-            onClick={() => setEditProfileOpen(true)}
-            variant="outline"
-            size="sm"
-            className="absolute top-4 right-4 gap-2"
-          >
-            <Edit className="w-4 h-4" />
-            Modifier
-          </Button>
-
+        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             {/* Photo d'identité */}
             <div className="flex-shrink-0 mx-auto sm:mx-0 relative">
@@ -197,18 +180,7 @@ export default function DashboardPatient() {
         </div>
 
         {/* Informations médicales - Bloc séparé */}
-        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-2xl relative">
-          {/* Bouton Modifier */}
-          <Button
-            onClick={() => setEditMedicalOpen(true)}
-            variant="outline"
-            size="sm"
-            className="absolute top-4 right-4 gap-2"
-          >
-            <Edit className="w-4 h-4" />
-            Modifier
-          </Button>
-
+        <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-2xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             <div className="bg-muted/30 rounded-xl p-3">
               <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1">Poids</p>
@@ -413,31 +385,6 @@ export default function DashboardPatient() {
           </div>
         </div>
       </div>
-
-      {/* Modals de modification */}
-      <EditProfileModal
-        isOpen={editProfileOpen}
-        onClose={() => setEditProfileOpen(false)}
-        userId={user?.id || ''}
-        currentData={{
-          firstName,
-          lastName,
-          birthDate: user?.user_metadata?.birth_date,
-          gender: user?.user_metadata?.gender
-        }}
-      />
-      
-      <EditMedicalInfoModal
-        isOpen={editMedicalOpen}
-        onClose={() => setEditMedicalOpen(false)}
-        userId={user?.id || ''}
-        currentData={{
-          weight: 78,
-          height: 1.75,
-          bloodGroup: 'O+',
-          cnamgsNumber: 'GA2384567891'
-        }}
-      />
     </PatientDashboardLayout>
   );
 }
