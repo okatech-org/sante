@@ -177,7 +177,7 @@ export default function CartographyProviderModal({
                   <Package className="h-4 w-4 text-green-600" />
                   Services disponibles
                 </h3>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Button
                     size="sm"
                     onClick={() => hasAccount ? navigate(`/prescriptions?pharmacy=${provider.id}`) : null}
@@ -188,7 +188,20 @@ export default function CartographyProviderModal({
                     )}
                   >
                     <FileText className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Envoyer une ordonnance</span>
+                    <span className="text-xs">Envoyer ordonnance</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/advice`) : null}
+                    disabled={!hasAccount}
+                    className={cn(
+                      "justify-start",
+                      !hasAccount && "opacity-50"
+                    )}
+                  >
+                    <Phone className="h-3.5 w-3.5 mr-2" />
+                    <span className="text-xs">Conseil pharmacie</span>
                   </Button>
                   <Button
                     size="sm"
@@ -201,7 +214,7 @@ export default function CartographyProviderModal({
                     )}
                   >
                     <ShoppingCart className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Commander des médicaments</span>
+                    <span className="text-xs">Commander médicaments</span>
                   </Button>
                   <Button
                     size="sm"
@@ -214,7 +227,7 @@ export default function CartographyProviderModal({
                     )}
                   >
                     <Package className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Produits parapharmacie</span>
+                    <span className="text-xs">Parapharmacie</span>
                   </Button>
                 </div>
                 {!hasAccount && (
