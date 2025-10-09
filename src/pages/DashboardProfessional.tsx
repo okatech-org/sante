@@ -102,28 +102,6 @@ export default function DashboardProfessional() {
   return (
     <PatientDashboardLayout>
       <div className="space-y-6">
-        {/* Carte Multi-Établissements */}
-        <Card 
-          onClick={() => navigate('/professional/select-establishment')} 
-          className="cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary/10 to-purple-600/10 border-primary/20"
-        >
-          <div className="p-4 sm:p-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Multi-Établissements</h3>
-                <p className="text-sm text-muted-foreground">Vous intervenez dans plusieurs établissements</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-primary/10">2 établissements</Badge>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </div>
-        </Card>
-
         {/* Header Card avec dégradé coloré */}
         <div className="rounded-2xl backdrop-blur-xl p-4 sm:p-8 bg-card/80 border border-border shadow-2xl relative">
           {/* Bouton Modifier en haut à droite */}
