@@ -136,30 +136,43 @@ export default function CartographyListView({
                 <TableCell>
                   <div className="text-sm">{provider.ville}</div>
                   <div className="text-xs text-muted-foreground">
-                    {provider.adresse_descriptive.substring(0, 30)}...
+                    {provider.adresse_descriptive?.substring(0, 30) || provider.ville}
+                    {provider.adresse_descriptive && provider.adresse_descriptive.length > 30 && '...'}
                   </div>
                 </TableCell>
                 
                 <TableCell>
                   <div className="text-xs text-muted-foreground max-w-xs">
-                    {provider.services.slice(0, 2).join(', ')}
-                    {provider.services.length > 2 && ` +${provider.services.length - 2}`}
+                    {provider.services && provider.services.length > 0 ? (
+                      <>
+                        {provider.services.slice(0, 2).join(', ')}
+                        {provider.services.length > 2 && ` +${provider.services.length - 2}`}
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground/50">Non spécifié</span>
+                    )}
                   </div>
                 </TableCell>
                 
                 <TableCell>
                   <div className="flex flex-col gap-1">
-                    <a
-                      href={`tel:${provider.telephones[0]}`}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
-                    >
-                      <Phone className="h-3 w-3" />
-                      {provider.telephones[0]}
-                    </a>
-                    {provider.telephones.length > 1 && (
-                      <span className="text-xs text-muted-foreground">
-                        +{provider.telephones.length - 1} autre{provider.telephones.length > 2 ? 's' : ''}
-                      </span>
+                    {provider.telephones && provider.telephones.length > 0 ? (
+                      <>
+                        <a
+                          href={`tel:${provider.telephones[0]}`}
+                          className="text-sm text-primary hover:underline flex items-center gap-1"
+                        >
+                          <Phone className="h-3 w-3" />
+                          {provider.telephones[0]}
+                        </a>
+                        {provider.telephones.length > 1 && (
+                          <span className="text-xs text-muted-foreground">
+                            +{provider.telephones.length - 1} autre{provider.telephones.length > 2 ? 's' : ''}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/50">Non disponible</span>
                     )}
                   </div>
                 </TableCell>
