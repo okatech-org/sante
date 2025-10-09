@@ -242,7 +242,7 @@ export default function Landing() {
                   Patient
                 </Button>
               </Link>
-              <Link to="/dashboard/professional">
+              <Link to="/login/pro">
                 <Button className="shadow-lg hover:shadow-2xl hover-scale bg-gradient-to-r from-accent to-accent/90">
                   Professionnel
                 </Button>
@@ -296,7 +296,7 @@ export default function Landing() {
                           Patient
                         </Button>
                       </Link>
-                      <Link to="/dashboard/professional" onClick={() => setMobileMenuOpen(false)}>
+                      <Link to="/login/pro" onClick={() => setMobileMenuOpen(false)}>
                         <Button className="w-full bg-gradient-to-r from-accent to-accent/90">
                           Professionnel
                         </Button>
