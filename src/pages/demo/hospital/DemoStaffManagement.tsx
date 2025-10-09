@@ -101,85 +101,146 @@ export default function DemoStaffManagement() {
         .from('establishments')
         .select('*')
         .ilike('raison_sociale', '%OWENDO%')
-        .single();
+        .maybeSingle();
 
-      if (estError) throw estError;
-      setEstablishment(establishmentData);
-
-      if (!establishmentData) {
-        toast({
-          title: "Erreur",
-          description: "Établissement non trouvé",
-          variant: "destructive"
-        });
-        return;
+      if (estError) {
+        console.warn('Establishment query error:', estError.message);
       }
 
-      // Récupérer le personnel de l'établissement
-      const { data: staffData, error: staffError } = await supabase
-        .from('establishment_staff')
-        .select(`
-          *,
-          professionals (
-            id,
-            full_name,
-            email,
-            phone,
-            professional_type,
-            numero_ordre
-          )
-        `)
-        .eq('establishment_id', establishmentData.id)
-        .eq('status', 'active');
+      let currentEst = establishmentData;
+      if (!currentEst) {
+        // Fallback démo si aucune donnée retournée (RLS ou base vide)
+        currentEst = {
+          id: null,
+          raison_sociale: 'CHU OWENDO',
+          ville: 'Owendo',
+          province: 'Estuaire',
+          statut: 'actif',
+        } as any;
+        toast({
+          title: "Mode démo",
+          description: "Aucun établissement trouvé. Affichage de données fictives.",
+        });
+      }
+      setEstablishment(currentEst);
 
-      if (staffError) throw staffError;
+      if (currentEst?.id) {
+        const { data: staffData, error: staffError } = await supabase
+          .from('establishment_staff')
+          .select(`
+            *,
+            professionals (
+              id,
+              full_name,
+              email,
+              phone,
+              professional_type,
+              numero_ordre
+            )
+          `)
+          .eq('establishment_id', currentEst.id)
+          .eq('status', 'active');
 
-      const formattedStaff: StaffMember[] = (staffData || []).map((staff: any) => ({
-        id: staff.id,
-        name: staff.professionals?.full_name || 'N/A',
-        email: staff.professionals?.email || '',
-        phone: staff.professionals?.phone || '',
-        profession: staff.professionals?.professional_type || '',
-        role: staff.role_in_establishment,
-        isAdmin: staff.is_admin,
-        status: staff.status,
-        schedule: staff.schedule,
-        startDate: staff.start_date,
-        permissions: staff.permissions || [],
-        professionalId: staff.professional_id
-      }));
+        if (staffError) {
+          console.warn('Staff query error:', staffError.message);
+          setStaffMembers([]);
+        } else {
+          const formattedStaff: StaffMember[] = (staffData || []).map((staff: any) => ({
+            id: staff.id,
+            name: staff.professionals?.full_name || 'N/A',
+            email: staff.professionals?.email || '',
+            phone: staff.professionals?.phone || '',
+            profession: staff.professionals?.professional_type || '',
+            role: staff.role_in_establishment,
+            isAdmin: staff.is_admin,
+            status: staff.status,
+            schedule: staff.schedule,
+            startDate: staff.start_date,
+            permissions: staff.permissions || [],
+            professionalId: staff.professional_id
+          }));
+          setStaffMembers(formattedStaff);
+        }
+      } else {
+        // Fallback démo
+        setStaffMembers([
+          {
+            id: 'demo-1',
+            name: 'Dr. OBAME Jean',
+            email: 'obame@sante.ga',
+            phone: '+241 01 11 22 33',
+            profession: 'Médecin Généraliste',
+            role: 'Chef Service Médecine',
+            isAdmin: true,
+            status: 'active',
+            schedule: null,
+            startDate: '2023-01-15',
+            permissions: ['all_medical', 'staff_manage', 'planning', 'consultations', 'prescriptions'],
+            professionalId: 'prof-demo-1',
+          },
+          {
+            id: 'demo-2',
+            name: 'Inf. NDONG Marie',
+            email: 'ndong@sante.ga',
+            phone: '+241 01 22 33 44',
+            profession: 'Infirmière',
+            role: 'Infirmière Chef',
+            isAdmin: true,
+            status: 'active',
+            schedule: null,
+            startDate: '2022-06-01',
+            permissions: ['nursing', 'medication', 'patient_care', 'staff_planning'],
+            professionalId: 'prof-demo-2',
+          },
+        ]);
+      }
 
-      setStaffMembers(formattedStaff);
+      if (currentEst?.id) {
+        const { data: requestsData, error: requestsError } = await supabase
+          .from('establishment_staff_requests')
+          .select(`
+            *,
+            professionals (
+              id,
+              full_name,
+              email,
+              professional_type
+            )
+          `)
+          .eq('establishment_id', currentEst.id)
+          .eq('status', 'pending');
 
-      // Récupérer les demandes en attente
-      const { data: requestsData, error: requestsError } = await supabase
-        .from('establishment_staff_requests')
-        .select(`
-          *,
-          professionals (
-            id,
-            full_name,
-            email,
-            professional_type
-          )
-        `)
-        .eq('establishment_id', establishmentData.id)
-        .eq('status', 'pending');
-
-      if (requestsError) throw requestsError;
-
-      const formattedRequests: PendingRequest[] = (requestsData || []).map((req: any) => ({
-        id: req.id,
-        name: req.professionals?.full_name || 'N/A',
-        email: req.professionals?.email || '',
-        profession: req.professionals?.professional_type || '',
-        requestedRole: req.requested_role,
-        requestDate: req.created_at,
-        requestMessage: req.request_message,
-        professionalId: req.professional_id
-      }));
-
-      setPendingRequests(formattedRequests);
+        if (requestsError) {
+          console.warn('Requests query error:', requestsError.message);
+          setPendingRequests([]);
+        } else {
+          const formattedRequests: PendingRequest[] = (requestsData || []).map((req: any) => ({
+            id: req.id,
+            name: req.professionals?.full_name || 'N/A',
+            email: req.professionals?.email || '',
+            profession: req.professionals?.professional_type || '',
+            requestedRole: req.requested_role,
+            requestDate: req.created_at,
+            requestMessage: req.request_message,
+            professionalId: req.professional_id
+          }));
+          setPendingRequests(formattedRequests);
+        }
+      } else {
+        // Fallback démo – Dr. Pierre KOMBILA
+        setPendingRequests([
+          {
+            id: 'req-demo-1',
+            name: 'Dr. Pierre KOMBILA',
+            email: 'p.kombila@sante.ga',
+            profession: 'Médecin Généraliste',
+            requestedRole: 'Médecin Consultant',
+            requestDate: new Date().toISOString(),
+            requestMessage: 'Disponible pour vacations hebdomadaires',
+            professionalId: 'prof-demo-3',
+          },
+        ]);
+      }
 
     } catch (error: any) {
       console.error('Error fetching data:', error);
@@ -234,9 +295,13 @@ export default function DemoStaffManagement() {
 
     } catch (error: any) {
       console.error('Error approving request:', error);
+      const msg = (error?.message || '').toLowerCase();
+      const hint = msg.includes('row level') || msg.includes('permission') 
+        ? "Action réservée aux administrateurs de l'établissement. Connectez-vous pour continuer."
+        : "Impossible d'approuver la demande";
       toast({
         title: "Erreur",
-        description: error.message || "Impossible d'approuver la demande",
+        description: hint,
         variant: "destructive"
       });
     } finally {
@@ -270,9 +335,13 @@ export default function DemoStaffManagement() {
 
     } catch (error: any) {
       console.error('Error rejecting request:', error);
+      const msg = (error?.message || '').toLowerCase();
+      const hint = msg.includes('row level') || msg.includes('permission') 
+        ? "Action réservée aux administrateurs de l'établissement. Connectez-vous pour continuer."
+        : "Impossible de refuser la demande";
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de refuser la demande",
+        description: hint,
         variant: "destructive"
       });
     } finally {
