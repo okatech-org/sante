@@ -6,16 +6,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar, Users, FileText, Activity, Clock, TrendingUp, Video, MapPin,
   Phone, Mail, CreditCard, AlertCircle, CheckCircle, XCircle, Plus,
-  Stethoscope, Pill, ClipboardList, LineChart, Settings, Bell
+  Stethoscope, Pill, ClipboardList, LineChart, Settings, Bell, Building2
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppointmentModal } from "@/components/professional/AppointmentModal";
 import { PrescriptionModal } from "@/components/professional/PrescriptionModal";
 import { PatientListModal } from "@/components/professional/PatientListModal";
 
 export default function DemoDoctorDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [showPatientListModal, setShowPatientListModal] = useState(false);
@@ -199,9 +201,9 @@ export default function DemoDoctorDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               3 nouvelles
             </Button>
-            <Button variant="outline" size="sm">
-              <MapPin className="h-4 w-4 mr-2" />
-              Mon cabinet
+            <Button variant="outline" size="sm" onClick={() => navigate('/professional/select-establishment')}>
+              <Building2 className="h-4 w-4 mr-2" />
+              Mes établissements
             </Button>
             <Button onClick={() => setShowAppointmentModal(true)}>
               <Calendar className="h-4 w-4 mr-2" />
