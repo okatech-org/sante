@@ -5,7 +5,7 @@ import {
   AlertCircle, Clock, Ambulance, UserPlus, Activity, 
   Stethoscope, Heart, TrendingUp, CheckCircle
 } from "lucide-react";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
 
 export default function DemoEmergency() {
   const triagePatients = {
@@ -106,10 +106,8 @@ export default function DemoEmergency() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <DashboardHeader />
-      
-      <div className="container mx-auto p-6 space-y-6">
+    <HospitalDashboardLayout>
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -397,6 +395,6 @@ export default function DemoEmergency() {
           </Card>
         </div>
       </div>
-    </div>
+    </HospitalDashboardLayout>
   );
 }

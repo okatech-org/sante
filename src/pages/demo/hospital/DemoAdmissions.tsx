@@ -8,7 +8,7 @@ import {
   UserPlus, Search, Bed, FileText, Calendar, Clock, 
   AlertCircle, CheckCircle, XCircle, Eye
 } from "lucide-react";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
 
 export default function DemoAdmissions() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,10 +135,8 @@ export default function DemoAdmissions() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <DashboardHeader />
-      
-      <div className="container mx-auto p-6 space-y-6">
+    <HospitalDashboardLayout>
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -429,6 +427,6 @@ export default function DemoAdmissions() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </HospitalDashboardLayout>
   );
 }
