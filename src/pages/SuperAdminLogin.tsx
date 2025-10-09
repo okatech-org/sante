@@ -22,27 +22,37 @@ export default function SuperAdminLogin() {
     setLoading(true);
 
     try {
-      await authService.signIn(email, password);
+      const { user } = await authService.signIn(email, password);
       
-      // Récupérer l'utilisateur et ses rôles
-      const user = await authService.getCurrentUser();
+      if (!user) {
+        throw new Error("Erreur lors de la connexion");
+      }
       
-      if (user) {
-        const roles = await authService.getUserRoles(user.id);
-        
+      // Vérifier que l'utilisateur a un rôle admin
+      const roles = await authService.getUserRoles(user.id);
+      const hasAdminRole = roles.includes('super_admin') || roles.includes('admin');
+
+      if (!hasAdminRole) {
+        // Déconnecter l'utilisateur
+        await authService.signOut();
         toast({
-          title: "Connexion réussie",
-          description: "Bienvenue",
+          variant: "destructive",
+          title: "Accès refusé",
+          description: "Cet espace est réservé aux administrateurs uniquement.",
         });
-        
-        // Rediriger vers le dashboard approprié selon le rôle
-        if (roles.includes('super_admin')) {
-          navigate("/dashboard/superadmin");
-        } else if (roles.includes('admin')) {
-          navigate("/dashboard/admin");
-        } else {
-          navigate("/dashboard/patient");
-        }
+        return;
+      }
+      
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue",
+      });
+      
+      // Rediriger vers le dashboard approprié selon le rôle
+      if (roles.includes('super_admin')) {
+        navigate("/dashboard/superadmin");
+      } else if (roles.includes('admin')) {
+        navigate("/dashboard/admin");
       }
     } catch (error: any) {
       toast({

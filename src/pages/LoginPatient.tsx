@@ -36,8 +36,21 @@ export default function LoginPatient() {
         throw new Error("Erreur lors de la connexion");
       }
 
-      // Vérifier que l'utilisateur a un rôle patient (ou aucun rôle)
+      // Vérifier que l'utilisateur n'a pas un rôle admin
       const userRoles = await authService.getUserRoles(user.id);
+      const adminRoles = ['admin', 'super_admin'];
+      const hasAdminRole = userRoles.some(role => adminRoles.includes(role));
+
+      if (hasAdminRole) {
+        // Déconnecter l'utilisateur
+        await authService.signOut();
+        toast.error("Accès refusé", {
+          description: "Cet espace est réservé aux patients. Veuillez utiliser l'espace administrateur.",
+        });
+        return;
+      }
+
+      // Vérifier que l'utilisateur a un rôle patient (ou aucun rôle)
       const professionalRoles = ['doctor', 'medical_staff', 'pharmacy', 'laboratory', 'hospital'];
       const hasProfessionalRole = userRoles.some(role => professionalRoles.includes(role));
 
