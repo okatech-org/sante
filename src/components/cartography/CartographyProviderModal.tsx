@@ -95,230 +95,228 @@ export default function CartographyProviderModal({
 
   return (
     <Dialog open={!!provider} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="space-y-2">
-            <DialogTitle className="text-2xl">{provider.nom}</DialogTitle>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary" className="capitalize">
+      <DialogContent className="max-w-md sm:max-w-lg p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl">
+        {/* Header compact avec gradient */}
+        <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 sm:p-5 border-b">
+          <DialogHeader className="space-y-2">
+            <div className="flex items-start justify-between gap-3">
+              <DialogTitle className="text-lg sm:text-xl font-bold leading-tight pr-8">
+                {provider.nom}
+              </DialogTitle>
+            </div>
+            
+            <div className="flex flex-wrap gap-1.5">
+              <Badge variant="secondary" className="text-xs">
                 {TYPE_LABELS[provider.type]}
               </Badge>
+              {hasAccount && (
+                <Badge className="bg-green-600 text-xs">✓ Inscrit</Badge>
+              )}
               {provider.ouvert_24_7 && (
-                <Badge className="bg-green-600">Ouvert 24/7</Badge>
+                <Badge className="bg-purple-600 text-xs">24/7</Badge>
               )}
               {provider.conventionnement.cnamgs && (
-                <Badge className="bg-blue-600">CNAMGS</Badge>
-              )}
-              {provider.secteur && (
-                <Badge variant="outline">{SECTEUR_LABELS[provider.secteur]}</Badge>
+                <Badge className="bg-blue-600 text-xs">CNAMGS</Badge>
               )}
             </div>
-          </div>
-        </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Localisation */}
-          <section>
-            <h3 className="font-semibold mb-2 flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Localisation
-            </h3>
-            <div className="space-y-1 text-sm">
-              <p>{provider.adresse_descriptive}</p>
-              <p className="text-muted-foreground">{provider.ville}</p>
-              {provider.distance && userLocation && (
-                <p className="text-primary font-semibold">
-                  📏 {formatDistance(provider.distance)} de vous
-                </p>
-              )}
-            </div>
-          </section>
+            {/* Distance badge */}
+            {provider.distance && userLocation && (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 rounded-full text-xs font-semibold text-primary w-fit">
+                <Navigation className="h-3 w-3" />
+                {formatDistance(provider.distance)}
+              </div>
+            )}
+          </DialogHeader>
+        </div>
 
-          {/* Contact */}
-          <section>
-            <h3 className="font-semibold mb-2 flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              Contact
-            </h3>
-            <div className="space-y-2">
-              {provider.telephones.map((tel, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <a
-                    href={`tel:${tel}`}
-                    className="text-primary hover:underline flex-1"
-                  >
-                    {tel}
-                  </a>
+        {/* Scrollable content */}
+        <div className="overflow-y-auto max-h-[60vh] sm:max-h-[65vh]">
+          <div className="p-4 sm:p-5 space-y-4">
+            {/* Actions RDV - Priority 1 si médical */}
+            {(provider.type === 'hopital' || provider.type === 'clinique' || 
+              provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
+                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  Prendre rendez-vous
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
                   <Button
                     size="sm"
-                    variant="ghost"
-                    onClick={() => handleCopyPhone(tel)}
+                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=physical`) : null}
+                    disabled={!hasAccount}
+                    className={cn(!hasAccount && "opacity-50")}
                   >
-                    Copier
+                    <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                    <span className="text-xs">Physique</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=video`) : null}
+                    disabled={!hasAccount}
+                    className={cn(!hasAccount && "opacity-50")}
+                  >
+                    <Video className="h-3.5 w-3.5 mr-1.5" />
+                    <span className="text-xs">Visio</span>
                   </Button>
                 </div>
-              ))}
-              {provider.email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
+                {!hasAccount && (
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
+                    Non inscrit sur la plateforme
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Contact & Localisation - Grid compact */}
+            <div className="grid gap-3">
+              {/* Localisation */}
+              <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <MapPin className="h-3.5 w-3.5 text-primary" />
+                  Localisation
+                </div>
+                <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
+                <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
+              </div>
+
+              {/* Contact */}
+              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <Phone className="h-3.5 w-3.5 text-primary" />
+                  Contact
+                </div>
+                {provider.telephones.slice(0, 2).map((tel, index) => (
                   <a
-                    href={`mailto:${provider.email}`}
-                    className="text-primary hover:underline"
+                    key={index}
+                    href={`tel:${tel}`}
+                    className="flex items-center gap-2 text-xs text-primary hover:underline"
                   >
-                    {provider.email}
+                    <Phone className="h-3 w-3" />
+                    {tel}
                   </a>
-                </div>
-              )}
-              {provider.horaires && (
-                <div className="flex items-center gap-2 mt-3">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <p className="text-sm">{provider.horaires}</p>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Services */}
-          <section>
-            <h3 className="font-semibold mb-2">🏥 Services Offerts</h3>
-            <div className="flex flex-wrap gap-2">
-              {provider.services.map((service, index) => (
-                <Badge key={index} variant="outline">
-                  {service}
-                </Badge>
-              ))}
-            </div>
-          </section>
-
-          {/* Spécialités */}
-          {provider.specialites && provider.specialites.length > 0 && (
-            <section>
-              <h3 className="font-semibold mb-2">👨‍⚕️ Spécialités Médicales</h3>
-              <div className="flex flex-wrap gap-2">
-                {provider.specialites.map((spec, index) => (
-                  <Badge key={index} variant="secondary">
-                    {spec}
-                  </Badge>
                 ))}
-              </div>
-            </section>
-          )}
-
-          {/* Équipements */}
-          {provider.equipements_specialises && provider.equipements_specialises.length > 0 && (
-            <section>
-              <h3 className="font-semibold mb-2">🔬 Équipements Spécialisés</h3>
-              <div className="flex flex-wrap gap-2">
-                {provider.equipements_specialises.map((equip, index) => (
-                  <Badge key={index} className="bg-purple-600">
-                    ⚡ {equip}
-                  </Badge>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Conventionnement */}
-          <section>
-            <h3 className="font-semibold mb-2">💳 Assurances & Conventionnement</h3>
-            <ul className="space-y-1 text-sm">
-              <li className="flex items-center gap-2">
-                {provider.conventionnement.cnamgs ? (
-                  <span className="text-green-600">✅</span>
-                ) : (
-                  <span className="text-red-600">❌</span>
+                {provider.horaires && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                    <Clock className="h-3 w-3" />
+                    {provider.horaires}
+                  </div>
                 )}
-                CNAMGS
-              </li>
-              <li className="flex items-center gap-2">
-                {provider.conventionnement.cnss ? (
-                  <span className="text-green-600">✅</span>
-                ) : (
-                  <span className="text-red-600">❌</span>
-                )}
-                CNSS
-              </li>
-              {provider.conventionnement.mutuelles && provider.conventionnement.mutuelles.length > 0 && (
-                <li className="flex items-center gap-2">
-                  <span className="text-green-600">✅</span>
-                  Mutuelles: {provider.conventionnement.mutuelles.join(', ')}
-                </li>
-              )}
-            </ul>
-          </section>
+              </div>
+            </div>
 
-          {/* Notes */}
-          {provider.notes && (
-            <section>
-              <div className="bg-accent p-3 rounded-lg">
+            {/* Services - Compact pills */}
+            {provider.services.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Services
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.services.slice(0, 6).map((service, index) => (
+                    <Badge key={index} variant="outline" className="text-[10px] px-2 py-0.5">
+                      {service}
+                    </Badge>
+                  ))}
+                  {provider.services.length > 6 && (
+                    <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                      +{provider.services.length - 6}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Spécialités */}
+            {provider.specialites && provider.specialites.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Spécialités
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.specialites.map((spec, index) => (
+                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-primary/80">
+                      {spec}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Équipements */}
+            {provider.equipements_specialises && provider.equipements_specialises.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Équipements
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.equipements_specialises.map((equip, index) => (
+                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-purple-600">
+                      ⚡ {equip}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Conventionnement - Compact */}
+            <div className="bg-accent/50 rounded-lg p-3 space-y-1.5">
+              <h3 className="text-xs font-semibold">💳 Conventionnement</h3>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  {provider.conventionnement.cnamgs ? "✅" : "❌"}
+                  <span>CNAMGS</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {provider.conventionnement.cnss ? "✅" : "❌"}
+                  <span>CNSS</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            {provider.notes && (
+              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm">{provider.notes}</p>
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 text-amber-600 flex-shrink-0" />
+                  <p className="text-xs text-amber-900 dark:text-amber-100">{provider.notes}</p>
                 </div>
               </div>
-            </section>
-          )}
+            )}
+          </div>
+        </div>
 
-          {/* Actions selon le type d'établissement */}
-          {(provider.type === 'hopital' || provider.type === 'clinique' || 
-            provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
-            <section>
-              <h3 className="font-semibold mb-3">📅 Prendre rendez-vous</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=physical`) : null}
-                  disabled={!hasAccount}
-                  className={cn(
-                    "flex-1",
-                    !hasAccount && "opacity-50 cursor-not-allowed"
-                  )}
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Consultation physique
-                </Button>
-                <Button
-                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=video`) : null}
-                  disabled={!hasAccount}
-                  variant="secondary"
-                  className={cn(
-                    "flex-1",
-                    !hasAccount && "opacity-50 cursor-not-allowed"
-                  )}
-                >
-                  <Video className="h-4 w-4 mr-2" />
-                  Visio-consultation
-                </Button>
-              </div>
-              {!hasAccount && (
-                <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Cet établissement n'est pas encore inscrit sur la plateforme
-                </p>
-              )}
-            </section>
-          )}
-
-          {/* Actions générales */}
-          <div className="flex gap-2 pt-4 border-t">
+        {/* Fixed bottom actions */}
+        <div className="border-t bg-background/80 backdrop-blur-sm p-3 sm:p-4">
+          <div className="grid grid-cols-3 gap-2">
             <Button
-              className="flex-1"
+              size="sm"
               onClick={() => handleCall(provider.telephones[0])}
+              className="gap-1.5"
             >
-              <Phone className="h-4 w-4 mr-2" />
-              Appeler
+              <Phone className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline text-xs">Appeler</span>
             </Button>
             {provider.coordonnees && (
               <Button
+                size="sm"
                 variant="secondary"
-                className="flex-1"
                 onClick={handleDirections}
+                className="gap-1.5"
               >
-                <Navigation className="h-4 w-4 mr-2" />
-                Itinéraire
+                <Navigation className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline text-xs">Itinéraire</span>
               </Button>
             )}
-            <Button variant="outline" onClick={handleShare}>
-              <Share2 className="h-4 w-4 mr-2" />
-              Partager
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={handleShare}
+              className="gap-1.5"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline text-xs">Partager</span>
             </Button>
           </div>
         </div>
