@@ -1,4 +1,4 @@
-import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { DemoDashboardLayout } from "@/components/layout/DemoDashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -185,7 +185,7 @@ export default function DemoDoctorDashboard() {
   ];
 
   return (
-    <PatientDashboardLayout>
+    <DemoDashboardLayout demoType="doctor">
       <div className="flex flex-col space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -522,6 +522,6 @@ export default function DemoDoctorDashboard() {
         open={showPatientListModal}
         onClose={() => setShowPatientListModal(false)}
       />
-    </PatientDashboardLayout>
+    </DemoDashboardLayout>
   );
 }
