@@ -8,9 +8,12 @@ import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
 import CartographyStats from "@/components/cartography/CartographyStats";
+import QuickFilters from "@/components/cartography/QuickFilters";
+import SearchGuide from "@/components/cartography/SearchGuide";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Map, List, LayoutGrid, Filter, MapPin, Locate } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info } from "lucide-react";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
 import { filterProviders, sortProviders, calculateStats } from "@/utils/cartography-filters";
@@ -37,6 +40,7 @@ export default function Cartography() {
     maxDistance: null,
     searchText: ''
   });
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   const getUserLocation = () => {
     if (!navigator.geolocation) {
@@ -74,32 +78,28 @@ export default function Cartography() {
 
   const content = (
     <div className="space-y-6">
-      {/* Header avec effet glassmorphism */}
-      <header className="backdrop-blur-xl bg-card/80 rounded-2xl border p-6 shadow-sm">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-              <MapPin className="h-6 w-6 text-primary-foreground" />
+      {/* Hero Section avec recherche guidée */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-2xl">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        
+        <div className="relative p-6 md:p-8 space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-2">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl animate-scale-in">
+                <MapPin className="h-7 w-7 text-primary-foreground" />
+              </div>
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Cartographie Santé
-              </h1>
-              <p className="text-sm text-muted-foreground">Gabon • {filteredProviders.length} résultats</p>
-            </div>
-            <Button
-              onClick={getUserLocation}
-              variant="outline"
-              size="sm"
-              className="gap-2 hidden sm:flex"
-            >
-              <Locate className="h-4 w-4" />
-              Ma position
-            </Button>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+              Trouvez votre professionnel de santé
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Recherchez facilement parmi {providers.length} établissements de santé au Gabon
+            </p>
           </div>
 
           {/* Barre de recherche intelligente */}
-          <div className="flex justify-center">
+          <div className="flex justify-center animate-fade-in">
             <CartographySmartSearch
               providers={providers}
               onSearch={(text) => setFilters({ ...filters, searchText: text })}
@@ -107,129 +107,148 @@ export default function Cartography() {
               searchQuery={filters.searchText}
             />
           </div>
+
+          {/* Quick Filters */}
+          <div className="animate-fade-in" style={{ animationDelay: "100ms" }}>
+            <QuickFilters
+              selectedType={filters.types[0] || null}
+              onFilterSelect={(type) => setFilters({ 
+                ...filters, 
+                types: type ? [type] : [] 
+              })}
+            />
+          </div>
+
+          {/* Search Guide */}
+          <div className="animate-fade-in" style={{ animationDelay: "200ms" }}>
+            <SearchGuide
+              onPreferenceSelect={(pref) => setFilters({
+                ...filters,
+                ouvert24_7: pref.ouvert247 || false,
+                cnamgs: pref.cnamgs || false,
+                maxDistance: pref.proche ? 10 : null
+              })}
+            />
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="flex flex-col items-center gap-2 text-muted-foreground animate-bounce pt-4">
+            <span className="text-sm font-medium">Voir les résultats</span>
+            <ArrowDown className="h-5 w-5" />
+          </div>
         </div>
-      </header>
+      </div>
 
       {/* Stats avec animation */}
       <div className="animate-fade-in">
         <CartographyStats stats={stats} provinces={provincesData.provinces} />
       </div>
 
+      {/* Résultats Section */}
       <div className="flex gap-6">
-        {/* Desktop Sidebar */}
+        {/* Desktop Sidebar avec filtres avancés */}
         <aside className="hidden lg:block w-80 flex-shrink-0">
-          <div className="sticky top-4 animate-fade-in">
-            <CartographyFilterPanel
-              filters={filters}
-              onFiltersChange={setFilters}
-              provinces={provincesData.provinces}
-              hasUserLocation={!!userLocation}
-            />
+          <div className="sticky top-4 space-y-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="w-full gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filtres avancés
+              {showAdvancedFilters ? " ▼" : " ▶"}
+            </Button>
+            
+            {showAdvancedFilters && (
+              <div className="animate-fade-in">
+                <CartographyFilterPanel
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  provinces={provincesData.provinces}
+                  hasUserLocation={!!userLocation}
+                />
+              </div>
+            )}
+
+            {/* Aide contextuelle */}
+            <div className="bg-muted/50 rounded-xl p-4 space-y-2 border">
+              <div className="flex items-center gap-2 text-primary">
+                <Info className="h-5 w-5" />
+                <span className="font-semibold text-sm">Astuce</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Utilisez la carte pour une vue géographique ou la liste pour comparer les établissements en détail.
+              </p>
+            </div>
           </div>
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 space-y-4">
-          {/* Controls Bar */}
-          <div className="flex flex-wrap items-center gap-2 justify-between backdrop-blur-xl bg-card/80 p-3 rounded-lg border">
-            <div className="flex gap-2">
-              {/* Mobile Filter Button */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="lg:hidden">
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filtres
-                    {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
-                      <span className="ml-2 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
-                        {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
-                      </span>
-                    )}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="w-full sm:max-w-md overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Filtres de recherche</DialogTitle>
-                  </DialogHeader>
-                  <div className="pt-2">
-                    <CartographyFilterPanel
-                      filters={filters}
-                      onFiltersChange={setFilters}
-                      provinces={provincesData.provinces}
-                      hasUserLocation={!!userLocation}
-                    />
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              {/* View Mode Switcher */}
-              <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
-                <Button
-                  variant={viewMode === 'map' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('map')}
-                  className={cn(
-                    "transition-all",
-                    viewMode === 'map' && "shadow-md"
-                  )}
-                >
-                  <Map className="h-4 w-4 mr-1" /> 
-                  <span className="hidden sm:inline">Carte</span>
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className={cn(
-                    "transition-all",
-                    viewMode === 'list' && "shadow-md"
-                  )}
-                >
-                  <List className="h-4 w-4 mr-1" /> 
-                  <span className="hidden sm:inline">Liste</span>
-                </Button>
-                <Button
-                  variant={viewMode === 'both' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('both')}
-                  className={cn(
-                    "hidden md:flex transition-all",
-                    viewMode === 'both' && "shadow-md"
-                  )}
-                >
-                  <LayoutGrid className="h-4 w-4 mr-1" /> 
-                  Les deux
-                </Button>
+          {/* Results Header avec info */}
+          <div className="backdrop-blur-xl bg-card/80 rounded-xl border p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="font-semibold text-lg">
+                {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''}
               </div>
+              {filteredProviders.length > 0 && (
+                <Button
+                  onClick={getUserLocation}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Locate className="h-4 w-4" />
+                  <span className="hidden sm:inline">Localiser</span>
+                </Button>
+              )}
             </div>
 
-            {/* Active Filters Summary */}
-            {(filters.types.length > 0 || filters.province !== 'all' || filters.cnamgs || filters.ouvert24_7) && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="hidden sm:inline">Filtres actifs:</span>
-                <div className="flex gap-1">
-                  {filters.types.length > 0 && (
-                    <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs">
-                      {filters.types.length} type{filters.types.length > 1 ? 's' : ''}
+            {/* View Switcher avec tabs */}
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)}>
+              <TabsList className="bg-muted/50">
+                <TabsTrigger value="map" className="gap-2">
+                  <Map className="h-4 w-4" />
+                  <span className="hidden sm:inline">Carte</span>
+                </TabsTrigger>
+                <TabsTrigger value="list" className="gap-2">
+                  <List className="h-4 w-4" />
+                  <span className="hidden sm:inline">Liste</span>
+                </TabsTrigger>
+                <TabsTrigger value="both" className="gap-2 hidden md:flex">
+                  <LayoutGrid className="h-4 w-4" />
+                  Les deux
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* Mobile Filter Button */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="lg:hidden gap-2">
+                  <Filter className="h-4 w-4" />
+                  Filtres
+                  {(filters.types.length > 0 || filters.cnamgs || filters.ouvert24_7) && (
+                    <span className="h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                      {filters.types.length + (filters.cnamgs ? 1 : 0) + (filters.ouvert24_7 ? 1 : 0)}
                     </span>
                   )}
-                  {filters.province !== 'all' && (
-                    <span className="px-2 py-1 bg-secondary/10 text-secondary rounded text-xs">
-                      Province
-                    </span>
-                  )}
-                  {filters.cnamgs && (
-                    <span className="px-2 py-1 bg-accent/10 text-accent rounded text-xs">
-                      CNAMGS
-                    </span>
-                  )}
-                  {filters.ouvert24_7 && (
-                    <span className="px-2 py-1 bg-success/10 text-success rounded text-xs">
-                      24/7
-                    </span>
-                  )}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="w-full sm:max-w-md overflow-y-auto max-h-[90vh]">
+                <DialogHeader>
+                  <DialogTitle>Filtres de recherche</DialogTitle>
+                </DialogHeader>
+                <div className="pt-2">
+                  <CartographyFilterPanel
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    provinces={provincesData.provinces}
+                    hasUserLocation={!!userLocation}
+                  />
                 </div>
-              </div>
-            )}
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Map View */}
