@@ -45,6 +45,7 @@ export interface CartographyProvider {
   contact_urgence?: string;
   notes?: string;
   distance?: number; // Calculé dynamiquement
+  has_account?: boolean; // Indique si l'établissement a un compte sur la plateforme
 }
 
 export interface Province {

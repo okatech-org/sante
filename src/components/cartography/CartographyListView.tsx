@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronUp, ChevronDown, Phone, Navigation, Eye, MapPin } from "lucide-react";
+import { ChevronUp, ChevronDown, Phone, Navigation, Eye, MapPin, Calendar, FileText, Stethoscope } from "lucide-react";
 import { formatDistance } from "@/utils/distance";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,7 @@ export default function CartographyListView({
   onSortChange,
   onProviderClick
 }: CartographyListViewProps) {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -75,6 +77,126 @@ export default function CartographyListView({
     if (!provider.coordonnees) return;
     const url = `https://www.google.com/maps/dir/?api=1&destination=${provider.coordonnees.lat},${provider.coordonnees.lng}&destination_place_id=${encodeURIComponent(provider.nom)}`;
     window.open(url, '_blank');
+  };
+
+  const getActionButtons = (provider: CartographyProvider) => {
+    const hasAccount = provider.has_account ?? false;
+    
+    switch (provider.type) {
+      case 'hopital':
+      case 'clinique':
+      case 'cabinet_medical':
+      case 'cabinet_dentaire':
+        return (
+          <>
+            {provider.telephones && provider.telephones.length > 0 && (
+              <Button
+                onClick={() => handleCall(provider.telephones[0])}
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1.5 h-8 text-xs"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                Appeler
+              </Button>
+            )}
+            <Button
+              onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}`) : null}
+              variant={hasAccount ? "default" : "outline"}
+              size="sm"
+              disabled={!hasAccount}
+              className={cn(
+                "flex-1 gap-1.5 h-8 text-xs",
+                !hasAccount && "opacity-50 cursor-not-allowed"
+              )}
+              title={!hasAccount ? "Cet établissement n'est pas encore inscrit sur la plateforme" : "Prendre rendez-vous"}
+            >
+              <Calendar className="h-3.5 w-3.5" />
+              {hasAccount ? "Prendre RDV" : "Non inscrit"}
+            </Button>
+          </>
+        );
+      
+      case 'pharmacie':
+        return (
+          <>
+            {provider.telephones && provider.telephones.length > 0 && (
+              <Button
+                onClick={() => handleCall(provider.telephones[0])}
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1.5 h-8 text-xs"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                Appeler
+              </Button>
+            )}
+            <Button
+              onClick={() => hasAccount ? navigate(`/prescriptions/send?pharmacy=${provider.id}`) : null}
+              variant={hasAccount ? "default" : "outline"}
+              size="sm"
+              disabled={!hasAccount}
+              className={cn(
+                "flex-1 gap-1.5 h-8 text-xs",
+                !hasAccount && "opacity-50 cursor-not-allowed"
+              )}
+              title={!hasAccount ? "Cette pharmacie n'est pas encore inscrite sur la plateforme" : "Envoyer une ordonnance"}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              {hasAccount ? "Ordonnance" : "Non inscrit"}
+            </Button>
+          </>
+        );
+      
+      case 'laboratoire':
+      case 'imagerie':
+        return (
+          <>
+            {provider.telephones && provider.telephones.length > 0 && (
+              <Button
+                onClick={() => handleCall(provider.telephones[0])}
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1.5 h-8 text-xs"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                Appeler
+              </Button>
+            )}
+            <Button
+              onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=exam`) : null}
+              variant={hasAccount ? "default" : "outline"}
+              size="sm"
+              disabled={!hasAccount}
+              className={cn(
+                "flex-1 gap-1.5 h-8 text-xs",
+                !hasAccount && "opacity-50 cursor-not-allowed"
+              )}
+              title={!hasAccount ? "Cet établissement n'est pas encore inscrit sur la plateforme" : "Réserver un examen"}
+            >
+              <Stethoscope className="h-3.5 w-3.5" />
+              {hasAccount ? "Réserver" : "Non inscrit"}
+            </Button>
+          </>
+        );
+      
+      default:
+        return (
+          <>
+            {provider.telephones && provider.telephones.length > 0 && (
+              <Button
+                onClick={() => handleCall(provider.telephones[0])}
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1.5 h-8 text-xs"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                Appeler
+              </Button>
+            )}
+          </>
+        );
+    }
   };
 
   return (
@@ -120,40 +242,35 @@ export default function CartographyListView({
                     Imagerie
                   </Badge>
                 )}
+                {provider.has_account && (
+                  <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-emerald-600">
+                    ✓ Inscrit
+                  </Badge>
+                )}
               </div>
 
               {/* Actions */}
               <div className="flex gap-1.5 pt-1">
-                {provider.telephones && provider.telephones.length > 0 && (
-                  <Button
-                    onClick={() => handleCall(provider.telephones[0])}
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 gap-1.5 h-8 text-xs"
-                  >
-                    <Phone className="h-3.5 w-3.5" />
-                    Appeler
-                  </Button>
-                )}
+                {getActionButtons(provider)}
                 {provider.coordonnees && (
                   <Button
                     onClick={() => handleDirections(provider)}
                     variant="outline"
                     size="sm"
-                    className="flex-1 gap-1.5 h-8 text-xs"
+                    className="flex-shrink-0 gap-1.5 h-8 text-xs px-2"
+                    title="Voir l'itinéraire"
                   >
                     <Navigation className="h-3.5 w-3.5" />
-                    Itinéraire
                   </Button>
                 )}
                 <Button
                   onClick={() => onProviderClick(provider.id)}
-                  variant="default"
+                  variant="outline"
                   size="sm"
-                  className="flex-1 gap-1.5 h-8 text-xs"
+                  className="flex-shrink-0 gap-1.5 h-8 text-xs px-2"
+                  title="Voir les détails"
                 >
                   <Eye className="h-3.5 w-3.5" />
-                  Détails
                 </Button>
               </div>
             </div>
