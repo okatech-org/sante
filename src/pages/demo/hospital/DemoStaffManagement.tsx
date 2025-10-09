@@ -258,7 +258,43 @@ export default function DemoStaffManagement() {
     try {
       setProcessingRequest(requestId);
 
-      // Créer l'entrée dans establishment_staff
+      // Mode démo : simulation locale
+      if (!establishment?.id) {
+        // Trouver la demande à approuver
+        const request = pendingRequests.find(r => r.id === requestId);
+        if (!request) {
+          throw new Error('Demande introuvable');
+        }
+
+        // Ajouter au personnel local
+        const newStaffMember: StaffMember = {
+          id: `staff-${Date.now()}`,
+          name: request.name,
+          email: request.email,
+          phone: '',
+          profession: request.profession,
+          role: request.requestedRole,
+          isAdmin: false,
+          status: 'active',
+          schedule: null,
+          startDate: new Date().toISOString().split('T')[0],
+          permissions: ['consultations', 'dmp_read'],
+          professionalId: request.professionalId,
+        };
+
+        setStaffMembers(prev => [...prev, newStaffMember]);
+        setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+
+        toast({
+          title: "Demande approuvée (Mode démo)",
+          description: `${request.name} a été ajouté au personnel`
+        });
+
+        setProcessingRequest(null);
+        return;
+      }
+
+      // Mode réel avec base de données
       const { error: insertError } = await supabase
         .from('establishment_staff')
         .insert({
@@ -272,7 +308,6 @@ export default function DemoStaffManagement() {
 
       if (insertError) throw insertError;
 
-      // Mettre à jour le statut de la demande
       const { data: { user } } = await supabase.auth.getUser();
       const { error: updateError } = await supabase
         .from('establishment_staff_requests')
@@ -290,7 +325,6 @@ export default function DemoStaffManagement() {
         description: "Le professionnel a été ajouté au personnel"
       });
 
-      // Rafraîchir les données
       fetchData();
 
     } catch (error: any) {
@@ -313,6 +347,25 @@ export default function DemoStaffManagement() {
     try {
       setProcessingRequest(requestId);
 
+      // Mode démo : simulation locale
+      if (!establishment?.id) {
+        const request = pendingRequests.find(r => r.id === requestId);
+        if (!request) {
+          throw new Error('Demande introuvable');
+        }
+
+        setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+
+        toast({
+          title: "Demande refusée (Mode démo)",
+          description: `La demande de ${request.name} a été rejetée`
+        });
+
+        setProcessingRequest(null);
+        return;
+      }
+
+      // Mode réel avec base de données
       const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase
         .from('establishment_staff_requests')
@@ -353,6 +406,24 @@ export default function DemoStaffManagement() {
     if (!confirm('Êtes-vous sûr de vouloir retirer ce membre du personnel ?')) return;
 
     try {
+      // Mode démo : simulation locale
+      if (!establishment?.id) {
+        const member = staffMembers.find(m => m.id === staffId);
+        if (!member) {
+          throw new Error('Membre introuvable');
+        }
+
+        setStaffMembers(prev => prev.filter(m => m.id !== staffId));
+
+        toast({
+          title: "Membre retiré (Mode démo)",
+          description: `${member.name} a été retiré du personnel`
+        });
+
+        return;
+      }
+
+      // Mode réel avec base de données
       const { error } = await supabase
         .from('establishment_staff')
         .update({ status: 'inactive' })
