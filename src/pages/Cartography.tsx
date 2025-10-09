@@ -399,23 +399,6 @@ export default function Cartography() {
 
           {/* Results Header - En dessous de la carte */}
           <div className="backdrop-blur-xl bg-card/80 rounded-lg md:rounded-xl border p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto">
-              <div className="font-semibold text-base md:text-lg">
-                {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''}
-              </div>
-              {filteredProviders.length > 0 && (
-                <Button
-                  onClick={getUserLocation}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 ml-auto sm:ml-0"
-                >
-                  <Locate className="h-4 w-4" />
-                  <span className="hidden sm:inline">Localiser</span>
-                </Button>
-              )}
-            </div>
-
             {/* View Switcher - Simplifié mobile */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)} className="flex-1 sm:flex-none">
