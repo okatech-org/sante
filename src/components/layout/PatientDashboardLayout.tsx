@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop, Users, ClipboardList, DollarSign, TrendingUp, Mail } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop, Users, ClipboardList, DollarSign, TrendingUp, Mail, Link2 } from "lucide-react";
 import { useState, ReactNode, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -126,7 +126,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     { id: 'stats', label: 'Statistiques', icon: TrendingUp, path: '/professional/stats', color: '#ffaa00', badge: undefined },
     { id: 'messages', label: 'Messages', icon: Mail, path: '/professional/messages', color: '#ff0088', badge: '5' },
     { id: 'teleexpertise', label: 'Télé-expertise', icon: Stethoscope, path: '/professional/tele-expertise', color: '#0088ff', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/professional/settings', color: '#00d4ff', badge: undefined }
+    { id: 'integrations', label: 'Intégrations', icon: Link2, path: '/professional/integrations', color: '#00d4ff', badge: undefined },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/professional/settings', color: '#ff0088', badge: undefined }
   ];
 
   const menuItems = isSuperAdmin ? superAdminMenuItems : (isProfessional ? professionalMenuItems : patientMenuItems);
