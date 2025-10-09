@@ -21,6 +21,7 @@ export default function DashboardProfessional() {
     numero_ordre?: string;
   } | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [establishmentCount, setEstablishmentCount] = useState<number>(0);
   
   const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Dr. Pierre KOMBILA';
   const { stats, loading } = useProfessionalStats(professionalId);
@@ -55,6 +56,23 @@ export default function DashboardProfessional() {
         if (professional?.id) {
           setProfessionalId(professional.id);
           loadUpcomingAppointments(professional.id);
+          
+          // Charger le nombre d'établissements
+          const { data: profileData } = await supabase
+            .from('professional_profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+            
+          if (profileData) {
+            const { count } = await supabase
+              .from('establishment_staff')
+              .select('*', { count: 'exact', head: true })
+              .eq('professional_id', profileData.id)
+              .eq('status', 'active');
+            
+            setEstablishmentCount(count || 0);
+          }
         }
       }
     };
@@ -178,6 +196,27 @@ export default function DashboardProfessional() {
             </div>
           </div>
         </div>
+
+        {/* Sélecteur d'établissements - Visible si plusieurs établissements */}
+        {establishmentCount > 1 && (
+          <div 
+            onClick={() => navigate('/professional/select-establishment')}
+            className="rounded-xl backdrop-blur-xl p-4 bg-gradient-to-r from-primary to-purple-600 cursor-pointer hover:scale-[1.02] transition-all duration-300 shadow-xl border border-primary/20"
+          >
+            <div className="flex items-center justify-between text-primary-foreground">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm sm:text-base">Multi-Établissements</h3>
+                  <p className="text-xs sm:text-sm opacity-90">Vous intervenez dans {establishmentCount} établissements</p>
+                </div>
+              </div>
+              <ChevronRight className="w-6 h-6 opacity-80" />
+            </div>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
