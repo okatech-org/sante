@@ -187,8 +187,8 @@ export default function CartographyProviderModal({
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <FileText className="h-3 w-3 mr-1.5 flex-shrink-0" />
-                    <span className="text-[10px] leading-tight">Envoyer ordonnance</span>
+                    <FileText className="h-3 w-3 mr-1.5 flex-shrink-0 self-start mt-0.5" />
+                    <span className="text-[10px] leading-tight text-left">Envoyer ordonnance</span>
                   </Button>
                   <Button
                     size="sm"
@@ -200,8 +200,8 @@ export default function CartographyProviderModal({
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <Phone className="h-3 w-3 mr-1.5 flex-shrink-0" />
-                    <span className="text-[10px] leading-tight">Conseil pharmacie</span>
+                    <Phone className="h-3 w-3 mr-1.5 flex-shrink-0 self-start mt-0.5" />
+                    <span className="text-[10px] leading-tight text-left">Conseil pharmacie</span>
                   </Button>
                   <Button
                     size="sm"
@@ -213,8 +213,8 @@ export default function CartographyProviderModal({
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <ShoppingCart className="h-3 w-3 mr-1.5 flex-shrink-0" />
-                    <span className="text-[10px] leading-tight">Commander médicaments</span>
+                    <ShoppingCart className="h-3 w-3 mr-1.5 flex-shrink-0 self-start mt-0.5" />
+                    <span className="text-[10px] leading-tight text-left">Commander médicaments</span>
                   </Button>
                   <Button
                     size="sm"
@@ -226,8 +226,8 @@ export default function CartographyProviderModal({
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <Package className="h-3 w-3 mr-1.5 flex-shrink-0" />
-                    <span className="text-[10px] leading-tight">Parapharmacie</span>
+                    <Package className="h-3 w-3 mr-1.5 flex-shrink-0 self-start mt-0.5" />
+                    <span className="text-[10px] leading-tight text-left">Parapharmacie</span>
                   </Button>
                 </div>
                 {!hasAccount && (
