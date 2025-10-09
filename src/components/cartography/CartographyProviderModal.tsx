@@ -252,40 +252,42 @@ export default function CartographyProviderModal({
               </div>
             )}
 
-            {/* Contact & Localisation - Grid compact */}
-            <div className="grid gap-3">
-              {/* Localisation */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <MapPin className="h-3.5 w-3.5 text-primary" />
-                  Localisation
-                </div>
-                <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
-                <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
-              </div>
-
-              {/* Contact */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <Phone className="h-3.5 w-3.5 text-primary" />
-                  Contact
-                </div>
-                {provider.telephones.slice(0, 2).map((tel, index) => (
-                  <a
-                    key={index}
-                    href={`tel:${tel}`}
-                    className="flex items-center gap-2 text-xs text-primary hover:underline"
-                  >
-                    <Phone className="h-3 w-3" />
-                    {tel}
-                  </a>
-                ))}
-                {provider.horaires && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                    <Clock className="h-3 w-3" />
-                    {provider.horaires}
+            {/* Contact & Localisation - Compact horizontal */}
+            <div className="bg-muted/30 rounded-lg p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Localisation */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    Localisation
                   </div>
-                )}
+                  <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
+                  <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
+                </div>
+
+                {/* Contact */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Phone className="h-3.5 w-3.5 text-primary" />
+                    Contact
+                  </div>
+                  {provider.telephones.slice(0, 2).map((tel, index) => (
+                    <a
+                      key={index}
+                      href={`tel:${tel}`}
+                      className="flex items-center gap-2 text-xs text-primary hover:underline"
+                    >
+                      <Phone className="h-3 w-3" />
+                      {tel}
+                    </a>
+                  ))}
+                  {provider.horaires && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                      <Clock className="h-3 w-3" />
+                      {provider.horaires}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
