@@ -6,6 +6,18 @@ import { cn } from "@/lib/utils";
 interface QuickFiltersProps {
   onFilterSelect: (type: ProviderType | null) => void;
   selectedType: ProviderType | null;
+  onRefinementChange?: (refinements: {
+    urgent: boolean;
+    proche: boolean;
+    cnamgs: boolean;
+    ouvert24_7: boolean;
+  }) => void;
+  refinements?: {
+    urgent: boolean;
+    proche: boolean;
+    cnamgs: boolean;
+    ouvert24_7: boolean;
+  };
 }
 
 const QUICK_FILTERS = [
@@ -53,7 +65,53 @@ const QUICK_FILTERS = [
   }
 ];
 
-export default function QuickFilters({ onFilterSelect, selectedType }: QuickFiltersProps) {
+const REFINEMENT_OPTIONS = [
+  {
+    key: "urgent" as const,
+    label: "C'est urgent",
+    description: "Besoin de soins immédiats",
+    icon: "🚨",
+    color: "from-red-500 to-red-600"
+  },
+  {
+    key: "proche" as const,
+    label: "Proche de moi",
+    description: "Établissements à proximité",
+    icon: "📍",
+    color: "from-blue-500 to-blue-600"
+  },
+  {
+    key: "cnamgs" as const,
+    label: "Accepte CNAMGS",
+    description: "Conventionné CNAMGS",
+    icon: "💳",
+    color: "from-green-500 to-green-600"
+  },
+  {
+    key: "ouvert24_7" as const,
+    label: "Ouvert 24/7",
+    description: "Disponible à tout moment",
+    icon: "⏰",
+    color: "from-purple-500 to-purple-600"
+  }
+];
+
+export default function QuickFilters({ 
+  onFilterSelect, 
+  selectedType, 
+  onRefinementChange,
+  refinements = { urgent: false, proche: false, cnamgs: false, ouvert24_7: false }
+}: QuickFiltersProps) {
+  
+  const toggleRefinement = (key: keyof typeof refinements) => {
+    if (onRefinementChange) {
+      onRefinementChange({
+        ...refinements,
+        [key]: !refinements[key]
+      });
+    }
+  };
+
   return (
     <div className="space-y-3">
       <div className="text-center space-y-1.5">
@@ -97,16 +155,61 @@ export default function QuickFilters({ onFilterSelect, selectedType }: QuickFilt
       </div>
 
       {selectedType && (
-        <div className="text-center animate-fade-in pt-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onFilterSelect(null)}
-            className="text-xs md:text-sm text-muted-foreground hover:text-foreground h-8"
-          >
-            ✕ Réinitialiser le filtre
-          </Button>
-        </div>
+        <>
+          {/* Refinement Filters */}
+          <div className="animate-fade-in space-y-2 pt-2">
+            <div className="text-center space-y-1">
+              <h3 className="text-sm md:text-base font-semibold">Affinez votre recherche (optionnel)</h3>
+              <p className="text-[10px] md:text-xs text-muted-foreground">Sélectionnez vos préférences</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {REFINEMENT_OPTIONS.map((option) => (
+                <button
+                  key={option.key}
+                  onClick={() => toggleRefinement(option.key)}
+                  className={cn(
+                    "group relative overflow-hidden rounded-lg p-2 md:p-2.5 transition-all duration-300 hover:scale-105 hover:shadow-md",
+                    refinements[option.key]
+                      ? "ring-2 ring-primary shadow-md scale-105"
+                      : "bg-card border hover:border-primary/50"
+                  )}
+                >
+                  <div className={cn(
+                    "absolute inset-0 opacity-0 transition-opacity duration-300",
+                    refinements[option.key] ? "opacity-10" : "group-hover:opacity-5",
+                    `bg-gradient-to-br ${option.color}`
+                  )} />
+                  
+                  <div className="relative space-y-0.5 md:space-y-1 text-center">
+                    <div className="text-lg md:text-xl mx-auto w-fit">{option.icon}</div>
+                    <div className="font-semibold text-[10px] md:text-xs leading-tight">{option.label}</div>
+                    <div className="text-[9px] md:text-[10px] text-muted-foreground hidden md:block leading-tight">
+                      {option.description}
+                    </div>
+                  </div>
+
+                  {refinements[option.key] && (
+                    <div className="absolute top-0.5 right-0.5 md:top-1 md:right-1">
+                      <Badge className="bg-primary text-[9px] h-3.5 px-1 md:text-[10px] md:h-4 md:px-1.5">✓</Badge>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="text-center animate-fade-in pt-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onFilterSelect(null)}
+              className="text-xs md:text-sm text-muted-foreground hover:text-foreground h-8"
+            >
+              ✕ Réinitialiser le filtre
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );

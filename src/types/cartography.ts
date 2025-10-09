@@ -65,6 +65,8 @@ export interface CartographyFilters {
   province: string;
   ouvert24_7: boolean;
   cnamgs: boolean;
+  urgent: boolean;
+  proche: boolean;
   specialite: string | null;
   equipement: string | null;
   maxDistance: number | null;

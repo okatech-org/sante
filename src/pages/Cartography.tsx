@@ -42,6 +42,8 @@ export default function Cartography() {
     province: 'all',
     ouvert24_7: false,
     cnamgs: false,
+    urgent: false,
+    proche: false,
     specialite: null,
     equipement: null,
     maxDistance: null,
@@ -295,6 +297,20 @@ export default function Cartography() {
               ...filters, 
               types: type ? [type] : [] 
             })}
+            refinements={{
+              urgent: filters.urgent,
+              proche: filters.proche,
+              cnamgs: filters.cnamgs,
+              ouvert24_7: filters.ouvert24_7
+            }}
+            onRefinementChange={(refinements) => setFilters({
+              ...filters,
+              urgent: refinements.urgent,
+              proche: refinements.proche,
+              cnamgs: refinements.cnamgs,
+              ouvert24_7: refinements.ouvert24_7,
+              maxDistance: refinements.proche ? 10 : null
+            })}
           />
 
           {/* Search Guide - Caché sur mobile */}
@@ -466,6 +482,8 @@ export default function Cartography() {
                     province: 'all',
                     ouvert24_7: false,
                     cnamgs: false,
+                    urgent: false,
+                    proche: false,
                     specialite: null,
                     equipement: null,
                     maxDistance: null,

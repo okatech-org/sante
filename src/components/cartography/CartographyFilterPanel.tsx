@@ -67,6 +67,8 @@ export default function CartographyFilterPanel({
       province: 'all',
       ouvert24_7: false,
       cnamgs: false,
+      urgent: false,
+      proche: false,
       specialite: null,
       equipement: null,
       maxDistance: null,
