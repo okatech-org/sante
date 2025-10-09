@@ -473,6 +473,60 @@ export type Database = {
           },
         ]
       }
+      establishment_staff_requests: {
+        Row: {
+          created_at: string | null
+          establishment_id: string
+          id: string
+          professional_id: string
+          rejection_reason: string | null
+          request_message: string | null
+          requested_role: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          establishment_id: string
+          id?: string
+          professional_id: string
+          rejection_reason?: string | null
+          request_message?: string | null
+          requested_role: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string | null
+          establishment_id?: string
+          id?: string
+          professional_id?: string
+          rejection_reason?: string | null
+          request_message?: string | null
+          requested_role?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_staff_requests_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "establishment_staff_requests_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_statistics: {
         Row: {
           consultations_jour: number | null
