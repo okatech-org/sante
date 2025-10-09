@@ -1115,14 +1115,629 @@
     },
     "adresse_descriptive": "Mouila",
     "telephones": ["073 906 78"],
-    "services": ["Analyses médicales", "Radiologie", "Consultations"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Soins infirmiers"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_004",
+    "type": "pharmacie",
+    "nom": "Pharmacie La Providence",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4215,
+      "lng": 9.4565
+    },
+    "adresse_descriptive": "Avenue Bouët, Libreville",
+    "telephones": ["011 72 88 99"],
+    "horaires": "Lun-Sam 8h-20h, Dim 9h-13h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques", "Matériel médical"],
     "ouvert_24_7": false,
     "conventionnement": {
       "cnamgs": true,
       "cnss": true
     },
     "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_005",
+    "type": "pharmacie",
+    "nom": "Pharmacie Sainte-Marie",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4102,
+      "lng": 9.4502
+    },
+    "adresse_descriptive": "Vallée Sainte-Marie, Libreville",
+    "telephones": ["011 73 22 33"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_006",
+    "type": "pharmacie",
+    "nom": "Pharmacie Akébé",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4235,
+      "lng": 9.4495
+    },
+    "adresse_descriptive": "Akébé, Libreville",
+    "telephones": ["011 77 44 55"],
+    "horaires": "Lun-Sam 8h-20h",
+    "services": ["Dispensation médicaments", "Matériel médical", "Conseils"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_007",
+    "type": "pharmacie",
+    "nom": "Pharmacie Nombakélé",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4198,
+      "lng": 9.4538
+    },
+    "adresse_descriptive": "Nombakélé, Libreville",
+    "telephones": ["011 76 33 44"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Dispensation médicaments", "Urgences pharmaceutiques"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Pharmacie de garde permanente"
+  },
+  {
+    "id": "HOP_LBV_MERE_ENFANT",
+    "type": "hopital",
+    "nom": "Hôpital de la Mère et de l'Enfant Jeanne Ebori",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4145,
+      "lng": 9.4610
+    },
+    "adresse_descriptive": "Akanda, Libreville",
+    "telephones": ["011 72 55 66"],
+    "horaires": "24h/24",
+    "services": [
+      "Maternité",
+      "Pédiatrie",
+      "Néonatologie",
+      "Urgences obstétricales",
+      "Consultations prénatales"
+    ],
+    "specialites": ["Gynécologie-Obstétrique", "Pédiatrie", "Néonatologie"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "public",
+    "niveau_reference": "specialise",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "011 72 55 66",
+    "notes": "Hôpital spécialisé mère-enfant de référence"
+  },
+  {
+    "id": "CLI_LBV_JEANNE_EBORI",
+    "type": "clinique",
+    "nom": "Clinique Jeanne Ebori",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4165,
+      "lng": 9.4585
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": ["011 76 22 33"],
+    "horaires": "24h/24",
+    "services": ["Consultations", "Maternité", "Chirurgie", "Laboratoire"],
+    "specialites": ["Gynécologie", "Médecine générale"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
     "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_LBV_PAUL_MOUKAMBI",
+    "type": "clinique",
+    "nom": "Clinique Paul Moukambi",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4190,
+      "lng": 9.4620
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 74 88 99"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Soins", "Analyses"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_GLASS",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical Glass",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3985,
+      "lng": 9.4445
+    },
+    "adresse_descriptive": "Glass, Libreville",
+    "telephones": ["011 72 11 22"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations généralistes", "Médecine du travail"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_LALALA",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical Lalala",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4280,
+      "lng": 9.4510
+    },
+    "adresse_descriptive": "Lalala, Libreville",
+    "telephones": ["011 75 66 77"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Soins"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "LAB_LBV_PASTEUR",
+    "type": "laboratoire",
+    "nom": "Laboratoire Pasteur Gabon",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4175,
+      "lng": 9.4625
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": ["011 72 66 77"],
+    "horaires": "Lun-Ven 7h-18h, Sam 7h-14h",
+    "services": [
+      "Analyses médicales complètes",
+      "Biochimie",
+      "Hématologie",
+      "Microbiologie",
+      "Sérologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "reference",
+    "statut_operationnel": "operationnel",
+    "notes": "Laboratoire de référence internationale"
+  },
+  {
+    "id": "LAB_LBV_CERMEL",
+    "type": "laboratoire",
+    "nom": "CERMEL - Centre de Recherches Médicales de Lambaréné",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4168,
+      "lng": 9.4655
+    },
+    "adresse_descriptive": "Libreville (antenne)",
+    "telephones": ["011 72 99 88"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": [
+      "Analyses spécialisées",
+      "Recherche médicale",
+      "Diagnostic"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "parapublic",
+    "niveau_reference": "reference",
+    "statut_operationnel": "operationnel",
+    "notes": "Centre de recherche et laboratoire de référence"
+  },
+  {
+    "id": "DEN_LBV_002",
+    "type": "cabinet_dentaire",
+    "nom": "Cabinet Dentaire Dr. Nguema",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4172,
+      "lng": 9.4598
+    },
+    "adresse_descriptive": "Centre-ville, Libreville",
+    "telephones": ["011 76 55 44"],
+    "horaires": "Lun-Ven 9h-18h, Sam 9h-14h",
+    "services": ["Soins dentaires", "Chirurgie dentaire", "Prothèses"],
+    "specialites": ["Chirurgie dentaire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "DEN_LBV_003",
+    "type": "cabinet_dentaire",
+    "nom": "Centre de Soins Dentaires Akébé",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4228,
+      "lng": 9.4503
+    },
+    "adresse_descriptive": "Akébé, Libreville",
+    "telephones": ["011 77 22 11"],
+    "horaires": "Lun-Sam 8h-17h",
+    "services": ["Soins dentaires", "Orthodontie", "Implantologie"],
+    "specialites": ["Chirurgie dentaire", "Orthodontie"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_PG_002",
+    "type": "pharmacie",
+    "nom": "Pharmacie Mandji",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7185,
+      "lng": 8.7835
+    },
+    "adresse_descriptive": "Quartier Mandji, Port-Gentil",
+    "telephones": ["011 55 88 77"],
+    "horaires": "Lun-Sam 8h-20h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_PG_003",
+    "type": "pharmacie",
+    "nom": "Pharmacie Nouvelle",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7198,
+      "lng": 8.7822
+    },
+    "adresse_descriptive": "Centre-ville, Port-Gentil",
+    "telephones": ["011 55 44 33"],
+    "horaires": "24h/24, 7j/7",
+    "services": ["Dispensation médicaments", "Urgences pharmaceutiques"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel",
+    "notes": "Pharmacie de garde"
+  },
+  {
+    "id": "LAB_PG_001",
+    "type": "laboratoire",
+    "nom": "Laboratoire d'Analyses Port-Gentil",
+    "province": "G4",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.7192,
+      "lng": 8.7828
+    },
+    "adresse_descriptive": "Centre-ville, Port-Gentil",
+    "telephones": ["011 55 77 88"],
+    "horaires": "Lun-Ven 7h-18h, Sam 8h-13h",
+    "services": [
+      "Analyses de sang",
+      "Analyses d'urine",
+      "Biochimie",
+      "Hématologie"
+    ],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_FCV_001",
+    "type": "pharmacie",
+    "nom": "Pharmacie Centrale Franceville",
+    "province": "G5",
+    "ville": "Franceville",
+    "coordonnees": {
+      "lat": -1.6325,
+      "lng": 13.5840
+    },
+    "adresse_descriptive": "Centre-ville, Franceville",
+    "telephones": ["011 67 88 99"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Matériel médical"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_FCV_001",
+    "type": "clinique",
+    "nom": "Clinique Medicale Franceville",
+    "province": "G5",
+    "ville": "Franceville",
+    "coordonnees": {
+      "lat": -1.6340,
+      "lng": 13.5825
+    },
+    "adresse_descriptive": "Franceville",
+    "telephones": ["011 67 55 44"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Soins", "Analyses"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_OYE_001",
+    "type": "pharmacie",
+    "nom": "Pharmacie d'Oyem",
+    "province": "G9",
+    "ville": "Oyem",
+    "coordonnees": {
+      "lat": 1.5840,
+      "lng": 11.5825
+    },
+    "adresse_descriptive": "Centre-ville, Oyem",
+    "telephones": ["011 98 77 88"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_OYE_001",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Medical Oyem",
+    "province": "G9",
+    "ville": "Oyem",
+    "coordonnees": {
+      "lat": 1.5828,
+      "lng": 11.5838
+    },
+    "adresse_descriptive": "Oyem",
+    "telephones": ["011 98 66 55"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations généralistes"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LAM_001",
+    "type": "pharmacie",
+    "nom": "Pharmacie de Lambaréné",
+    "province": "G3",
+    "ville": "Lambaréné",
+    "coordonnees": {
+      "lat": -0.6995,
+      "lng": 10.2340
+    },
+    "adresse_descriptive": "Lambaréné",
+    "telephones": ["011 58 88 99"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments", "Conseils pharmaceutiques"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "HOP_LBV_OWENDO",
+    "type": "hopital",
+    "nom": "Hôpital d'Owendo",
+    "province": "G1",
+    "ville": "Owendo",
+    "coordonnees": {
+      "lat": 0.3050,
+      "lng": 9.5010
+    },
+    "adresse_descriptive": "Owendo",
+    "telephones": ["011 70 22 33"],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Médecine générale",
+      "Maternité",
+      "Pédiatrie"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "public",
+    "niveau_reference": "departemental",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CLI_LBV_NZENG_AYONG",
+    "type": "clinique",
+    "nom": "Clinique Nzeng-Ayong",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4088,
+      "lng": 9.4735
+    },
+    "adresse_descriptive": "Nzeng-Ayong, Libreville",
+    "telephones": ["011 73 99 88"],
+    "horaires": "Lun-Sam 8h-18h",
+    "services": ["Consultations", "Soins", "Laboratoire"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_NZENG",
+    "type": "pharmacie",
+    "nom": "Pharmacie Nzeng-Ayong",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4095,
+      "lng": 9.4728
+    },
+    "adresse_descriptive": "Nzeng-Ayong, Libreville",
+    "telephones": ["011 73 66 77"],
+    "horaires": "Lun-Sam 8h-20h",
+    "services": ["Dispensation médicaments", "Conseils"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "PHA_LBV_ANGONDJE",
+    "type": "pharmacie",
+    "nom": "Pharmacie d'Angondjé",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4110,
+      "lng": 9.4518
+    },
+    "adresse_descriptive": "Angondjé, Libreville",
+    "telephones": ["011 72 99 00"],
+    "horaires": "Lun-Sam 8h-19h",
+    "services": ["Dispensation médicaments"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "statut_operationnel": "operationnel"
+  },
+  {
+    "id": "CAB_LBV_NKEMBO",
+    "type": "cabinet_medical",
+    "nom": "Cabinet Médical Nkembo",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4185,
+      "lng": 9.4548
+    },
+    "adresse_descriptive": "Nkembo, Libreville",
+    "telephones": ["011 72 77 88"],
+    "horaires": "Lun-Ven 8h-17h",
+    "services": ["Consultations généralistes", "Soins"],
+    "specialites": ["Médecine générale"],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
     "statut_operationnel": "operationnel"
   },
   {
