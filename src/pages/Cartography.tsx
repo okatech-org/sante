@@ -269,16 +269,16 @@ export default function Cartography() {
         
         <div className="relative p-4 md:p-8 space-y-4 md:space-y-6">
           {/* Header - Compact sur mobile */}
-          <div className="text-center space-y-2 md:space-y-3">
+          <div className="text-center space-y-1 md:space-y-2">
             <div className="flex items-center justify-center gap-2">
-              <div className="h-10 w-10 md:h-14 md:w-14 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <MapPin className="h-5 w-5 md:h-7 md:w-7 text-primary-foreground" />
+              <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                <MapPin className="h-4 w-4 md:h-6 md:w-6 text-primary-foreground" />
               </div>
             </div>
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
               Trouvez votre professionnel de santé
             </h1>
-            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+            <p className="text-xs md:text-base text-muted-foreground max-w-2xl mx-auto px-2">
               {providers.length} établissements au Gabon
             </p>
           </div>
