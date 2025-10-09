@@ -33,6 +33,22 @@ export default function SelectEstablishment() {
     loadUserEstablishments();
   }, [authUser]);
 
+  // Auto-sélection si un seul établissement ou présélection depuis localStorage
+  useEffect(() => {
+    if (userEstablishments.length > 0) {
+      // Vérifier s'il y a un établissement en localStorage
+      const savedEstablishmentId = localStorage.getItem('selected_establishment_id');
+      if (savedEstablishmentId && userEstablishments.some(e => e.id === savedEstablishmentId)) {
+        setSelectedEstablishment(savedEstablishmentId);
+      } 
+      // Auto-sélection si un seul établissement
+      else if (userEstablishments.length === 1) {
+        setSelectedEstablishment(userEstablishments[0].id);
+        toast.info('Établissement unique sélectionné automatiquement');
+      }
+    }
+  }, [userEstablishments]);
+
   const loadUserEstablishments = async () => {
     if (!authUser?.id) return;
 
@@ -167,8 +183,20 @@ export default function SelectEstablishment() {
     return `Il y a ${Math.floor(diffHours / 24)} jours`;
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (selectedEstablishment) {
+      // Sauvegarder l'établissement sélectionné dans localStorage
+      localStorage.setItem('selected_establishment_id', selectedEstablishment);
+      
+      // Trouver les données complètes de l'établissement
+      const selectedEst = userEstablishments.find(e => e.id === selectedEstablishment);
+      if (selectedEst) {
+        localStorage.setItem('selected_establishment_name', selectedEst.name);
+        localStorage.setItem('selected_establishment_role', selectedEst.role);
+        localStorage.setItem('selected_establishment_is_admin', selectedEst.isAdmin.toString());
+      }
+      
+      toast.success(`Connexion à ${selectedEst?.name || 'l\'établissement'}`);
       navigate('/dashboard/professional');
     }
   };
