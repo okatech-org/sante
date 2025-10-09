@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CartographyProvider, Coordonnees } from "@/types/cartography";
-import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle, Video, Calendar } from "lucide-react";
+import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle, Video, Calendar, FileText, ShoppingCart, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistance } from "@/utils/distance";
@@ -133,7 +133,7 @@ export default function CartographyProviderModal({
         {/* Scrollable content */}
         <div className="overflow-y-auto max-h-[60vh] sm:max-h-[65vh]">
           <div className="p-4 sm:p-5 space-y-4">
-            {/* Actions RDV - Priority 1 si médical */}
+            {/* Actions RDV - Pour établissements médicaux */}
             {(provider.type === 'hopital' || provider.type === 'clinique' || 
               provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
               <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
@@ -162,6 +162,88 @@ export default function CartographyProviderModal({
                     <span className="text-xs">Visio</span>
                   </Button>
                 </div>
+                {!hasAccount && (
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
+                    Non inscrit sur la plateforme
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Actions Pharmacie - Pour pharmacies */}
+            {provider.type === 'pharmacie' && (
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-3 sm:p-4 border border-green-200 dark:border-green-800">
+                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+                  <Package className="h-4 w-4 text-green-600" />
+                  Services disponibles
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => hasAccount ? navigate(`/prescriptions?pharmacy=${provider.id}`) : null}
+                    disabled={!hasAccount}
+                    className={cn(
+                      "justify-start bg-green-600 hover:bg-green-700",
+                      !hasAccount && "opacity-50"
+                    )}
+                  >
+                    <FileText className="h-3.5 w-3.5 mr-2" />
+                    <span className="text-xs">Envoyer une ordonnance</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/medications`) : null}
+                    disabled={!hasAccount}
+                    className={cn(
+                      "justify-start",
+                      !hasAccount && "opacity-50"
+                    )}
+                  >
+                    <ShoppingCart className="h-3.5 w-3.5 mr-2" />
+                    <span className="text-xs">Commander des médicaments</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/parapharmacy`) : null}
+                    disabled={!hasAccount}
+                    className={cn(
+                      "justify-start",
+                      !hasAccount && "opacity-50"
+                    )}
+                  >
+                    <Package className="h-3.5 w-3.5 mr-2" />
+                    <span className="text-xs">Produits parapharmacie</span>
+                  </Button>
+                </div>
+                {!hasAccount && (
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
+                    Non inscrit sur la plateforme
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Actions Laboratoire - Pour laboratoires */}
+            {(provider.type === 'laboratoire' || provider.type === 'imagerie') && (
+              <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 rounded-xl p-3 sm:p-4 border border-purple-200 dark:border-purple-800">
+                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-purple-600" />
+                  Réserver un examen
+                </h3>
+                <Button
+                  size="sm"
+                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=exam`) : null}
+                  disabled={!hasAccount}
+                  className={cn(
+                    "w-full bg-purple-600 hover:bg-purple-700",
+                    !hasAccount && "opacity-50"
+                  )}
+                >
+                  <Calendar className="h-3.5 w-3.5 mr-2" />
+                  <span className="text-xs">Prendre rendez-vous</span>
+                </Button>
                 {!hasAccount && (
                   <p className="text-[10px] text-muted-foreground mt-2 text-center">
                     Non inscrit sur la plateforme
