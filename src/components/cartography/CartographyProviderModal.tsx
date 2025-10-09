@@ -362,8 +362,8 @@ export default function CartographyProviderModal({
             {/* Notes */}
             {provider.notes && (
               <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 text-amber-600 flex-shrink-0" />
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
                   <p className="text-xs text-amber-900 dark:text-amber-100">{provider.notes}</p>
                 </div>
               </div>
