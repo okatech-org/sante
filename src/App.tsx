@@ -28,6 +28,10 @@ import DemoAdmissions from "./pages/demo/hospital/DemoAdmissions";
 import DemoPharmacy from "./pages/demo/hospital/DemoPharmacy";
 import DemoLaboratory from "./pages/demo/hospital/DemoLaboratory";
 import DemoEmergency from "./pages/demo/hospital/DemoEmergency";
+import DemoPlanning from "./pages/demo/hospital/DemoPlanning";
+import DemoFinances from "./pages/demo/hospital/DemoFinances";
+import DemoStatistics from "./pages/demo/hospital/DemoStatistics";
+import DemoSettings from "./pages/demo/hospital/DemoSettings";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import ProfessionalAgenda from "./pages/professional/Agenda";
 import ProfessionalPatients from "./pages/professional/Patients";
@@ -218,6 +222,10 @@ const App = () => (
             <Route path="/demo/hospital/pharmacy" element={<DemoPharmacy />} />
             <Route path="/demo/hospital/laboratory" element={<DemoLaboratory />} />
             <Route path="/demo/hospital/emergency" element={<DemoEmergency />} />
+            <Route path="/demo/hospital/planning" element={<DemoPlanning />} />
+            <Route path="/demo/hospital/finances" element={<DemoFinances />} />
+            <Route path="/demo/hospital/statistics" element={<DemoStatistics />} />
+            <Route path="/demo/hospital/settings" element={<DemoSettings />} />
             
             {/* Routes professionnelles */}
             <Route path="/professional/agenda" element={
