@@ -55,19 +55,19 @@ const QUICK_FILTERS = [
 
 export default function QuickFilters({ onFilterSelect, selectedType }: QuickFiltersProps) {
   return (
-    <div className="space-y-4">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Que recherchez-vous ?</h2>
-        <p className="text-muted-foreground">Sélectionnez le type d'établissement</p>
+    <div className="space-y-3">
+      <div className="text-center space-y-1.5">
+        <h2 className="text-xl md:text-2xl font-bold">Que recherchez-vous ?</h2>
+        <p className="text-xs md:text-sm text-muted-foreground">Sélectionnez le type d'établissement</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2">
         {QUICK_FILTERS.map((filter) => (
           <button
             key={filter.type}
             onClick={() => onFilterSelect(filter.type === selectedType ? null : filter.type)}
             className={cn(
-              "group relative overflow-hidden rounded-2xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-xl",
+              "group relative overflow-hidden rounded-xl p-2.5 md:p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg",
               selectedType === filter.type
                 ? "ring-2 ring-primary shadow-lg scale-105"
                 : "bg-card border hover:border-primary/50"
@@ -79,17 +79,17 @@ export default function QuickFilters({ onFilterSelect, selectedType }: QuickFilt
               `bg-gradient-to-br ${filter.color}`
             )} />
             
-            <div className="relative space-y-2 text-center">
-              <div className="text-4xl mx-auto w-fit">{filter.icon}</div>
-              <div className="font-semibold text-sm">{filter.label}</div>
-              <div className="text-xs text-muted-foreground hidden md:block">
+            <div className="relative space-y-1 md:space-y-1.5 text-center">
+              <div className="text-2xl md:text-3xl mx-auto w-fit">{filter.icon}</div>
+              <div className="font-semibold text-xs md:text-sm leading-tight">{filter.label}</div>
+              <div className="text-[10px] md:text-xs text-muted-foreground hidden lg:block leading-tight">
                 {filter.description}
               </div>
             </div>
 
             {selectedType === filter.type && (
-              <div className="absolute top-2 right-2">
-                <Badge className="bg-primary text-xs">✓</Badge>
+              <div className="absolute top-1 right-1 md:top-2 md:right-2">
+                <Badge className="bg-primary text-[10px] h-4 px-1.5">✓</Badge>
               </div>
             )}
           </button>
@@ -97,11 +97,12 @@ export default function QuickFilters({ onFilterSelect, selectedType }: QuickFilt
       </div>
 
       {selectedType && (
-        <div className="text-center animate-fade-in">
+        <div className="text-center animate-fade-in pt-1">
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => onFilterSelect(null)}
-            className="text-sm text-muted-foreground hover:text-foreground"
+            className="text-xs md:text-sm text-muted-foreground hover:text-foreground h-8"
           >
             ✕ Réinitialiser le filtre
           </Button>
