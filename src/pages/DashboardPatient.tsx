@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { EditMedicalInfoModal } from "@/components/profile/EditMedicalInfoModal";
-import { AvatarUpload } from "@/components/profile/AvatarUpload";
+
 import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 
@@ -130,10 +130,6 @@ export default function DashboardPatient() {
                   )}
                 </div>
               </div>
-              <AvatarUpload
-                currentAvatarUrl={avatarUrl || undefined}
-                onAvatarUpdate={setAvatarUrl}
-              />
             </div>
 
             {/* Informations personnelles */}
