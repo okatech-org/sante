@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { DemoDashboardLayout } from "@/components/layout/DemoDashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -135,9 +136,8 @@ export default function DemoClinicDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b bg-card">
+    <DemoDashboardLayout demoType="clinic">
+      <div className="space-y-6">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -526,6 +526,6 @@ export default function DemoClinicDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </DemoDashboardLayout>
   );
 }

@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+import { DemoDashboardLayout } from "@/components/layout/DemoDashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,7 +67,7 @@ export default function DemoSpecialistDashboard() {
   ];
 
   return (
-    <MainLayout>
+    <DemoDashboardLayout demoType="specialist">
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -197,6 +197,6 @@ export default function DemoSpecialistDashboard() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    </DemoDashboardLayout>
   );
 }

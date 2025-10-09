@@ -201,7 +201,7 @@ export default function DemoDoctorDashboard() {
               <Bell className="h-4 w-4 mr-2" />
               3 nouvelles
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/professional/select-establishment')}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/demo/doctor/establishments')}>
               <Building2 className="h-4 w-4 mr-2" />
               Mes établissements
             </Button>
