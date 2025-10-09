@@ -95,238 +95,223 @@ export default function CartographyProviderModal({
 
   return (
     <Dialog open={!!provider} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 bg-background/95 backdrop-blur-xl border-2 shadow-2xl z-[100]">
-        {/* Contenu unique avec toutes les infos */}
-        <div className="p-6 sm:p-8 space-y-6">
-          {/* En-tête */}
-          <DialogHeader className="space-y-3">
-            <DialogTitle className="text-2xl sm:text-3xl font-bold leading-tight">
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] p-0 gap-0 bg-background border-2 shadow-2xl z-[100] data-[state=open]:slide-in-from-bottom-full">
+        {/* En-tête collant */}
+        <div className="sticky top-0 z-10 bg-gradient-to-b from-background to-background/95 backdrop-blur-sm border-b p-4 sm:p-5">
+          <DialogHeader className="space-y-2.5">
+            <DialogTitle className="text-xl sm:text-2xl font-bold leading-tight pr-8">
               {provider.nom}
             </DialogTitle>
             
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary" className="text-sm">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge variant="secondary" className="text-xs font-medium">
                 {TYPE_LABELS[provider.type]}
               </Badge>
               {hasAccount && (
-                <Badge className="bg-green-600 text-sm">✓ Inscrit</Badge>
+                <Badge className="bg-green-600 text-xs">✓ Inscrit</Badge>
               )}
               {provider.ouvert_24_7 && (
-                <Badge className="bg-purple-600 text-sm">24/7</Badge>
+                <Badge className="bg-purple-600 text-xs">24/7</Badge>
               )}
               {provider.conventionnement.cnamgs && (
-                <Badge className="bg-blue-600 text-sm">CNAMGS</Badge>
+                <Badge className="bg-blue-600 text-xs">CNAMGS</Badge>
+              )}
+              {provider.conventionnement.cnss && (
+                <Badge className="bg-cyan-600 text-xs">CNSS</Badge>
+              )}
+              {provider.distance && userLocation && (
+                <Badge variant="outline" className="text-xs font-semibold">
+                  <Navigation className="h-3 w-3 mr-1" />
+                  {formatDistance(provider.distance)}
+                </Badge>
               )}
             </div>
-
-            {/* Distance badge */}
-            {provider.distance && userLocation && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-sm font-semibold text-primary w-fit">
-                <Navigation className="h-4 w-4" />
-                {formatDistance(provider.distance)}
-              </div>
-            )}
           </DialogHeader>
+        </div>
+
+        {/* Contenu scrollable */}
+        <div className="overflow-y-auto max-h-[calc(85vh-180px)]">
+          <div className="p-4 sm:p-5 space-y-4">
             {/* Actions RDV - Pour établissements médicaux */}
             {(provider.type === 'hopital' || provider.type === 'clinique' || 
               provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
-              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
-                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg p-4 border border-primary/20">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   Prendre rendez-vous
                 </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=physical`) : null}
-                    disabled={!hasAccount}
-                    className={cn(!hasAccount && "opacity-50")}
-                  >
-                    <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                    <span className="text-xs">Physique</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=video`) : null}
-                    disabled={!hasAccount}
-                    className={cn(!hasAccount && "opacity-50")}
-                  >
-                    <Video className="h-3.5 w-3.5 mr-1.5" />
-                    <span className="text-xs">Visio</span>
-                  </Button>
-                </div>
-                {!hasAccount && (
-                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                    Non inscrit sur la plateforme
-                  </p>
+                {hasAccount ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      onClick={() => navigate(`/appointments/new?provider=${provider.id}&type=physical`)}
+                      className="h-11"
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span className="text-sm font-medium">Physique</span>
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate(`/appointments/new?provider=${provider.id}&type=video`)}
+                      className="h-11"
+                    >
+                      <Video className="h-4 w-4 mr-2" />
+                      <span className="text-sm font-medium">Visio</span>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <p className="text-xs text-muted-foreground">Non inscrit sur la plateforme</p>
+                  </div>
                 )}
               </div>
             )}
 
             {/* Actions Pharmacie - Pour pharmacies */}
             {provider.type === 'pharmacie' && (
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-3 sm:p-4 border border-green-200 dark:border-green-800">
-                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Package className="h-4 w-4 text-green-600" />
                   Services disponibles
                 </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => hasAccount ? navigate(`/prescriptions?pharmacy=${provider.id}`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start items-start h-auto py-2 px-2 bg-green-600 hover:bg-green-700",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <FileText className="h-3 w-3 mr-1.5 flex-shrink-0 mt-0.5" />
-                    <span className="text-[10px] leading-tight text-left">Envoyer ordonnance</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/advice`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start items-start h-auto py-2 px-2",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <Phone className="h-3 w-3 mr-1.5 flex-shrink-0 mt-0.5" />
-                    <span className="text-[10px] leading-tight text-left">Conseil pharmacie</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/medications`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start items-start h-auto py-2 px-2",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <ShoppingCart className="h-3 w-3 mr-1.5 flex-shrink-0 mt-0.5" />
-                    <span className="text-[10px] leading-tight text-left">Commander médicaments</span>
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/parapharmacy`) : null}
-                    disabled={!hasAccount}
-                    className={cn(
-                      "justify-start items-start h-auto py-2 px-2",
-                      !hasAccount && "opacity-50"
-                    )}
-                  >
-                    <Package className="h-3 w-3 mr-1.5 flex-shrink-0 mt-0.5" />
-                    <span className="text-[10px] leading-tight text-left">Parapharmacie</span>
-                  </Button>
-                </div>
-                {!hasAccount && (
-                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                    Non inscrit sur la plateforme
-                  </p>
+                {hasAccount ? (
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Button
+                      onClick={() => navigate(`/prescriptions?pharmacy=${provider.id}`)}
+                      className="h-auto py-3 px-3 flex-col items-center justify-center bg-green-600 hover:bg-green-700"
+                    >
+                      <FileText className="h-5 w-5 mb-1.5" />
+                      <span className="text-xs font-medium text-center leading-tight">Envoyer<br/>ordonnance</span>
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate(`/pharmacy/${provider.id}/advice`)}
+                      className="h-auto py-3 px-3 flex-col items-center justify-center"
+                    >
+                      <Phone className="h-5 w-5 mb-1.5" />
+                      <span className="text-xs font-medium text-center leading-tight">Conseil<br/>pharmacie</span>
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate(`/pharmacy/${provider.id}/medications`)}
+                      className="h-auto py-3 px-3 flex-col items-center justify-center"
+                    >
+                      <ShoppingCart className="h-5 w-5 mb-1.5" />
+                      <span className="text-xs font-medium text-center leading-tight">Commander<br/>médicaments</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate(`/pharmacy/${provider.id}/parapharmacy`)}
+                      className="h-auto py-3 px-3 flex-col items-center justify-center"
+                    >
+                      <Package className="h-5 w-5 mb-1.5" />
+                      <span className="text-xs font-medium text-center leading-tight">Parapharmacie</span>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <p className="text-xs text-muted-foreground">Non inscrit sur la plateforme</p>
+                  </div>
                 )}
               </div>
             )}
 
             {/* Actions Laboratoire - Pour laboratoires */}
             {(provider.type === 'laboratoire' || provider.type === 'imagerie') && (
-              <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 rounded-xl p-3 sm:p-4 border border-purple-200 dark:border-purple-800">
-                <h3 className="text-sm font-semibold mb-2.5 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-purple-600" />
                   Réserver un examen
                 </h3>
-                <Button
-                  size="sm"
-                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=exam`) : null}
-                  disabled={!hasAccount}
-                  className={cn(
-                    "w-full bg-purple-600 hover:bg-purple-700",
-                    !hasAccount && "opacity-50"
-                  )}
-                >
-                  <Calendar className="h-3.5 w-3.5 mr-2" />
-                  <span className="text-xs">Prendre rendez-vous</span>
-                </Button>
-                {!hasAccount && (
-                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                    Non inscrit sur la plateforme
-                  </p>
+                {hasAccount ? (
+                  <Button
+                    onClick={() => navigate(`/appointments/new?provider=${provider.id}&type=exam`)}
+                    className="w-full h-11 bg-purple-600 hover:bg-purple-700"
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span className="text-sm font-medium">Prendre rendez-vous</span>
+                  </Button>
+                ) : (
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <p className="text-xs text-muted-foreground">Non inscrit sur la plateforme</p>
+                  </div>
                 )}
               </div>
             )}
 
-            {/* Contact & Localisation - Grid compact */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Contact & Localisation - Design amélioré */}
+            <div className="space-y-3">
               {/* Localisation */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <MapPin className="h-3.5 w-3.5 text-primary" />
-                  Localisation
+              <div className="bg-muted/40 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-semibold mb-1">Localisation</h4>
+                    <p className="text-sm leading-relaxed">{provider.adresse_descriptive}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{provider.ville}, {provider.province}</p>
+                  </div>
                 </div>
-                <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
-                <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
               </div>
 
               {/* Contact */}
-              <div className="bg-muted/30 rounded-lg p-3 space-y-2">
-                <div className="flex items-center gap-2 text-sm font-semibold">
-                  <Phone className="h-3.5 w-3.5 text-primary" />
-                  Contact
-                </div>
-                {provider.telephones.slice(0, 2).map((tel, index) => (
-                  <a
-                    key={index}
-                    href={`tel:${tel}`}
-                    className="flex items-center gap-2 text-xs text-primary hover:underline"
-                  >
-                    <Phone className="h-3 w-3" />
-                    {tel}
-                  </a>
-                ))}
-                {provider.horaires && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                    <Clock className="h-3 w-3" />
-                    {provider.horaires}
+              <div className="bg-muted/40 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Phone className="h-4 w-4 text-primary" />
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Services & Conventionnement - Bloc compact */}
-            {provider.services.length > 0 && (
-              <div className="bg-muted/30 rounded-lg p-3 space-y-3">
-                <div className="space-y-2">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    Services & Conventionnement
-                  </h3>
-                  <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-                    {provider.services.slice(0, 4).map((service, index) => (
-                      <Badge key={index} variant="outline" className="text-[10px] px-2 py-0.5 whitespace-nowrap">
-                        {service}
-                      </Badge>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <h4 className="text-sm font-semibold">Contact</h4>
+                    {provider.telephones.slice(0, 2).map((tel, index) => (
+                      <a
+                        key={index}
+                        href={`tel:${tel}`}
+                        className="flex items-center gap-2 text-sm text-primary hover:underline font-medium"
+                      >
+                        <Phone className="h-3.5 w-3.5" />
+                        {tel}
+                      </a>
                     ))}
-                    {provider.services.length > 4 && (
-                      <Badge variant="secondary" className="text-[10px] px-2 py-0.5 whitespace-nowrap">
-                        +{provider.services.length - 4}
-                      </Badge>
+                    {provider.horaires && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                        <Clock className="h-3.5 w-3.5" />
+                        {provider.horaires}
+                      </div>
                     )}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Services & Conventionnement */}
+            {provider.services.length > 0 && (
+              <div className="bg-muted/40 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-semibold uppercase tracking-wide">
+                  Services & Conventionnement
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {provider.services.slice(0, 6).map((service, index) => (
+                    <Badge key={index} variant="outline" className="text-xs px-2.5 py-1">
+                      {service}
+                    </Badge>
+                  ))}
+                  {provider.services.length > 6 && (
+                    <Badge variant="secondary" className="text-xs px-2.5 py-1">
+                      +{provider.services.length - 6} autres
+                    </Badge>
+                  )}
+                </div>
                 
-                <div className="flex items-center gap-3 text-xs pt-1 border-t border-border/50">
-                  <span className="font-semibold">💳</span>
-                  <div className="flex gap-3">
-                    <div className="flex items-center gap-1">
+                <div className="flex items-center gap-4 text-sm pt-2 border-t">
+                  <span className="font-semibold">💳 Conventionnement:</span>
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-1.5">
                       {provider.conventionnement.cnamgs ? "✅" : "❌"}
-                      <span>CNAMGS</span>
+                      <span className="font-medium">CNAMGS</span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       {provider.conventionnement.cnss ? "✅" : "❌"}
-                      <span>CNSS</span>
+                      <span className="font-medium">CNSS</span>
                     </div>
                   </div>
                 </div>
@@ -335,13 +320,13 @@ export default function CartographyProviderModal({
 
             {/* Spécialités */}
             {provider.specialites && provider.specialites.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              <div className="space-y-2.5">
+                <h3 className="text-sm font-semibold uppercase tracking-wide">
                   Spécialités
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {provider.specialites.map((spec, index) => (
-                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-primary/80">
+                    <Badge key={index} className="text-xs px-2.5 py-1 bg-primary/90">
                       {spec}
                     </Badge>
                   ))}
@@ -351,13 +336,13 @@ export default function CartographyProviderModal({
 
             {/* Équipements */}
             {provider.equipements_specialises && provider.equipements_specialises.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              <div className="space-y-2.5">
+                <h3 className="text-sm font-semibold uppercase tracking-wide">
                   Équipements
                 </h3>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {provider.equipements_specialises.map((equip, index) => (
-                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-purple-600">
+                    <Badge key={index} className="text-xs px-2.5 py-1 bg-purple-600">
                       ⚡ {equip}
                     </Badge>
                   ))}
@@ -368,43 +353,47 @@ export default function CartographyProviderModal({
 
             {/* Notes */}
             {provider.notes && (
-              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
-                  <p className="text-[10px] leading-tight text-amber-900 dark:text-amber-100">{provider.notes}</p>
+              <div className="bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-500 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm leading-relaxed text-amber-900 dark:text-amber-100">{provider.notes}</p>
                 </div>
               </div>
             )}
+          </div>
+        </div>
 
-          {/* Actions rapides en bas */}
-          <div className="border-t pt-6">
-            <div className="grid grid-cols-3 gap-3">
+        {/* Actions collantes en bas */}
+        <div className="sticky bottom-0 z-10 bg-background border-t p-4 sm:p-5">
+          <div className="grid grid-cols-3 gap-3">
+            <Button
+              onClick={() => handleCall(provider.telephones[0])}
+              className="h-12 gap-2"
+              size="lg"
+            >
+              <Phone className="h-5 w-5" />
+              <span className="text-sm font-medium hidden sm:inline">Appeler</span>
+            </Button>
+            {provider.coordonnees && (
               <Button
-                onClick={() => handleCall(provider.telephones[0])}
-                className="gap-2"
+                variant="secondary"
+                onClick={handleDirections}
+                className="h-12 gap-2"
+                size="lg"
               >
-                <Phone className="h-4 w-4" />
-                <span className="text-sm">Appeler</span>
+                <Navigation className="h-5 w-5" />
+                <span className="text-sm font-medium hidden sm:inline">Itinéraire</span>
               </Button>
-              {provider.coordonnees && (
-                <Button
-                  variant="secondary"
-                  onClick={handleDirections}
-                  className="gap-2"
-                >
-                  <Navigation className="h-4 w-4" />
-                  <span className="text-sm">Itinéraire</span>
-                </Button>
-              )}
-              <Button 
-                variant="outline" 
-                onClick={handleShare}
-                className="gap-2"
-              >
-                <Share2 className="h-4 w-4" />
-                <span className="text-sm">Partager</span>
-              </Button>
-            </div>
+            )}
+            <Button 
+              variant="outline" 
+              onClick={handleShare}
+              className="h-12 gap-2"
+              size="lg"
+            >
+              <Share2 className="h-5 w-5" />
+              <span className="text-sm font-medium hidden sm:inline">Partager</span>
+            </Button>
           </div>
         </div>
       </DialogContent>
