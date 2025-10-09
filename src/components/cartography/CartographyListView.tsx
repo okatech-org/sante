@@ -80,58 +80,58 @@ export default function CartographyListView({
   return (
     <>
       {/* Vue Mobile - Cards */}
-      <div className="md:hidden space-y-3">
+      <div className="md:hidden space-y-2">
         {currentProviders.map((provider) => (
-          <Card key={provider.id} className="p-4 hover:shadow-md transition-shadow">
-            <div className="space-y-3">
+          <Card key={provider.id} className="p-3 hover:shadow-md transition-shadow">
+            <div className="space-y-2">
               {/* Header avec type et nom */}
-              <div className="flex items-start gap-3">
-                <div className="text-3xl flex-shrink-0">
+              <div className="flex items-start gap-2">
+                <div className="text-2xl flex-shrink-0">
                   {TYPE_ICONS[provider.type]}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-base line-clamp-2 mb-1">
+                  <h3 className="font-semibold text-sm line-clamp-2 mb-0.5">
                     {provider.nom}
                   </h3>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 flex-shrink-0" />
                     <span className="truncate">{provider.ville}</span>
                   </div>
                 </div>
                 {provider.distance && (
-                  <div className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-lg flex-shrink-0">
+                  <div className="text-[10px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded flex-shrink-0">
                     {formatDistance(provider.distance)}
                   </div>
                 )}
               </div>
 
               {/* Badges */}
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1">
                 {provider.ouvert_24_7 && (
-                  <Badge variant="default" className="text-xs bg-green-600">24/7</Badge>
+                  <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-green-600">24/7</Badge>
                 )}
                 {provider.conventionnement.cnamgs && (
-                  <Badge variant="default" className="text-xs bg-blue-600">CNAMGS</Badge>
+                  <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-blue-600">CNAMGS</Badge>
                 )}
                 {provider.equipements_specialises?.some(e => 
                   e.includes('IRM') || e.includes('Scanner')
                 ) && (
-                  <Badge variant="default" className="text-xs bg-purple-600">
+                  <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-purple-600">
                     Imagerie
                   </Badge>
                 )}
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-1.5 pt-1">
                 {provider.telephones && provider.telephones.length > 0 && (
                   <Button
                     onClick={() => handleCall(provider.telephones[0])}
                     variant="outline"
                     size="sm"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-1.5 h-8 text-xs"
                   >
-                    <Phone className="h-4 w-4" />
+                    <Phone className="h-3.5 w-3.5" />
                     Appeler
                   </Button>
                 )}
@@ -140,9 +140,9 @@ export default function CartographyListView({
                     onClick={() => handleDirections(provider)}
                     variant="outline"
                     size="sm"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-1.5 h-8 text-xs"
                   >
-                    <Navigation className="h-4 w-4" />
+                    <Navigation className="h-3.5 w-3.5" />
                     Itinéraire
                   </Button>
                 )}
@@ -150,9 +150,9 @@ export default function CartographyListView({
                   onClick={() => onProviderClick(provider.id)}
                   variant="default"
                   size="sm"
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-1.5 h-8 text-xs"
                 >
-                  <Eye className="h-4 w-4" />
+                  <Eye className="h-3.5 w-3.5" />
                   Détails
                 </Button>
               </div>
