@@ -183,12 +183,12 @@ export default function CartographyProviderModal({
                     onClick={() => hasAccount ? navigate(`/prescriptions?pharmacy=${provider.id}`) : null}
                     disabled={!hasAccount}
                     className={cn(
-                      "justify-start bg-green-600 hover:bg-green-700",
+                      "h-auto py-3 px-3 justify-start items-start bg-green-600 hover:bg-green-700",
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <FileText className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Envoyer ordonnance</span>
+                    <FileText className="h-3.5 w-3.5 mr-2 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs leading-tight text-left">Envoyer ordonnance</span>
                   </Button>
                   <Button
                     size="sm"
@@ -196,12 +196,12 @@ export default function CartographyProviderModal({
                     onClick={() => hasAccount ? navigate(`/pharmacy/${provider.id}/medications`) : null}
                     disabled={!hasAccount}
                     className={cn(
-                      "justify-start",
+                      "h-auto py-3 px-3 justify-start items-start",
                       !hasAccount && "opacity-50"
                     )}
                   >
-                    <ShoppingCart className="h-3.5 w-3.5 mr-2" />
-                    <span className="text-xs">Commander médicaments</span>
+                    <ShoppingCart className="h-3.5 w-3.5 mr-2 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs leading-tight text-left">Commander médicaments</span>
                   </Button>
                 </div>
                 {!hasAccount && (
