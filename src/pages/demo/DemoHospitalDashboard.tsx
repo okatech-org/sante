@@ -26,6 +26,8 @@ import {
   UserCog
 } from "lucide-react";
 
+import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
+
 export default function DemoHospitalDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
 
@@ -108,7 +110,8 @@ export default function DemoHospitalDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <HospitalDashboardLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-6 py-4">
@@ -141,7 +144,7 @@ export default function DemoHospitalDashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-6 py-6">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7">
             <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
             <TabsTrigger value="admissions">Admissions</TabsTrigger>
             <TabsTrigger value="emergency">Urgences</TabsTrigger>
@@ -1660,6 +1663,7 @@ export default function DemoHospitalDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </HospitalDashboardLayout>
   );
 }
+
