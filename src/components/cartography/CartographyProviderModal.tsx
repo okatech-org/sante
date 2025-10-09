@@ -289,72 +289,72 @@ export default function CartographyProviderModal({
               </div>
             </div>
 
-            {/* Informations complémentaires - Bloc compact */}
-            <div className="bg-muted/30 rounded-lg p-3 space-y-3">
-              {/* Services & Conventionnement */}
-              <div className="grid grid-cols-2 gap-3">
-                {/* Services */}
-                {provider.services.length > 0 && (
-                  <div className="space-y-1.5">
-                    <h3 className="text-xs font-semibold">Services</h3>
-                    <div className="flex flex-wrap gap-1">
-                      {provider.services.slice(0, 4).map((service, index) => (
-                        <Badge key={index} variant="outline" className="text-[10px] px-1.5 py-0">
-                          {service}
-                        </Badge>
-                      ))}
-                      {provider.services.length > 4 && (
-                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                          +{provider.services.length - 4}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Conventionnement */}
-                <div className="space-y-1.5">
-                  <h3 className="text-xs font-semibold">💳 Conventionnement</h3>
-                  <div className="flex flex-col gap-1 text-[10px]">
-                    <div className="flex items-center gap-1.5">
-                      {provider.conventionnement.cnamgs ? "✅" : "❌"}
-                      <span>CNAMGS</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      {provider.conventionnement.cnss ? "✅" : "❌"}
-                      <span>CNSS</span>
-                    </div>
-                  </div>
+            {/* Services - Compact pills */}
+            {provider.services.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Services
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.services.slice(0, 6).map((service, index) => (
+                    <Badge key={index} variant="outline" className="text-[10px] px-2 py-0.5">
+                      {service}
+                    </Badge>
+                  ))}
+                  {provider.services.length > 6 && (
+                    <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                      +{provider.services.length - 6}
+                    </Badge>
+                  )}
                 </div>
               </div>
+            )}
 
-              {/* Spécialités */}
-              {provider.specialites && provider.specialites.length > 0 && (
-                <div className="space-y-1.5">
-                  <h3 className="text-xs font-semibold">Spécialités</h3>
-                  <div className="flex flex-wrap gap-1">
-                    {provider.specialites.map((spec, index) => (
-                      <Badge key={index} className="text-[10px] px-1.5 py-0 bg-primary/80">
-                        {spec}
-                      </Badge>
-                    ))}
-                  </div>
+            {/* Spécialités */}
+            {provider.specialites && provider.specialites.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Spécialités
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.specialites.map((spec, index) => (
+                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-primary/80">
+                      {spec}
+                    </Badge>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Équipements */}
-              {provider.equipements_specialises && provider.equipements_specialises.length > 0 && (
-                <div className="space-y-1.5">
-                  <h3 className="text-xs font-semibold">Équipements</h3>
-                  <div className="flex flex-wrap gap-1">
-                    {provider.equipements_specialises.map((equip, index) => (
-                      <Badge key={index} className="text-[10px] px-1.5 py-0 bg-purple-600">
-                        ⚡ {equip}
-                      </Badge>
-                    ))}
-                  </div>
+            {/* Équipements */}
+            {provider.equipements_specialises && provider.equipements_specialises.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Équipements
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {provider.equipements_specialises.map((equip, index) => (
+                    <Badge key={index} className="text-[10px] px-2 py-0.5 bg-purple-600">
+                      ⚡ {equip}
+                    </Badge>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
+
+            {/* Conventionnement - Compact */}
+            <div className="bg-accent/50 rounded-lg p-3 space-y-1.5">
+              <h3 className="text-xs font-semibold">💳 Conventionnement</h3>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  {provider.conventionnement.cnamgs ? "✅" : "❌"}
+                  <span>CNAMGS</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {provider.conventionnement.cnss ? "✅" : "❌"}
+                  <span>CNSS</span>
+                </div>
+              </div>
             </div>
 
             {/* Notes */}
