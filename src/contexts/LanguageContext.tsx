@@ -178,6 +178,19 @@ const translations: Record<Language, Record<string, string>> = {
     'register.professional.cta': 'S\'inscrire en tant que Professionnel',
     'register.hasAccount': 'Vous avez déjà un compte ?',
     'register.login': 'Se connecter',
+    
+    // Admin
+    'admin.users': 'Gestion des Utilisateurs',
+    'admin.usersSubtitle': 'Gérez les utilisateurs et leurs rôles sur la plateforme',
+    'admin.totalUsers': 'Utilisateurs totaux',
+    'admin.administrators': 'Administrateurs',
+    'admin.patients': 'Patients',
+    'admin.professionals': 'Professionnels',
+    'admin.allUsers': 'Tous les utilisateurs',
+    'admin.manageRoles': 'Gérer les rôles',
+    'admin.accessDenied': 'Accès refusé',
+    'admin.noPermission': 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page',
+    'common.export': 'Exporter',
   },
   en: {
     // Navigation
