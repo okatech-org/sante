@@ -71,6 +71,7 @@ import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
 import AdminSettings from "./pages/AdminSettings";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
+import OSMSync from "./pages/admin/OSMSync";
 
 // Demo Pages
 import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
@@ -237,7 +238,7 @@ const App = () => (
             } />
             <Route path="/superadmin/osm-sync" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminPanel />
+                <OSMSync />
               </ProtectedRoute>
             } />
             <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
