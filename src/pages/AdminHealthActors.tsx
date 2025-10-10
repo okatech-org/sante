@@ -550,11 +550,12 @@ export default function AdminHealthActors() {
   
   // Séparer établissements et cabinets professionnels
   const professionalCabinets = establishments.filter(e => professionalTypes.includes(e.type_etablissement));
+  const realEstablishments = establishments.filter(e => !professionalTypes.includes(e.type_etablissement));
   
   const stats = {
     total: establishments.length + professionals.length,
-    imported: establishments.filter((e: any) => e.source === 'db').length,
-    notImported: establishments.filter((e: any) => e.source === 'osm').length,
+    establishments: realEstablishments.length,
+    subscriptions: establishments.filter(e => e.account_claimed === true).length,
     professionals: professionals.length + professionalCabinets.length,
     pending: establishments.filter(e => e.statut === 'en_validation').length,
     active: establishments.filter(e => e.statut === 'actif').length,
@@ -581,8 +582,8 @@ export default function AdminHealthActors() {
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {[
             { id: null, label: 'Total acteurs', value: stats.total, icon: Building2, color: 'from-blue-500 to-cyan-500' },
-            { id: 'imported', label: 'Importés en DB', value: stats.imported, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
-            { id: 'notImported', label: 'Non importés', value: stats.notImported, icon: FileText, color: 'from-orange-500 to-amber-500' },
+            { id: null, label: 'Établissements', value: stats.establishments, icon: Building2, color: 'from-green-500 to-emerald-500' },
+            { id: null, label: 'Abonnements', value: stats.subscriptions, icon: CheckCircle, color: 'from-orange-500 to-amber-500' },
             { id: null, label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
             { id: 'pending', label: 'En validation', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-amber-500' },
             { id: 'active', label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
