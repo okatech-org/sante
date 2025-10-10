@@ -36,11 +36,12 @@ export default function AdminCartography() {
 
   const [establishmentProviders, setEstablishmentProviders] = useState<CartographyProvider[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
+  const [adminInstitutions, setAdminInstitutions] = useState<CartographyProvider[]>([]);
 
   const allProviders = useMemo(() => {
-    // Filtrer les institutions OSM pour ne garder que celles de la plateforme
+    // Conserver les acteurs OSM (sauf institutions) + ajouter uniquement les 10 institutions administratives
     const filteredOSM = osmProviders.filter(p => p.type !== 'institution');
-    const combined = [...filteredOSM, ...establishmentProviders];
+    const combined = [...filteredOSM, ...adminInstitutions];
     const seenIds = new Set();
     
     return combined.filter(provider => {
@@ -50,7 +51,7 @@ export default function AdminCartography() {
       seenIds.add(provider.id);
       return true;
     });
-  }, [osmProviders, establishmentProviders]);
+  }, [osmProviders, adminInstitutions]);
 
   useEffect(() => {
     handleSync();
@@ -63,6 +64,7 @@ export default function AdminCartography() {
       // Charger les institutions de santé du Gabon
       const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
       const gabonInstitutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
+      setAdminInstitutions(gabonInstitutions);
       
       // Charger les données OSM
       const osmData = await getOSMProvidersFromSupabase();
@@ -126,7 +128,7 @@ export default function AdminCartography() {
 
       // Combiner et calculer les statistiques (exclure les institutions OSM)
       const filteredOSMData = osmData.filter(p => p.type !== 'institution');
-      const combined = [...filteredOSMData, ...estabProviders, ...gabonInstitutions];
+      const combined = [...filteredOSMData, ...gabonInstitutions];
       const seenIds = new Set();
       const unique = combined.filter(p => {
         if (seenIds.has(p.id)) return false;
