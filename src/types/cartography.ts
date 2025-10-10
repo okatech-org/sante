@@ -33,6 +33,7 @@ export interface CartographyProvider {
   adresse_descriptive: string;
   telephones: string[];
   email?: string;
+  site_web?: string;
   horaires?: string;
   services: string[];
   specialites?: string[];
@@ -46,6 +47,9 @@ export interface CartographyProvider {
   notes?: string;
   distance?: number; // Calculé dynamiquement
   has_account?: boolean; // Indique si l'établissement a un compte sur la plateforme
+  source?: string; // Source des données (ex: 'OpenStreetMap', 'Manuel', etc.)
+  osm_id?: number | string; // ID OpenStreetMap si applicable
+  nombre_lits?: number; // Nombre de lits disponibles
 }
 
 export interface Province {

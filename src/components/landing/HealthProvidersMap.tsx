@@ -4,10 +4,11 @@ import "leaflet/dist/leaflet.css";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X, Locate } from "lucide-react";
+import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X, Locate, RefreshCw } from "lucide-react";
 import providersData from "@/data/cartography-providers.json";
 import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
+import { fetchOSMHealthProviders } from "@/utils/osm-health-sync";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -47,9 +48,55 @@ export default function HealthProvidersMap() {
   const [locationQuery, setLocationQuery] = useState("");
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [osmProviders, setOsmProviders] = useState<CartographyProvider[]>([]);
+  const [isLoadingOSM, setIsLoadingOSM] = useState(false);
+  const [showOSM, setShowOSM] = useState(true);
   
-  const providers = useMemo(() => {
+  const baseProviders = useMemo(() => {
     return (providersData as CartographyProvider[]).filter(p => p.coordonnees);
+  }, []);
+
+  // Combiner les providers de base avec les providers OSM
+  const providers = useMemo(() => {
+    if (!showOSM) return baseProviders;
+    
+    // Fusionner sans doublons (basé sur les coordonnées)
+    const combined = [...baseProviders];
+    const existingCoords = new Set(
+      baseProviders
+        .filter(p => p.coordonnees)
+        .map(p => `${p.coordonnees!.lat.toFixed(5)},${p.coordonnees!.lng.toFixed(5)}`)
+    );
+    
+    osmProviders.forEach(osmProvider => {
+      if (osmProvider.coordonnees) {
+        const coordKey = `${osmProvider.coordonnees.lat.toFixed(5)},${osmProvider.coordonnees.lng.toFixed(5)}`;
+        if (!existingCoords.has(coordKey)) {
+          combined.push(osmProvider);
+        }
+      }
+    });
+    
+    return combined;
+  }, [baseProviders, osmProviders, showOSM]);
+
+  // Charger les données OSM au montage
+  useEffect(() => {
+    const loadOSMData = async () => {
+      setIsLoadingOSM(true);
+      try {
+        const osmData = await fetchOSMHealthProviders();
+        setOsmProviders(osmData);
+        toast.success(`${osmData.length} établissements OSM chargés`);
+      } catch (error) {
+        console.error('Error loading OSM data:', error);
+        toast.error("Erreur lors du chargement des données OSM");
+      } finally {
+        setIsLoadingOSM(false);
+      }
+    };
+    
+    loadOSMData();
   }, []);
 
   // Initialiser la carte
@@ -117,6 +164,7 @@ export default function HealthProvidersMap() {
       if (!provider.coordonnees) return;
 
       const color = TYPE_COLORS[provider.type] || '#6B7280';
+      const isOSM = provider.source === 'OpenStreetMap';
       
       const customIcon = L.divIcon({
         className: 'custom-marker',
@@ -127,11 +175,12 @@ export default function HealthProvidersMap() {
             height: 32px;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
-            border: 3px solid white;
+            border: 3px solid ${isOSM ? '#10b981' : 'white'};
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
           ">
             <span style="
               transform: rotate(45deg);
@@ -139,6 +188,23 @@ export default function HealthProvidersMap() {
             ">
               ${getProviderIcon(provider.type)}
             </span>
+            ${isOSM ? `
+              <span style="
+                position: absolute;
+                bottom: -2px;
+                right: -2px;
+                background: #10b981;
+                color: white;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                font-size: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: rotate(45deg);
+              ">OSM</span>
+            ` : ''}
           </div>
         `,
         iconSize: [32, 32],
@@ -154,6 +220,7 @@ export default function HealthProvidersMap() {
         <div style="min-width: 240px; padding: 4px;">
           <h3 style="font-weight: 700; margin-bottom: 8px; font-size: 15px; color: hsl(var(--foreground));">
             ${provider.nom}
+            ${provider.source === 'OpenStreetMap' ? '<span style="background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px;">OSM</span>' : ''}
           </h3>
           <p style="color: hsl(var(--muted-foreground)); font-size: 13px; margin-bottom: 8px; text-transform: capitalize;">
             ${getTypeLabel(provider.type)} • ${provider.ville}
@@ -422,6 +489,16 @@ export default function HealthProvidersMap() {
             className="h-8 w-8 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary transition-all text-foreground"
           >
             <Maximize2 className="h-4 w-4" />
+          </Button>
+          <div className="border-t my-1" />
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setShowOSM(!showOSM)}
+            className={`h-8 w-8 transition-all text-foreground ${showOSM ? 'bg-green-500/20 text-green-600' : 'hover:bg-primary/10'}`}
+            title={showOSM ? "Masquer les données OSM" : "Afficher les données OSM"}
+          >
+            <span className="text-xs font-bold">OSM</span>
           </Button>
         </div>
       </div>
