@@ -7,11 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
+import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, Eye, Edit, Trash2, MoreVertical, Filter, Grid3x3, List, ChevronLeft, ChevronRight, RefreshCw, MapPin, Phone, Globe } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import cartographyProviders from "@/data/cartography-providers.json";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 
@@ -87,8 +89,13 @@ export default function AdminHealthActors() {
   const [isImporting, setIsImporting] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showTokenDialog, setShowTokenDialog] = useState(false);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [generatedToken, setGeneratedToken] = useState("");
   const [showJsonData, setShowJsonData] = useState(true);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     loadData();
@@ -440,6 +447,66 @@ export default function AdminHealthActors() {
     }
   };
 
+  const handleBulkAction = async (action: 'approve' | 'suspend' | 'delete') => {
+    if (selectedIds.length === 0) {
+      toast.error("Aucun élément sélectionné");
+      return;
+    }
+
+    try {
+      if (action === 'approve') {
+        for (const id of selectedIds) {
+          await supabase
+            .from('establishments')
+            .update({ statut: 'actif' as any })
+            .eq('id', id);
+        }
+        toast.success(`${selectedIds.length} établissement(s) approuvé(s)`);
+      } else if (action === 'suspend') {
+        for (const id of selectedIds) {
+          await supabase
+            .from('establishments')
+            .update({ statut: 'suspendu' as any })
+            .eq('id', id);
+        }
+        toast.success(`${selectedIds.length} établissement(s) suspendu(s)`);
+      } else if (action === 'delete') {
+        for (const id of selectedIds) {
+          await supabase
+            .from('establishments')
+            .delete()
+            .eq('id', id);
+        }
+        toast.success(`${selectedIds.length} établissement(s) supprimé(s)`);
+      }
+      
+      setSelectedIds([]);
+      loadData();
+    } catch (error: any) {
+      toast.error("Erreur lors de l'action groupée");
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === paginatedEstablishments.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(paginatedEstablishments.map(e => e.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  // Pagination
+  const totalPages = Math.ceil(filteredEstablishments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedEstablishments = filteredEstablishments.slice(startIndex, endIndex);
+
   if (!isSuperAdmin) {
     return (
       <SuperAdminLayout>
@@ -536,26 +603,91 @@ export default function AdminHealthActors() {
 
           {/* Establishments Tab */}
           <TabsContent value="establishments" className="space-y-4">
+            {/* Toolbar */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="gap-2"
+                >
+                  <List className="w-4 h-4" />
+                  <span className="hidden sm:inline">Liste</span>
+                </Button>
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="gap-2"
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Grille</span>
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                {selectedIds.length > 0 && (
+                  <>
+                    <Badge variant="secondary" className="px-3 py-1">
+                      {selectedIds.length} sélectionné(s)
+                    </Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <MoreVertical className="w-4 h-4" />
+                          Actions groupées
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-background border-border z-50">
+                        <DropdownMenuItem onClick={() => handleBulkAction('approve')} className="gap-2 text-green-600">
+                          <CheckCircle className="w-4 h-4" />
+                          Approuver
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleBulkAction('suspend')} className="gap-2 text-orange-600">
+                          <XCircle className="w-4 h-4" />
+                          Suspendre
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleBulkAction('delete')} className="gap-2 text-red-600">
+                          <Trash2 className="w-4 h-4" />
+                          Supprimer
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>
+                      Désélectionner
+                    </Button>
+                  </>
+                )}
+                
+                <Button 
+                  onClick={handleImportCartography} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={isImporting}
+                  className="gap-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span className="hidden sm:inline">{isImporting ? "Import..." : "Importer"}</span>
+                </Button>
+                <Button onClick={() => exportData('establishments')} variant="outline" size="sm" className="gap-2">
+                  <Download className="w-4 h-4" />
+                  <span className="hidden sm:inline">Exporter</span>
+                </Button>
+                <Button onClick={loadData} variant="outline" size="sm" className="gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
             {/* Filters */}
             <Card className="bg-card/50 backdrop-blur-xl border-border/50">
-              <CardHeader className="flex flex-row items-center justify-between pb-3">
-                <CardTitle className="text-lg">Filtres & Tri</CardTitle>
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleImportCartography} 
-                    variant="outline" 
-                    size="sm"
-                    disabled={isImporting}
-                    className="gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    {isImporting ? "Import en cours..." : "Importer Carto"}
-                  </Button>
-                  <Button onClick={() => exportData('establishments')} variant="outline" size="sm" className="gap-2">
-                    <Download className="w-4 h-4" />
-                    Exporter
-                  </Button>
-                </div>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Filter className="w-5 h-5" />
+                  Filtres & Recherche
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Recherche */}
@@ -664,53 +796,92 @@ export default function AdminHealthActors() {
               </CardContent>
             </Card>
 
-            {/* Table */}
-            <Card className="bg-card/50 backdrop-blur-xl border-border/50">
-              <CardHeader>
-                <CardTitle>Liste des établissements ({filteredEstablishments.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="text-center py-12 text-muted-foreground">Chargement...</div>
-                ) : (
-                  <div className="rounded-lg border border-border/50 overflow-hidden">
+            {/* Content */}
+            {isLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="text-center space-y-3">
+                  <RefreshCw className="w-8 h-8 animate-spin mx-auto text-primary" />
+                  <p className="text-muted-foreground">Chargement des données...</p>
+                </div>
+              </div>
+            ) : viewMode === 'list' ? (
+              <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5" />
+                    Établissements ({filteredEstablishments.length})
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Afficher:</span>
+                    <Select value={itemsPerPage.toString()} onValueChange={(v) => {setItemsPerPage(Number(v)); setCurrentPage(1);}}>
+                      <SelectTrigger className="w-20 h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="25">25</SelectItem>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-lg border border-border/50 overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-muted/50">
+                          <TableHead className="w-12">
+                            <Checkbox 
+                              checked={selectedIds.length === paginatedEstablishments.length && paginatedEstablishments.length > 0}
+                              onCheckedChange={toggleSelectAll}
+                            />
+                          </TableHead>
                           <TableHead>Nom</TableHead>
                           <TableHead>Type</TableHead>
-                          <TableHead>Localisation</TableHead>
-                          <TableHead>Statut</TableHead>
-                          <TableHead>Revendication</TableHead>
-                          <TableHead>Contact</TableHead>
+                          <TableHead className="hidden md:table-cell">Localisation</TableHead>
+                          <TableHead className="hidden sm:table-cell">Statut</TableHead>
+                          <TableHead className="hidden lg:table-cell">Revendication</TableHead>
                           <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredEstablishments.map((est) => (
-                          <TableRow key={est.id} className="hover:bg-muted/30">
+                        {paginatedEstablishments.map((est) => (
+                          <TableRow key={est.id} className="hover:bg-muted/30 transition-colors">
+                            <TableCell>
+                              <Checkbox 
+                                checked={selectedIds.includes(est.id)}
+                                onCheckedChange={() => toggleSelect(est.id)}
+                                disabled={est.id.startsWith('json-') || est.id.startsWith('osm-')}
+                              />
+                            </TableCell>
                             <TableCell className="font-medium">
-                              {est.raison_sociale}
-                              {est.id.startsWith('json-') && (
-                                <Badge variant="outline" className="ml-2 bg-yellow-500/10 text-yellow-400 border-yellow-400/30 text-xs">
-                                  Non importé
-                                </Badge>
-                              )}
+                              <div className="flex flex-col gap-1">
+                                <span className="text-sm">{est.raison_sociale}</span>
+                                {(est as any).source && (
+                                  <Badge variant="outline" className="w-fit text-xs bg-blue-500/10 text-blue-400 border-blue-400/30">
+                                    {(est as any).source}
+                                  </Badge>
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-400/30">
+                              <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-400/30 text-xs">
                                 {establishmentTypes[est.type_etablissement] || est.type_etablissement}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-muted-foreground">
-                              {est.ville}, {est.province}
+                            <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-3 h-3" />
+                                {est.ville}, {est.province}
+                              </div>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="hidden sm:table-cell">
                               <Badge variant="outline" className={statusColors[est.statut] || ''}>
                                 {est.statut}
                               </Badge>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="hidden lg:table-cell">
                               {est.account_claimed ? (
                                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-400/30">
                                   <CheckCircle className="w-3 h-3 mr-1" />
@@ -723,60 +894,237 @@ export default function AdminHealthActors() {
                                 </Badge>
                               )}
                             </TableCell>
-                            <TableCell className="text-sm text-muted-foreground">
-                              {est.email || est.telephone_standard || '-'}
-                            </TableCell>
                             <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                {est.id.startsWith('json-') ? (
-                                  <Badge variant="outline" className="bg-muted text-muted-foreground">
-                                    À importer
-                                  </Badge>
-                                ) : (
-                                  <>
-                                    {!est.account_claimed && (
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleGenerateToken(est)}
-                                        className="text-blue-500 hover:text-blue-600"
-                                        title="Générer un lien d'invitation"
-                                      >
-                                        <LinkIcon className="w-4 h-4" />
-                                      </Button>
-                                    )}
-                                    {est.statut === 'en_validation' && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleApprove(est.id, 'establishment')}
-                                    className="text-green-500 hover:text-green-600"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                    <MoreVertical className="w-4 h-4" />
                                   </Button>
-                                )}
-                                {est.statut === 'actif' && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleSuspend(est.id, 'establishment')}
-                                    className="text-orange-500 hover:text-orange-600"
-                                  >
-                                    <XCircle className="w-4 h-4" />
-                                  </Button>
-                                )}
-                                  </>
-                                )}
-                              </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-background border-border z-50">
+                                  <DropdownMenuItem onClick={() => {
+                                    setSelectedEstablishment(est);
+                                    setShowDetailsDialog(true);
+                                  }} className="gap-2">
+                                    <Eye className="w-4 h-4" />
+                                    Voir détails
+                                  </DropdownMenuItem>
+                                  {!(est.id.startsWith('json-') || est.id.startsWith('osm-')) && (
+                                    <>
+                                      {!est.account_claimed && (
+                                        <DropdownMenuItem onClick={() => handleGenerateToken(est)} className="gap-2 text-blue-600">
+                                          <LinkIcon className="w-4 h-4" />
+                                          Générer lien
+                                        </DropdownMenuItem>
+                                      )}
+                                      {est.statut === 'en_validation' && (
+                                        <DropdownMenuItem onClick={() => handleApprove(est.id, 'establishment')} className="gap-2 text-green-600">
+                                          <CheckCircle className="w-4 h-4" />
+                                          Approuver
+                                        </DropdownMenuItem>
+                                      )}
+                                      {est.statut === 'actif' && (
+                                        <DropdownMenuItem onClick={() => handleSuspend(est.id, 'establishment')} className="gap-2 text-orange-600">
+                                          <XCircle className="w-4 h-4" />
+                                          Suspendre
+                                        </DropdownMenuItem>
+                                      )}
+                                    </>
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t border-border/50">
+                      <p className="text-sm text-muted-foreground">
+                        Affichage de {startIndex + 1} à {Math.min(endIndex, filteredEstablishments.length)} sur {filteredEstablishments.length} résultats
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={currentPage === 1}
+                          className="gap-2"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                          Précédent
+                        </Button>
+                        <div className="flex gap-1">
+                          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            const page = currentPage <= 3 ? i + 1 : currentPage + i - 2;
+                            if (page > totalPages) return null;
+                            return (
+                              <Button
+                                key={page}
+                                variant={currentPage === page ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setCurrentPage(page)}
+                                className="w-8 h-8 p-0"
+                              >
+                                {page}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          disabled={currentPage === totalPages}
+                          className="gap-2"
+                        >
+                          Suivant
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              /* Grid View */
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {paginatedEstablishments.map((est) => (
+                    <Card key={est.id} className="bg-card/50 backdrop-blur-xl border-border/50 hover:shadow-lg hover:scale-[1.02] transition-all group">
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <Checkbox 
+                              checked={selectedIds.includes(est.id)}
+                              onCheckedChange={() => toggleSelect(est.id)}
+                              disabled={est.id.startsWith('json-') || est.id.startsWith('osm-')}
+                            />
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                              <Building2 className="w-5 h-5 text-primary" />
+                            </div>
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-background border-border z-50">
+                              <DropdownMenuItem onClick={() => {
+                                setSelectedEstablishment(est);
+                                setShowDetailsDialog(true);
+                              }} className="gap-2">
+                                <Eye className="w-4 h-4" />
+                                Voir détails
+                              </DropdownMenuItem>
+                              {!(est.id.startsWith('json-') || est.id.startsWith('osm-')) && (
+                                <>
+                                  {!est.account_claimed && (
+                                    <DropdownMenuItem onClick={() => handleGenerateToken(est)} className="gap-2 text-blue-600">
+                                      <LinkIcon className="w-4 h-4" />
+                                      Générer lien
+                                    </DropdownMenuItem>
+                                  )}
+                                  {est.statut === 'en_validation' && (
+                                    <DropdownMenuItem onClick={() => handleApprove(est.id, 'establishment')} className="gap-2 text-green-600">
+                                      <CheckCircle className="w-4 h-4" />
+                                      Approuver
+                                    </DropdownMenuItem>
+                                  )}
+                                </>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                        
+                        <h3 className="font-semibold text-base mb-2 line-clamp-2">{est.raison_sociale}</h3>
+                        
+                        <div className="space-y-2 mb-3">
+                          <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-400/30 text-xs">
+                            {establishmentTypes[est.type_etablissement] || est.type_etablissement}
+                          </Badge>
+                          <Badge variant="outline" className={statusColors[est.statut] || ''}>
+                            {est.statut}
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-2 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 flex-shrink-0" />
+                            <span className="truncate">{est.ville}, {est.province}</span>
+                          </div>
+                          {est.telephone_standard && (
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-4 h-4 flex-shrink-0" />
+                              <span className="truncate">{est.telephone_standard}</span>
+                            </div>
+                          )}
+                          {est.email && (
+                            <div className="flex items-center gap-2">
+                              <Mail className="w-4 h-4 flex-shrink-0" />
+                              <span className="truncate">{est.email}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-border/50">
+                          {est.account_claimed ? (
+                            <Badge variant="outline" className="w-full justify-center bg-green-500/10 text-green-400 border-green-400/30">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Revendiqué
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="w-full justify-center bg-orange-500/10 text-orange-400 border-orange-400/30">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Disponible
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pagination for Grid */}
+                {totalPages > 1 && (
+                  <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p className="text-sm text-muted-foreground">
+                          Page {currentPage} sur {totalPages} ({filteredEstablishments.length} résultats)
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            className="gap-2"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            Précédent
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                            className="gap-2"
+                          >
+                            Suivant
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            )}
           </TabsContent>
 
           {/* Professionals Tab */}
@@ -868,6 +1216,18 @@ export default function AdminHealthActors() {
                     </Button>
                   </div>
                 </div>
+                {selectedEstablishment.email && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    onClick={() => {
+                      window.location.href = `mailto:${selectedEstablishment.email}?subject=Invitation à revendiquer votre établissement&body=Bonjour,%0D%0A%0D%0AVoici votre lien d'invitation: ${window.location.origin}/claim-establishment/${generatedToken}`;
+                    }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    Envoyer par email
+                  </Button>
+                )}
                 <div className="p-4 rounded-lg bg-muted/50">
                   <p className="text-sm text-muted-foreground">
                     Ce lien permettra à l'établissement de créer un compte et de revendiquer ses données. 
@@ -876,6 +1236,131 @@ export default function AdminHealthActors() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Details Dialog */}
+        <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+          <DialogContent className="bg-card/95 backdrop-blur-xl border-border/50 max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Building2 className="w-5 h-5" />
+                Détails de l'établissement
+              </DialogTitle>
+            </DialogHeader>
+            {selectedEstablishment && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Nom</label>
+                    <p className="text-base mt-1">{selectedEstablishment.raison_sociale}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Type</label>
+                    <div className="mt-1">
+                      <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-400/30">
+                        {establishmentTypes[selectedEstablishment.type_etablissement] || selectedEstablishment.type_etablissement}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Secteur</label>
+                    <p className="text-base mt-1 capitalize">{selectedEstablishment.secteur}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Statut</label>
+                    <div className="mt-1">
+                      <Badge variant="outline" className={statusColors[selectedEstablishment.statut] || ''}>
+                        {selectedEstablishment.statut}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border/50 pt-4">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Localisation
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Ville</label>
+                      <p className="text-base mt-1">{selectedEstablishment.ville}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Province</label>
+                      <p className="text-base mt-1">{selectedEstablishment.province}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-border/50 pt-4">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Contact
+                  </h3>
+                  <div className="space-y-3">
+                    {selectedEstablishment.email ? (
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <a href={`mailto:${selectedEstablishment.email}`} className="text-primary hover:underline">
+                          {selectedEstablishment.email}
+                        </a>
+                      </div>
+                    ) : null}
+                    {selectedEstablishment.telephone_standard ? (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-muted-foreground" />
+                        <a href={`tel:${selectedEstablishment.telephone_standard}`} className="text-primary hover:underline">
+                          {selectedEstablishment.telephone_standard}
+                        </a>
+                      </div>
+                    ) : null}
+                    {!selectedEstablishment.email && !selectedEstablishment.telephone_standard && (
+                      <p className="text-sm text-muted-foreground">Aucune information de contact disponible</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="border-t border-border/50 pt-4">
+                  <h3 className="font-semibold mb-3">Revendication</h3>
+                  {selectedEstablishment.account_claimed ? (
+                    <div className="space-y-2">
+                      <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-400/30">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Compte revendiqué
+                      </Badge>
+                      {selectedEstablishment.claimed_at && (
+                        <p className="text-sm text-muted-foreground">
+                          Revendiqué le {new Date(selectedEstablishment.claimed_at).toLocaleDateString('fr-FR')}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <Badge variant="outline" className="bg-orange-500/10 text-orange-400 border-orange-400/30">
+                      <Clock className="w-3 h-3 mr-1" />
+                      En attente de revendication
+                    </Badge>
+                  )}
+                </div>
+
+                {(selectedEstablishment as any).source && (
+                  <div className="border-t border-border/50 pt-4">
+                    <h3 className="font-semibold mb-2">Source des données</h3>
+                    <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-400/30">
+                      {(selectedEstablishment as any).source === 'db' ? 'Base de données' : 
+                       (selectedEstablishment as any).source === 'osm' ? 'OpenStreetMap' : 
+                       'Cartographie JSON'}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowDetailsDialog(false)}>
+                Fermer
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
