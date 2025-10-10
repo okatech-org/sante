@@ -13,40 +13,29 @@ serve(async (req) => {
   }
 
   try {
-    const { province, city, saveToDatabase } = await req.json();
+    const { province, city } = await req.json();
     
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') as string;
     const supabase = createClient(supabaseUrl, supabaseKey);
     
-    console.log('Fetching OSM health providers for:', { province, city, saveToDatabase });
+    console.log('Fetching OSM health providers for:', { province, city });
 
     // Bbox pour le Gabon (précis)
-    // Format: [sud, ouest, nord, est]
     const gabonBbox = "-4.0,8.5,2.5,14.5";
     
     // Fonction pour déterminer la province basée sur les coordonnées
     const getProvinceFromCoordinates = (lat: number, lng: number): string => {
-      // Estuaire (Libreville) - nord-ouest
       if (lat >= -0.5 && lat <= 1.0 && lng >= 9.0 && lng <= 10.0) return 'G1';
-      // Haut-Ogooué (Franceville) - sud-est
       if (lat >= -2.0 && lat <= -0.5 && lng >= 13.0 && lng <= 14.5) return 'G2';
-      // Moyen-Ogooué (Lambaréné) - centre-ouest
       if (lat >= -1.5 && lat <= 0.0 && lng >= 9.5 && lng <= 11.0) return 'G3';
-      // Ngounié (Mouila) - sud-ouest
       if (lat >= -2.5 && lat <= -1.0 && lng >= 10.5 && lng <= 11.5) return 'G4';
-      // Nyanga (Tchibanga) - sud-ouest extrême
       if (lat >= -3.5 && lat <= -2.0 && lng >= 10.0 && lng <= 11.5) return 'G5';
-      // Ogooué-Ivindo (Makokou) - nord-est
       if (lat >= 0.0 && lat <= 1.5 && lng >= 12.5 && lng <= 14.5) return 'G6';
-      // Ogooué-Lolo (Koulamoutou) - centre-est
       if (lat >= -1.5 && lat <= 0.0 && lng >= 12.0 && lng <= 13.5) return 'G7';
-      // Ogooué-Maritime (Port-Gentil) - ouest
       if (lat >= -1.0 && lat <= 0.5 && lng >= 8.5 && lng <= 10.0) return 'G8';
-      // Woleu-Ntem (Oyem) - nord
       if (lat >= 1.0 && lat <= 2.5 && lng >= 11.0 && lng <= 12.5) return 'G9';
-      // Par défaut Estuaire (Libreville)
       return 'G1';
     };
     
@@ -95,7 +84,6 @@ serve(async (req) => {
 
     // Transformer les données OSM au format de notre application
     const providers = data.elements.map((element: any) => {
-      // Déterminer le type d'établissement
       let type = 'cabinet_medical';
       const amenity = element.tags?.amenity || element.tags?.healthcare;
       
@@ -109,7 +97,6 @@ serve(async (req) => {
         type = 'cabinet_medical';
       }
 
-      // Récupérer les coordonnées
       let lat, lng;
       if (element.lat && element.lon) {
         lat = element.lat;
@@ -119,7 +106,6 @@ serve(async (req) => {
         lng = element.center.lon;
       }
 
-      // Extraire les informations
       const name = element.tags?.name || element.tags?.['name:fr'] || element.tags?.brand || 'Établissement sans nom';
       const phone = element.tags?.phone || element.tags?.['contact:phone'];
       const email = element.tags?.email || element.tags?.['contact:email'];
@@ -133,23 +119,14 @@ serve(async (req) => {
       const beds = element.tags?.beds ? parseInt(element.tags.beds) : undefined;
       const dispensing = element.tags?.dispensing === 'yes';
       
-      // Déterminer la province basée sur les coordonnées
       const province = lat && lng ? getProvinceFromCoordinates(lat, lng) : 'G1';
       
-      // Déterminer la ville si non spécifiée
       let finalCity = city;
       if (!finalCity && lat && lng) {
-        // Mapper les provinces aux villes principales
         const provinceCities: Record<string, string> = {
-          'G1': 'Libreville',
-          'G2': 'Franceville',
-          'G3': 'Lambaréné',
-          'G4': 'Mouila',
-          'G5': 'Tchibanga',
-          'G6': 'Makokou',
-          'G7': 'Koulamoutou',
-          'G8': 'Port-Gentil',
-          'G9': 'Oyem'
+          'G1': 'Libreville', 'G2': 'Franceville', 'G3': 'Lambaréné',
+          'G4': 'Mouila', 'G5': 'Tchibanga', 'G6': 'Makokou',
+          'G7': 'Koulamoutou', 'G8': 'Port-Gentil', 'G9': 'Oyem'
         };
         finalCity = provinceCities[province] || 'Libreville';
       }
@@ -161,86 +138,55 @@ serve(async (req) => {
         nom: name,
         province,
         ville: finalCity || 'Libreville',
-        coordonnees: lat && lng ? { lat, lng } : undefined,
+        latitude: lat,
+        longitude: lng,
         adresse_descriptive: address || city || '',
         telephones: phone ? [phone] : [],
-        email: email || undefined,
-        site_web: website || undefined,
-        horaires: openingHours || undefined,
+        email: email || null,
+        site_web: website || null,
+        horaires: openingHours || null,
         services: type === 'pharmacie' && dispensing ? ['Délivrance de médicaments'] : [],
         specialites: [],
         ouvert_24_7: emergency || false,
-        conventionnement: {
-          cnamgs: false,
-          cnss: false,
-        },
+        cnamgs: false,
+        cnss: false,
         secteur: operator?.toLowerCase().includes('public') || operator?.toLowerCase().includes('government') ? 'public' : 'prive',
         statut_operationnel: 'operationnel',
-        source: 'OpenStreetMap',
-        nombre_lits: beds,
+        nombre_lits: beds || null,
+        last_updated: new Date().toISOString()
       };
-    }).filter((p: any) => p.coordonnees); // Garder seulement ceux avec coordonnées
+    }).filter((p: any) => p.latitude && p.longitude);
 
-    console.log(`Transformed ${providers.length} providers`);
+    console.log(`Transformed ${providers.length} providers with coordinates`);
 
-    // Sauvegarder dans la base de données si demandé
-    if (saveToDatabase && providers.length > 0) {
-      console.log('Saving to database...');
-      
-      // Transformer pour la base de données
-      const dbRecords = providers.map((p: any) => ({
-        id: p.id,
-        osm_id: p.osm_id,
-        type: p.type,
-        nom: p.nom,
-        province: p.province,
-        ville: p.ville,
-        latitude: p.coordonnees?.lat,
-        longitude: p.coordonnees?.lng,
-        adresse_descriptive: p.adresse_descriptive,
-        telephones: p.telephones,
-        email: p.email,
-        site_web: p.site_web,
-        horaires: p.horaires,
-        services: p.services,
-        specialites: p.specialites,
-        ouvert_24_7: p.ouvert_24_7,
-        cnamgs: p.conventionnement?.cnamgs || false,
-        cnss: p.conventionnement?.cnss || false,
-        secteur: p.secteur,
-        statut_operationnel: p.statut_operationnel,
-        nombre_lits: p.nombre_lits,
-      }));
+    // Supprimer les anciens providers OSM
+    const { error: deleteError } = await supabase
+      .from('osm_health_providers')
+      .delete()
+      .neq('id', '');
 
-      // Upsert dans la base de données (insérer ou mettre à jour si existe déjà)
-      const { error: dbError } = await supabase
-        .from('osm_health_providers')
-        .upsert(dbRecords, { onConflict: 'osm_id' });
-
-      if (dbError) {
-        console.error('Database error:', dbError);
-        return new Response(
-          JSON.stringify({ 
-            success: false, 
-            error: `Database error: ${dbError.message}`,
-            providers 
-          }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
-      }
-
-      console.log(`Saved ${dbRecords.length} records to database`);
+    if (deleteError) {
+      console.error('Error deleting old providers:', deleteError);
+      throw deleteError;
     }
+
+    // Insérer les nouveaux providers
+    const { error: insertError } = await supabase
+      .from('osm_health_providers')
+      .insert(providers);
+
+    if (insertError) {
+      console.error('Error inserting providers:', insertError);
+      throw insertError;
+    }
+
+    console.log(`Successfully saved ${providers.length} providers to database`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         count: providers.length,
-        saved: saveToDatabase,
-        providers 
+        message: `${providers.length} établissements sauvegardés dans la base de données`
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
