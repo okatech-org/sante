@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Clock, CheckCircle, XCircle, Search, Shield, FileText, User, Mail, Phone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
@@ -75,10 +76,72 @@ export default function AdminApprovals() {
   const loadApprovals = async () => {
     try {
       setIsLoading(true);
-      // TODO: Implémenter la récupération depuis Supabase
-      // Pour le moment, données de démo
-      const mockData: PendingApproval[] = [];
-      setApprovals(mockData);
+      
+      // Récupérer les professionnels non vérifiés
+      const { data: professionals, error: profError } = await supabase
+        .from('professional_profiles')
+        .select(`
+          id,
+          user_id,
+          profession_type,
+          specialization,
+          ordre_number,
+          ordre_verified,
+          created_at,
+          profiles:user_id (
+            full_name,
+            email,
+            phone,
+            city,
+            province
+          )
+        `)
+        .eq('ordre_verified', false)
+        .not('ordre_number', 'is', null);
+
+      if (profError) throw profError;
+
+      // Récupérer les établissements en validation
+      const { data: establishments, error: estError } = await supabase
+        .from('establishments')
+        .select('*')
+        .eq('statut', 'en_validation');
+
+      if (estError) throw estError;
+
+      // Formatter les données
+      const allApprovals: PendingApproval[] = [
+        ...(professionals || []).map(prof => ({
+          id: prof.id,
+          type: 'professional' as const,
+          name: prof.profiles?.full_name || 'N/A',
+          email: prof.profiles?.email || 'N/A',
+          phone: prof.profiles?.phone || 'N/A',
+          profession: prof.profession_type,
+          specialty: prof.specialization || undefined,
+          city: prof.profiles?.city || 'N/A',
+          province: prof.profiles?.province || 'N/A',
+          created_at: prof.created_at,
+          documents: { ordre_number: prof.ordre_number }
+        })),
+        ...(establishments || []).map(est => ({
+          id: est.id,
+          type: 'establishment' as const,
+          name: est.raison_sociale,
+          email: est.email || est.directeur_general_email || 'N/A',
+          phone: est.telephone_standard || est.directeur_general_telephone || 'N/A',
+          establishmentType: est.type_etablissement,
+          city: est.ville,
+          province: est.province,
+          created_at: est.created_at,
+          documents: {
+            numero_autorisation: est.numero_autorisation,
+            numero_rccm: est.numero_rccm
+          }
+        }))
+      ];
+
+      setApprovals(allApprovals);
     } catch (error: any) {
       toast.error("Erreur lors du chargement des approbations");
       console.error(error);
@@ -106,11 +169,53 @@ export default function AdminApprovals() {
 
   const handleApprove = async (approval: PendingApproval) => {
     try {
-      // TODO: Implémenter l'approbation
+      if (approval.type === 'professional') {
+        // Mettre à jour le profil professionnel
+        const { error: updateError } = await supabase
+          .from('professional_profiles')
+          .update({ ordre_verified: true })
+          .eq('id', approval.id);
+
+        if (updateError) throw updateError;
+
+        // Récupérer le user_id pour assigner le rôle
+        const { data: profData } = await supabase
+          .from('professional_profiles')
+          .select('user_id, profession_type')
+          .eq('id', approval.id)
+          .single();
+
+        if (profData) {
+          // Déterminer le rôle selon le type de profession
+          let role = 'doctor';
+          if (profData.profession_type === 'pharmacien') role = 'pharmacy';
+          else if (profData.profession_type === 'infirmier') role = 'medical_staff';
+          else if (profData.profession_type === 'laboratoire') role = 'laboratory';
+
+          // Assigner le rôle
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert([{ user_id: profData.user_id, role: role as any }]);
+
+          if (roleError && !roleError.message.includes('duplicate')) {
+            throw roleError;
+          }
+        }
+      } else if (approval.type === 'establishment') {
+        // Mettre à jour le statut de l'établissement
+        const { error: updateError } = await supabase
+          .from('establishments')
+          .update({ statut: 'actif' })
+          .eq('id', approval.id);
+
+        if (updateError) throw updateError;
+      }
+
       toast.success(`${typeLabels[approval.type]} approuvé(e) avec succès`);
       loadApprovals();
     } catch (error: any) {
-      toast.error("Erreur lors de l'approbation");
+      toast.error("Erreur lors de l'approbation: " + error.message);
+      console.error(error);
     }
   };
 
@@ -121,14 +226,48 @@ export default function AdminApprovals() {
     }
 
     try {
-      // TODO: Implémenter le rejet
-      toast.success("Demande rejetée");
+      if (selectedApproval.type === 'professional') {
+        // Mettre à jour la vérification CNOM avec le rejet
+        const { data: profData } = await supabase
+          .from('professional_profiles')
+          .select('user_id')
+          .eq('id', selectedApproval.id)
+          .single();
+
+        if (profData) {
+          // Créer ou mettre à jour la vérification CNOM
+          const { error: verifError } = await supabase
+            .from('cnom_verifications')
+            .upsert({
+              professional_id: selectedApproval.id,
+              numero_ordre: selectedApproval.documents?.ordre_number || '',
+              verification_status: 'rejected',
+              verification_notes: rejectReason,
+              verified_at: new Date().toISOString()
+            });
+
+          if (verifError) throw verifError;
+        }
+      } else if (selectedApproval.type === 'establishment') {
+        // Mettre à jour le statut de l'établissement à suspendu (car refuse n'existe pas)
+        const { error: updateError } = await supabase
+          .from('establishments')
+          .update({ 
+            statut: 'suspendu',
+          })
+          .eq('id', selectedApproval.id);
+
+        if (updateError) throw updateError;
+      }
+
+      toast.success("Demande rejetée avec succès");
       setShowRejectDialog(false);
       setRejectReason("");
       setSelectedApproval(null);
       loadApprovals();
     } catch (error: any) {
-      toast.error("Erreur lors du rejet");
+      toast.error("Erreur lors du rejet: " + error.message);
+      console.error(error);
     }
   };
 
@@ -340,6 +479,38 @@ export default function AdminApprovals() {
                   <div>
                     <p className="text-sm text-muted-foreground">Province</p>
                     <p className="font-medium">{selectedApproval.province}</p>
+                  </div>
+                  {selectedApproval.profession && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Profession</p>
+                      <p className="font-medium">{selectedApproval.profession}</p>
+                    </div>
+                  )}
+                  {selectedApproval.specialty && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Spécialité</p>
+                      <p className="font-medium">{selectedApproval.specialty}</p>
+                    </div>
+                  )}
+                  {selectedApproval.establishmentType && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Type d'établissement</p>
+                      <p className="font-medium">{selectedApproval.establishmentType}</p>
+                    </div>
+                  )}
+                  <div className="col-span-2">
+                    <p className="text-sm text-muted-foreground mb-2">Documents</p>
+                    <div className="bg-muted/50 p-3 rounded-lg space-y-1 text-sm">
+                      {selectedApproval.documents?.ordre_number && (
+                        <p><span className="font-medium">N° d'ordre:</span> {selectedApproval.documents.ordre_number}</p>
+                      )}
+                      {selectedApproval.documents?.numero_autorisation && (
+                        <p><span className="font-medium">N° autorisation:</span> {selectedApproval.documents.numero_autorisation}</p>
+                      )}
+                      {selectedApproval.documents?.numero_rccm && (
+                        <p><span className="font-medium">N° RCCM:</span> {selectedApproval.documents.numero_rccm}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
