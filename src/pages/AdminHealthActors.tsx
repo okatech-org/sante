@@ -144,6 +144,7 @@ export default function AdminHealthActors() {
   const [verifiedFilter, setVerifiedFilter] = useState("all");
   
   const [isLoading, setIsLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [showStatusDialog, setShowStatusDialog] = useState(false);
@@ -367,6 +368,27 @@ export default function AdminHealthActors() {
     toast.success("Export réussi");
   };
 
+  const handleImportCartography = async () => {
+    setIsImporting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('import-cartography-data');
+      
+      if (error) throw error;
+      
+      if (data.success) {
+        toast.success(`${data.imported} établissements importés avec succès !`);
+        await loadData();
+      } else {
+        throw new Error(data.error || 'Erreur lors de l\'import');
+      }
+    } catch (error: any) {
+      console.error('Import error:', error);
+      toast.error(error.message || "Erreur lors de l'import des données");
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   if (!isAdmin) {
     return (
       <SuperAdminLayout>
@@ -532,6 +554,25 @@ export default function AdminHealthActors() {
                     Résultats ({filteredEstablishments.length})
                   </CardTitle>
                   <div className="flex gap-1 sm:gap-1.5 w-full sm:w-auto">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleImportCartography}
+                      disabled={isImporting}
+                      className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2"
+                    >
+                      {isImporting ? (
+                        <>
+                          <Download className="mr-0.5 sm:mr-1 h-3 w-3 animate-spin" />
+                          Import...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="mr-0.5 sm:mr-1 h-3 w-3" />
+                          <span className="hidden xs:inline">Import Carto</span>
+                        </>
+                      )}
+                    </Button>
                     <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2">
                       <Download className="mr-0.5 sm:mr-1 h-3 w-3" />
                       <span className="hidden xs:inline">Export</span>

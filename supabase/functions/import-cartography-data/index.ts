@@ -37,22 +37,20 @@ serve(async (req) => {
       throw new Error('Accès refusé - super admin requis')
     }
 
-    // Charger les données de cartographie
-    const cartographyData = await fetch(
-      `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/cartography/providers.json`
-    ).then(res => res.json())
+    // Charger les données de cartographie depuis le fichier JSON
+    const response = await fetch(new URL('../../data/cartography-providers.json', import.meta.url))
+    const cartographyData = await response.json()
 
     const establishments = []
 
-    // Mapper les types
+    // Mapper les types de la cartographie vers les types de la BD
     const typeMapping: Record<string, string> = {
-      'hopital': 'hopital_public',
-      'clinique': 'clinique_privee',
-      'cabinet_medical': 'cabinet_medical',
-      'cabinet_dentaire': 'cabinet_dentaire',
-      'pharmacie': 'pharmacie',
-      'laboratoire': 'laboratoire_analyses',
-      'imagerie': 'centre_imagerie'
+      'hopital': 'chu',
+      'clinique': 'clinique',
+      'cabinet_medical': 'centre_medical',
+      'cabinet_dentaire': 'centre_medical',
+      'laboratoire': 'centre_medical',
+      'imagerie': 'centre_medical'
     }
 
     const secteurMapping: Record<string, string> = {
@@ -67,15 +65,17 @@ serve(async (req) => {
     for (const provider of cartographyData) {
       // Ne traiter que les établissements (pas les pharmacies individuelles)
       if (['hopital', 'clinique', 'cabinet_medical', 'laboratoire', 'imagerie'].includes(provider.type)) {
+        const mappedType = typeMapping[provider.type] || 'centre_medical'
+        
         establishments.push({
           raison_sociale: provider.nom,
-          type_etablissement: typeMapping[provider.type] || 'autre',
+          type_etablissement: mappedType,
           secteur: secteurMapping[provider.secteur] || 'prive',
           province: provider.province,
           ville: provider.ville,
           adresse_rue: provider.adresse_descriptive,
-          latitude: provider.coordonnees?.lat,
-          longitude: provider.coordonnees?.lng,
+          latitude: provider.coordonnees?.lat || null,
+          longitude: provider.coordonnees?.lng || null,
           telephone_standard: provider.telephones?.[0] || null,
           email: provider.email || null,
           site_web: provider.site_web || null,
@@ -89,25 +89,40 @@ serve(async (req) => {
       }
     }
 
-    // Insérer les établissements (ignorer les doublons)
-    const { data: inserted, error: insertError } = await supabaseClient
-      .from('establishments')
-      .upsert(establishments, { 
-        onConflict: 'raison_sociale,ville',
-        ignoreDuplicates: true 
-      })
-      .select()
+    console.log(`Préparation de l'import de ${establishments.length} établissements...`)
 
-    if (insertError) {
-      console.error('Insert error:', insertError)
-      throw insertError
+    // Insérer les établissements par lot pour éviter les timeout
+    const batchSize = 50
+    let imported = 0
+    let errors = 0
+
+    for (let i = 0; i < establishments.length; i += batchSize) {
+      const batch = establishments.slice(i, i + batchSize)
+      
+      const { data, error } = await supabaseClient
+        .from('establishments')
+        .upsert(batch, { 
+          onConflict: 'raison_sociale,ville',
+          ignoreDuplicates: false 
+        })
+        .select()
+
+      if (error) {
+        console.error(`Erreur batch ${i}-${i + batchSize}:`, error)
+        errors += batch.length
+      } else {
+        imported += data?.length || 0
+        console.log(`Batch ${i}-${i + batchSize} importé avec succès`)
+      }
     }
 
     return new Response(
       JSON.stringify({
         success: true,
-        imported: inserted?.length || 0,
-        total: establishments.length
+        imported: imported,
+        errors: errors,
+        total: establishments.length,
+        message: `${imported} établissements importés avec succès${errors > 0 ? `, ${errors} erreurs` : ''}`
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -118,7 +133,10 @@ serve(async (req) => {
     console.error('Error:', error)
     const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue'
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ 
+        error: errorMessage,
+        success: false 
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
