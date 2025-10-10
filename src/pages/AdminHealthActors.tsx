@@ -401,7 +401,9 @@ export default function AdminHealthActors() {
   }
 
   const stats = {
-    establishments: establishments.length,
+    total: establishments.length,
+    imported: establishments.filter((e: any) => e.isFromJson === false).length,
+    notImported: establishments.filter((e: any) => e.isFromJson === true).length,
     professionals: professionals.length,
     pending: establishments.filter(e => e.statut === 'en_validation').length,
     active: establishments.filter(e => e.statut === 'actif').length,
@@ -425,24 +427,26 @@ export default function AdminHealthActors() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {[
-            { label: 'Établissements', value: stats.establishments, icon: Building2, color: 'from-blue-500 to-cyan-500' },
+            { label: 'Total acteurs', value: stats.total, icon: Building2, color: 'from-blue-500 to-cyan-500' },
+            { label: 'Importés en DB', value: stats.imported, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+            { label: 'Non importés', value: stats.notImported, icon: FileText, color: 'from-orange-500 to-amber-500' },
             { label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
-            { label: 'En validation', value: stats.pending, icon: Clock, color: 'from-orange-500 to-amber-500' },
-            { label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+            { label: 'En validation', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-amber-500' },
+            { label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
             { label: 'Revendiqués', value: stats.claimed, icon: LinkIcon, color: 'from-indigo-500 to-purple-500' },
-            { label: 'Non revendiqués', value: stats.unclaimed, icon: FileText, color: 'from-red-500 to-pink-500' }
+            { label: 'Non revendiqués', value: stats.unclaimed, icon: XCircle, color: 'from-red-500 to-pink-500' }
           ].map((stat, i) => (
             <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/70 transition-all">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+              <CardContent className="p-4">
+                <div className="flex flex-col gap-2">
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center self-start`}>
+                    <stat.icon className="w-4 h-4 text-white" />
+                  </div>
                   <div>
                     <p className="text-xs text-muted-foreground">{stat.label}</p>
-                    <p className="text-2xl font-bold mt-1">{stat.value}</p>
-                  </div>
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                    <stat.icon className="w-5 h-5 text-white" />
+                    <p className="text-2xl font-bold mt-0.5">{stat.value}</p>
                   </div>
                 </div>
               </CardContent>
