@@ -64,8 +64,7 @@ import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import AdminUsers from "./pages/AdminUsers";
 import AdminApprovals from "./pages/AdminApprovals";
-import AdminEstablishments from "./pages/AdminEstablishments";
-import AdminProfessionals from "./pages/AdminProfessionals";
+import AdminHealthActors from "./pages/AdminHealthActors";
 import AdminDemo from "./pages/AdminDemo";
 import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
@@ -150,14 +149,9 @@ const App = () => (
                 <AdminApprovals />
               </ProtectedRoute>
             } />
-            <Route path="/superadmin/establishments" element={
+            <Route path="/superadmin/health-actors" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminEstablishments />
-              </ProtectedRoute>
-            } />
-            <Route path="/superadmin/professionals" element={
-              <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminProfessionals />
+                <AdminHealthActors />
               </ProtectedRoute>
             } />
             <Route path="/superadmin/audit" element={
