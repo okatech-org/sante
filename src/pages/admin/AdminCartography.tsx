@@ -139,7 +139,7 @@ export default function AdminCartography() {
         cabinets: unique.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
         laboratoires: unique.filter(p => p.type === 'laboratoire').length,
         imagerie: unique.filter(p => p.type === 'imagerie').length,
-        institutions: unique.filter(p => p.type === 'institution').length
+        institutions: unique.filter(p => p.type === 'institution' && p.source === 'Plateforme').length
       });
     } catch (error: any) {
       console.error("Erreur:", error);
