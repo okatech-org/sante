@@ -69,11 +69,26 @@ export default function AdminCartography() {
 
       if (estabError) throw estabError;
 
+      // Normaliser le type d'établissement vers les catégories CartographyProvider
+      const normalizeEstablishmentType = (type: string): CartographyProvider['type'] => {
+        // Mapper les types d'établissements vers les catégories d'affichage
+        const typeMap: Record<string, CartographyProvider['type']> = {
+          'chu': 'hopital',
+          'chr': 'hopital',
+          'hopital_departemental': 'hopital',
+          'hopital_confessionnel': 'hopital',
+          'polyclinique': 'clinique',
+          'clinique': 'clinique',
+          'centre_medical': 'cabinet_medical',
+        };
+        return typeMap[type] || 'cabinet_medical';
+      };
+
       // Convertir les establishments au format CartographyProvider
       const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
         id: estab.id,
         nom: estab.raison_sociale,
-        type: estab.type_etablissement as any,
+        type: normalizeEstablishmentType(estab.type_etablissement),
         province: estab.province,
         ville: estab.ville,
         adresse: [estab.adresse_rue, estab.adresse_quartier, estab.adresse_arrondissement].filter(Boolean).join(', '),
