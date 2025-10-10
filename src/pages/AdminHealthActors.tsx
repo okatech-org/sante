@@ -384,87 +384,87 @@ export default function AdminHealthActors() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="container max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Activity className="h-8 w-8 text-primary" />
-              Acteurs de Santé
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Gérez les établissements de santé et les professionnels du réseau SANTE.GA
-            </p>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-bold">Acteurs de Santé</h1>
           </div>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Gérez les établissements de santé et les professionnels du réseau SANTE.GA
+          </p>
         </div>
 
         {/* Stats globales */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Établissements</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalEstablishments}</CardTitle>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Établissements</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl">{stats.totalEstablishments}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Actifs</CardDescription>
-              <CardTitle className="text-3xl text-green-600">{stats.activeEstablishments}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Actifs</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl text-green-600">{stats.activeEstablishments}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Professionnels</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalProfessionals}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Professionnels</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl">{stats.totalProfessionals}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Vérifiés</CardDescription>
-              <CardTitle className="text-3xl text-green-600">{stats.verifiedProfessionals}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Vérifiés</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl text-green-600">{stats.verifiedProfessionals}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Privé</CardDescription>
-              <CardTitle className="text-3xl">{stats.privateEstablishments}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Privé</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl">{stats.privateEstablishments}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Médecins</CardDescription>
-              <CardTitle className="text-3xl">{stats.doctors}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardDescription className="text-xs sm:text-sm">Médecins</CardDescription>
+              <CardTitle className="text-xl sm:text-3xl">{stats.doctors}</CardTitle>
             </CardHeader>
           </Card>
         </div>
 
         {/* Onglets principaux */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="establishments" className="flex items-center gap-2">
-              <Building2 className="h-4 w-4" />
-              Établissements de Santé
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
+            <TabsTrigger value="establishments" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 sm:py-3">
+              <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Établissements</span>
+              <span className="xs:hidden">Étab.</span>
             </TabsTrigger>
-            <TabsTrigger value="professionals" className="flex items-center gap-2">
-              <Stethoscope className="h-4 w-4" />
-              Professionnels Individuels
+            <TabsTrigger value="professionals" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 sm:py-3">
+              <Stethoscope className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Professionnels</span>
+              <span className="xs:hidden">Prof.</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Onglet Établissements */}
-          <TabsContent value="establishments" className="space-y-6">
+          <TabsContent value="establishments" className="space-y-4 sm:space-y-6 mt-0">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
                   Filtres
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                   <div className="space-y-2">
-                    <Label htmlFor="estab-search">
-                      <Search className="h-4 w-4 inline mr-2" />
+                    <Label htmlFor="estab-search" className="text-xs sm:text-sm">
+                      <Search className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
                       Rechercher
                     </Label>
                     <Input
@@ -472,13 +472,14 @@ export default function AdminHealthActors() {
                       placeholder="Nom, ville..."
                       value={establishmentSearch}
                       onChange={(e) => setEstablishmentSearch(e.target.value)}
+                      className="h-9 sm:h-10 text-sm"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="estab-type">Type</Label>
+                    <Label htmlFor="estab-type" className="text-xs sm:text-sm">Type</Label>
                     <Select value={establishmentTypeFilter} onValueChange={setEstablishmentTypeFilter}>
-                      <SelectTrigger id="estab-type">
+                      <SelectTrigger id="estab-type" className="h-9 sm:h-10 text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -491,9 +492,9 @@ export default function AdminHealthActors() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="estab-province">Province</Label>
+                    <Label htmlFor="estab-province" className="text-xs sm:text-sm">Province</Label>
                     <Select value={establishmentProvinceFilter} onValueChange={setEstablishmentProvinceFilter}>
-                      <SelectTrigger id="estab-province">
+                      <SelectTrigger id="estab-province" className="h-9 sm:h-10 text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -509,53 +510,143 @@ export default function AdminHealthActors() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Résultats ({filteredEstablishments.length})</CardTitle>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={exportData}>
-                      <Download className="mr-2 h-4 w-4" />
-                      Exporter
+              <CardHeader className="pb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <CardTitle className="text-base sm:text-lg">
+                    Résultats ({filteredEstablishments.length})
+                  </CardTitle>
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                      <Download className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline">Exporter</span>
+                      <span className="xs:hidden">Export</span>
                     </Button>
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Nouvel Établissement
+                    <Button size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+                      <Plus className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Nouveau</span>
+                      <span className="sm:hidden">+</span>
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0 sm:p-6">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="text-muted-foreground">Chargement...</div>
+                    <div className="text-muted-foreground text-sm">Chargement...</div>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nom</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Contact</TableHead>
-                          <TableHead>Localisation</TableHead>
-                          <TableHead>Capacité</TableHead>
-                          <TableHead>CNAMGS</TableHead>
-                          <TableHead>Statut</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredEstablishments.map((establishment) => (
-                          <TableRow key={establishment.id}>
-                            <TableCell className="font-medium">
-                              {establishment.raison_sociale}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
+                  <div className="overflow-x-auto -mx-2 sm:mx-0">
+                    <div className="inline-block min-w-full align-middle">
+                      <Table className="text-xs sm:text-sm">
+                        <TableHeader className="hidden sm:table-header-group">
+                          <TableRow>
+                            <TableHead>Nom</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Contact</TableHead>
+                            <TableHead>Localisation</TableHead>
+                            <TableHead>Capacité</TableHead>
+                            <TableHead>CNAMGS</TableHead>
+                            <TableHead>Statut</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredEstablishments.map((establishment) => (
+                            <TableRow key={establishment.id} className="block sm:table-row border-b sm:border-b-0 py-3 sm:py-0">
+                              {/* Vue mobile - cards */}
+                              <TableCell className="block sm:hidden p-4" colSpan={8}>
+                                <div className="space-y-3">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <div className="font-semibold text-base mb-1">
+                                        {establishment.raison_sociale}
+                                      </div>
+                                      <div className="flex gap-2 mb-2">
+                                        <Badge variant="outline" className="text-xs">
+                                          {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
+                                        </Badge>
+                                        <Badge variant="secondary" className="text-xs">
+                                          {establishment.secteur}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                    {establishment.statut === 'actif' && (
+                                      <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
+                                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                                        Actif
+                                      </Badge>
+                                    )}
+                                    {establishment.statut === 'en_validation' && (
+                                      <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-xs">
+                                        <AlertCircle className="h-3 w-3 mr-1" />
+                                        Validation
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="grid grid-cols-2 gap-2 text-xs">
+                                    <div>
+                                      <div className="text-muted-foreground mb-1">Contact</div>
+                                      {establishment.telephone_standard && (
+                                        <div className="flex items-center gap-1">
+                                          <Phone className="h-3 w-3" />
+                                          {establishment.telephone_standard}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <div className="text-muted-foreground mb-1">Localisation</div>
+                                      <div>{establishment.ville}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-muted-foreground mb-1">Capacité</div>
+                                      <div className="flex items-center gap-1">
+                                        <Bed className="h-3 w-3" />
+                                        {establishment.nombre_lits_total || 0} lits
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-muted-foreground mb-1">CNAMGS</div>
+                                      {establishment.cnamgs_conventionne ? (
+                                        <Badge variant="default" className="text-xs">Conv.</Badge>
+                                      ) : (
+                                        <Badge variant="secondary" className="text-xs">Non</Badge>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex gap-2 pt-2 border-t">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="flex-1 text-xs"
+                                      onClick={() => {
+                                        setSelectedItem(establishment);
+                                        setShowDetailsDialog(true);
+                                      }}
+                                    >
+                                      <Eye className="h-3 w-3 mr-1" />
+                                      Détails
+                                    </Button>
+                                    {establishment.statut === 'en_validation' && (
+                                      <Button
+                                        size="sm"
+                                        className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
+                                        onClick={() => openActionDialog(establishment, 'approve')}
+                                      >
+                                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                                        Approuver
+                                      </Button>
+                                    )}
+                                  </div>
+                                </div>
+                              </TableCell>
+
+                              {/* Vue desktop - table */}
+                              <TableCell className="hidden sm:table-cell font-medium">
+                                {establishment.raison_sociale}
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
                               <div className="text-sm space-y-1">
                                 {establishment.telephone_standard && (
                                   <div className="flex items-center gap-1">
@@ -648,6 +739,7 @@ export default function AdminHealthActors() {
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   </div>
                 )}
               </CardContent>
