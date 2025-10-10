@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail } from "lucide-react";
+import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -81,12 +81,13 @@ export default function AdminHealthActors() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [claimFilter, setClaimFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("date-desc");
   const [isLoading, setIsLoading] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showTokenDialog, setShowTokenDialog] = useState(false);
   const [generatedToken, setGeneratedToken] = useState("");
-  const [showJsonData, setShowJsonData] = useState(true); // Afficher les données JSON par défaut
+  const [showJsonData, setShowJsonData] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -94,7 +95,7 @@ export default function AdminHealthActors() {
 
   useEffect(() => {
     filterEstablishments();
-  }, [searchTerm, statusFilter, typeFilter, claimFilter, establishments]);
+  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, establishments]);
 
   useEffect(() => {
     filterProfessionals();
@@ -217,6 +218,34 @@ export default function AdminHealthActors() {
     } else if (claimFilter === "unclaimed") {
       filtered = filtered.filter(est => est.account_claimed === false);
     }
+
+    // Tri intelligent
+    filtered = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "name-asc":
+          return a.raison_sociale.localeCompare(b.raison_sociale);
+        case "name-desc":
+          return b.raison_sociale.localeCompare(a.raison_sociale);
+        case "date-asc":
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case "date-desc":
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case "city-asc":
+          return a.ville.localeCompare(b.ville);
+        case "city-desc":
+          return b.ville.localeCompare(a.ville);
+        case "type-asc":
+          return a.type_etablissement.localeCompare(b.type_etablissement);
+        case "type-desc":
+          return b.type_etablissement.localeCompare(a.type_etablissement);
+        case "status-claimed":
+          return (b.account_claimed ? 1 : 0) - (a.account_claimed ? 1 : 0);
+        case "status-unclaimed":
+          return (a.account_claimed ? 1 : 0) - (b.account_claimed ? 1 : 0);
+        default:
+          return 0;
+      }
+    });
 
     setFilteredEstablishments(filtered);
   };
@@ -482,15 +511,15 @@ export default function AdminHealthActors() {
           <TabsContent value="establishments" className="space-y-4">
             {/* Filters */}
             <Card className="bg-card/50 backdrop-blur-xl border-border/50">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Filtres</CardTitle>
+              <CardHeader className="flex flex-row items-center justify-between pb-3">
+                <CardTitle className="text-lg">Filtres & Tri</CardTitle>
                 <div className="flex gap-2">
                   <Button 
                     onClick={handleImportCartography} 
                     variant="outline" 
-                    size="sm" 
-                    className="gap-2"
+                    size="sm"
                     disabled={isImporting}
+                    className="gap-2"
                   >
                     <Upload className="w-4 h-4" />
                     {isImporting ? "Import en cours..." : "Importer Carto"}
@@ -502,48 +531,108 @@ export default function AdminHealthActors() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Rechercher..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
+                {/* Recherche */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Rechercher par nom ou ville..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-background/50"
+                  />
+                </div>
+
+                {/* Grille de filtres */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                  {/* Tri */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1.5 block font-medium">
+                      <ArrowUpDown className="w-3 h-3 inline mr-1" />
+                      Trier par
+                    </label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="date-desc">Plus récent d'abord</SelectItem>
+                        <SelectItem value="date-asc">Plus ancien d'abord</SelectItem>
+                        <SelectItem value="name-asc">Nom (A → Z)</SelectItem>
+                        <SelectItem value="name-desc">Nom (Z → A)</SelectItem>
+                        <SelectItem value="city-asc">Ville (A → Z)</SelectItem>
+                        <SelectItem value="city-desc">Ville (Z → A)</SelectItem>
+                        <SelectItem value="type-asc">Type (A → Z)</SelectItem>
+                        <SelectItem value="status-claimed">Revendiqués d'abord</SelectItem>
+                        <SelectItem value="status-unclaimed">Non revendiqués d'abord</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Filtrer par statut" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les statuts</SelectItem>
-                      <SelectItem value="actif">Actif</SelectItem>
-                      <SelectItem value="en_validation">En validation</SelectItem>
-                      <SelectItem value="suspendu">Suspendu</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Filtrer par type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les types</SelectItem>
-                      {Object.entries(establishmentTypes).map(([key, label]) => (
-                        <SelectItem key={key} value={key}>{label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={claimFilter} onValueChange={setClaimFilter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Filtrer par revendication" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous</SelectItem>
-                      <SelectItem value="claimed">Revendiqués</SelectItem>
-                      <SelectItem value="unclaimed">Non revendiqués</SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                  {/* Statut */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1.5 block font-medium">Statut</label>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="all">Tous les statuts</SelectItem>
+                        <SelectItem value="actif">Actif</SelectItem>
+                        <SelectItem value="en_validation">En validation</SelectItem>
+                        <SelectItem value="suspendu">Suspendu</SelectItem>
+                        <SelectItem value="inactif">Inactif</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Type */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1.5 block font-medium">Type</label>
+                    <Select value={typeFilter} onValueChange={setTypeFilter}>
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="all">Tous les types</SelectItem>
+                        {Object.entries(establishmentTypes).map(([key, label]) => (
+                          <SelectItem key={key} value={key}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Revendication */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1.5 block font-medium">Revendication</label>
+                    <Select value={claimFilter} onValueChange={setClaimFilter}>
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="all">Tous</SelectItem>
+                        <SelectItem value="claimed">Revendiqués</SelectItem>
+                        <SelectItem value="unclaimed">Non revendiqués</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Reset */}
+                  <div className="flex items-end">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setStatusFilter("all");
+                        setTypeFilter("all");
+                        setClaimFilter("all");
+                        setSortBy("date-desc");
+                      }}
+                    >
+                      Réinitialiser
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
