@@ -545,10 +545,112 @@ export default function AdminHealthActors() {
                     <div className="text-muted-foreground text-[10px] sm:text-xs">Chargement...</div>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <div className="inline-block min-w-full align-middle">
+                  <>
+                    {/* Vue Mobile - Cards similaire à Cartography */}
+                    <div className="md:hidden space-y-2 p-2">
+                      {filteredEstablishments.map((establishment) => (
+                        <Card 
+                          key={establishment.id} 
+                          className="p-2.5 hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => {
+                            setSelectedItem(establishment);
+                            setShowDetailsDialog(true);
+                          }}
+                        >
+                          <div className="space-y-2">
+                            {/* Header avec type et nom */}
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-sm line-clamp-2 mb-1">
+                                  {establishment.raison_sociale}
+                                </h3>
+                                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                                  <span className="truncate">{establishment.ville}</span>
+                                </div>
+                              </div>
+                              {establishment.statut === 'actif' && (
+                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                  Actif
+                                </Badge>
+                              )}
+                              {establishment.statut === 'en_validation' && (
+                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                  <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
+                                  Validation
+                                </Badge>
+                              )}
+                            </div>
+
+                            {/* Badges */}
+                            <div className="flex flex-wrap gap-1">
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
+                              </Badge>
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                {establishment.secteur}
+                              </Badge>
+                              {establishment.cnamgs_conventionne && (
+                                <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-blue-600">CNAMGS</Badge>
+                              )}
+                              {establishment.service_urgences_actif && (
+                                <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-red-600">Urgences</Badge>
+                              )}
+                            </div>
+
+                            {/* Infos */}
+                            <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                              {establishment.telephone_standard && (
+                                <div className="flex items-center gap-0.5 truncate">
+                                  <Phone className="h-2.5 w-2.5 shrink-0" />
+                                  <span className="truncate">{establishment.telephone_standard}</span>
+                                </div>
+                              )}
+                              <div className="flex items-center gap-0.5">
+                                <Bed className="h-2.5 w-2.5 shrink-0" />
+                                {establishment.nombre_lits_total || 0} lits
+                              </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-1.5 pt-1.5 border-t">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 text-[10px] h-7 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedItem(establishment);
+                                  setShowDetailsDialog(true);
+                                }}
+                              >
+                                <Eye className="h-2.5 w-2.5 mr-0.5" />
+                                Détails
+                              </Button>
+                              {establishment.statut === 'en_validation' && (
+                                <Button
+                                  size="sm"
+                                  className="flex-1 bg-green-600 hover:bg-green-700 text-[10px] h-7 px-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openActionDialog(establishment, 'approve');
+                                  }}
+                                >
+                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                  Approuver
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+
+                    {/* Vue Desktop - Table */}
+                    <div className="hidden md:block overflow-x-auto">
                       <Table className="text-[11px] sm:text-xs">
-                        <TableHeader className="hidden sm:table-header-group">
+                        <TableHeader>
                           <TableRow>
                             <TableHead className="text-[10px] sm:text-xs">Nom</TableHead>
                             <TableHead className="text-[10px] sm:text-xs">Type</TableHead>
@@ -560,202 +662,112 @@ export default function AdminHealthActors() {
                             <TableHead className="text-right text-[10px] sm:text-xs">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
-                        <TableBody className="divide-y-4 divide-background">
+                        <TableBody>
                           {filteredEstablishments.map((establishment) => (
-                            <TableRow key={establishment.id} className="block sm:table-row border border-border rounded-lg mb-2 sm:mb-1 py-2 sm:py-0">
-                              {/* Vue mobile - cards */}
-                              <TableCell className="block sm:hidden p-2.5" colSpan={8}>
-                                <div className="space-y-2">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <div className="flex-1 min-w-0">
-                                      <div className="font-semibold text-sm mb-1 truncate">
-                                        {establishment.raison_sociale}
-                                      </div>
-                                      <div className="flex gap-1.5 mb-1.5 flex-wrap">
-                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                          {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
-                                        </Badge>
-                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                          {establishment.secteur}
-                                        </Badge>
-                                      </div>
-                                    </div>
-                                    {establishment.statut === 'actif' && (
-                                      <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0 shrink-0">
-                                        <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
-                                        Actif
-                                      </Badge>
-                                    )}
-                                    {establishment.statut === 'en_validation' && (
-                                      <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-[10px] px-1.5 py-0 shrink-0">
-                                        <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
-                                        Validation
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                                    <div className="min-w-0">
-                                      <div className="text-muted-foreground mb-0.5">Contact</div>
-                                      {establishment.telephone_standard && (
-                                        <div className="flex items-center gap-0.5 truncate">
-                                          <Phone className="h-2.5 w-2.5 shrink-0" />
-                                          <span className="truncate">{establishment.telephone_standard}</span>
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="min-w-0">
-                                      <div className="text-muted-foreground mb-0.5">Localisation</div>
-                                      <div className="truncate">{establishment.ville}</div>
-                                    </div>
-                                    <div className="min-w-0">
-                                      <div className="text-muted-foreground mb-0.5">Capacité</div>
-                                      <div className="flex items-center gap-0.5">
-                                        <Bed className="h-2.5 w-2.5 shrink-0" />
-                                        {establishment.nombre_lits_total || 0} lits
-                                      </div>
-                                    </div>
-                                    <div className="min-w-0">
-                                      <div className="text-muted-foreground mb-0.5">CNAMGS</div>
-                                      {establishment.cnamgs_conventionne ? (
-                                        <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
-                                      ) : (
-                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  <div className="flex gap-1.5 pt-1.5 border-t">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="flex-1 text-[10px] h-7 px-2"
-                                      onClick={() => {
-                                        setSelectedItem(establishment);
-                                        setShowDetailsDialog(true);
-                                      }}
-                                    >
-                                      <Eye className="h-2.5 w-2.5 mr-0.5" />
-                                      Détails
-                                    </Button>
-                                    {establishment.statut === 'en_validation' && (
-                                      <Button
-                                        size="sm"
-                                        className="flex-1 bg-green-600 hover:bg-green-700 text-[10px] h-7 px-2"
-                                        onClick={() => openActionDialog(establishment, 'approve')}
-                                      >
-                                        <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
-                                        Approuver
-                                      </Button>
-                                    )}
-                                  </div>
-                                </div>
-                              </TableCell>
-
-                              {/* Vue desktop - table */}
-                              <TableCell className="hidden sm:table-cell font-medium">
+                            <TableRow key={establishment.id} className="hover:bg-accent/50">
+                              <TableCell className="font-medium text-[11px]">
                                 {establishment.raison_sociale}
                               </TableCell>
-                              <TableCell className="hidden sm:table-cell">
+                              <TableCell>
                                 <Badge variant="outline" className="text-[10px]">
                                   {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="hidden sm:table-cell">
-                              <div className="text-[11px] space-y-0.5">
-                                {establishment.telephone_standard && (
-                                  <div className="flex items-center gap-0.5">
-                                    <Phone className="h-2.5 w-2.5" />
-                                    <span className="truncate">{establishment.telephone_standard}</span>
-                                  </div>
+                              <TableCell>
+                                <div className="text-[11px] space-y-0.5">
+                                  {establishment.telephone_standard && (
+                                    <div className="flex items-center gap-0.5">
+                                      <Phone className="h-2.5 w-2.5" />
+                                      <span className="truncate">{establishment.telephone_standard}</span>
+                                    </div>
+                                  )}
+                                  {establishment.email && (
+                                    <div className="flex items-center gap-0.5">
+                                      <Mail className="h-2.5 w-2.5" />
+                                      <span className="truncate">{establishment.email}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="text-[11px]">
+                                  <div className="truncate">{establishment.ville}</div>
+                                  <div className="text-muted-foreground truncate">{establishment.province}</div>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-0.5 text-[11px]">
+                                  <Bed className="h-2.5 w-2.5" />
+                                  {establishment.nombre_lits_total || 0} lits
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                {establishment.cnamgs_conventionne ? (
+                                  <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
+                                ) : (
+                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
                                 )}
-                                {establishment.email && (
-                                  <div className="flex items-center gap-0.5">
-                                    <Mail className="h-2.5 w-2.5" />
-                                    <span className="truncate">{establishment.email}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <div className="text-[11px]">
-                                <div className="truncate">{establishment.ville}</div>
-                                <div className="text-muted-foreground truncate">{establishment.province}</div>
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              <div className="flex items-center gap-0.5 text-[11px]">
-                                <Bed className="h-2.5 w-2.5" />
-                                {establishment.nombre_lits_total || 0} lits
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              {establishment.cnamgs_conventionne ? (
-                                <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
-                              ) : (
-                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
-                              )}
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              {establishment.statut === 'actif' && (
-                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0">
-                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
-                                  Actif
-                                </Badge>
-                              )}
-                              {establishment.statut === 'en_validation' && (
-                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                                  <AlertCircle className="h-3 w-3 mr-1" />
-                                  En validation
-                                </Badge>
-                              )}
-                              {establishment.statut === 'suspendu' && (
-                                <Badge variant="destructive">
-                                  <Ban className="h-3 w-3 mr-1" />
-                                  Suspendu
-                                </Badge>
-                              )}
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell text-right">
-                              <div className="flex justify-end gap-1">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedItem(establishment);
-                                    setShowDetailsDialog(true);
-                                  }}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                {establishment.statut === 'en_validation' && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-green-600 hover:text-green-700"
-                                    onClick={() => openActionDialog(establishment, 'approve')}
-                                  >
-                                    <CheckCircle2 className="h-4 w-4" />
-                                  </Button>
-                                )}
+                              </TableCell>
+                              <TableCell>
                                 {establishment.statut === 'actif' && (
+                                  <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0">
+                                    <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                    Actif
+                                  </Badge>
+                                )}
+                                {establishment.statut === 'en_validation' && (
+                                  <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                                    <AlertCircle className="h-3 w-3 mr-1" />
+                                    En validation
+                                  </Badge>
+                                )}
+                                {establishment.statut === 'suspendu' && (
+                                  <Badge variant="destructive">
+                                    <Ban className="h-3 w-3 mr-1" />
+                                    Suspendu
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-1">
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-red-600 hover:text-red-700"
-                                    onClick={() => openActionDialog(establishment, 'suspend')}
+                                    onClick={() => {
+                                      setSelectedItem(establishment);
+                                      setShowDetailsDialog(true);
+                                    }}
                                   >
-                                    <Ban className="h-4 w-4" />
+                                    <Eye className="h-4 w-4" />
                                   </Button>
-                                )}
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                                  {establishment.statut === 'en_validation' && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-green-600 hover:text-green-700"
+                                      onClick={() => openActionDialog(establishment, 'approve')}
+                                    >
+                                      <CheckCircle2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                  {establishment.statut === 'actif' && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-red-600 hover:text-red-700"
+                                      onClick={() => openActionDialog(establishment, 'suspend')}
+                                    >
+                                      <Ban className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
-                  </div>
+                  </>
                 )}
               </CardContent>
             </Card>
