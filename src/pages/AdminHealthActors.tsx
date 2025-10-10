@@ -561,7 +561,7 @@ export default function AdminHealthActors() {
     total: establishments.length,
     establishments: realEstablishments.length,
     subscriptions: establishments.filter(e => e.account_claimed === true).length,
-    professionals: professionals.length + professionalCabinets.length,
+    professionals: professionalCabinets.length,
     pending: establishments.filter(e => e.statut === 'en_validation').length,
     active: establishments.filter(e => e.statut === 'actif').length,
     claimed: establishments.filter(e => e.account_claimed === true).length,
