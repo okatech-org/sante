@@ -127,9 +127,31 @@ export default function AdminCartography() {
   };
 
   const handleSync = async () => {
-    toast.info("Synchronisation en cours...");
-    await loadData();
-    toast.success("Données synchronisées avec succès");
+    try {
+      setIsLoading(true);
+      toast.info("Synchronisation avec OpenStreetMap en cours...");
+      
+      // Appeler la fonction Edge pour récupérer les données OSM
+      const { data, error } = await supabase.functions.invoke('fetch-osm-health-providers', {
+        body: { province: 'all', city: 'all' }
+      });
+
+      if (error) throw error;
+
+      if (!data.success) {
+        throw new Error(data.error || 'Échec de la synchronisation OSM');
+      }
+
+      toast.success(`${data.count} établissements OSM importés`);
+      
+      // Recharger les données depuis la base
+      await loadData();
+    } catch (error: any) {
+      console.error('Erreur de synchronisation:', error);
+      toast.error("Erreur lors de la synchronisation OSM");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleExport = () => {
