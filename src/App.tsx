@@ -86,6 +86,7 @@ import DemoFinances from "./pages/demo/hospital/DemoFinances";
 import DemoStatistics from "./pages/demo/hospital/DemoStatistics";
 import DemoSettings from "./pages/demo/hospital/DemoSettings";
 import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
+import AdminCartography from "./pages/admin/AdminCartography";
 
 import NotFound from "./pages/NotFound";
 import ClaimEstablishment from "./pages/ClaimEstablishment";
@@ -235,6 +236,11 @@ const App = () => (
             <Route path="/superadmin/osm-sync" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <OSMSync />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/cartography" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminCartography />
               </ProtectedRoute>
             } />
             <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />

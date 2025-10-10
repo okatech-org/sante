@@ -267,74 +267,94 @@ export default function AdminUsers() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6 px-2 sm:px-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Users className="h-8 w-8 text-primary" />
-              {t('admin.users')}
-            </h1>
-            <p className="text-muted-foreground mt-1">{t('admin.usersSubtitle')}</p>
-          </div>
-          <Button onClick={exportUsers} variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            {t('common.export')} CSV
-          </Button>
-        </div>
+        <Card className="border-2">
+          <CardHeader className="p-3 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+                  <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">{t('admin.users')}</h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{t('admin.usersSubtitle')}</p>
+                </div>
+              </div>
+              <Button onClick={exportUsers} variant="outline" size="sm" className="w-full sm:w-auto">
+                <Download className="mr-2 h-4 w-4" />
+                {t('common.export')} CSV
+              </Button>
+            </div>
+          </CardHeader>
+        </Card>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>{t('admin.totalUsers')}</CardDescription>
-              <CardTitle className="text-3xl">{stats.total}</CardTitle>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="text-[10px] sm:text-xs">{t('admin.totalUsers')}</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.total}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>{t('admin.administrators')}</CardDescription>
-              <CardTitle className="text-3xl">{stats.admins}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="text-[10px] sm:text-xs">{t('admin.administrators')}</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.admins}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>{t('admin.patients')}</CardDescription>
-              <CardTitle className="text-3xl">{stats.patients}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="text-[10px] sm:text-xs">{t('admin.patients')}</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.patients}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>{t('admin.professionals')}</CardDescription>
-              <CardTitle className="text-3xl">{stats.professionals}</CardTitle>
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="text-[10px] sm:text-xs">{t('admin.professionals')}</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.professionals}</CardTitle>
             </CardHeader>
           </Card>
         </div>
 
-        <Tabs defaultValue="all" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto">
-            <TabsTrigger value="all">{t('admin.allUsers')}</TabsTrigger>
-            <TabsTrigger value="manage">{t('admin.manageRoles')}</TabsTrigger>
-          </TabsList>
+        <Card className="border-2">
+          <Tabs defaultValue="all" className="w-full">
+            <div className="border-b">
+              <TabsList className="w-full grid grid-cols-2 h-auto bg-transparent p-0">
+                <TabsTrigger 
+                  value="all" 
+                  className="text-xs sm:text-sm py-2.5 sm:py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                >
+                  {t('admin.allUsers')}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="manage" 
+                  className="text-xs sm:text-sm py-2.5 sm:py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                >
+                  {t('admin.manageRoles')}
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-          {/* Onglet Liste des utilisateurs */}
-          <TabsContent value="all" className="space-y-4">
-            {/* Filtres */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="search">
-                      <Search className="h-4 w-4 inline mr-2" />
-                      Rechercher
-                    </Label>
-                    <Input
-                      id="search"
-                      placeholder="Nom, email ou téléphone..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
+            {/* Onglet Liste des utilisateurs */}
+            <TabsContent value="all" className="space-y-3 sm:space-y-4 mt-0 p-2 sm:p-3">
+              {/* Filtres */}
+              <Card className="border shadow-sm">
+                <CardContent className="p-2 sm:p-3 pt-3 sm:pt-6">
+                  <div className="grid md:grid-cols-3 gap-2 sm:gap-4">
+                    <div className="space-y-1 sm:space-y-2">
+                      <Label htmlFor="search" className="text-xs sm:text-sm">
+                        <Search className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
+                        Rechercher
+                      </Label>
+                      <Input
+                        id="search"
+                        placeholder="Nom, email ou téléphone..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="h-8 text-xs sm:text-sm"
+                      />
+                    </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="filter">
@@ -363,7 +383,8 @@ export default function AdminUsers() {
                   <div className="flex items-end">
                     <Button 
                       variant="outline" 
-                      className="w-full"
+                      size="sm"
+                      className="w-full h-8 text-xs sm:text-sm"
                       onClick={() => {
                         setSearchTerm("");
                         setFilterRole("all");
@@ -377,14 +398,14 @@ export default function AdminUsers() {
             </Card>
 
             {/* Table */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
+            <Card className="border shadow-sm">
+              <CardHeader className="p-2 sm:p-3">
+                <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
                   Résultats ({filteredUsers.length})
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0 sm:p-3 pt-0">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <div className="text-muted-foreground">Chargement...</div>
@@ -546,7 +567,8 @@ export default function AdminUsers() {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+      </Card>
+    </div>
 
       {/* Dialog de confirmation de suppression */}
       <AlertDialog open={!!userToRemove} onOpenChange={() => setUserToRemove(null)}>

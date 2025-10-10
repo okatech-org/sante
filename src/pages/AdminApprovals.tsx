@@ -310,65 +310,69 @@ export default function AdminApprovals() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6 px-2 sm:px-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Clock className="h-8 w-8 text-warning" />
-              {t('approvals.title')}
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              {t('approvals.subtitle')}
-            </p>
-          </div>
-          <Badge variant="outline" className="text-lg px-4 py-2">
-            {stats.total} {t('approvals.pending')}
-          </Badge>
-        </div>
+        <Card className="border-2">
+          <CardHeader className="p-3 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 rounded-lg bg-warning/10 shrink-0">
+                  <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-warning" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">{t('approvals.title')}</h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{t('approvals.subtitle')}</p>
+                </div>
+              </div>
+              <Badge variant="outline" className="text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2 w-full sm:w-auto justify-center">
+                {stats.total} {t('approvals.pending')}
+              </Badge>
+            </div>
+          </CardHeader>
+        </Card>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>{t('approvals.total')}</CardDescription>
-              <CardTitle className="text-3xl">{stats.total}</CardTitle>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="text-[10px] sm:text-xs">{t('approvals.total')}</CardDescription>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.total}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-1">
-                <Stethoscope className="h-4 w-4" />
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs">
+                <Stethoscope className="h-2.5 w-2.5 sm:h-4 sm:w-4" />
                 {t('approvals.doctors')}
               </CardDescription>
-              <CardTitle className="text-3xl">{stats.doctors}</CardTitle>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.doctors}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-1">
-                <Pill className="h-4 w-4" />
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs">
+                <Pill className="h-2.5 w-2.5 sm:h-4 sm:w-4" />
                 {t('approvals.pharmacies')}
               </CardDescription>
-              <CardTitle className="text-3xl">{stats.pharmacies}</CardTitle>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.pharmacies}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-1">
-                <TestTube className="h-4 w-4" />
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs">
+                <TestTube className="h-2.5 w-2.5 sm:h-4 sm:w-4" />
                 {t('approvals.laboratories')}
               </CardDescription>
-              <CardTitle className="text-3xl">{stats.laboratories}</CardTitle>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.laboratories}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription className="flex items-center gap-1">
-                <Building2 className="h-4 w-4" />
+          <Card className="border-2">
+            <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+              <CardDescription className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs">
+                <Building2 className="h-2.5 w-2.5 sm:h-4 sm:w-4" />
                 {t('approvals.hospitals')}
               </CardDescription>
-              <CardTitle className="text-3xl">{stats.hospitals}</CardTitle>
+              <CardTitle className="text-lg sm:text-2xl lg:text-3xl">{stats.hospitals}</CardTitle>
             </CardHeader>
           </Card>
         </div>
