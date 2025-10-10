@@ -629,10 +629,13 @@ export type Database = {
       }
       establishments: {
         Row: {
+          account_claimed: boolean | null
           adresse_arrondissement: string | null
           adresse_quartier: string | null
           adresse_rue: string | null
           capital: number | null
+          claimed_at: string | null
+          claimed_by: string | null
           cnamgs_conventionne: boolean | null
           cnamgs_date_debut: string | null
           cnamgs_date_fin: string | null
@@ -649,6 +652,7 @@ export type Database = {
           email: string | null
           forme_juridique: string | null
           id: string
+          invitation_token: string | null
           latitude: number | null
           longitude: number | null
           nombre_avis: number | null
@@ -674,10 +678,13 @@ export type Database = {
           whatsapp_business: string | null
         }
         Insert: {
+          account_claimed?: boolean | null
           adresse_arrondissement?: string | null
           adresse_quartier?: string | null
           adresse_rue?: string | null
           capital?: number | null
+          claimed_at?: string | null
+          claimed_by?: string | null
           cnamgs_conventionne?: boolean | null
           cnamgs_date_debut?: string | null
           cnamgs_date_fin?: string | null
@@ -694,6 +701,7 @@ export type Database = {
           email?: string | null
           forme_juridique?: string | null
           id?: string
+          invitation_token?: string | null
           latitude?: number | null
           longitude?: number | null
           nombre_avis?: number | null
@@ -719,10 +727,13 @@ export type Database = {
           whatsapp_business?: string | null
         }
         Update: {
+          account_claimed?: boolean | null
           adresse_arrondissement?: string | null
           adresse_quartier?: string | null
           adresse_rue?: string | null
           capital?: number | null
+          claimed_at?: string | null
+          claimed_by?: string | null
           cnamgs_conventionne?: boolean | null
           cnamgs_date_debut?: string | null
           cnamgs_date_fin?: string | null
@@ -739,6 +750,7 @@ export type Database = {
           email?: string | null
           forme_juridique?: string | null
           id?: string
+          invitation_token?: string | null
           latitude?: number | null
           longitude?: number | null
           nombre_avis?: number | null
@@ -1907,6 +1919,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      claim_establishment_account: {
+        Args: { _token: string; _user_id: string }
+        Returns: string
+      }
+      generate_establishment_invitation_token: {
+        Args: { _establishment_id: string }
+        Returns: string
+      }
       generate_prescription_number: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1956,6 +1976,7 @@ export type Database = {
         | "pharmacy"
         | "laboratory"
         | "hospital"
+        | "establishment_admin"
       consultation_type_enum:
         | "cabinet"
         | "teleconsultation"
@@ -2145,6 +2166,7 @@ export const Constants = {
         "pharmacy",
         "laboratory",
         "hospital",
+        "establishment_admin",
       ],
       consultation_type_enum: [
         "cabinet",
