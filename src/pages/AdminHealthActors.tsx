@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import cartographyProviders from "@/data/cartography-providers.json";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -371,16 +372,57 @@ export default function AdminHealthActors() {
   const handleImportCartography = async () => {
     setIsImporting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('import-cartography-data');
-      
-      if (error) throw error;
-      
-      if (data.success) {
-        toast.success(`${data.imported} établissements importés avec succès !`);
-        await loadData();
-      } else {
-        throw new Error(data.error || 'Erreur lors de l\'import');
+      // Mapper types et secteurs vers les enums BD
+      const typeMapping: Record<string, 'centre_medical' | 'chu' | 'clinique' | 'polyclinique' | 'chr' | 'hopital_confessionnel' | 'hopital_departemental'> = {
+        hopital: 'chu',
+        clinique: 'clinique',
+        cabinet_medical: 'centre_medical',
+        cabinet_dentaire: 'centre_medical',
+        laboratoire: 'centre_medical',
+        imagerie: 'centre_medical',
+      };
+      const secteurMapping: Record<string, string> = {
+        public: 'public',
+        prive: 'prive',
+        parapublic: 'parapublic',
+        confessionnel: 'confessionnel',
+        ong: 'ong',
+        militaire: 'militaire',
+      };
+
+      const providers = (cartographyProviders as any[]).filter(p => ['hopital','clinique','cabinet_medical','laboratoire','imagerie'].includes(p.type));
+
+      const records = providers.map((p) => ({
+        raison_sociale: p.nom,
+        type_etablissement: typeMapping[p.type] || 'centre_medical',
+        secteur: (secteurMapping[p.secteur] || 'prive') as any,
+        province: p.province,
+        ville: p.ville,
+        adresse_rue: p.adresse_descriptive,
+        latitude: p.coordonnees?.lat ?? null,
+        longitude: p.coordonnees?.lng ?? null,
+        telephone_standard: Array.isArray(p.telephones) ? (p.telephones[0] ?? null) : null,
+        email: p.email ?? null,
+        site_web: p.site_web ?? null,
+        service_urgences_actif: !!p.ouvert_24_7,
+        cnamgs_conventionne: !!p.conventionnement?.cnamgs,
+        nombre_lits_total: p.nombre_lits ?? 0,
+        statut: 'actif' as any,
+        account_claimed: false,
+        // Champs requis non nuls
+        numero_autorisation: `AUTO-${p.id}`,
+      }));
+
+      // Insert par lots
+      const batchSize = 100;
+      for (let i = 0; i < records.length; i += batchSize) {
+        const batch = records.slice(i, i + batchSize);
+        const { error } = await supabase.from('establishments').insert(batch);
+        if (error) throw error;
       }
+
+      toast.success(`${records.length} établissements importés avec succès !`);
+      await loadData();
     } catch (error: any) {
       console.error('Import error:', error);
       toast.error(error.message || "Erreur lors de l'import des données");
