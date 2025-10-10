@@ -106,31 +106,36 @@ export default function AdminHealthActors() {
       
       // Charger d'abord les données du JSON
       const typeMap: Record<string, any> = {
-        'hopital': 'hopital',
+        'hopital': 'chu',
         'clinique': 'clinique',
-        'polyclinique': 'polyclinique',
+        'polyclinique': 'clinique',
         'chr': 'chr',
         'chu': 'chu',
         'centre_medical': 'centre_medical',
-        'hopital_confessionnel': 'hopital_confessionnel',
-        'hopital_departemental': 'hopital_departemental',
-        'pharmacie': 'hopital',
-        'laboratoire': 'hopital'
+        'hopital_confessionnel': 'chu',
+        'hopital_departemental': 'chr',
+        'pharmacie': 'pharmacie',
+        'laboratoire': 'laboratoire',
+        'cabinet_medical': 'centre_medical',
+        'cabinet_dentaire': 'centre_medical',
+        'imagerie': 'centre_medical'
       };
 
       const secteurMap: Record<string, any> = {
-        'Public': 'public',
-        'Privé': 'prive',
-        'Mixte': 'parapublic',
-        'Confessionnel': 'confessionnel'
+        'public': 'public',
+        'prive': 'prive',
+        'parapublic': 'parapublic',
+        'confessionnel': 'confessionnel',
+        'ong': 'ong',
+        'militaire': 'militaire'
       };
 
-      // Transformer les données JSON en format Establishment
+      // Transformer TOUTES les données JSON en format Establishment
       const jsonEstablishments = cartographyProviders.map((provider: any, index: number) => ({
         id: provider.id || `json-${index}`,
         raison_sociale: provider.nom,
-        type_etablissement: typeMap[provider.type] || 'hopital',
-        secteur: secteurMap[provider.secteur] || 'prive',
+        type_etablissement: typeMap[provider.type?.toLowerCase()] || 'centre_medical',
+        secteur: secteurMap[provider.secteur?.toLowerCase()] || 'prive',
         ville: provider.ville,
         province: provider.province,
         statut: 'actif',
@@ -139,8 +144,11 @@ export default function AdminHealthActors() {
         created_at: new Date().toISOString(),
         account_claimed: false,
         claimed_at: null,
-        invitation_token: null
+        invitation_token: null,
+        isFromJson: true // Marqueur pour identifier les entrées JSON
       }));
+
+      console.log(`Chargement de ${jsonEstablishments.length} acteurs depuis le JSON`);
 
       // Load establishments from DB
       const { data: estData, error: estError } = await supabase
@@ -150,14 +158,21 @@ export default function AdminHealthActors() {
 
       if (estError) throw estError;
 
+      console.log(`Chargement de ${estData?.length || 0} établissements depuis la DB`);
+
       // Combiner les données JSON avec celles de la DB
-      // Priorité aux données DB si elles existent
-      const dbIds = new Set(estData?.map(e => e.raison_sociale.toLowerCase()) || []);
+      // Priorité aux données DB si elles existent (éviter les doublons)
+      const dbNames = new Set(estData?.map(e => e.raison_sociale.toLowerCase()) || []);
       const uniqueJsonEstablishments = jsonEstablishments.filter(
-        je => !dbIds.has(je.raison_sociale.toLowerCase())
+        je => !dbNames.has(je.raison_sociale.toLowerCase())
       );
 
-      setEstablishments([...(estData || []), ...uniqueJsonEstablishments]);
+      console.log(`${uniqueJsonEstablishments.length} acteurs uniques du JSON non encore en DB`);
+
+      // Marquer les données DB
+      const dbEstablishments = (estData || []).map(e => ({ ...e, isFromJson: false }));
+
+      setEstablishments([...dbEstablishments, ...uniqueJsonEstablishments]);
 
       // Load professionals with profiles
       const { data: profData, error: profError } = await supabase
