@@ -26,7 +26,7 @@ export default function AdminCartography() {
     cabinets: 0,
     laboratoires: 0,
     imagerie: 0,
-    withOSM: 0
+    institutions: 0
   });
   const [isLoading, setIsLoading] = useState(true);
   const [osmProviders, setOsmProviders] = useState<CartographyProvider[]>([]);
@@ -80,6 +80,7 @@ export default function AdminCartography() {
           'polyclinique': 'clinique',
           'clinique': 'clinique',
           'centre_medical': 'cabinet_medical',
+          'institution': 'institution',
         };
         return typeMap[type] || 'cabinet_medical';
       };
@@ -134,7 +135,7 @@ export default function AdminCartography() {
         cabinets: unique.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
         laboratoires: unique.filter(p => p.type === 'laboratoire').length,
         imagerie: unique.filter(p => p.type === 'imagerie').length,
-        withOSM: osmData.length
+        institutions: unique.filter(p => p.type === 'institution').length
       });
     } catch (error: any) {
       console.error("Erreur:", error);
@@ -276,7 +277,7 @@ export default function AdminCartography() {
             { label: 'Cabinets', value: stats.cabinets, icon: Building2, color: 'from-indigo-500 to-blue-500' },
             { label: 'Laboratoires', value: stats.laboratoires, icon: Database, color: 'from-pink-500 to-rose-500' },
             { label: 'Imagerie', value: stats.imagerie, icon: Upload, color: 'from-violet-500 to-purple-500' },
-            { label: 'OSM', value: stats.withOSM, icon: Map, color: 'from-teal-500 to-cyan-500' }
+            { label: 'Institutions', value: stats.institutions, icon: Shield, color: 'from-teal-500 to-cyan-500' }
           ].map((stat, i) => (
             <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50">
               <CardContent className="p-4">

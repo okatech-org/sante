@@ -21,7 +21,8 @@ const TYPE_LABELS: Record<ProviderType, string> = {
   pharmacie: "Pharmacie",
   laboratoire: "Laboratoire",
   imagerie: "Imagerie",
-  service_urgence: "Service d'Urgence"
+  service_urgence: "Service d'Urgence",
+  institution: "Institution"
 };
 
 const TYPE_ICONS: Record<ProviderType, string> = {
@@ -32,7 +33,8 @@ const TYPE_ICONS: Record<ProviderType, string> = {
   pharmacie: "💊",
   laboratoire: "🔬",
   imagerie: "📷",
-  service_urgence: "🚑"
+  service_urgence: "🚑",
+  institution: "🏛️"
 };
 
 export default function CartographySmartSearch({

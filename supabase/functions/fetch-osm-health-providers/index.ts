@@ -75,6 +75,10 @@ serve(async (req) => {
         way["healthcare"](${gabonBbox});
         node["shop"="medical_supply"](${gabonBbox});
         way["shop"="medical_supply"](${gabonBbox});
+        node["office"~"government|ngo"](${gabonBbox});
+        way["office"~"government|ngo"](${gabonBbox});
+        node["amenity"="social_facility"](${gabonBbox});
+        way["amenity"="social_facility"](${gabonBbox});
       );
       out body center qt;
     `;
@@ -126,7 +130,23 @@ serve(async (req) => {
         nameLower.includes('irm')
       );
       
-      if (isLab) {
+      const office = tags?.office || '';
+      const isInstitution = (
+        office === 'government' ||
+        office === 'ngo' ||
+        amenity === 'social_facility' ||
+        nameLower.includes('ministère') ||
+        nameLower.includes('ministry') ||
+        nameLower.includes('oms') ||
+        nameLower.includes('who') ||
+        nameLower.includes('croix rouge') ||
+        nameLower.includes('red cross') ||
+        (nameLower.includes('direction') && nameLower.includes('santé'))
+      );
+      
+      if (isInstitution) {
+        type = 'institution';
+      } else if (isLab) {
         type = 'laboratoire';
       } else if (isImaging) {
         type = 'imagerie';

@@ -6,7 +6,8 @@ export type ProviderType =
   | "pharmacie"
   | "laboratoire"
   | "imagerie"
-  | "service_urgence";
+  | "service_urgence"
+  | "institution";
 
 export type Secteur = "public" | "prive" | "parapublic" | "confessionnel" | "ong" | "militaire";
 export type NiveauReference = "primaire" | "secondaire" | "tertiaire";
