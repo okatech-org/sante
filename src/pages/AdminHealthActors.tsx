@@ -86,6 +86,7 @@ export default function AdminHealthActors() {
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showTokenDialog, setShowTokenDialog] = useState(false);
   const [generatedToken, setGeneratedToken] = useState("");
+  const [showJsonData, setShowJsonData] = useState(true); // Afficher les données JSON par défaut
 
   useEffect(() => {
     loadData();
@@ -103,14 +104,60 @@ export default function AdminHealthActors() {
     try {
       setIsLoading(true);
       
-      // Load establishments
+      // Charger d'abord les données du JSON
+      const typeMap: Record<string, any> = {
+        'hopital': 'hopital',
+        'clinique': 'clinique',
+        'polyclinique': 'polyclinique',
+        'chr': 'chr',
+        'chu': 'chu',
+        'centre_medical': 'centre_medical',
+        'hopital_confessionnel': 'hopital_confessionnel',
+        'hopital_departemental': 'hopital_departemental',
+        'pharmacie': 'hopital',
+        'laboratoire': 'hopital'
+      };
+
+      const secteurMap: Record<string, any> = {
+        'Public': 'public',
+        'Privé': 'prive',
+        'Mixte': 'parapublic',
+        'Confessionnel': 'confessionnel'
+      };
+
+      // Transformer les données JSON en format Establishment
+      const jsonEstablishments = cartographyProviders.map((provider: any, index: number) => ({
+        id: provider.id || `json-${index}`,
+        raison_sociale: provider.nom,
+        type_etablissement: typeMap[provider.type] || 'hopital',
+        secteur: secteurMap[provider.secteur] || 'prive',
+        ville: provider.ville,
+        province: provider.province,
+        statut: 'actif',
+        email: provider.email || null,
+        telephone_standard: provider.telephones?.[0] || null,
+        created_at: new Date().toISOString(),
+        account_claimed: false,
+        claimed_at: null,
+        invitation_token: null
+      }));
+
+      // Load establishments from DB
       const { data: estData, error: estError } = await supabase
         .from('establishments')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (estError) throw estError;
-      setEstablishments(estData || []);
+
+      // Combiner les données JSON avec celles de la DB
+      // Priorité aux données DB si elles existent
+      const dbIds = new Set(estData?.map(e => e.raison_sociale.toLowerCase()) || []);
+      const uniqueJsonEstablishments = jsonEstablishments.filter(
+        je => !dbIds.has(je.raison_sociale.toLowerCase())
+      );
+
+      setEstablishments([...(estData || []), ...uniqueJsonEstablishments]);
 
       // Load professionals with profiles
       const { data: profData, error: profError } = await supabase
@@ -388,6 +435,24 @@ export default function AdminHealthActors() {
           ))}
         </div>
 
+        {/* Info Banner */}
+        <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <FileText className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-blue-400">
+                  {cartographyProviders.length} acteurs de santé référencés dans la cartographie
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Les données affichées incluent les établissements de la base de données et ceux du référentiel cartographique.
+                  Utilisez le bouton "Importer Carto" pour ajouter définitivement les établissements non importés.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="establishments" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="establishments">Établissements</TabsTrigger>
@@ -489,7 +554,14 @@ export default function AdminHealthActors() {
                       <TableBody>
                         {filteredEstablishments.map((est) => (
                           <TableRow key={est.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium">{est.raison_sociale}</TableCell>
+                            <TableCell className="font-medium">
+                              {est.raison_sociale}
+                              {est.id.startsWith('json-') && (
+                                <Badge variant="outline" className="ml-2 bg-yellow-500/10 text-yellow-400 border-yellow-400/30 text-xs">
+                                  Non importé
+                                </Badge>
+                              )}
+                            </TableCell>
                             <TableCell>
                               <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-400/30">
                                 {establishmentTypes[est.type_etablissement] || est.type_etablissement}
@@ -521,18 +593,24 @@ export default function AdminHealthActors() {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
-                                {!est.account_claimed && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleGenerateToken(est)}
-                                    className="text-blue-500 hover:text-blue-600"
-                                    title="Générer un lien d'invitation"
-                                  >
-                                    <LinkIcon className="w-4 h-4" />
-                                  </Button>
-                                )}
-                                {est.statut === 'en_validation' && (
+                                {est.id.startsWith('json-') ? (
+                                  <Badge variant="outline" className="bg-muted text-muted-foreground">
+                                    À importer
+                                  </Badge>
+                                ) : (
+                                  <>
+                                    {!est.account_claimed && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleGenerateToken(est)}
+                                        className="text-blue-500 hover:text-blue-600"
+                                        title="Générer un lien d'invitation"
+                                      >
+                                        <LinkIcon className="w-4 h-4" />
+                                      </Button>
+                                    )}
+                                    {est.statut === 'en_validation' && (
                                   <Button
                                     variant="ghost"
                                     size="sm"
@@ -551,6 +629,8 @@ export default function AdminHealthActors() {
                                   >
                                     <XCircle className="w-4 h-4" />
                                   </Button>
+                                )}
+                                  </>
                                 )}
                               </div>
                             </TableCell>
