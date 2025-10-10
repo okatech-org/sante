@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import cartographyProviders from "@/data/cartography-providers.json";
+import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 
 interface Establishment {
   id: string;
@@ -151,6 +152,28 @@ export default function AdminHealthActors() {
 
       console.log(`Chargement de ${jsonEstablishments.length} acteurs depuis le JSON`);
 
+      // Load OSM providers from DB
+      const osmProviders = await getOSMProvidersFromSupabase();
+      const osmEstablishments = osmProviders.map((provider: any, index: number) => ({
+        id: provider.id,
+        raison_sociale: provider.nom,
+        type_etablissement: typeMap[provider.type?.toLowerCase()] || 'centre_medical',
+        secteur: secteurMap[provider.secteur?.toLowerCase()] || 'prive',
+        ville: provider.ville,
+        province: provider.province,
+        statut: 'actif',
+        email: provider.email || null,
+        telephone_standard: provider.telephones?.[0] || null,
+        created_at: new Date().toISOString(),
+        account_claimed: false,
+        claimed_at: null,
+        invitation_token: null,
+        isFromJson: true,
+        source: 'osm'
+      }));
+
+      console.log(`Chargement de ${osmEstablishments.length} acteurs depuis OSM`);
+
       // Load establishments from DB
       const { data: estData, error: estError } = await supabase
         .from('establishments')
@@ -161,19 +184,23 @@ export default function AdminHealthActors() {
 
       console.log(`Chargement de ${estData?.length || 0} établissements depuis la DB`);
 
-      // Combiner les données JSON avec celles de la DB
+      // Combiner toutes les sources
       // Priorité aux données DB si elles existent (éviter les doublons)
       const dbNames = new Set(estData?.map(e => e.raison_sociale.toLowerCase()) || []);
       const uniqueJsonEstablishments = jsonEstablishments.filter(
         je => !dbNames.has(je.raison_sociale.toLowerCase())
       );
+      const uniqueOsmEstablishments = osmEstablishments.filter(
+        oe => !dbNames.has(oe.raison_sociale.toLowerCase())
+      );
 
       console.log(`${uniqueJsonEstablishments.length} acteurs uniques du JSON non encore en DB`);
+      console.log(`${uniqueOsmEstablishments.length} acteurs uniques OSM non encore en DB`);
 
       // Marquer les données DB
-      const dbEstablishments = (estData || []).map(e => ({ ...e, isFromJson: false }));
+      const dbEstablishments = (estData || []).map(e => ({ ...e, isFromJson: false, source: 'db' }));
 
-      setEstablishments([...dbEstablishments, ...uniqueJsonEstablishments]);
+      setEstablishments([...dbEstablishments, ...uniqueJsonEstablishments, ...uniqueOsmEstablishments]);
 
       // Load professionals with profiles
       const { data: profData, error: profError } = await supabase
