@@ -137,8 +137,8 @@ export default function AdminHealthActors() {
         'hopital_departemental': 'chr',
         'pharmacie': 'pharmacie',
         'laboratoire': 'laboratoire',
-        'cabinet_medical': 'centre_medical',
-        'cabinet_dentaire': 'centre_medical',
+        'cabinet_medical': 'cabinet_medical', // Garder tel quel (professionnel individuel)
+        'cabinet_dentaire': 'cabinet_dentaire', // Garder tel quel (professionnel individuel)
         'imagerie': 'centre_medical'
       };
 
@@ -545,11 +545,17 @@ export default function AdminHealthActors() {
     );
   }
 
+  // Types considérés comme professionnels individuels
+  const professionalTypes = ['cabinet_medical', 'cabinet_dentaire'];
+  
+  // Séparer établissements et cabinets professionnels
+  const professionalCabinets = establishments.filter(e => professionalTypes.includes(e.type_etablissement));
+  
   const stats = {
-    total: establishments.length,
-    imported: establishments.filter((e: any) => e.isFromJson === false).length,
-    notImported: establishments.filter((e: any) => e.isFromJson === true).length,
-    professionals: professionals.length,
+    total: establishments.length + professionals.length,
+    imported: establishments.filter((e: any) => e.source === 'db').length,
+    notImported: establishments.filter((e: any) => e.source === 'osm').length,
+    professionals: professionals.length + professionalCabinets.length,
     pending: establishments.filter(e => e.statut === 'en_validation').length,
     active: establishments.filter(e => e.statut === 'actif').length,
     claimed: establishments.filter(e => e.account_claimed === true).length,
