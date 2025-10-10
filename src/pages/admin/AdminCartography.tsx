@@ -38,7 +38,9 @@ export default function AdminCartography() {
   const [reloadKey, setReloadKey] = useState(0);
 
   const allProviders = useMemo(() => {
-    const combined = [...osmProviders, ...establishmentProviders];
+    // Filtrer les institutions OSM pour ne garder que celles de la plateforme
+    const filteredOSM = osmProviders.filter(p => p.type !== 'institution');
+    const combined = [...filteredOSM, ...establishmentProviders];
     const seenIds = new Set();
     
     return combined.filter(provider => {
@@ -122,8 +124,9 @@ export default function AdminCartography() {
 
       setEstablishmentProviders(estabProviders);
 
-      // Combiner et calculer les statistiques
-      const combined = [...osmData, ...estabProviders, ...gabonInstitutions];
+      // Combiner et calculer les statistiques (exclure les institutions OSM)
+      const filteredOSMData = osmData.filter(p => p.type !== 'institution');
+      const combined = [...filteredOSMData, ...estabProviders, ...gabonInstitutions];
       const seenIds = new Set();
       const unique = combined.filter(p => {
         if (seenIds.has(p.id)) return false;
