@@ -502,10 +502,10 @@ export default function AdminHealthActors() {
                     </Select>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="estab-province" className="text-xs">Province</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="estab-province" className="text-[10px] sm:text-xs">Province</Label>
                     <Select value={establishmentProvinceFilter} onValueChange={setEstablishmentProvinceFilter}>
-                      <SelectTrigger id="estab-province" className="h-8 sm:h-9 text-xs sm:text-sm">
+                      <SelectTrigger id="estab-province" className="h-7 sm:h-8 text-[11px] sm:text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -521,18 +521,18 @@ export default function AdminHealthActors() {
             </Card>
 
             <Card className="border shadow-sm">
-              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                  <CardTitle className="text-sm sm:text-base">
+              <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-2">
+                  <CardTitle className="text-xs sm:text-sm">
                     Résultats ({filteredEstablishments.length})
                   </CardTitle>
-                  <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
-                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none h-8 text-xs">
-                      <Download className="mr-1 h-3 w-3" />
+                  <div className="flex gap-1 sm:gap-1.5 w-full sm:w-auto">
+                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2">
+                      <Download className="mr-0.5 sm:mr-1 h-3 w-3" />
                       <span className="hidden xs:inline">Export</span>
                     </Button>
-                    <Button size="sm" className="flex-1 sm:flex-none h-8 text-xs">
-                      <Plus className="mr-1 h-3 w-3" />
+                    <Button size="sm" className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2">
+                      <Plus className="mr-0.5 sm:mr-1 h-3 w-3" />
                       <span className="hidden sm:inline">Nouveau</span>
                       <span className="sm:hidden">+</span>
                     </Button>
@@ -541,110 +541,110 @@ export default function AdminHealthActors() {
               </CardHeader>
               <CardContent className="p-0">
                 {isLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="text-muted-foreground text-xs sm:text-sm">Chargement...</div>
+                  <div className="flex items-center justify-center py-6 sm:py-8">
+                    <div className="text-muted-foreground text-[10px] sm:text-xs">Chargement...</div>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <div className="inline-block min-w-full align-middle">
-                      <Table className="text-xs sm:text-sm">
+                      <Table className="text-[11px] sm:text-xs">
                         <TableHeader className="hidden sm:table-header-group">
                           <TableRow>
-                            <TableHead>Nom</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Contact</TableHead>
-                            <TableHead>Localisation</TableHead>
-                            <TableHead>Capacité</TableHead>
-                            <TableHead>CNAMGS</TableHead>
-                            <TableHead>Statut</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Nom</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Type</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Contact</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Localisation</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Capacité</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">CNAMGS</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Statut</TableHead>
+                            <TableHead className="text-right text-[10px] sm:text-xs">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {filteredEstablishments.map((establishment) => (
-                            <TableRow key={establishment.id} className="block sm:table-row border-b sm:border-b-0 py-3 sm:py-0">
+                            <TableRow key={establishment.id} className="block sm:table-row border-b sm:border-b-0 py-2 sm:py-0">
                               {/* Vue mobile - cards */}
-                              <TableCell className="block sm:hidden p-4" colSpan={8}>
-                                <div className="space-y-3">
-                                  <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                      <div className="font-semibold text-base mb-1">
+                              <TableCell className="block sm:hidden p-2.5" colSpan={8}>
+                                <div className="space-y-2">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-semibold text-sm mb-1 truncate">
                                         {establishment.raison_sociale}
                                       </div>
-                                      <div className="flex gap-2 mb-2">
-                                        <Badge variant="outline" className="text-xs">
+                                      <div className="flex gap-1.5 mb-1.5 flex-wrap">
+                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                                           {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
                                         </Badge>
-                                        <Badge variant="secondary" className="text-xs">
+                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                                           {establishment.secteur}
                                         </Badge>
                                       </div>
                                     </div>
                                     {establishment.statut === 'actif' && (
-                                      <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
-                                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                                      <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                        <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
                                         Actif
                                       </Badge>
                                     )}
                                     {establishment.statut === 'en_validation' && (
-                                      <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-xs">
-                                        <AlertCircle className="h-3 w-3 mr-1" />
+                                      <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                        <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
                                         Validation
                                       </Badge>
                                     )}
                                   </div>
                                   
-                                  <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div>
-                                      <div className="text-muted-foreground mb-1">Contact</div>
+                                  <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                                    <div className="min-w-0">
+                                      <div className="text-muted-foreground mb-0.5">Contact</div>
                                       {establishment.telephone_standard && (
-                                        <div className="flex items-center gap-1">
-                                          <Phone className="h-3 w-3" />
-                                          {establishment.telephone_standard}
+                                        <div className="flex items-center gap-0.5 truncate">
+                                          <Phone className="h-2.5 w-2.5 shrink-0" />
+                                          <span className="truncate">{establishment.telephone_standard}</span>
                                         </div>
                                       )}
                                     </div>
-                                    <div>
-                                      <div className="text-muted-foreground mb-1">Localisation</div>
-                                      <div>{establishment.ville}</div>
+                                    <div className="min-w-0">
+                                      <div className="text-muted-foreground mb-0.5">Localisation</div>
+                                      <div className="truncate">{establishment.ville}</div>
                                     </div>
-                                    <div>
-                                      <div className="text-muted-foreground mb-1">Capacité</div>
-                                      <div className="flex items-center gap-1">
-                                        <Bed className="h-3 w-3" />
+                                    <div className="min-w-0">
+                                      <div className="text-muted-foreground mb-0.5">Capacité</div>
+                                      <div className="flex items-center gap-0.5">
+                                        <Bed className="h-2.5 w-2.5 shrink-0" />
                                         {establishment.nombre_lits_total || 0} lits
                                       </div>
                                     </div>
-                                    <div>
-                                      <div className="text-muted-foreground mb-1">CNAMGS</div>
+                                    <div className="min-w-0">
+                                      <div className="text-muted-foreground mb-0.5">CNAMGS</div>
                                       {establishment.cnamgs_conventionne ? (
-                                        <Badge variant="default" className="text-xs">Conv.</Badge>
+                                        <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
                                       ) : (
-                                        <Badge variant="secondary" className="text-xs">Non</Badge>
+                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
                                       )}
                                     </div>
                                   </div>
 
-                                  <div className="flex gap-2 pt-2 border-t">
+                                  <div className="flex gap-1.5 pt-1.5 border-t">
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      className="flex-1 text-xs"
+                                      className="flex-1 text-[10px] h-7 px-2"
                                       onClick={() => {
                                         setSelectedItem(establishment);
                                         setShowDetailsDialog(true);
                                       }}
                                     >
-                                      <Eye className="h-3 w-3 mr-1" />
+                                      <Eye className="h-2.5 w-2.5 mr-0.5" />
                                       Détails
                                     </Button>
                                     {establishment.statut === 'en_validation' && (
                                       <Button
                                         size="sm"
-                                        className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
+                                        className="flex-1 bg-green-600 hover:bg-green-700 text-[10px] h-7 px-2"
                                         onClick={() => openActionDialog(establishment, 'approve')}
                                       >
-                                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                                        <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
                                         Approuver
                                       </Button>
                                     )}
@@ -657,44 +657,49 @@ export default function AdminHealthActors() {
                                 {establishment.raison_sociale}
                               </TableCell>
                               <TableCell className="hidden sm:table-cell">
-                              <div className="text-sm space-y-1">
+                                <Badge variant="outline" className="text-[10px]">
+                                  {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                              <div className="text-[11px] space-y-0.5">
                                 {establishment.telephone_standard && (
-                                  <div className="flex items-center gap-1">
-                                    <Phone className="h-3 w-3" />
-                                    {establishment.telephone_standard}
+                                  <div className="flex items-center gap-0.5">
+                                    <Phone className="h-2.5 w-2.5" />
+                                    <span className="truncate">{establishment.telephone_standard}</span>
                                   </div>
                                 )}
                                 {establishment.email && (
-                                  <div className="flex items-center gap-1">
-                                    <Mail className="h-3 w-3" />
-                                    {establishment.email}
+                                  <div className="flex items-center gap-0.5">
+                                    <Mail className="h-2.5 w-2.5" />
+                                    <span className="truncate">{establishment.email}</span>
                                   </div>
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell>
-                              <div className="text-sm">
-                                <div>{establishment.ville}</div>
-                                <div className="text-muted-foreground">{establishment.province}</div>
+                            <TableCell className="hidden sm:table-cell">
+                              <div className="text-[11px]">
+                                <div className="truncate">{establishment.ville}</div>
+                                <div className="text-muted-foreground truncate">{establishment.province}</div>
                               </div>
                             </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-1 text-sm">
-                                <Bed className="h-3 w-3" />
+                            <TableCell className="hidden sm:table-cell">
+                              <div className="flex items-center gap-0.5 text-[11px]">
+                                <Bed className="h-2.5 w-2.5" />
                                 {establishment.nombre_lits_total || 0} lits
                               </div>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="hidden sm:table-cell">
                               {establishment.cnamgs_conventionne ? (
-                                <Badge variant="default">Conventionné</Badge>
+                                <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
                               ) : (
-                                <Badge variant="secondary">Non</Badge>
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
                               )}
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="hidden sm:table-cell">
                               {establishment.statut === 'actif' && (
-                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0">
+                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
                                   Actif
                                 </Badge>
                               )}
