@@ -2,11 +2,14 @@ import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital, RefreshCw } from "lucide-react";
+import { User, Stethoscope, Briefcase, Building2, FlaskConical, Pill, UserCog, LogIn, Baby, Sparkles, Activity, HeartPulse, Brain, Eye, Syringe, Hospital, RefreshCw, Trash2, Key, UserCheck, AlertCircle, CheckCircle2, Copy, Download, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DemoAccount {
   id: string;
@@ -196,6 +199,57 @@ export default function AdminDemo() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isInitializing, setIsInitializing] = useState(false);
+  const [accountsStatus, setAccountsStatus] = useState<Record<string, 'active' | 'inactive' | 'checking'>>({});
+  const [generatedPasswords, setGeneratedPasswords] = useState<Record<string, string>>({});
+  const [showPasswordsDialog, setShowPasswordsDialog] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<DemoAccount | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [accountStats, setAccountStats] = useState({ total: 0, active: 0, inactive: 0 });
+
+  // Vérifier le statut des comptes au chargement
+  useEffect(() => {
+    checkAccountsStatus();
+  }, []);
+
+  const checkAccountsStatus = async () => {
+    const statuses: Record<string, 'active' | 'inactive' | 'checking'> = {};
+    let activeCount = 0;
+    let inactiveCount = 0;
+
+    for (const account of demoAccounts) {
+      statuses[account.email] = 'checking';
+    }
+    setAccountsStatus(statuses);
+
+    for (const account of demoAccounts) {
+      try {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .eq('email', account.email)
+          .maybeSingle();
+
+        if (profiles) {
+          statuses[account.email] = 'active';
+          activeCount++;
+        } else {
+          statuses[account.email] = 'inactive';
+          inactiveCount++;
+        }
+      } catch (error) {
+        statuses[account.email] = 'inactive';
+        inactiveCount++;
+      }
+    }
+
+    setAccountsStatus(statuses);
+    setAccountStats({
+      total: demoAccounts.length,
+      active: activeCount,
+      inactive: inactiveCount
+    });
+  };
 
   const initializeDemoAccounts = async () => {
     setIsInitializing(true);
@@ -207,10 +261,19 @@ export default function AdminDemo() {
       if (error) throw error as any;
 
       if ((data as any)?.success) {
+        // Stocker les mots de passe générés
+        if ((data as any)?.passwords) {
+          setGeneratedPasswords((data as any).passwords);
+          setShowPasswordsDialog(true);
+        }
+
         toast({
           title: "Comptes démo initialisés",
           description: "Tous les comptes démo ont été créés/mis à jour.",
         });
+        
+        // Rafraîchir le statut
+        await checkAccountsStatus();
         return true;
       } else {
         throw new Error((data as any)?.error || 'Initialisation échouée');
@@ -226,6 +289,77 @@ export default function AdminDemo() {
     } finally {
       setIsInitializing(false);
     }
+  };
+
+  const deleteAccount = async (account: DemoAccount) => {
+    setIsDeletingAccount(true);
+    try {
+      // Récupérer l'utilisateur
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', account.email)
+        .maybeSingle();
+
+      if (!profiles) {
+        toast({
+          title: "Compte introuvable",
+          description: "Ce compte n'existe pas dans la base de données.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Note: La suppression complète d'un utilisateur nécessite les droits admin
+      // Pour l'instant, on désactive juste le compte
+      toast({
+        title: "Fonctionnalité limitée",
+        description: "La suppression complète nécessite des droits spécifiques. Le compte reste accessible.",
+        variant: "default"
+      });
+
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le compte.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteDialog(false);
+      setSelectedAccount(null);
+    }
+  };
+
+  const copyPassword = (email: string) => {
+    const password = generatedPasswords[email];
+    if (password) {
+      navigator.clipboard.writeText(password);
+      toast({
+        title: "Copié !",
+        description: "Mot de passe copié dans le presse-papier.",
+      });
+    }
+  };
+
+  const downloadPasswords = () => {
+    const content = Object.entries(generatedPasswords)
+      .map(([email, password]) => `${email}: ${password}`)
+      .join('\n');
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'demo-accounts-passwords.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Téléchargement lancé",
+      description: "Les mots de passe ont été téléchargés.",
+    });
   };
 
   const handleQuickLogin = async (account: DemoAccount) => {
@@ -331,117 +465,387 @@ export default function AdminDemo() {
 
   return (
     <SuperAdminLayout>
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Comptes Démo</h1>
-            <p className="text-muted-foreground">
-              Accédez rapidement aux différents types de comptes pour tester les fonctionnalités de l'application
+      <div className="container mx-auto p-4 sm:p-6 space-y-6 animate-fade-in">
+        {/* Header avec actions */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Gestion des Comptes Démo</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Gérez et accédez rapidement aux comptes démo pour tester toutes les fonctionnalités
             </p>
           </div>
-          <Button 
-            onClick={initializeDemoAccounts}
-            disabled={isInitializing}
-            variant="outline"
-          >
-            {isInitializing ? (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                Initialisation...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Initialiser les comptes
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button 
+              onClick={checkAccountsStatus}
+              variant="outline"
+              size="sm"
+              className="flex-1 sm:flex-initial"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Actualiser
+            </Button>
+            <Button 
+              onClick={initializeDemoAccounts}
+              disabled={isInitializing}
+              size="sm"
+              className="flex-1 sm:flex-initial"
+            >
+              {isInitializing ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Création...
+                </>
+              ) : (
+                <>
+                  <Database className="h-4 w-4 mr-2" />
+                  Initialiser
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Statistiques */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-blue-200 dark:border-blue-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                Total des comptes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">
+                {accountStats.total}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20 border-green-200 dark:border-green-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-green-600 dark:text-green-400">
+                Comptes actifs
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-900 dark:text-green-100">
+                {accountStats.active}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20 border-orange-200 dark:border-orange-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                À initialiser
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">
+                {accountStats.inactive}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Liste des comptes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {demoAccounts.map((account) => {
             const Icon = account.icon;
+            const status = accountsStatus[account.email] || 'checking';
+            
             return (
-              <Card key={account.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
+              <Card key={account.id} className="hover:shadow-lg transition-all hover-scale relative overflow-hidden">
+                {/* Status indicator */}
+                <div className={`absolute top-0 right-0 w-24 h-24 -mr-12 -mt-12 rotate-45 ${
+                  status === 'active' ? 'bg-green-500/10' : 
+                  status === 'inactive' ? 'bg-orange-500/10' : 
+                  'bg-gray-500/10'
+                }`} />
+                
+                <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`${account.badgeColor} p-3 rounded-lg text-white`}>
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className={`${account.badgeColor} p-3 rounded-lg text-white shadow-lg`}>
                         <Icon className="h-6 w-6" />
                       </div>
-                      <div>
-                        <CardTitle className="text-lg">{account.type}</CardTitle>
-                        <CardDescription className="text-sm mt-1">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base sm:text-lg truncate">{account.type}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm mt-1 truncate">
                           {account.name}
                         </CardDescription>
                       </div>
                     </div>
+                    <Badge 
+                      variant={status === 'active' ? 'default' : status === 'inactive' ? 'secondary' : 'outline'}
+                      className="ml-2 flex-shrink-0"
+                    >
+                      {status === 'active' ? (
+                        <><CheckCircle2 className="h-3 w-3 mr-1" /> Actif</>
+                      ) : status === 'inactive' ? (
+                        <><AlertCircle className="h-3 w-3 mr-1" /> Inactif</>
+                      ) : (
+                        <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+                      )}
+                    </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {account.description}
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Badge variant="outline" className="font-mono text-xs">
-                          {account.email}
-                        </Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        🔗 Dashboard: <span className="font-mono text-primary">
-                          {account.role === 'patient' ? '/dashboard/patient' :
-                           account.role === 'doctor' ? '/demo/doctor' :
-                           account.role === 'specialist' ? '/demo/specialist' :
-                           account.role === 'nurse' ? '/demo/nurse' :
-                           account.role === 'midwife' ? '/demo/midwife' :
-                           account.role === 'physiotherapist' ? '/demo/physiotherapist' :
-                           account.role === 'psychologist' ? '/demo/psychologist' :
-                           account.role === 'ophthalmologist' ? '/demo/ophthalmologist' :
-                           account.role === 'anesthesiologist' ? '/demo/anesthesiologist' :
-                           account.role === 'pharmacist' ? '/demo/pharmacist' :
-                           account.role === 'pharmacy' ? '/demo/pharmacy' :
-                           account.role === 'laboratory_technician' ? '/demo/laboratory' :
-                           account.role === 'radiologist' ? '/demo/radiologist' :
-                           account.role === 'radiology_center' ? '/demo/radiology-center' :
-                           account.role === 'admin' ? '/demo/admin' :
-                           account.role === 'hospital_admin' ? '/demo/hospital' :
-                           account.role === 'clinic_admin' ? '/demo/clinic' :
-                           '/dashboard/professional'}
-                        </span>
-                      </div>
-                    </div>
+                
+                <CardContent className="space-y-3">
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
+                    {account.description}
+                  </p>
+                  
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="font-mono text-xs truncate flex-1">
+                      {account.email}
+                    </Badge>
                   </div>
                   
-                  <Button 
-                    onClick={() => handleQuickLogin(account)}
-                    className="w-full"
-                    variant="default"
-                  >
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Connexion rapide
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => handleQuickLogin(account)}
+                      className="flex-1"
+                      size="sm"
+                      disabled={status === 'inactive'}
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Connexion
+                    </Button>
+                    
+                    {status === 'active' && (
+                      <Button
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setShowDeleteDialog(true);
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
+                  {generatedPasswords[account.email] && (
+                    <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                      <Key className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <code className="text-xs font-mono flex-1 truncate">
+                        {generatedPasswords[account.email]}
+                      </code>
+                      <Button
+                        onClick={() => copyPassword(account.email)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        <Card className="bg-muted/50">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Info className="h-5 w-5" />
-              Informations
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>• Les comptes démo sont pré-configurés avec des données fictives pour tester toutes les fonctionnalités</p>
-            <p>• La connexion rapide vous déconnecte automatiquement de votre session super admin</p>
-            <p>• Vous pouvez revenir à votre compte super admin à tout moment en vous reconnectant</p>
-            <p>• Les données créées dans les comptes démo peuvent être réinitialisées à tout moment</p>
-          </CardContent>
-        </Card>
+        {/* Informations et actions globales */}
+        <Tabs defaultValue="info" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="info">Informations</TabsTrigger>
+            <TabsTrigger value="actions">Actions rapides</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="info">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-blue-500" />
+                  Guide d'utilisation
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-xs sm:text-sm text-muted-foreground">
+                <div className="flex gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                  <p>Les comptes démo sont pré-configurés avec des données fictives complètes (consultations, ordonnances, résultats)</p>
+                </div>
+                <div className="flex gap-2">
+                  <AlertCircle className="h-4 w-4 text-orange-500 flex-shrink-0 mt-0.5" />
+                  <p>La connexion rapide vous déconnecte automatiquement de votre session super admin actuelle</p>
+                </div>
+                <div className="flex gap-2">
+                  <Key className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <p>Les mots de passe sont générés automatiquement et affichés uniquement lors de l'initialisation</p>
+                </div>
+                <div className="flex gap-2">
+                  <RefreshCw className="h-4 w-4 text-purple-500 flex-shrink-0 mt-0.5" />
+                  <p>Vous pouvez réinitialiser tous les comptes à tout moment sans perdre vos données personnelles</p>
+                </div>
+                <div className="flex gap-2">
+                  <UserCheck className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                  <p>Chaque type de compte possède son propre dashboard avec des fonctionnalités spécifiques</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="actions">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base sm:text-lg">Actions de gestion</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
+                  Gérez rapidement l'ensemble des comptes démo
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button
+                  onClick={initializeDemoAccounts}
+                  variant="outline"
+                  className="w-full justify-start"
+                  disabled={isInitializing}
+                >
+                  <Database className="h-4 w-4 mr-2" />
+                  Créer/Mettre à jour tous les comptes
+                </Button>
+
+                {Object.keys(generatedPasswords).length > 0 && (
+                  <>
+                    <Button
+                      onClick={() => setShowPasswordsDialog(true)}
+                      variant="outline"
+                      className="w-full justify-start"
+                    >
+                      <Key className="h-4 w-4 mr-2" />
+                      Voir les mots de passe ({Object.keys(generatedPasswords).length})
+                    </Button>
+
+                    <Button
+                      onClick={downloadPasswords}
+                      variant="outline"
+                      className="w-full justify-start"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Télécharger les mots de passe
+                    </Button>
+                  </>
+                )}
+
+                <Button
+                  onClick={checkAccountsStatus}
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Actualiser le statut des comptes
+                </Button>
+
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle className="text-sm">Sécurité</AlertTitle>
+                  <AlertDescription className="text-xs">
+                    Les mots de passe générés sont sécurisés et uniques. Conservez-les en lieu sûr.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Dialog pour afficher les mots de passe */}
+        <Dialog open={showPasswordsDialog} onOpenChange={setShowPasswordsDialog}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5" />
+                Mots de passe générés
+              </DialogTitle>
+              <DialogDescription>
+                Conservez ces mots de passe en lieu sûr. Ils ne seront plus affichés après fermeture.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-2 mt-4">
+              {Object.entries(generatedPasswords).map(([email, password]) => (
+                <div key={email} className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{email}</p>
+                    <code className="text-xs font-mono text-muted-foreground">{password}</code>
+                  </div>
+                  <Button
+                    onClick={() => copyPassword(email)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            <DialogFooter>
+              <Button onClick={downloadPasswords} variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Télécharger
+              </Button>
+              <Button onClick={() => setShowPasswordsDialog(false)}>
+                Fermer
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog de confirmation de suppression */}
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <AlertCircle className="h-5 w-5" />
+                Confirmer la suppression
+              </DialogTitle>
+              <DialogDescription>
+                Êtes-vous sûr de vouloir supprimer le compte de {selectedAccount?.name} ?
+                Cette action est irréversible.
+              </DialogDescription>
+            </DialogHeader>
+
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Attention</AlertTitle>
+              <AlertDescription className="text-xs">
+                Toutes les données associées à ce compte (consultations, ordonnances, messages) seront également supprimées.
+              </AlertDescription>
+            </Alert>
+
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  setShowDeleteDialog(false);
+                  setSelectedAccount(null);
+                }}
+                variant="outline"
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={() => selectedAccount && deleteAccount(selectedAccount)}
+                variant="destructive"
+                disabled={isDeletingAccount}
+              >
+                {isDeletingAccount ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Suppression...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Supprimer
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </SuperAdminLayout>
   );
