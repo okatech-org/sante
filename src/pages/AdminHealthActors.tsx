@@ -716,7 +716,7 @@ export default function AdminHealthActors() {
                                 </Badge>
                               )}
                             </TableCell>
-                            <TableCell className="text-right">
+                            <TableCell className="hidden sm:table-cell text-right">
                               <div className="flex justify-end gap-1">
                                 <Button
                                   variant="ghost"
