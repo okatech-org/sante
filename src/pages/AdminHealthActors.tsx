@@ -242,7 +242,18 @@ export default function AdminHealthActors() {
 
     // Filtre par statistique sélectionnée
     if (selectedStatFilter) {
+      const professionalTypes = ['cabinet_medical', 'cabinet_dentaire'];
+      
       switch (selectedStatFilter) {
+        case 'establishments':
+          filtered = filtered.filter(est => !professionalTypes.includes(est.type_etablissement));
+          break;
+        case 'subscriptions':
+          filtered = filtered.filter(est => est.account_claimed === true);
+          break;
+        case 'professionals':
+          filtered = filtered.filter(est => professionalTypes.includes(est.type_etablissement));
+          break;
         case 'pending':
           filtered = filtered.filter(est => est.statut === 'en_validation');
           break;
@@ -576,9 +587,9 @@ export default function AdminHealthActors() {
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {[
             { id: null, label: 'Total acteurs', value: stats.total, icon: Building2, color: 'from-blue-500 to-cyan-500' },
-            { id: null, label: 'Établissements', value: stats.establishments, icon: Building2, color: 'from-green-500 to-emerald-500' },
-            { id: null, label: 'Abonnements', value: stats.subscriptions, icon: CheckCircle, color: 'from-orange-500 to-amber-500' },
-            { id: null, label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
+            { id: 'establishments', label: 'Établissements', value: stats.establishments, icon: Building2, color: 'from-green-500 to-emerald-500' },
+            { id: 'subscriptions', label: 'Abonnements', value: stats.subscriptions, icon: CheckCircle, color: 'from-orange-500 to-amber-500' },
+            { id: 'professionals', label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
             { id: 'pending', label: 'En validation', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-amber-500' },
             { id: 'active', label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
             { id: 'claimed', label: 'Revendiqués', value: stats.claimed, icon: LinkIcon, color: 'from-indigo-500 to-purple-500' },
