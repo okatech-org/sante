@@ -774,33 +774,34 @@ export default function AdminHealthActors() {
           </TabsContent>
 
           {/* Onglet Professionnels */}
-          <TabsContent value="professionals" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 px-4 sm:px-0">
+          <TabsContent value="professionals" className="space-y-2 sm:space-y-3 mt-0 p-2 sm:p-3">
             <Card className="border shadow-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
+              <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+                <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm">
+                  <Filter className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   Filtres
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="prof-search">
-                      <Search className="h-4 w-4 inline mr-2" />
+              <CardContent className="p-2 sm:p-3 pt-0">
+                <div className="grid gap-1 sm:gap-1.5 grid-cols-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="prof-search" className="text-[10px] sm:text-xs">
+                      <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 inline mr-0.5" />
                       Rechercher
                     </Label>
                     <Input
                       id="prof-search"
-                      placeholder="Nom, email, n° ordre..."
+                      placeholder="Nom, email..."
                       value={professionalSearch}
                       onChange={(e) => setProfessionalSearch(e.target.value)}
+                      className="h-7 sm:h-8 text-[11px] sm:text-xs"
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="prof-type">Profession</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="prof-type" className="text-[10px] sm:text-xs">Profession</Label>
                     <Select value={professionTypeFilter} onValueChange={setProfessionTypeFilter}>
-                      <SelectTrigger id="prof-type">
+                      <SelectTrigger id="prof-type" className="h-7 sm:h-8 text-[11px] sm:text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -812,10 +813,10 @@ export default function AdminHealthActors() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="prof-province">Province</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="prof-province" className="text-[10px] sm:text-xs">Province</Label>
                     <Select value={professionalProvinceFilter} onValueChange={setProfessionalProvinceFilter}>
-                      <SelectTrigger id="prof-province">
+                      <SelectTrigger id="prof-province" className="h-7 sm:h-8 text-[11px] sm:text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -827,10 +828,10 @@ export default function AdminHealthActors() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="prof-verified">Vérification</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="prof-verified" className="text-[10px] sm:text-xs">Vérification</Label>
                     <Select value={verifiedFilter} onValueChange={setVerifiedFilter}>
-                      <SelectTrigger id="prof-verified">
+                      <SelectTrigger id="prof-verified" className="h-7 sm:h-8 text-[11px] sm:text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -845,117 +846,220 @@ export default function AdminHealthActors() {
             </Card>
 
             <Card className="border shadow-sm">
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <CardTitle>Résultats ({filteredProfessionals.length})</CardTitle>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={exportData}>
-                      <Download className="mr-2 h-4 w-4" />
-                      Exporter
+              <CardHeader className="p-2 sm:p-3 pb-1.5 sm:pb-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-2">
+                  <CardTitle className="text-xs sm:text-sm">
+                    Résultats ({filteredProfessionals.length})
+                  </CardTitle>
+                  <div className="flex gap-1 sm:gap-1.5 w-full sm:w-auto">
+                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2">
+                      <Download className="mr-0.5 sm:mr-1 h-3 w-3" />
+                      <span className="hidden xs:inline">Export</span>
                     </Button>
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Nouveau Professionnel
+                    <Button size="sm" className="flex-1 sm:flex-none h-7 sm:h-8 text-[10px] sm:text-xs px-2">
+                      <Plus className="mr-0.5 sm:mr-1 h-3 w-3" />
+                      <span className="hidden sm:inline">Nouveau</span>
+                      <span className="sm:hidden">+</span>
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="text-muted-foreground">Chargement...</div>
+                  <div className="flex items-center justify-center py-6 sm:py-8">
+                    <div className="text-muted-foreground text-[10px] sm:text-xs">Chargement...</div>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Professionnel</TableHead>
-                          <TableHead>Profession</TableHead>
-                          <TableHead>Spécialisation</TableHead>
-                          <TableHead>Contact</TableHead>
-                          <TableHead>Localisation</TableHead>
-                          <TableHead>N° Ordre</TableHead>
-                          <TableHead>Statut</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredProfessionals.map((professional) => (
-                          <TableRow key={professional.id}>
-                            <TableCell className="font-medium">
-                              {professional.profiles.full_name}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {professionTypes[professional.profession_type] || professional.profession_type}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              {professional.specialization || '-'}
-                            </TableCell>
-                            <TableCell>
-                              <div className="text-sm space-y-1">
-                                <div className="flex items-center gap-1">
-                                  <Mail className="h-3 w-3" />
-                                  {professional.profiles.email}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Phone className="h-3 w-3" />
-                                  {professional.profiles.phone}
+                  <>
+                    {/* Vue Mobile - Cards */}
+                    <div className="md:hidden space-y-2 p-2">
+                      {filteredProfessionals.map((professional) => (
+                        <Card 
+                          key={professional.id} 
+                          className="p-2.5 hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => {
+                            setSelectedItem(professional);
+                            setShowDetailsDialog(true);
+                          }}
+                        >
+                          <div className="space-y-2">
+                            {/* Header */}
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-sm line-clamp-2 mb-1">
+                                  {professional.profiles.full_name}
+                                </h3>
+                                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                                  <span className="truncate">{professional.profiles.province}</span>
                                 </div>
                               </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="text-sm">
-                                {professional.profiles.province}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {professional.ordre_number || '-'}
-                            </TableCell>
-                            <TableCell>
                               {professional.ordre_verified ? (
-                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
                                   Vérifié
                                 </Badge>
                               ) : (
-                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                                  <AlertCircle className="h-3 w-3 mr-1" />
+                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-[10px] px-1.5 py-0 shrink-0">
+                                  <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
                                   En attente
                                 </Badge>
                               )}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end gap-1">
+                            </div>
+
+                            {/* Badges */}
+                            <div className="flex flex-wrap gap-1">
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                {professionTypes[professional.profession_type] || professional.profession_type}
+                              </Badge>
+                              {professional.specialization && (
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                  {professional.specialization}
+                                </Badge>
+                              )}
+                              {professional.ordre_number && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                  N° {professional.ordre_number}
+                                </Badge>
+                              )}
+                            </div>
+
+                            {/* Contact */}
+                            <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                              <div className="flex items-center gap-0.5 truncate">
+                                <Phone className="h-2.5 w-2.5 shrink-0" />
+                                <span className="truncate">{professional.profiles.phone}</span>
+                              </div>
+                              <div className="flex items-center gap-0.5 truncate">
+                                <Mail className="h-2.5 w-2.5 shrink-0" />
+                                <span className="truncate">{professional.profiles.email}</span>
+                              </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-1.5 pt-1.5 border-t">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 text-[10px] h-7 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedItem(professional);
+                                  setShowDetailsDialog(true);
+                                }}
+                              >
+                                <Eye className="h-2.5 w-2.5 mr-0.5" />
+                                Détails
+                              </Button>
+                              {!professional.ordre_verified && (
                                 <Button
-                                  variant="ghost"
                                   size="sm"
-                                  onClick={() => {
-                                    setSelectedItem(professional);
-                                    setShowDetailsDialog(true);
+                                  className="flex-1 bg-green-600 hover:bg-green-700 text-[10px] h-7 px-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openActionDialog(professional, 'approve');
                                   }}
                                 >
-                                  <Eye className="h-4 w-4" />
+                                  <FileCheck className="h-2.5 w-2.5 mr-0.5" />
+                                  Vérifier
                                 </Button>
-                                {!professional.ordre_verified && (
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+
+                    {/* Vue Desktop - Table */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <Table className="text-[11px] sm:text-xs">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-[10px] sm:text-xs">Nom</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Profession</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Spécialisation</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Contact</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Province</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">N° Ordre</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Statut</TableHead>
+                            <TableHead className="text-right text-[10px] sm:text-xs">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredProfessionals.map((professional) => (
+                            <TableRow key={professional.id} className="hover:bg-accent/50">
+                              <TableCell className="font-medium text-[11px]">
+                                {professional.profiles.full_name}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className="text-[10px]">
+                                  {professionTypes[professional.profession_type] || professional.profession_type}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-[11px]">
+                                {professional.specialization || '-'}
+                              </TableCell>
+                              <TableCell>
+                                <div className="text-[11px] space-y-0.5">
+                                  <div className="flex items-center gap-0.5">
+                                    <Mail className="h-2.5 w-2.5" />
+                                    <span className="truncate">{professional.profiles.email}</span>
+                                  </div>
+                                  <div className="flex items-center gap-0.5">
+                                    <Phone className="h-2.5 w-2.5" />
+                                    <span className="truncate">{professional.profiles.phone}</span>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-[11px]">
+                                {professional.profiles.province}
+                              </TableCell>
+                              <TableCell className="text-[11px]">
+                                {professional.ordre_number || '-'}
+                              </TableCell>
+                              <TableCell>
+                                {professional.ordre_verified ? (
+                                  <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20 text-[10px] px-1.5 py-0">
+                                    <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                    Vérifié
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20 text-[10px] px-1.5 py-0">
+                                    <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
+                                    En attente
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-1">
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-green-600 hover:text-green-700"
-                                    onClick={() => openActionDialog(professional, 'approve')}
+                                    onClick={() => {
+                                      setSelectedItem(professional);
+                                      setShowDetailsDialog(true);
+                                    }}
                                   >
-                                    <FileCheck className="h-4 w-4" />
+                                    <Eye className="h-4 w-4" />
                                   </Button>
-                                )}
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                                  {!professional.ordre_verified && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-green-600 hover:text-green-700"
+                                      onClick={() => openActionDialog(professional, 'approve')}
+                                    >
+                                      <FileCheck className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
                 )}
               </CardContent>
             </Card>
