@@ -30,7 +30,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { 
   Building2, 
   Search, 
@@ -45,7 +56,15 @@ import {
   Users,
   Activity,
   Bed,
-  UserCog
+  UserCog,
+  CheckCircle2,
+  XCircle,
+  Ban,
+  Download,
+  FileCheck,
+  AlertCircle,
+  Edit,
+  Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -122,6 +141,9 @@ export default function AdminHealthActors() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [actionType, setActionType] = useState<"approve" | "suspend" | "activate" | null>(null);
 
   const isSuperAdmin = hasRole("super_admin");
   const isAdmin = hasRole("admin") || isSuperAdmin;
@@ -243,6 +265,101 @@ export default function AdminHealthActors() {
     verifiedProfessionals: professionals.filter(p => p.ordre_verified).length,
     privateEstablishments: establishments.filter(e => e.secteur === 'prive').length,
     doctors: professionals.filter(p => p.profession_type === 'medecin').length,
+  };
+
+  const handleApproveEstablishment = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('establishments')
+        .update({ statut: 'actif' })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      await loadData();
+      setShowStatusDialog(false);
+      toast.success("Établissement approuvé avec succès");
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast.error("Erreur lors de l'approbation");
+    }
+  };
+
+  const handleSuspendEstablishment = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('establishments')
+        .update({ statut: 'suspendu' })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      await loadData();
+      setShowStatusDialog(false);
+      toast.success("Établissement suspendu");
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast.error("Erreur lors de la suspension");
+    }
+  };
+
+  const handleVerifyProfessional = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('professional_profiles')
+        .update({ ordre_verified: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      await loadData();
+      setShowStatusDialog(false);
+      toast.success("Professionnel vérifié avec succès");
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast.error("Erreur lors de la vérification");
+    }
+  };
+
+  const handleAction = () => {
+    if (!selectedItem || !actionType) return;
+
+    const isEstablishment = 'raison_sociale' in selectedItem;
+
+    if (isEstablishment) {
+      if (actionType === 'approve') {
+        handleApproveEstablishment(selectedItem.id);
+      } else if (actionType === 'suspend') {
+        handleSuspendEstablishment(selectedItem.id);
+      }
+    } else {
+      if (actionType === 'approve') {
+        handleVerifyProfessional(selectedItem.id);
+      }
+    }
+  };
+
+  const openActionDialog = (item: any, action: "approve" | "suspend" | "activate") => {
+    setSelectedItem(item);
+    setActionType(action);
+    setShowStatusDialog(true);
+  };
+
+  const exportData = () => {
+    const data = activeTab === 'establishments' ? filteredEstablishments : filteredProfessionals;
+    const csv = [
+      Object.keys(data[0] || {}).join(','),
+      ...data.map(item => Object.values(item).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeTab}-${new Date().toISOString()}.csv`;
+    a.click();
+    
+    toast.success("Export réussi");
   };
 
   if (!isAdmin) {
@@ -395,10 +512,16 @@ export default function AdminHealthActors() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Résultats ({filteredEstablishments.length})</CardTitle>
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nouvel Établissement
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={exportData}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Exporter
+                    </Button>
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nouvel Établissement
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -417,6 +540,7 @@ export default function AdminHealthActors() {
                           <TableHead>Localisation</TableHead>
                           <TableHead>Capacité</TableHead>
                           <TableHead>CNAMGS</TableHead>
+                          <TableHead>Statut</TableHead>
                           <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -466,17 +590,59 @@ export default function AdminHealthActors() {
                                 <Badge variant="secondary">Non</Badge>
                               )}
                             </TableCell>
+                            <TableCell>
+                              {establishment.statut === 'actif' && (
+                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  Actif
+                                </Badge>
+                              )}
+                              {establishment.statut === 'en_validation' && (
+                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                                  <AlertCircle className="h-3 w-3 mr-1" />
+                                  En validation
+                                </Badge>
+                              )}
+                              {establishment.statut === 'suspendu' && (
+                                <Badge variant="destructive">
+                                  <Ban className="h-3 w-3 mr-1" />
+                                  Suspendu
+                                </Badge>
+                              )}
+                            </TableCell>
                             <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedItem(establishment);
-                                  setShowDetailsDialog(true);
-                                }}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
+                              <div className="flex justify-end gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedItem(establishment);
+                                    setShowDetailsDialog(true);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                {establishment.statut === 'en_validation' && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-green-600 hover:text-green-700"
+                                    onClick={() => openActionDialog(establishment, 'approve')}
+                                  >
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                {establishment.statut === 'actif' && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-700"
+                                    onClick={() => openActionDialog(establishment, 'suspend')}
+                                  >
+                                    <Ban className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -563,10 +729,16 @@ export default function AdminHealthActors() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Résultats ({filteredProfessionals.length})</CardTitle>
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Nouveau Professionnel
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={exportData}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Exporter
+                    </Button>
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nouveau Professionnel
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -625,22 +797,40 @@ export default function AdminHealthActors() {
                             </TableCell>
                             <TableCell>
                               {professional.ordre_verified ? (
-                                <Badge variant="default">Vérifié</Badge>
+                                <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  Vérifié
+                                </Badge>
                               ) : (
-                                <Badge variant="secondary">En attente</Badge>
+                                <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                                  <AlertCircle className="h-3 w-3 mr-1" />
+                                  En attente
+                                </Badge>
                               )}
                             </TableCell>
                             <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedItem(professional);
-                                  setShowDetailsDialog(true);
-                                }}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
+                              <div className="flex justify-end gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedItem(professional);
+                                    setShowDetailsDialog(true);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                {!professional.ordre_verified && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-green-600 hover:text-green-700"
+                                    onClick={() => openActionDialog(professional, 'approve')}
+                                  >
+                                    <FileCheck className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -653,20 +843,182 @@ export default function AdminHealthActors() {
           </TabsContent>
         </Tabs>
 
-        {/* Dialog de détails */}
+        {/* Dialog de détails amélioré */}
         <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Détails</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                {selectedItem && ('raison_sociale' in selectedItem ? (
+                  <>
+                    <Building2 className="h-5 w-5 text-primary" />
+                    Détails de l'établissement
+                  </>
+                ) : (
+                  <>
+                    <Stethoscope className="h-5 w-5 text-primary" />
+                    Détails du professionnel
+                  </>
+                ))}
+              </DialogTitle>
               <DialogDescription>
-                Informations complètes
+                Informations complètes et options de gestion
               </DialogDescription>
             </DialogHeader>
             {selectedItem && (
-              <div className="space-y-4">
-                <pre className="text-xs bg-muted p-4 rounded overflow-auto">
-                  {JSON.stringify(selectedItem, null, 2)}
-                </pre>
+              <div className="space-y-6">
+                {/* Informations principales */}
+                <div className="grid grid-cols-2 gap-4">
+                  {'raison_sociale' in selectedItem ? (
+                    <>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Nom</Label>
+                        <p className="font-medium">{selectedItem.raison_sociale}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Type</Label>
+                        <p className="font-medium">
+                          {establishmentTypes[selectedItem.type_etablissement] || selectedItem.type_etablissement}
+                        </p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Secteur</Label>
+                        <p className="font-medium">{selectedItem.secteur}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Statut</Label>
+                        <p className="font-medium">{selectedItem.statut}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Province</Label>
+                        <p className="font-medium">{selectedItem.province}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Ville</Label>
+                        <p className="font-medium">{selectedItem.ville}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Téléphone</Label>
+                        <p className="font-medium">{selectedItem.telephone_standard || '-'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Email</Label>
+                        <p className="font-medium">{selectedItem.email || '-'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Nombre de lits</Label>
+                        <p className="font-medium">{selectedItem.nombre_lits_total || 0}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">CNAMGS</Label>
+                        <p className="font-medium">
+                          {selectedItem.cnamgs_conventionne ? 'Conventionné' : 'Non conventionné'}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Nom complet</Label>
+                        <p className="font-medium">{selectedItem.profiles.full_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Profession</Label>
+                        <p className="font-medium">
+                          {professionTypes[selectedItem.profession_type] || selectedItem.profession_type}
+                        </p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Spécialisation</Label>
+                        <p className="font-medium">{selectedItem.specialization || '-'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">N° Ordre</Label>
+                        <p className="font-medium">{selectedItem.ordre_number || '-'}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Email</Label>
+                        <p className="font-medium">{selectedItem.profiles.email}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Téléphone</Label>
+                        <p className="font-medium">{selectedItem.profiles.phone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Province</Label>
+                        <p className="font-medium">{selectedItem.profiles.province}</p>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Statut vérification</Label>
+                        <p className="font-medium">
+                          {selectedItem.ordre_verified ? 'Vérifié' : 'En attente'}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Actions rapides */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold">Actions rapides</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {'raison_sociale' in selectedItem ? (
+                      <>
+                        {selectedItem.statut === 'en_validation' && (
+                          <Button 
+                            size="sm" 
+                            className="bg-green-600 hover:bg-green-700"
+                            onClick={() => {
+                              setShowDetailsDialog(false);
+                              openActionDialog(selectedItem, 'approve');
+                            }}
+                          >
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Approuver
+                          </Button>
+                        )}
+                        {selectedItem.statut === 'actif' && (
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => {
+                              setShowDetailsDialog(false);
+                              openActionDialog(selectedItem, 'suspend');
+                            }}
+                          >
+                            <Ban className="mr-2 h-4 w-4" />
+                            Suspendre
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Modifier
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        {!selectedItem.ordre_verified && (
+                          <Button 
+                            size="sm" 
+                            className="bg-green-600 hover:bg-green-700"
+                            onClick={() => {
+                              setShowDetailsDialog(false);
+                              openActionDialog(selectedItem, 'approve');
+                            }}
+                          >
+                            <FileCheck className="mr-2 h-4 w-4" />
+                            Vérifier
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Modifier
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
             <DialogFooter>
@@ -676,6 +1028,38 @@ export default function AdminHealthActors() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Dialog d'action avec confirmation */}
+        <AlertDialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {actionType === 'approve' && 'Confirmer l\'approbation'}
+                {actionType === 'suspend' && 'Confirmer la suspension'}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {actionType === 'approve' && selectedItem && (
+                  <>
+                    {'raison_sociale' in selectedItem ? (
+                      <>Êtes-vous sûr de vouloir approuver l'établissement <strong>{selectedItem.raison_sociale}</strong> ? Il deviendra actif sur la plateforme.</>
+                    ) : (
+                      <>Êtes-vous sûr de vouloir vérifier le professionnel <strong>{selectedItem.profiles?.full_name}</strong> ? Son compte sera certifié.</>
+                    )}
+                  </>
+                )}
+                {actionType === 'suspend' && selectedItem && (
+                  <>Êtes-vous sûr de vouloir suspendre <strong>{selectedItem.raison_sociale}</strong> ? L'établissement ne sera plus visible sur la plateforme.</>
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={handleAction}>
+                Confirmer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </SuperAdminLayout>
   );
