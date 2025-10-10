@@ -57,6 +57,9 @@ serve(async (req) => {
         relation["amenity"="doctors"](${gabonBbox});
         node["amenity"="dentist"](${gabonBbox});
         way["amenity"="dentist"](${gabonBbox});
+        node["healthcare"="laboratory"](${gabonBbox});
+        way["healthcare"="laboratory"](${gabonBbox});
+        relation["healthcare"="laboratory"](${gabonBbox});
         node["healthcare"](${gabonBbox});
         way["healthcare"](${gabonBbox});
         node["shop"="medical_supply"](${gabonBbox});
@@ -93,6 +96,10 @@ serve(async (req) => {
         type = 'clinique';
       } else if (amenity === 'pharmacy') {
         type = 'pharmacie';
+      } else if (element.tags?.healthcare === 'laboratory') {
+        type = 'laboratoire';
+      } else if (amenity === 'dentist') {
+        type = 'cabinet_dentaire';
       } else if (amenity === 'doctors' || element.tags?.healthcare === 'doctor') {
         type = 'cabinet_medical';
       }
