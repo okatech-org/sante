@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.58.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,9 +13,14 @@ serve(async (req) => {
   }
 
   try {
-    const { province, city } = await req.json();
+    const { province, city, saveToDatabase } = await req.json();
     
-    console.log('Fetching OSM health providers for:', { province, city });
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') as string;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    console.log('Fetching OSM health providers for:', { province, city, saveToDatabase });
 
     // Bbox pour le Gabon (précis)
     // Format: [sud, ouest, nord, est]
@@ -177,10 +183,63 @@ serve(async (req) => {
 
     console.log(`Transformed ${providers.length} providers`);
 
+    // Sauvegarder dans la base de données si demandé
+    if (saveToDatabase && providers.length > 0) {
+      console.log('Saving to database...');
+      
+      // Transformer pour la base de données
+      const dbRecords = providers.map((p: any) => ({
+        id: p.id,
+        osm_id: p.osm_id,
+        type: p.type,
+        nom: p.nom,
+        province: p.province,
+        ville: p.ville,
+        latitude: p.coordonnees?.lat,
+        longitude: p.coordonnees?.lng,
+        adresse_descriptive: p.adresse_descriptive,
+        telephones: p.telephones,
+        email: p.email,
+        site_web: p.site_web,
+        horaires: p.horaires,
+        services: p.services,
+        specialites: p.specialites,
+        ouvert_24_7: p.ouvert_24_7,
+        cnamgs: p.conventionnement?.cnamgs || false,
+        cnss: p.conventionnement?.cnss || false,
+        secteur: p.secteur,
+        statut_operationnel: p.statut_operationnel,
+        nombre_lits: p.nombre_lits,
+      }));
+
+      // Upsert dans la base de données (insérer ou mettre à jour si existe déjà)
+      const { error: dbError } = await supabase
+        .from('osm_health_providers')
+        .upsert(dbRecords, { onConflict: 'osm_id' });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: `Database error: ${dbError.message}`,
+            providers 
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
+      console.log(`Saved ${dbRecords.length} records to database`);
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
         count: providers.length,
+        saved: saveToDatabase,
         providers 
       }),
       {

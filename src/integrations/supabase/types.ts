@@ -908,6 +908,84 @@ export type Database = {
         }
         Relationships: []
       }
+      osm_health_providers: {
+        Row: {
+          adresse_descriptive: string | null
+          cnamgs: boolean | null
+          cnss: boolean | null
+          created_at: string | null
+          email: string | null
+          horaires: string | null
+          id: string
+          last_updated: string | null
+          latitude: number | null
+          longitude: number | null
+          nom: string
+          nombre_lits: number | null
+          osm_id: number
+          ouvert_24_7: boolean | null
+          province: string
+          secteur: string | null
+          services: string[] | null
+          site_web: string | null
+          specialites: string[] | null
+          statut_operationnel: string | null
+          telephones: string[] | null
+          type: string
+          ville: string
+        }
+        Insert: {
+          adresse_descriptive?: string | null
+          cnamgs?: boolean | null
+          cnss?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          horaires?: string | null
+          id: string
+          last_updated?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          nom: string
+          nombre_lits?: number | null
+          osm_id: number
+          ouvert_24_7?: boolean | null
+          province: string
+          secteur?: string | null
+          services?: string[] | null
+          site_web?: string | null
+          specialites?: string[] | null
+          statut_operationnel?: string | null
+          telephones?: string[] | null
+          type: string
+          ville: string
+        }
+        Update: {
+          adresse_descriptive?: string | null
+          cnamgs?: boolean | null
+          cnss?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          horaires?: string | null
+          id?: string
+          last_updated?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          nom?: string
+          nombre_lits?: number | null
+          osm_id?: number
+          ouvert_24_7?: boolean | null
+          province?: string
+          secteur?: string | null
+          services?: string[] | null
+          site_web?: string | null
+          specialites?: string[] | null
+          statut_operationnel?: string | null
+          telephones?: string[] | null
+          type?: string
+          ville?: string
+        }
+        Relationships: []
+      }
       pharmacies: {
         Row: {
           address: string

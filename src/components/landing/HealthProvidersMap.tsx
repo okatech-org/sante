@@ -8,7 +8,7 @@ import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, 
 import providersData from "@/data/cartography-providers.json";
 import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
-import { fetchOSMHealthProviders } from "@/utils/osm-health-sync";
+import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -85,12 +85,13 @@ export default function HealthProvidersMap() {
     const loadOSMData = async () => {
       setIsLoadingOSM(true);
       try {
-        const osmData = await fetchOSMHealthProviders();
+        const osmData = await getOSMProvidersFromSupabase();
         setOsmProviders(osmData);
-        toast.success(`${osmData.length} établissements OSM chargés`);
+        if (osmData.length > 0) {
+          toast.success(`${osmData.length} établissements OSM chargés`);
+        }
       } catch (error) {
         console.error('Error loading OSM data:', error);
-        toast.error("Erreur lors du chargement des données OSM");
       } finally {
         setIsLoadingOSM(false);
       }
