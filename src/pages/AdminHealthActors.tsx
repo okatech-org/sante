@@ -83,7 +83,7 @@ interface Establishment {
   service_urgences_actif: boolean;
   statut: string;
   cnamgs_conventionne: boolean;
-  account_claimed: boolean | null;
+  account_claimed: boolean;
   invitation_token: string | null;
   claimed_at: string | null;
   claimed_by: string | null;
@@ -171,8 +171,8 @@ export default function AdminHealthActors() {
     try {
       setIsLoading(true);
       
-      // Charger établissements
-      const { data: estabData, error: estabError } = await supabase
+      // Charger établissements avec tri par statut de revendication
+      const { data: estabData, error: estabError} = await supabase
         .from('establishments')
         .select('*')
         .order('created_at', { ascending: false });
@@ -589,13 +589,24 @@ export default function AdminHealthActors() {
                             </div>
 
                             {/* Badges */}
-                            <div className="flex flex-wrap gap-1">
+                             <div className="flex flex-wrap gap-1">
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                                 {establishmentTypes[establishment.type_etablissement] || establishment.type_etablissement}
                               </Badge>
                               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                                 {establishment.secteur}
                               </Badge>
+                              {establishment.account_claimed ? (
+                                <Badge variant="default" className="bg-green-500 text-[10px] px-1.5 py-0">
+                                  <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                  Revendiqué
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px] px-1.5 py-0">
+                                  <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
+                                  Non revendiqué
+                                </Badge>
+                              )}
                               {establishment.cnamgs_conventionne && (
                                 <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-blue-600">CNAMGS</Badge>
                               )}
