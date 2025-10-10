@@ -5,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Phone, Navigation, MapPin, ZoomIn, ZoomOut, Layers, Maximize2, Search, X, Locate, RefreshCw } from "lucide-react";
-import providersData from "@/data/cartography-providers.json";
+
 import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
+import { supabase } from "@/integrations/supabase/client";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -49,55 +50,83 @@ export default function HealthProvidersMap() {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [osmProviders, setOsmProviders] = useState<CartographyProvider[]>([]);
-  const [isLoadingOSM, setIsLoadingOSM] = useState(false);
-  const [showOSM, setShowOSM] = useState(true);
-  
-  const baseProviders = useMemo(() => {
-    return (providersData as CartographyProvider[]).filter(p => p.coordonnees);
-  }, []);
+  const [establishmentProviders, setEstablishmentProviders] = useState<CartographyProvider[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Combiner les providers de base avec les providers OSM
+  // Combiner OSM + Establishments avec déduplication par ID
   const providers = useMemo(() => {
-    if (!showOSM) return baseProviders;
+    const combined = [...osmProviders, ...establishmentProviders];
+    const seenIds = new Set<string>();
     
-    // Fusionner sans doublons (basé sur les coordonnées)
-    const combined = [...baseProviders];
-    const existingCoords = new Set(
-      baseProviders
-        .filter(p => p.coordonnees)
-        .map(p => `${p.coordonnees!.lat.toFixed(5)},${p.coordonnees!.lng.toFixed(5)}`)
-    );
-    
-    osmProviders.forEach(osmProvider => {
-      if (osmProvider.coordonnees) {
-        const coordKey = `${osmProvider.coordonnees.lat.toFixed(5)},${osmProvider.coordonnees.lng.toFixed(5)}`;
-        if (!existingCoords.has(coordKey)) {
-          combined.push(osmProvider);
-        }
-      }
+    return combined.filter(provider => {
+      if (!provider.coordonnees) return false;
+      if (seenIds.has(provider.id)) return false;
+      seenIds.add(provider.id);
+      return true;
     });
-    
-    return combined;
-  }, [baseProviders, osmProviders, showOSM]);
+  }, [osmProviders, establishmentProviders]);
 
-  // Charger les données OSM au montage
+  // Charger les données depuis Supabase
   useEffect(() => {
-    const loadOSMData = async () => {
-      setIsLoadingOSM(true);
+    const loadData = async () => {
+      setIsLoading(true);
       try {
+        // Charger OSM providers
         const osmData = await getOSMProvidersFromSupabase();
         setOsmProviders(osmData);
-        if (osmData.length > 0) {
-          toast.success(`${osmData.length} établissements OSM chargés`);
-        }
+
+        // Charger establishments depuis Supabase
+        const { data: estabData, error: estabError } = await supabase
+          .from('establishments')
+          .select('*');
+
+        if (estabError) throw estabError;
+
+        // Convertir les establishments au format CartographyProvider
+        const estabProviders: CartographyProvider[] = (estabData || [])
+          .filter(estab => estab.latitude && estab.longitude)
+          .map(estab => ({
+            id: estab.id,
+            nom: estab.raison_sociale,
+            type: estab.type_etablissement as any,
+            province: estab.province,
+            ville: estab.ville,
+            adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province]
+              .filter(Boolean).join(', '),
+            coordonnees: {
+              lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
+              lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
+            },
+            telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
+            email: estab.email || undefined,
+            site_web: estab.site_web || undefined,
+            ouvert_24_7: estab.service_urgences_actif || false,
+            conventionnement: {
+              cnamgs: estab.cnamgs_conventionne || false,
+              cnss: false
+            },
+            secteur: (estab.secteur as any) || 'prive',
+            services: [],
+            specialites: [],
+            has_account: true,
+            source: 'Plateforme',
+            statut_operationnel: estab.statut === 'actif' ? 'operationnel' : 'inconnu',
+            nombre_lits: estab.nombre_lits_total
+          }));
+
+        setEstablishmentProviders(estabProviders);
+
+        const totalCount = osmData.length + estabProviders.length;
+        toast.success(`${totalCount} établissements chargés`);
       } catch (error) {
-        console.error('Error loading OSM data:', error);
+        console.error('Error loading data:', error);
+        toast.error("Erreur lors du chargement des données");
       } finally {
-        setIsLoadingOSM(false);
+        setIsLoading(false);
       }
     };
     
-    loadOSMData();
+    loadData();
   }, []);
 
   // Initialiser la carte
@@ -470,16 +499,6 @@ export default function HealthProvidersMap() {
             className="h-8 w-8 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary transition-all text-foreground"
           >
             <Maximize2 className="h-4 w-4" />
-          </Button>
-          <div className="border-t my-1" />
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => setShowOSM(!showOSM)}
-            className={`h-8 w-8 transition-all text-foreground ${showOSM ? 'bg-green-500/20 text-green-600' : 'hover:bg-primary/10'}`}
-            title={showOSM ? "Masquer les données OSM" : "Afficher les données OSM"}
-          >
-            <span className="text-xs font-bold">OSM</span>
           </Button>
         </div>
       </div>
