@@ -1,0 +1,268 @@
+[
+  {
+    "id": "INST_MSHP",
+    "type": "institution",
+    "nom": "Ministère de la Santé et de l'Hygiène Publique",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3901,
+      "lng": 9.4544
+    },
+    "adresse_descriptive": "Boulevard Triomphal Omar Bongo Ondimba, Libreville",
+    "telephones": ["+241 01 76 38 60", "+241 01 76 38 61"],
+    "email": "contact@sante.gouv.ga",
+    "site_web": "http://sante.gouv.ga",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Administration centrale", "Politiques de santé", "Coordination nationale"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "public",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_OMS_GABON",
+    "type": "institution",
+    "nom": "OMS - Bureau de Représentation au Gabon",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4162,
+      "lng": 9.4673
+    },
+    "adresse_descriptive": "Immeuble Sogara, Boulevard de l'Indépendance, Libreville",
+    "telephones": ["+241 01 73 06 00"],
+    "email": "wrogabon@who.int",
+    "site_web": "https://www.afro.who.int/countries/gabon",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Coopération technique", "Appui aux politiques de santé", "Surveillance épidémiologique"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "ong",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_DGSP",
+    "type": "institution",
+    "nom": "Direction Générale de la Santé Publique",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3895,
+      "lng": 9.4538
+    },
+    "adresse_descriptive": "Ministère de la Santé, Boulevard Triomphal, Libreville",
+    "telephones": ["+241 01 76 38 65"],
+    "email": "dgsp@sante.gouv.ga",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Surveillance épidémiologique", "Programmes de santé publique", "Lutte contre les maladies"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "public",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_CROIX_ROUGE",
+    "type": "institution",
+    "nom": "Croix-Rouge Gabonaise",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3982,
+      "lng": 9.4548
+    },
+    "adresse_descriptive": "Avenue Colonel Parant, Quartier Louis, Libreville",
+    "telephones": ["+241 01 73 25 74", "+241 07 58 08 08"],
+    "email": "croixrouge.gabon@gmail.com",
+    "site_web": "https://www.croixrouge-gabon.org",
+    "horaires": "Lundi-Vendredi: 08h00-17h00, Urgences 24/7",
+    "services": ["Secours d'urgence", "Formation premiers secours", "Action humanitaire", "Don de sang"],
+    "specialites": [],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "ong",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_CNAMGS",
+    "type": "institution",
+    "nom": "Caisse Nationale d'Assurance Maladie et de Garantie Sociale (CNAMGS)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3876,
+      "lng": 9.4518
+    },
+    "adresse_descriptive": "Avenue Bouët, Immeuble CNAMGS, Libreville",
+    "telephones": ["+241 01 44 36 36", "+241 01 44 36 37"],
+    "email": "info@cnamgs.ga",
+    "site_web": "https://www.cnamgs.ga",
+    "horaires": "Lundi-Vendredi: 07h30-15h30",
+    "services": ["Assurance maladie", "Gestion des prestations", "Conventionnement établissements"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "parapublic",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_CNSS",
+    "type": "institution",
+    "nom": "Caisse Nationale de Sécurité Sociale (CNSS)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3912,
+      "lng": 9.4587
+    },
+    "adresse_descriptive": "Boulevard Léon Mba, Immeuble CNSS, Libreville",
+    "telephones": ["+241 01 76 24 76", "+241 01 76 24 77"],
+    "email": "info@cnss.ga",
+    "site_web": "http://www.cnss.ga",
+    "horaires": "Lundi-Vendredi: 08h00-15h00",
+    "services": ["Sécurité sociale", "Prestations familiales", "Accidents du travail"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "parapublic",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_PNLP",
+    "type": "institution",
+    "nom": "Programme National de Lutte contre le Paludisme (PNLP)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3898,
+      "lng": 9.4541
+    },
+    "adresse_descriptive": "Direction Générale de la Santé Publique, Libreville",
+    "telephones": ["+241 01 76 38 68"],
+    "email": "pnlp@sante.gouv.ga",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Lutte antipaludique", "Distribution de moustiquaires", "Traitement préventif"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "public",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_PNLS",
+    "type": "institution",
+    "nom": "Programme National de Lutte contre le SIDA (PNLS)",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.3893,
+      "lng": 9.4535
+    },
+    "adresse_descriptive": "Direction Générale de la Santé Publique, Libreville",
+    "telephones": ["+241 01 76 38 70"],
+    "email": "pnls@sante.gouv.ga",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Prévention VIH/SIDA", "Traitement ARV", "Dépistage gratuit"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "public",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_DPPS_G1",
+    "type": "institution",
+    "nom": "Direction Provinciale de la Santé - Estuaire",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4125,
+      "lng": 9.4521
+    },
+    "adresse_descriptive": "Avenue Colonel Parant, Libreville",
+    "telephones": ["+241 01 73 45 12"],
+    "email": "dps.estuaire@sante.gouv.ga",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Administration sanitaire provinciale", "Coordination des établissements"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "public",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  },
+  {
+    "id": "INST_UNICEF",
+    "type": "institution",
+    "nom": "UNICEF Gabon",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4018,
+      "lng": 9.4678
+    },
+    "adresse_descriptive": "Immeuble Mindoubé, Batterie IV, Libreville",
+    "telephones": ["+241 01 44 31 00"],
+    "email": "libreville@unicef.org",
+    "site_web": "https://www.unicef.org/gabon",
+    "horaires": "Lundi-Vendredi: 08h00-17h00",
+    "services": ["Santé infantile", "Vaccination", "Nutrition", "Eau et assainissement"],
+    "specialites": [],
+    "ouvert_24_7": false,
+    "conventionnement": {
+      "cnamgs": false,
+      "cnss": false
+    },
+    "secteur": "ong",
+    "statut_operationnel": "operationnel",
+    "has_account": false,
+    "source": "Plateforme"
+  }
+]

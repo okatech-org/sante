@@ -58,6 +58,10 @@ export default function AdminCartography() {
     try {
       setIsLoading(true);
       
+      // Charger les institutions de santé du Gabon
+      const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
+      const gabonInstitutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
+      
       // Charger les données OSM
       const osmData = await getOSMProvidersFromSupabase();
       setOsmProviders(osmData);
@@ -119,7 +123,7 @@ export default function AdminCartography() {
       setEstablishmentProviders(estabProviders);
 
       // Combiner et calculer les statistiques
-      const combined = [...osmData, ...estabProviders];
+      const combined = [...osmData, ...estabProviders, ...gabonInstitutions];
       const seenIds = new Set();
       const unique = combined.filter(p => {
         if (seenIds.has(p.id)) return false;
