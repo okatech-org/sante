@@ -125,11 +125,16 @@ export default function OSMSync() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-blue-900 dark:text-blue-100 text-sm mb-1">
-                      Données en temps réel
+                      🚀 Synchronisation automatique complète
                     </h4>
-                    <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
-                      Les établissements synchronisés apparaissent instantanément sur la carte de la page d'accueil et dans la cartographie complète. Aucune action supplémentaire n'est requise.
+                    <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 mb-2">
+                      Le système effectue automatiquement les 3 étapes suivantes :
                     </p>
+                    <ol className="text-xs sm:text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                      <li><strong>Récupération depuis OSM</strong> - Interrogation de l'API Overpass pour tous les établissements de santé du Gabon</li>
+                      <li><strong>Sauvegarde en base de données</strong> - Insertion dans la table <code className="bg-blue-100 dark:bg-blue-900 px-1 py-0.5 rounded text-xs">osm_health_providers</code> de Supabase</li>
+                      <li><strong>Affichage immédiat</strong> - Les marqueurs apparaissent instantanément sur toutes les cartes du site (page d'accueil, cartographie)</li>
+                    </ol>
                   </div>
                 </div>
               </div>
@@ -149,6 +154,31 @@ export default function OSMSync() {
                     <p className="text-xs sm:text-sm text-amber-800 dark:text-amber-200">
                       Cette opération peut prendre <strong>jusqu'à 60 secondes</strong> car elle interroge toute la base OpenStreetMap pour le Gabon. Ne rafraîchissez pas la page pendant le processus.
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Success Flow */}
+              <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                      <span className="text-white font-bold">✓</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-green-900 dark:text-green-100 text-sm mb-1">
+                      Après la synchronisation
+                    </h4>
+                    <p className="text-xs sm:text-sm text-green-800 dark:text-green-200">
+                      Les établissements OSM apparaissent automatiquement sur :
+                    </p>
+                    <ul className="text-xs sm:text-sm text-green-800 dark:text-green-200 space-y-1 list-disc list-inside mt-2">
+                      <li>La carte interactive de la page d'accueil</li>
+                      <li>La page de cartographie complète (/cartography)</li>
+                      <li>Les résultats de recherche et filtres</li>
+                      <li>La base de données Supabase (table osm_health_providers)</li>
+                    </ul>
                   </div>
                 </div>
               </div>
