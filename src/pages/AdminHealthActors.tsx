@@ -408,30 +408,30 @@ export default function AdminHealthActors() {
             <CardTitle className="text-xs sm:text-sm">Statistiques</CardTitle>
           </CardHeader>
           <CardContent className="p-2 sm:p-3 pt-0">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5 sm:gap-2">
-              <div className="p-1.5 sm:p-2 rounded bg-muted/50 border min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Établ.</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold truncate">{stats.totalEstablishments}</div>
+            <div className="grid grid-cols-6 gap-1 sm:gap-1.5">
+              <div className="p-1 sm:p-1.5 rounded bg-muted/50 border min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Établ.</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold truncate">{stats.totalEstablishments}</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded bg-green-500/10 border border-green-500/20 min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Actifs</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold text-green-600 truncate">{stats.activeEstablishments}</div>
+              <div className="p-1 sm:p-1.5 rounded bg-green-500/10 border border-green-500/20 min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Actifs</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold text-green-600 truncate">{stats.activeEstablishments}</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded bg-muted/50 border min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Prof.</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold truncate">{stats.totalProfessionals}</div>
+              <div className="p-1 sm:p-1.5 rounded bg-muted/50 border min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Prof.</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold truncate">{stats.totalProfessionals}</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded bg-green-500/10 border border-green-500/20 min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Vérif.</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold text-green-600 truncate">{stats.verifiedProfessionals}</div>
+              <div className="p-1 sm:p-1.5 rounded bg-green-500/10 border border-green-500/20 min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Vérif.</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold text-green-600 truncate">{stats.verifiedProfessionals}</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded bg-muted/50 border min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Privé</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold truncate">{stats.privateEstablishments}</div>
+              <div className="p-1 sm:p-1.5 rounded bg-muted/50 border min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Privé</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold truncate">{stats.privateEstablishments}</div>
               </div>
-              <div className="p-1.5 sm:p-2 rounded bg-primary/10 border border-primary/20 min-w-0">
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5 truncate">Médec.</div>
-                <div className="text-sm sm:text-base lg:text-lg font-bold text-primary truncate">{stats.doctors}</div>
+              <div className="p-1 sm:p-1.5 rounded bg-primary/10 border border-primary/20 min-w-0">
+                <div className="text-[8px] sm:text-[9px] text-muted-foreground mb-0.5 truncate">Médec.</div>
+                <div className="text-xs sm:text-sm lg:text-base font-bold text-primary truncate">{stats.doctors}</div>
               </div>
             </div>
           </CardContent>
