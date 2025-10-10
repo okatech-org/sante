@@ -827,7 +827,7 @@ export default function Landing() {
                 © 2025 SANTE.GA - Conçu et développé par ORGANÉUS Gabon. Tous droits réservés.
               </p>
               
-              <Link to="/superadmin" className="opacity-30 hover:opacity-60 transition-opacity flex items-center gap-1 text-xs text-muted-foreground">
+              <Link to="/login/superadmin" className="opacity-30 hover:opacity-60 transition-opacity flex items-center gap-1 text-xs text-muted-foreground">
                 <Shield className="h-3 w-3" />
                 <span>Admin</span>
               </Link>
