@@ -674,6 +674,7 @@ export default function AdminHealthActors() {
                             <TableHead className="text-[10px] sm:text-xs">Localisation</TableHead>
                             <TableHead className="text-[10px] sm:text-xs">Capacité</TableHead>
                             <TableHead className="text-[10px] sm:text-xs">CNAMGS</TableHead>
+                            <TableHead className="text-[10px] sm:text-xs">Compte</TableHead>
                             <TableHead className="text-[10px] sm:text-xs">Statut</TableHead>
                             <TableHead className="text-right text-[10px] sm:text-xs">Actions</TableHead>
                           </TableRow>
@@ -722,6 +723,19 @@ export default function AdminHealthActors() {
                                   <Badge variant="default" className="text-[10px] px-1.5 py-0">Conv.</Badge>
                                 ) : (
                                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Non</Badge>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {establishment.account_claimed ? (
+                                  <Badge variant="default" className="bg-green-500 text-white text-[10px] px-1.5 py-0">
+                                    <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+                                    Revendiqué
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-[10px] px-1.5 py-0">
+                                    <AlertCircle className="h-2.5 w-2.5 mr-0.5" />
+                                    Non revendiqué
+                                  </Badge>
                                 )}
                               </TableCell>
                               <TableCell>
