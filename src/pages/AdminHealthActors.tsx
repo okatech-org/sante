@@ -93,6 +93,7 @@ export default function AdminHealthActors() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedStatFilter, setSelectedStatFilter] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -100,7 +101,7 @@ export default function AdminHealthActors() {
 
   useEffect(() => {
     filterEstablishments();
-  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, establishments]);
+  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, establishments, selectedStatFilter]);
 
   useEffect(() => {
     filterProfessionals();
@@ -238,6 +239,30 @@ export default function AdminHealthActors() {
 
   const filterEstablishments = () => {
     let filtered = establishments;
+
+    // Filtre par statistique sélectionnée
+    if (selectedStatFilter) {
+      switch (selectedStatFilter) {
+        case 'imported':
+          filtered = filtered.filter(est => (est as any).source === 'db');
+          break;
+        case 'notImported':
+          filtered = filtered.filter(est => (est as any).source === 'osm');
+          break;
+        case 'pending':
+          filtered = filtered.filter(est => est.statut === 'en_validation');
+          break;
+        case 'active':
+          filtered = filtered.filter(est => est.statut === 'actif');
+          break;
+        case 'claimed':
+          filtered = filtered.filter(est => est.account_claimed === true);
+          break;
+        case 'unclaimed':
+          filtered = filtered.filter(est => est.account_claimed === false);
+          break;
+      }
+    }
 
     if (searchTerm) {
       filtered = filtered.filter(est =>
@@ -549,16 +574,24 @@ export default function AdminHealthActors() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {[
-            { label: 'Total acteurs', value: stats.total, icon: Building2, color: 'from-blue-500 to-cyan-500' },
-            { label: 'Importés en DB', value: stats.imported, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
-            { label: 'Non importés', value: stats.notImported, icon: FileText, color: 'from-orange-500 to-amber-500' },
-            { label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
-            { label: 'En validation', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-amber-500' },
-            { label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
-            { label: 'Revendiqués', value: stats.claimed, icon: LinkIcon, color: 'from-indigo-500 to-purple-500' },
-            { label: 'Non revendiqués', value: stats.unclaimed, icon: XCircle, color: 'from-red-500 to-pink-500' }
+            { id: null, label: 'Total acteurs', value: stats.total, icon: Building2, color: 'from-blue-500 to-cyan-500' },
+            { id: 'imported', label: 'Importés en DB', value: stats.imported, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+            { id: 'notImported', label: 'Non importés', value: stats.notImported, icon: FileText, color: 'from-orange-500 to-amber-500' },
+            { id: null, label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
+            { id: 'pending', label: 'En validation', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-amber-500' },
+            { id: 'active', label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
+            { id: 'claimed', label: 'Revendiqués', value: stats.claimed, icon: LinkIcon, color: 'from-indigo-500 to-purple-500' },
+            { id: 'unclaimed', label: 'Non revendiqués', value: stats.unclaimed, icon: XCircle, color: 'from-red-500 to-pink-500' }
           ].map((stat, i) => (
-            <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/70 transition-all">
+            <Card 
+              key={i} 
+              className={`bg-card/50 backdrop-blur-xl border-border/50 transition-all ${
+                stat.id ? 'cursor-pointer hover:bg-card/70 hover:scale-105' : ''
+              } ${
+                selectedStatFilter === stat.id ? 'ring-2 ring-primary bg-card/90' : ''
+              }`}
+              onClick={() => stat.id && setSelectedStatFilter(selectedStatFilter === stat.id ? null : stat.id)}
+            >
               <CardContent className="p-4">
                 <div className="flex flex-col gap-2">
                   <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center self-start`}>
