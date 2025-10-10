@@ -454,18 +454,18 @@ export default function AdminProject() {
                         { title: "Dashboard Aurora Glass", desc: "Interface harmonisée avec le design patient (glassmorphism + couleurs)" },
                         { title: "Navigation Latérale Moderne", desc: "Menu collapsible avec icônes colorées et animations" },
                         { title: "Statistiques Globales", desc: "KPI utilisateurs, établissements, professionnels, approbations" },
-                        { title: "Gestion Utilisateurs", desc: "Liste complète, création, modification, attribution rôles" },
-                        { title: "Gestion Établissements", desc: "Hôpitaux, cliniques, centres avec statuts et localisation" },
-                        { title: "Gestion Professionnels", desc: "Médecins, infirmiers, spécialistes avec validation" },
-                        { title: "Système Approbations", desc: "Validation inscriptions professionnels/établissements" },
-                        { title: "Audit & Logs", desc: "Suivi activités système et actions utilisateurs" },
-                        { title: "Cartographie Nationale", desc: "Vue carte interactive des prestataires par province" },
-                        { title: "Comptes Démo", desc: "Initialisation automatique 17 comptes test" },
+                        { title: "Gestion Utilisateurs", desc: "Liste complète, filtres, recherche, attribution/suppression rôles, export CSV" },
+                        { title: "Gestion Acteurs de Santé", desc: "Établissements et professionnels avec badges statut, import cartographie (414 prestataires)" },
+                        { title: "Comptes Établissements", desc: "Génération tokens invitation, liens revendication, copie/envoi email, révocation" },
+                        { title: "Système Approbations", desc: "Validation inscriptions professionnels/établissements avec workflow complet" },
+                        { title: "Cartographie Nationale", desc: "414 établissements importés - Vue carte interactive par province avec recherche avancée" },
+                        { title: "Audit & Logs", desc: "Suivi activités système et actions utilisateurs avec historique détaillé" },
+                        { title: "Comptes Démo", desc: "Initialisation automatique 17 comptes test via Edge Function" },
                         { title: "Paramètres Système", desc: "Configuration globale, notifications, maintenance" },
-                        { title: "Documentation Technique", desc: "Architecture, API, base de données, sécurité" },
-                        { title: "Analytics Avancées", desc: "Statistiques par province, graphiques temporels" },
-                        { title: "Gestion Rôles & Permissions", desc: "17 rôles système avec contrôle d'accès granulaire" },
-                        { title: "Multi-langue & Préférences", desc: "Interface traduite en 5 langues avec thème personnalisable" }
+                        { title: "Documentation Projet", desc: "Architecture, fonctionnalités, backend, frontend, sécurité, roadmap" },
+                        { title: "Analytics Avancées", desc: "Statistiques par province, graphiques temporels, KPIs système" },
+                        { title: "Gestion Rôles & Permissions", desc: "17 rôles système avec contrôle d'accès granulaire RLS" },
+                        { title: "Multi-langue & Préférences", desc: "Interface traduite en 5 langues avec thème personnalisable persistant" }
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
                           <CheckCircle2 className="h-4 w-4 text-success mt-1 flex-shrink-0" />
