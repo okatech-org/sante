@@ -384,17 +384,17 @@ export default function AdminHealthActors() {
 
   return (
     <SuperAdminLayout>
-      <div className="w-full max-w-7xl mx-auto space-y-6">
-        {/* Header avec fond */}
+      <div className="w-full max-w-7xl mx-auto space-y-4">
+        {/* Header compact */}
         <Card className="border-2">
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 shrink-0">
+                <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold">Acteurs de Santé</h1>
-                <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-bold truncate">Acteurs de Santé</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                   Gérez les établissements et professionnels du réseau SANTE.GA
                 </p>
               </div>
@@ -402,60 +402,60 @@ export default function AdminHealthActors() {
           </CardHeader>
         </Card>
 
-        {/* Stats globales dans un cadre */}
+        {/* Stats compactes */}
         <Card className="border-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg">Statistiques globales</CardTitle>
+          <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+            <CardTitle className="text-sm sm:text-base">Statistiques</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Établissements</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.totalEstablishments}</div>
+          <CardContent className="p-3 sm:p-4 pt-0">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
+              <div className="p-2 sm:p-3 rounded-lg bg-muted/50 border">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Établ.</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.totalEstablishments}</div>
               </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Actifs</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{stats.activeEstablishments}</div>
+              <div className="p-2 sm:p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Actifs</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">{stats.activeEstablishments}</div>
               </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Professionnels</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.totalProfessionals}</div>
+              <div className="p-2 sm:p-3 rounded-lg bg-muted/50 border">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Prof.</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.totalProfessionals}</div>
               </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Vérifiés</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{stats.verifiedProfessionals}</div>
+              <div className="p-2 sm:p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Vérif.</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600">{stats.verifiedProfessionals}</div>
               </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Secteur Privé</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.privateEstablishments}</div>
+              <div className="p-2 sm:p-3 rounded-lg bg-muted/50 border">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Privé</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.privateEstablishments}</div>
               </div>
-              <div className="p-3 sm:p-4 rounded-lg bg-primary/10 border border-primary/20">
-                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Médecins</div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary">{stats.doctors}</div>
+              <div className="p-2 sm:p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Médec.</div>
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary">{stats.doctors}</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Onglets principaux dans un cadre */}
+        {/* Onglets compacts */}
         <Card className="border-2">
-          <CardContent className="p-0 sm:p-6">
+          <CardContent className="p-0">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <div className="border-b px-4 sm:px-0">
-                <TabsList className="w-full grid grid-cols-2 h-auto bg-transparent">
+              <div className="border-b">
+                <TabsList className="w-full grid grid-cols-2 h-auto bg-transparent p-0">
                   <TabsTrigger 
                     value="establishments" 
-                    className="flex items-center justify-center gap-2 text-xs sm:text-sm py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                    className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-2.5 sm:py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
                   >
-                    <Building2 className="h-4 w-4" />
+                    <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span className="hidden xs:inline">Établissements</span>
                     <span className="xs:hidden">Étab.</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="professionals" 
-                    className="flex items-center justify-center gap-2 text-xs sm:text-sm py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                    className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-2.5 sm:py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
                   >
-                    <Stethoscope className="h-4 w-4" />
+                    <Stethoscope className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     <span className="hidden xs:inline">Professionnels</span>
                     <span className="xs:hidden">Prof.</span>
                   </TabsTrigger>
@@ -463,19 +463,19 @@ export default function AdminHealthActors() {
               </div>
 
           {/* Onglet Établissements */}
-          <TabsContent value="establishments" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 px-4 sm:px-0">
+          <TabsContent value="establishments" className="space-y-3 sm:space-y-4 mt-0 p-3 sm:p-4">
             <Card className="border shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                  <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
+                  <Filter className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   Filtres
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="estab-search" className="text-xs sm:text-sm">
-                      <Search className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="estab-search" className="text-xs">
+                      <Search className="h-3 w-3 inline mr-1" />
                       Rechercher
                     </Label>
                     <Input
@@ -483,14 +483,14 @@ export default function AdminHealthActors() {
                       placeholder="Nom, ville..."
                       value={establishmentSearch}
                       onChange={(e) => setEstablishmentSearch(e.target.value)}
-                      className="h-9 sm:h-10 text-sm"
+                      className="h-8 sm:h-9 text-xs sm:text-sm"
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="estab-type" className="text-xs sm:text-sm">Type</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="estab-type" className="text-xs">Type</Label>
                     <Select value={establishmentTypeFilter} onValueChange={setEstablishmentTypeFilter}>
-                      <SelectTrigger id="estab-type" className="h-9 sm:h-10 text-sm">
+                      <SelectTrigger id="estab-type" className="h-8 sm:h-9 text-xs sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -502,10 +502,10 @@ export default function AdminHealthActors() {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="estab-province" className="text-xs sm:text-sm">Province</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="estab-province" className="text-xs">Province</Label>
                     <Select value={establishmentProvinceFilter} onValueChange={setEstablishmentProvinceFilter}>
-                      <SelectTrigger id="estab-province" className="h-9 sm:h-10 text-sm">
+                      <SelectTrigger id="estab-province" className="h-8 sm:h-9 text-xs sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background">
@@ -521,32 +521,31 @@ export default function AdminHealthActors() {
             </Card>
 
             <Card className="border shadow-sm">
-              <CardHeader className="pb-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <CardTitle className="text-base sm:text-lg">
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <CardTitle className="text-sm sm:text-base">
                     Résultats ({filteredEstablishments.length})
                   </CardTitle>
-                  <div className="flex gap-2 w-full sm:w-auto">
-                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none text-xs sm:text-sm">
-                      <Download className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden xs:inline">Exporter</span>
-                      <span className="xs:hidden">Export</span>
+                  <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto">
+                    <Button variant="outline" size="sm" onClick={exportData} className="flex-1 sm:flex-none h-8 text-xs">
+                      <Download className="mr-1 h-3 w-3" />
+                      <span className="hidden xs:inline">Export</span>
                     </Button>
-                    <Button size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
-                      <Plus className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <Button size="sm" className="flex-1 sm:flex-none h-8 text-xs">
+                      <Plus className="mr-1 h-3 w-3" />
                       <span className="hidden sm:inline">Nouveau</span>
                       <span className="sm:hidden">+</span>
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-0 sm:p-6">
+              <CardContent className="p-0">
                 {isLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <div className="text-muted-foreground text-sm">Chargement...</div>
+                    <div className="text-muted-foreground text-xs sm:text-sm">Chargement...</div>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto -mx-2 sm:mx-0">
+                  <div className="overflow-x-auto">
                     <div className="inline-block min-w-full align-middle">
                       <Table className="text-xs sm:text-sm">
                         <TableHeader className="hidden sm:table-header-group">
