@@ -24,6 +24,7 @@ import { filterProviders, sortProviders, calculateStats } from "@/utils/cartogra
 import provincesData from "@/data/cartography-provinces.json";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 
 export default function Cartography() {
   const { isSuperAdmin, user } = useAuth();
@@ -56,50 +57,15 @@ export default function Cartography() {
   const loadRealData = async () => {
     setIsLoadingData(true);
     try {
-      // Charger depuis OSM health providers
-      const { data: osmData, error: osmError } = await supabase
-        .from('osm_health_providers')
-        .select('*');
+      // Charger les données OSM via la fonction utilitaire
+      const osmProviders = await getOSMProvidersFromSupabase();
 
-      // Charger depuis establishments (tous statuts)
+      // Charger les establishments depuis Supabase
       const { data: estabData, error: estabError } = await supabase
         .from('establishments')
         .select('*');
 
-      if (osmError) throw osmError;
       if (estabError) throw estabError;
-
-      // Convertir les données OSM au format CartographyProvider
-      const osmProviders: CartographyProvider[] = (osmData || []).map(osm => ({
-        id: osm.id,
-        nom: osm.nom,
-        type: osm.type as any,
-        province: osm.province,
-        ville: osm.ville,
-        adresse: osm.adresse_descriptive || '',
-        adresse_descriptive: osm.adresse_descriptive || '',
-        coordonnees: osm.latitude && osm.longitude ? {
-          lat: osm.latitude,
-          lng: osm.longitude
-        } : undefined,
-        telephones: osm.telephones || [],
-        email: osm.email || undefined,
-        site_web: osm.site_web || undefined,
-        horaires: osm.horaires || undefined,
-        ouvert_24_7: osm.ouvert_24_7 || false,
-        cnamgs: osm.cnamgs || false,
-        conventionnement: {
-          cnamgs: osm.cnamgs || false,
-          cnss: osm.cnss || false
-        },
-        secteur: (osm.secteur as any) || 'public',
-        services: osm.services || [],
-        specialites: osm.specialites || [],
-        has_account: false,
-        source: 'OpenStreetMap',
-        osm_id: osm.osm_id,
-        nombre_lits: osm.nombre_lits
-      }));
 
       // Convertir les establishments au format CartographyProvider
       const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
