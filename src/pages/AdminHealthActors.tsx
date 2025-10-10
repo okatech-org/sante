@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, Eye, Edit, Trash2, MoreVertical, Filter, Grid3x3, List, ChevronLeft, ChevronRight, RefreshCw, MapPin, Phone, Globe } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -651,14 +650,8 @@ export default function AdminHealthActors() {
           </CardContent>
         </Card>
 
-        <Tabs defaultValue="establishments" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="establishments">Établissements</TabsTrigger>
-            <TabsTrigger value="professionals">Professionnels</TabsTrigger>
-          </TabsList>
-
-          {/* Establishments Tab */}
-          <TabsContent value="establishments" className="space-y-4">
+        {/* Establishments Section */}
+        <div className="space-y-4">
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
               <div className="flex gap-2">
@@ -1203,67 +1196,7 @@ export default function AdminHealthActors() {
                 )}
               </div>
             )}
-          </TabsContent>
-
-          {/* Professionals Tab */}
-          <TabsContent value="professionals" className="space-y-4">
-            <Card className="bg-card/50 backdrop-blur-xl border-border/50">
-              <CardHeader>
-                <CardTitle>Liste des professionnels ({filteredProfessionals.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="text-center py-12 text-muted-foreground">Chargement...</div>
-                ) : (
-                  <div className="rounded-lg border border-border/50 overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-muted/50">
-                          <TableHead>Nom</TableHead>
-                          <TableHead>Profession</TableHead>
-                          <TableHead>Spécialisation</TableHead>
-                          <TableHead>N° Ordre</TableHead>
-                          <TableHead>Vérifié</TableHead>
-                          <TableHead>Contact</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredProfessionals.map((prof) => (
-                          <TableRow key={prof.id} className="hover:bg-muted/30">
-                            <TableCell className="font-medium">{prof.profile?.full_name || '-'}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-400/30">
-                                {professionTypes[prof.profession_type] || prof.profession_type}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-muted-foreground">{prof.specialization || '-'}</TableCell>
-                            <TableCell className="text-muted-foreground">{prof.ordre_number || '-'}</TableCell>
-                            <TableCell>
-                              {prof.ordre_verified ? (
-                                <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-400/30">
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  Vérifié
-                                </Badge>
-                              ) : (
-                                <Badge variant="outline" className="bg-orange-500/10 text-orange-400 border-orange-400/30">
-                                  <Clock className="w-3 h-3 mr-1" />
-                                  En attente
-                                </Badge>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-sm text-muted-foreground">
-                              {prof.profile?.email || '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
 
         {/* Token Dialog */}
         <Dialog open={showTokenDialog} onOpenChange={setShowTokenDialog}>
