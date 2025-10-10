@@ -384,76 +384,87 @@ export default function AdminHealthActors() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
-        {/* Header */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-            <h1 className="text-2xl sm:text-3xl font-bold">Acteurs de Santé</h1>
-          </div>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Gérez les établissements de santé et les professionnels du réseau SANTE.GA
-          </p>
-        </div>
+      <div className="w-full max-w-7xl mx-auto space-y-6">
+        {/* Header avec fond */}
+        <Card className="border-2">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold">Acteurs de Santé</h1>
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">
+                  Gérez les établissements et professionnels du réseau SANTE.GA
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
 
-        {/* Stats globales */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Établissements</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl">{stats.totalEstablishments}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Actifs</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl text-green-600">{stats.activeEstablishments}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Professionnels</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl">{stats.totalProfessionals}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Vérifiés</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl text-green-600">{stats.verifiedProfessionals}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Privé</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl">{stats.privateEstablishments}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-2">
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardDescription className="text-xs sm:text-sm">Médecins</CardDescription>
-              <CardTitle className="text-xl sm:text-3xl">{stats.doctors}</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
+        {/* Stats globales dans un cadre */}
+        <Card className="border-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg">Statistiques globales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Établissements</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.totalEstablishments}</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Actifs</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{stats.activeEstablishments}</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Professionnels</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.totalProfessionals}</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Vérifiés</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{stats.verifiedProfessionals}</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-lg bg-muted/50 border">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Secteur Privé</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{stats.privateEstablishments}</div>
+              </div>
+              <div className="p-3 sm:p-4 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="text-xs sm:text-sm text-muted-foreground mb-1">Médecins</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary">{stats.doctors}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Onglets principaux */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
-            <TabsTrigger value="establishments" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 sm:py-3">
-              <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Établissements</span>
-              <span className="xs:hidden">Étab.</span>
-            </TabsTrigger>
-            <TabsTrigger value="professionals" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2 sm:py-3">
-              <Stethoscope className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Professionnels</span>
-              <span className="xs:hidden">Prof.</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Onglets principaux dans un cadre */}
+        <Card className="border-2">
+          <CardContent className="p-0 sm:p-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <div className="border-b px-4 sm:px-0">
+                <TabsList className="w-full grid grid-cols-2 h-auto bg-transparent">
+                  <TabsTrigger 
+                    value="establishments" 
+                    className="flex items-center justify-center gap-2 text-xs sm:text-sm py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                  >
+                    <Building2 className="h-4 w-4" />
+                    <span className="hidden xs:inline">Établissements</span>
+                    <span className="xs:hidden">Étab.</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="professionals" 
+                    className="flex items-center justify-center gap-2 text-xs sm:text-sm py-3 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                  >
+                    <Stethoscope className="h-4 w-4" />
+                    <span className="hidden xs:inline">Professionnels</span>
+                    <span className="xs:hidden">Prof.</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
           {/* Onglet Établissements */}
-          <TabsContent value="establishments" className="space-y-4 sm:space-y-6 mt-0">
-            <Card>
+          <TabsContent value="establishments" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 px-4 sm:px-0">
+            <Card className="border shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                   <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -509,7 +520,7 @@ export default function AdminHealthActors() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <CardTitle className="text-base sm:text-lg">
@@ -747,8 +758,8 @@ export default function AdminHealthActors() {
           </TabsContent>
 
           {/* Onglet Professionnels */}
-          <TabsContent value="professionals" className="space-y-6">
-            <Card>
+          <TabsContent value="professionals" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6 px-4 sm:px-0">
+            <Card className="border shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Filter className="h-5 w-5" />
@@ -817,9 +828,9 @@ export default function AdminHealthActors() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border shadow-sm">
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <CardTitle>Résultats ({filteredProfessionals.length})</CardTitle>
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" onClick={exportData}>
@@ -934,6 +945,8 @@ export default function AdminHealthActors() {
             </Card>
           </TabsContent>
         </Tabs>
+          </CardContent>
+        </Card>
 
         {/* Dialog de détails amélioré */}
         <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
