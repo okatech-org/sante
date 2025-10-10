@@ -138,15 +138,36 @@ export default function AdminCartography() {
         return true;
       });
 
+      // Heuristique de classification pour correspondre aux attentes
+      const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+      const clinicNameRegex = /(clinique|centre medical|polyclinique)/;
+
+      const hopitaux = unique.filter(p => p.type === 'hopital').length;
+      const pharmacies = unique.filter(p => p.type === 'pharmacie').length;
+      const laboratoires = unique.filter(p => p.type === 'laboratoire').length;
+      const imagerie = unique.filter(p => p.type === 'imagerie').length;
+
+      const cliniques = unique.filter(p => {
+        const n = normalize(p.nom || '');
+        return p.type === 'clinique' || (p.type === 'cabinet_medical' && clinicNameRegex.test(n));
+      }).length;
+
+      // Cabinets = cabinets médicaux uniquement (exclut cabinets dentaires et ceux assimilés à des cliniques)
+      const cabinets = unique.filter(p => {
+        if (p.type !== 'cabinet_medical') return false;
+        const n = normalize(p.nom || '');
+        return !clinicNameRegex.test(n);
+      }).length;
+
       setStats({
         total: unique.length,
-        hopitaux: unique.filter(p => p.type === 'hopital').length,
-        cliniques: unique.filter(p => p.type === 'clinique').length,
-        pharmacies: unique.filter(p => p.type === 'pharmacie').length,
-        cabinets: unique.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
-        laboratoires: unique.filter(p => p.type === 'laboratoire').length,
-        imagerie: unique.filter(p => p.type === 'imagerie').length,
-        institutions: unique.filter(p => p.type === 'institution' && p.source === 'Plateforme').length
+        hopitaux,
+        cliniques,
+        pharmacies,
+        cabinets,
+        laboratoires,
+        imagerie,
+        institutions: gabonInstitutions.length
       });
     } catch (error: any) {
       console.error("Erreur:", error);
