@@ -12,6 +12,7 @@ import CartographySmartSearch from "@/components/cartography/CartographySmartSea
 import CartographyListView from "@/components/cartography/CartographyListView";
 import { CartographyProvider } from "@/types/cartography";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
+import { dedupeProviders } from "@/utils/cartography-dedupe";
 
 
 type SortBy = "name-asc" | "name-desc" | "city-asc" | "city-desc" | "type-asc" | "distance-asc";
@@ -68,7 +69,8 @@ export default function AdminCartography() {
       
       // Charger les données OSM
       const osmData = await getOSMProvidersFromSupabase();
-      setOsmProviders(osmData);
+      const dedupedOSM = dedupeProviders(osmData);
+      setOsmProviders(dedupedOSM);
 
       // Charger les establishments depuis Supabase
       const { data: estabData, error: estabError } = await supabase
@@ -127,7 +129,7 @@ export default function AdminCartography() {
       setEstablishmentProviders(estabProviders);
 
       // Combiner et calculer les statistiques (exclure les institutions OSM)
-      const filteredOSMData = osmData.filter(p => p.type !== 'institution');
+      const filteredOSMData = dedupeProviders(osmData).filter(p => p.type !== 'institution');
       const combined = [...filteredOSMData, ...gabonInstitutions];
       const seenIds = new Set();
       const unique = combined.filter(p => {
