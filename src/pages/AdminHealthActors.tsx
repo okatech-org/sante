@@ -472,7 +472,7 @@ export default function AdminHealthActors() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-2 sm:p-3 pt-0">
-                <div className="grid gap-1.5 sm:gap-2 grid-cols-1 sm:grid-cols-3">
+                <div className="grid gap-1 sm:gap-1.5 grid-cols-3">
                   <div className="space-y-1">
                     <Label htmlFor="estab-search" className="text-[10px] sm:text-xs">
                       <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3 inline mr-0.5" />
