@@ -558,7 +558,7 @@ export default function AdminHealthActors() {
   const realEstablishments = establishments.filter(e => !professionalTypes.includes(e.type_etablissement));
   
   const stats = {
-    total: establishments.length + professionals.length,
+    total: establishments.length,
     establishments: realEstablishments.length,
     subscriptions: establishments.filter(e => e.account_claimed === true).length,
     professionals: professionals.length + professionalCabinets.length,
