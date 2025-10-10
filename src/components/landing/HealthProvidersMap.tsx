@@ -40,7 +40,7 @@ const TYPE_COLORS: Record<string, string> = {
 const GABON_CENTER: [number, number] = [0.4162, 9.4673];
 const DEFAULT_ZOOM = 6;
 
-export default function HealthProvidersMap() {
+export default function HealthProvidersMap({ providers: externalProviders }: { providers?: CartographyProvider[] }) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const markersGroup = useRef<L.LayerGroup | null>(null);
@@ -55,6 +55,16 @@ export default function HealthProvidersMap() {
 
   // Combiner OSM + Establishments avec déduplication par ID
   const providers = useMemo(() => {
+    if (externalProviders && externalProviders.length) {
+      const seenIds = new Set<string>();
+      return externalProviders.filter(p => {
+        if (!p.coordonnees) return false;
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
+        return true;
+      });
+    }
+
     const combined = [...osmProviders, ...establishmentProviders];
     const seenIds = new Set<string>();
     
@@ -64,10 +74,17 @@ export default function HealthProvidersMap() {
       seenIds.add(provider.id);
       return true;
     });
-  }, [osmProviders, establishmentProviders]);
+  }, [externalProviders, osmProviders, establishmentProviders]);
 
   // Charger les données depuis Supabase
   useEffect(() => {
+    if (externalProviders && externalProviders.length) {
+      // On utilise les données externes, ne pas charger en local
+      setOsmProviders([]);
+      setEstablishmentProviders([]);
+      return;
+    }
+
     const loadData = async () => {
       setIsLoading(true);
       try {
@@ -127,7 +144,7 @@ export default function HealthProvidersMap() {
     };
     
     loadData();
-  }, []);
+  }, [externalProviders]);
 
   // Initialiser la carte
   useEffect(() => {

@@ -52,6 +52,9 @@ serve(async (req) => {
         node["amenity"="pharmacy"](${gabonBbox});
         way["amenity"="pharmacy"](${gabonBbox});
         relation["amenity"="pharmacy"](${gabonBbox});
+        node["amenity"="laboratory"](${gabonBbox});
+        way["amenity"="laboratory"](${gabonBbox});
+        relation["amenity"="laboratory"](${gabonBbox});
         node["amenity"="doctors"](${gabonBbox});
         way["amenity"="doctors"](${gabonBbox});
         relation["amenity"="doctors"](${gabonBbox});
@@ -63,6 +66,11 @@ serve(async (req) => {
         node["healthcare"="diagnostic_radiology"](${gabonBbox});
         way["healthcare"="diagnostic_radiology"](${gabonBbox});
         relation["healthcare"="diagnostic_radiology"](${gabonBbox});
+        node["healthcare"="diagnostics"](${gabonBbox});
+        way["healthcare"="diagnostics"](${gabonBbox});
+        relation["healthcare"="diagnostics"](${gabonBbox});
+        node["healthcare:speciality"~"laboratory|pathology|radiology|imaging"](${gabonBbox});
+        way["healthcare:speciality"~"laboratory|pathology|radiology|imaging"](${gabonBbox});
         node["healthcare"](${gabonBbox});
         way["healthcare"](${gabonBbox});
         node["shop"="medical_supply"](${gabonBbox});
@@ -91,21 +99,46 @@ serve(async (req) => {
     // Transformer les données OSM au format de notre application
     const providers = data.elements.map((element: any) => {
       let type = 'cabinet_medical';
-      const amenity = element.tags?.amenity || element.tags?.healthcare;
+      const tags = element.tags || {};
+      const amenity = tags?.amenity;
+      const healthcare = tags?.healthcare;
+      const speciality = (tags?.['healthcare:speciality'] || '').toLowerCase();
+      const nameLower = (tags?.name || tags?.['name:fr'] || '').toLowerCase();
       
-      if (amenity === 'hospital' || element.tags?.healthcare === 'hospital') {
+      const isLab = (
+        healthcare === 'laboratory' ||
+        amenity === 'laboratory' ||
+        speciality.includes('laboratory') ||
+        speciality.includes('pathology') ||
+        nameLower.includes('laboratoire') ||
+        nameLower.includes('laboratory')
+      );
+      
+      const isImaging = (
+        healthcare === 'diagnostic_radiology' ||
+        healthcare === 'radiology' ||
+        healthcare === 'diagnostics' ||
+        speciality.includes('radiology') ||
+        speciality.includes('imaging') ||
+        nameLower.includes('imagerie') ||
+        nameLower.includes('radiologie') ||
+        nameLower.includes('scanner') ||
+        nameLower.includes('irm')
+      );
+      
+      if (isLab) {
+        type = 'laboratoire';
+      } else if (isImaging) {
+        type = 'imagerie';
+      } else if (amenity === 'hospital' || healthcare === 'hospital') {
         type = 'hopital';
-      } else if (amenity === 'clinic' || element.tags?.healthcare === 'clinic') {
+      } else if (amenity === 'clinic' || healthcare === 'clinic') {
         type = 'clinique';
       } else if (amenity === 'pharmacy') {
         type = 'pharmacie';
-      } else if (element.tags?.healthcare === 'laboratory') {
-        type = 'laboratoire';
-      } else if (element.tags?.healthcare === 'diagnostic_radiology' || element.tags?.healthcare === 'diagnostic') {
-        type = 'imagerie';
       } else if (amenity === 'dentist') {
         type = 'cabinet_dentaire';
-      } else if (amenity === 'doctors' || element.tags?.healthcare === 'doctor') {
+      } else if (amenity === 'doctors' || healthcare === 'doctor') {
         type = 'cabinet_medical';
       }
 

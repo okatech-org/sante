@@ -312,7 +312,7 @@ export default function AdminCartography() {
               </CardHeader>
               <CardContent>
                 <div className="rounded-lg overflow-hidden">
-                  <HealthProvidersMap key={reloadKey} />
+                  <HealthProvidersMap key={reloadKey} providers={allProviders} />
                 </div>
               </CardContent>
             </Card>
