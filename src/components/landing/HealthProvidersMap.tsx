@@ -164,7 +164,6 @@ export default function HealthProvidersMap() {
       if (!provider.coordonnees) return;
 
       const color = TYPE_COLORS[provider.type] || '#6B7280';
-      const isOSM = provider.source === 'OpenStreetMap';
       
       const customIcon = L.divIcon({
         className: 'custom-marker',
@@ -175,12 +174,11 @@ export default function HealthProvidersMap() {
             height: 32px;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
-            border: 3px solid ${isOSM ? '#10b981' : 'white'};
+            border: 3px solid white;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
           ">
             <span style="
               transform: rotate(45deg);
@@ -188,23 +186,6 @@ export default function HealthProvidersMap() {
             ">
               ${getProviderIcon(provider.type)}
             </span>
-            ${isOSM ? `
-              <span style="
-                position: absolute;
-                bottom: -2px;
-                right: -2px;
-                background: #10b981;
-                color: white;
-                width: 12px;
-                height: 12px;
-                border-radius: 50%;
-                font-size: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transform: rotate(45deg);
-              ">OSM</span>
-            ` : ''}
           </div>
         `,
         iconSize: [32, 32],
@@ -220,7 +201,6 @@ export default function HealthProvidersMap() {
         <div style="min-width: 240px; padding: 4px;">
           <h3 style="font-weight: 700; margin-bottom: 8px; font-size: 15px; color: hsl(var(--foreground));">
             ${provider.nom}
-            ${provider.source === 'OpenStreetMap' ? '<span style="background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px;">OSM</span>' : ''}
           </h3>
           <p style="color: hsl(var(--muted-foreground)); font-size: 13px; margin-bottom: 8px; text-transform: capitalize;">
             ${getTypeLabel(provider.type)} • ${provider.ville}
