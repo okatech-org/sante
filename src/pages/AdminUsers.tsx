@@ -248,7 +248,7 @@ export default function AdminUsers() {
   if (!isAdmin) {
     return (
       <SuperAdminLayout>
-        <div className="container max-w-7xl mx-auto px-4 py-8">
+        <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
@@ -267,7 +267,7 @@ export default function AdminUsers() {
 
   return (
     <SuperAdminLayout>
-      <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6 px-2 sm:px-4">
+      <div className="w-full max-w-7xl mx-auto space-y-4 sm:space-y-6 px-2 sm:px-4 py-2 sm:py-4">
         {/* Header */}
         <Card className="border-2">
           <CardHeader className="p-3 sm:p-6">
@@ -281,8 +281,8 @@ export default function AdminUsers() {
                   <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{t('admin.usersSubtitle')}</p>
                 </div>
               </div>
-              <Button onClick={exportUsers} variant="outline" size="sm" className="w-full sm:w-auto">
-                <Download className="mr-2 h-4 w-4" />
+              <Button onClick={exportUsers} variant="outline" size="sm" className="w-full sm:w-auto text-xs sm:text-sm h-8 sm:h-9">
+                <Download className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                 {t('common.export')} CSV
               </Button>
             </div>
@@ -336,15 +336,15 @@ export default function AdminUsers() {
               </TabsList>
             </div>
 
-            {/* Onglet Liste des utilisateurs */}
+            {/* Tab All Users */}
             <TabsContent value="all" className="space-y-3 sm:space-y-4 mt-0 p-2 sm:p-3">
-              {/* Filtres */}
+              {/* Filters */}
               <Card className="border shadow-sm">
-                <CardContent className="p-2 sm:p-3 pt-3 sm:pt-6">
-                  <div className="grid md:grid-cols-3 gap-2 sm:gap-4">
-                    <div className="space-y-1 sm:space-y-2">
-                      <Label htmlFor="search" className="text-xs sm:text-sm">
-                        <Search className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
+                <CardContent className="p-3 sm:p-4 pt-4 sm:pt-6">
+                  <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <Label htmlFor="search" className="text-xs sm:text-sm flex items-center">
+                        <Search className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
                         Rechercher
                       </Label>
                       <Input
@@ -352,225 +352,227 @@ export default function AdminUsers() {
                         placeholder="Nom, email ou téléphone..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="h-8 text-xs sm:text-sm"
+                        className="h-9 sm:h-10 text-xs sm:text-sm"
                       />
                     </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="filter">
-                      <Filter className="h-4 w-4 inline mr-2" />
-                      Filtrer par rôle
-                    </Label>
-                    <Select value={filterRole} onValueChange={setFilterRole}>
-                      <SelectTrigger id="filter">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background">
-                        <SelectItem value="all">Tous les rôles</SelectItem>
-                        <SelectItem value="super_admin">Super Admin</SelectItem>
-                        <SelectItem value="admin">Administrateur</SelectItem>
-                        <SelectItem value="moderator">Modérateur</SelectItem>
-                        <SelectItem value="patient">Patient</SelectItem>
-                        <SelectItem value="doctor">Médecin</SelectItem>
-                        <SelectItem value="medical_staff">Corps médical</SelectItem>
-                        <SelectItem value="pharmacy">Pharmacie</SelectItem>
-                        <SelectItem value="laboratory">Laboratoire</SelectItem>
-                        <SelectItem value="hospital">Hôpital</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <Label htmlFor="filter" className="text-xs sm:text-sm flex items-center">
+                        <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+                        Filtrer par rôle
+                      </Label>
+                      <Select value={filterRole} onValueChange={setFilterRole}>
+                        <SelectTrigger id="filter" className="h-9 sm:h-10 text-xs sm:text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background">
+                          <SelectItem value="all">Tous les rôles</SelectItem>
+                          <SelectItem value="super_admin">Super Admin</SelectItem>
+                          <SelectItem value="admin">Administrateur</SelectItem>
+                          <SelectItem value="moderator">Modérateur</SelectItem>
+                          <SelectItem value="patient">Patient</SelectItem>
+                          <SelectItem value="doctor">Médecin</SelectItem>
+                          <SelectItem value="medical_staff">Corps médical</SelectItem>
+                          <SelectItem value="pharmacy">Pharmacie</SelectItem>
+                          <SelectItem value="laboratory">Laboratoire</SelectItem>
+                          <SelectItem value="hospital">Hôpital</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div className="flex items-end">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="w-full h-8 text-xs sm:text-sm"
-                      onClick={() => {
-                        setSearchTerm("");
-                        setFilterRole("all");
-                      }}
-                    >
-                      Réinitialiser
-                    </Button>
+                    <div className="flex items-end">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full h-9 sm:h-10 text-xs sm:text-sm"
+                        onClick={() => {
+                          setSearchTerm("");
+                          setFilterRole("all");
+                        }}
+                      >
+                        Réinitialiser
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Table */}
-            <Card className="border shadow-sm">
-              <CardHeader className="p-2 sm:p-3">
-                <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
-                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Résultats ({filteredUsers.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 sm:p-3 pt-0">
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="text-muted-foreground">Chargement...</div>
-                  </div>
-                ) : filteredUsers.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <Users className="h-12 w-12 text-muted-foreground mb-3" />
-                    <p className="text-muted-foreground">Aucun utilisateur trouvé</p>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Nom</TableHead>
-                          <TableHead>Contact</TableHead>
-                          <TableHead>Localisation</TableHead>
-                          <TableHead>Rôles</TableHead>
-                          <TableHead>Inscrit le</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredUsers.map((userProfile) => (
-                          <TableRow key={userProfile.id}>
-                            <TableCell className="font-medium">
-                              <div>
-                                <div>{userProfile.full_name}</div>
-                                {userProfile.gender && (
-                                  <div className="text-xs text-muted-foreground">
-                                    {userProfile.gender === 'M' ? 'Homme' : 'Femme'}
-                                    {userProfile.birth_date && ` • ${new Date().getFullYear() - new Date(userProfile.birth_date).getFullYear()} ans`}
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="space-y-1">
-                                {userProfile.email && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Mail className="h-3 w-3 text-muted-foreground" />
-                                    {userProfile.email}
-                                  </div>
-                                )}
-                                <div className="flex items-center gap-1 text-sm">
-                                  <Phone className="h-3 w-3 text-muted-foreground" />
-                                  {userProfile.phone}
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {userProfile.city && userProfile.province ? (
-                                <div className="text-sm">
-                                  <div>{userProfile.city}</div>
-                                  <div className="text-xs text-muted-foreground">{userProfile.province}</div>
-                                </div>
-                              ) : (
-                                <span className="text-sm text-muted-foreground">-</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-1">
-                                {userProfile.roles.length > 0 ? (
-                                  userProfile.roles.map(role => (
-                                    <Badge 
-                                      key={role} 
-                                      className={roleColors[role] || ""}
-                                      variant="secondary"
-                                    >
-                                      {roleLabels[role] || role}
-                                    </Badge>
-                                  ))
-                                ) : (
-                                  <span className="text-sm text-muted-foreground">Aucun rôle</span>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-sm">
-                              {new Date(userProfile.created_at).toLocaleDateString('fr-FR')}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {isSuperAdmin && userProfile.roles.filter(r => r !== 'super_admin').length > 0 && (
-                                <div className="flex justify-end gap-2">
-                                  {userProfile.roles.filter(r => r !== 'super_admin').map(role => (
-                                    <Button
-                                      key={role}
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => setUserToRemove({ userId: userProfile.id, role })}
-                                      title={`Retirer ${roleLabels[role]}`}
-                                    >
-                                      <Trash2 className="h-4 w-4 text-destructive" />
-                                    </Button>
-                                  ))}
-                                </div>
-                              )}
-                            </TableCell>
+              {/* Table */}
+              <Card className="border shadow-sm">
+                <CardHeader className="p-3 sm:p-4">
+                  <CardTitle className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+                    <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                    Résultats ({filteredUsers.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12 sm:py-16">
+                      <div className="text-sm sm:text-base text-muted-foreground">Chargement...</div>
+                    </div>
+                  ) : filteredUsers.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
+                      <Users className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-3" />
+                      <p className="text-sm sm:text-base text-muted-foreground">Aucun utilisateur trouvé</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-xs sm:text-sm">Nom</TableHead>
+                            <TableHead className="text-xs sm:text-sm">Contact</TableHead>
+                            <TableHead className="text-xs sm:text-sm hidden md:table-cell">Localisation</TableHead>
+                            <TableHead className="text-xs sm:text-sm">Rôles</TableHead>
+                            <TableHead className="text-xs sm:text-sm hidden lg:table-cell">Inscrit le</TableHead>
+                            <TableHead className="text-xs sm:text-sm text-right">Actions</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredUsers.map((userProfile) => (
+                            <TableRow key={userProfile.id}>
+                              <TableCell className="font-medium">
+                                <div className="min-w-[120px]">
+                                  <div className="text-sm sm:text-base">{userProfile.full_name}</div>
+                                  {userProfile.gender && (
+                                    <div className="text-[10px] sm:text-xs text-muted-foreground">
+                                      {userProfile.gender === 'M' ? 'Homme' : 'Femme'}
+                                      {userProfile.birth_date && ` • ${new Date().getFullYear() - new Date(userProfile.birth_date).getFullYear()} ans`}
+                                    </div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="space-y-1 min-w-[150px]">
+                                  {userProfile.email && (
+                                    <div className="flex items-center gap-1 text-[11px] sm:text-sm">
+                                      <Mail className="h-3 w-3 text-muted-foreground shrink-0" />
+                                      <span className="truncate">{userProfile.email}</span>
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-1 text-[11px] sm:text-sm">
+                                    <Phone className="h-3 w-3 text-muted-foreground shrink-0" />
+                                    {userProfile.phone}
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {userProfile.city && userProfile.province ? (
+                                  <div className="text-xs sm:text-sm min-w-[100px]">
+                                    <div>{userProfile.city}</div>
+                                    <div className="text-[10px] sm:text-xs text-muted-foreground">{userProfile.province}</div>
+                                  </div>
+                                ) : (
+                                  <span className="text-xs sm:text-sm text-muted-foreground">-</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1 min-w-[100px]">
+                                  {userProfile.roles.length > 0 ? (
+                                    userProfile.roles.map(role => (
+                                      <Badge 
+                                        key={role} 
+                                        className={`text-[10px] sm:text-xs ${roleColors[role] || ""}`}
+                                        variant="secondary"
+                                      >
+                                        {roleLabels[role] || role}
+                                      </Badge>
+                                    ))
+                                  ) : (
+                                    <span className="text-xs sm:text-sm text-muted-foreground">Aucun rôle</span>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-xs sm:text-sm hidden lg:table-cell">
+                                {new Date(userProfile.created_at).toLocaleDateString('fr-FR')}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {isSuperAdmin && userProfile.roles.filter(r => r !== 'super_admin').length > 0 && (
+                                  <div className="flex justify-end gap-2">
+                                    {userProfile.roles.filter(r => r !== 'super_admin').map(role => (
+                                      <Button
+                                        key={role}
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setUserToRemove({ userId: userProfile.id, role })}
+                                        title={`Retirer ${roleLabels[role]}`}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" />
+                                      </Button>
+                                    ))}
+                                  </div>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Onglet Gérer les rôles */}
-          <TabsContent value="manage">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <UserPlus className="h-5 w-5" />
-                  Attribuer un rôle administratif
-                </CardTitle>
-                <CardDescription>
-                  Donnez des permissions administratives à un utilisateur existant
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email de l'utilisateur</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="utilisateur@email.com"
-                      value={newAdminEmail}
-                      onChange={(e) => setNewAdminEmail(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Rôle</Label>
-                    <Select value={newAdminRole} onValueChange={(value) => setNewAdminRole(value as AppRole)}>
-                      <SelectTrigger id="role">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background">
-                        {isSuperAdmin && <SelectItem value="admin">Administrateur</SelectItem>}
-                        <SelectItem value="moderator">Modérateur</SelectItem>
-                        <SelectItem value="doctor">Médecin</SelectItem>
-                        <SelectItem value="medical_staff">Corps médical</SelectItem>
-                        <SelectItem value="pharmacy">Pharmacie</SelectItem>
-                        <SelectItem value="laboratory">Laboratoire</SelectItem>
-                        <SelectItem value="hospital">Hôpital</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+            {/* Tab Manage Roles */}
+            <TabsContent value="manage" className="mt-0 p-3 sm:p-4">
+              <Card className="border shadow-sm">
+                <CardHeader className="p-3 sm:p-4">
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <UserPlus className="h-4 w-4 sm:h-5 sm:w-5" />
+                    Attribuer un rôle administratif
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
+                    Donnez des permissions administratives à un utilisateur existant
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-4">
+                  <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <Label htmlFor="email" className="text-xs sm:text-sm">Email de l'utilisateur</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="utilisateur@email.com"
+                        value={newAdminEmail}
+                        onChange={(e) => setNewAdminEmail(e.target.value)}
+                        className="h-9 sm:h-10 text-xs sm:text-sm"
+                      />
+                    </div>
+                    
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <Label htmlFor="role" className="text-xs sm:text-sm">Rôle</Label>
+                      <Select value={newAdminRole} onValueChange={(value) => setNewAdminRole(value as AppRole)}>
+                        <SelectTrigger id="role" className="h-9 sm:h-10 text-xs sm:text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background">
+                          {isSuperAdmin && <SelectItem value="admin">Administrateur</SelectItem>}
+                          <SelectItem value="moderator">Modérateur</SelectItem>
+                          <SelectItem value="doctor">Médecin</SelectItem>
+                          <SelectItem value="medical_staff">Corps médical</SelectItem>
+                          <SelectItem value="pharmacy">Pharmacie</SelectItem>
+                          <SelectItem value="laboratory">Laboratoire</SelectItem>
+                          <SelectItem value="hospital">Hôpital</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div className="flex items-end">
-                    <Button onClick={handleAddAdmin} className="w-full">
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Attribuer le rôle
-                    </Button>
+                    <div className="flex items-end">
+                      <Button onClick={handleAddAdmin} className="w-full h-9 sm:h-10 text-xs sm:text-sm">
+                        <UserPlus className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                        Attribuer le rôle
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </Card>
-    </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </Card>
+      </div>
 
-      {/* Dialog de confirmation de suppression */}
+      {/* Confirmation Dialog */}
       <AlertDialog open={!!userToRemove} onOpenChange={() => setUserToRemove(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
