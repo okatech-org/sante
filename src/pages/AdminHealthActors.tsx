@@ -84,7 +84,7 @@ export default function AdminHealthActors() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [claimFilter, setClaimFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("date-desc");
+  const [sortBy, setSortBy] = useState("smart");
   const [isLoading, setIsLoading] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
@@ -235,7 +235,8 @@ export default function AdminHealthActors() {
     if (searchTerm) {
       filtered = filtered.filter(est =>
         est.raison_sociale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        est.ville.toLowerCase().includes(searchTerm.toLowerCase())
+        est.ville.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        est.province.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -253,29 +254,84 @@ export default function AdminHealthActors() {
       filtered = filtered.filter(est => est.account_claimed === false);
     }
 
-    // Tri intelligent
+    // Tri intelligent et hiérarchique
     filtered = [...filtered].sort((a, b) => {
+      // Priorité 1: Trier par source (DB > OSM > JSON)
+      const sourceOrder = { 'db': 0, 'osm': 1, 'json': 2 };
+      const sourceA = (a as any).source || 'db';
+      const sourceB = (b as any).source || 'db';
+      
       switch (sortBy) {
         case "name-asc":
-          return a.raison_sociale.localeCompare(b.raison_sociale);
+          return a.raison_sociale.localeCompare(b.raison_sociale, 'fr', { sensitivity: 'base' });
         case "name-desc":
-          return b.raison_sociale.localeCompare(a.raison_sociale);
+          return b.raison_sociale.localeCompare(a.raison_sociale, 'fr', { sensitivity: 'base' });
+        
         case "date-asc":
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case "date-desc":
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        
         case "city-asc":
-          return a.ville.localeCompare(b.ville);
+          return a.ville.localeCompare(b.ville, 'fr') || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
         case "city-desc":
-          return b.ville.localeCompare(a.ville);
+          return b.ville.localeCompare(a.ville, 'fr') || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
+        case "province-asc":
+          return a.province.localeCompare(b.province, 'fr') || a.ville.localeCompare(b.ville, 'fr');
+        case "province-desc":
+          return b.province.localeCompare(a.province, 'fr') || a.ville.localeCompare(b.ville, 'fr');
+        
         case "type-asc":
-          return a.type_etablissement.localeCompare(b.type_etablissement);
+          return a.type_etablissement.localeCompare(b.type_etablissement) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
         case "type-desc":
-          return b.type_etablissement.localeCompare(a.type_etablissement);
+          return b.type_etablissement.localeCompare(a.type_etablissement) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
+        case "secteur-asc":
+          return a.secteur.localeCompare(b.secteur) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        case "secteur-desc":
+          return b.secteur.localeCompare(a.secteur) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
         case "status-claimed":
-          return (b.account_claimed ? 1 : 0) - (a.account_claimed ? 1 : 0);
+          return (b.account_claimed ? 1 : 0) - (a.account_claimed ? 1 : 0) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
         case "status-unclaimed":
-          return (a.account_claimed ? 1 : 0) - (b.account_claimed ? 1 : 0);
+          return (a.account_claimed ? 1 : 0) - (b.account_claimed ? 1 : 0) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
+        case "source-db":
+          return (sourceOrder[sourceA] - sourceOrder[sourceB]) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        case "source-external":
+          return (sourceOrder[sourceB] - sourceOrder[sourceA]) || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
+        // Tri par catégorie d'établissement (Hôpitaux > Cliniques > Centres > Pharmacies > Laboratoires)
+        case "category-priority":
+          const categoryOrder: Record<string, number> = {
+            'chu': 0,
+            'chr': 1,
+            'hopital': 2,
+            'hopital_confessionnel': 3,
+            'hopital_departemental': 4,
+            'clinique': 5,
+            'polyclinique': 6,
+            'centre_medical': 7,
+            'centre_sante': 8,
+            'dispensaire': 9,
+            'pharmacie': 10,
+            'laboratoire': 11,
+            'cabinet_medical': 12,
+            'cabinet_dentaire': 13
+          };
+          const orderA = categoryOrder[a.type_etablissement] ?? 99;
+          const orderB = categoryOrder[b.type_etablissement] ?? 99;
+          return orderA - orderB || a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
+        // Tri intelligent: DB d'abord, puis par type, puis par nom
+        case "smart":
+          const sourceCompare = sourceOrder[sourceA] - sourceOrder[sourceB];
+          if (sourceCompare !== 0) return sourceCompare;
+          const typeCompare = a.type_etablissement.localeCompare(b.type_etablissement);
+          if (typeCompare !== 0) return typeCompare;
+          return a.raison_sociale.localeCompare(b.raison_sociale, 'fr');
+        
         default:
           return 0;
       }
@@ -713,16 +769,38 @@ export default function AdminHealthActors() {
                       <SelectTrigger className="bg-background/50">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-background border-border z-50">
-                        <SelectItem value="date-desc">Plus récent d'abord</SelectItem>
-                        <SelectItem value="date-asc">Plus ancien d'abord</SelectItem>
+                      <SelectContent className="bg-background border-border z-50 max-h-[400px] overflow-y-auto">
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">📊 Tri Intelligent</div>
+                        <SelectItem value="smart">✨ Tri intelligent (recommandé)</SelectItem>
+                        <SelectItem value="category-priority">🏥 Par catégorie (Hôpitaux → Pharmacies)</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">📝 Par Nom</div>
                         <SelectItem value="name-asc">Nom (A → Z)</SelectItem>
                         <SelectItem value="name-desc">Nom (Z → A)</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">📅 Par Date</div>
+                        <SelectItem value="date-desc">Plus récent d'abord</SelectItem>
+                        <SelectItem value="date-asc">Plus ancien d'abord</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">📍 Par Localisation</div>
+                        <SelectItem value="province-asc">Province (A → Z)</SelectItem>
+                        <SelectItem value="province-desc">Province (Z → A)</SelectItem>
                         <SelectItem value="city-asc">Ville (A → Z)</SelectItem>
                         <SelectItem value="city-desc">Ville (Z → A)</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">🏢 Par Type & Secteur</div>
                         <SelectItem value="type-asc">Type (A → Z)</SelectItem>
+                        <SelectItem value="type-desc">Type (Z → A)</SelectItem>
+                        <SelectItem value="secteur-asc">Secteur (A → Z)</SelectItem>
+                        <SelectItem value="secteur-desc">Secteur (Z → A)</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">🔗 Par Statut</div>
                         <SelectItem value="status-claimed">Revendiqués d'abord</SelectItem>
                         <SelectItem value="status-unclaimed">Non revendiqués d'abord</SelectItem>
+                        
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-border/50 mt-2">💾 Par Source</div>
+                        <SelectItem value="source-db">Base de données d'abord</SelectItem>
+                        <SelectItem value="source-external">Sources externes d'abord</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -786,7 +864,7 @@ export default function AdminHealthActors() {
                         setStatusFilter("all");
                         setTypeFilter("all");
                         setClaimFilter("all");
-                        setSortBy("date-desc");
+                        setSortBy("smart");
                       }}
                     >
                       Réinitialiser
