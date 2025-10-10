@@ -35,6 +35,7 @@ export default function AdminCartography() {
   const [sortBy, setSortBy] = useState<SortBy>("name-asc");
 
   const [establishmentProviders, setEstablishmentProviders] = useState<CartographyProvider[]>([]);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const allProviders = useMemo(() => {
     const combined = [...osmProviders, ...establishmentProviders];
@@ -50,7 +51,7 @@ export default function AdminCartography() {
   }, [osmProviders, establishmentProviders]);
 
   useEffect(() => {
-    loadData();
+    handleSync();
   }, []);
 
   const loadData = async () => {
@@ -148,6 +149,7 @@ export default function AdminCartography() {
       
       // Recharger les données depuis la base
       await loadData();
+      setReloadKey((k) => k + 1);
     } catch (error: any) {
       console.error('Erreur de synchronisation:', error);
       toast.error("Erreur lors de la synchronisation OSM");
@@ -310,7 +312,7 @@ export default function AdminCartography() {
               </CardHeader>
               <CardContent>
                 <div className="rounded-lg overflow-hidden">
-                  <HealthProvidersMap />
+                  <HealthProvidersMap key={reloadKey} />
                 </div>
               </CardContent>
             </Card>
