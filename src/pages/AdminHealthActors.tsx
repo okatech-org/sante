@@ -243,12 +243,6 @@ export default function AdminHealthActors() {
     // Filtre par statistique sélectionnée
     if (selectedStatFilter) {
       switch (selectedStatFilter) {
-        case 'imported':
-          filtered = filtered.filter(est => (est as any).source === 'db');
-          break;
-        case 'notImported':
-          filtered = filtered.filter(est => (est as any).source === 'osm');
-          break;
         case 'pending':
           filtered = filtered.filter(est => est.statut === 'en_validation');
           break;
