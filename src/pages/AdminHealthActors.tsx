@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
+import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import cartographyProviders from "@/data/cartography-providers.json";
 
 interface Establishment {
   id: string;
@@ -23,6 +25,9 @@ interface Establishment {
   email: string | null;
   telephone_standard: string | null;
   created_at: string;
+  account_claimed: boolean;
+  claimed_at: string | null;
+  invitation_token: string | null;
 }
 
 interface Professional {
@@ -75,7 +80,12 @@ export default function AdminHealthActors() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [claimFilter, setClaimFilter] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
+  const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
+  const [showTokenDialog, setShowTokenDialog] = useState(false);
+  const [generatedToken, setGeneratedToken] = useState("");
 
   useEffect(() => {
     loadData();
@@ -83,7 +93,7 @@ export default function AdminHealthActors() {
 
   useEffect(() => {
     filterEstablishments();
-  }, [searchTerm, statusFilter, typeFilter, establishments]);
+  }, [searchTerm, statusFilter, typeFilter, claimFilter, establishments]);
 
   useEffect(() => {
     filterProfessionals();
@@ -140,6 +150,12 @@ export default function AdminHealthActors() {
       filtered = filtered.filter(est => est.type_etablissement === typeFilter);
     }
 
+    if (claimFilter === "claimed") {
+      filtered = filtered.filter(est => est.account_claimed === true);
+    } else if (claimFilter === "unclaimed") {
+      filtered = filtered.filter(est => est.account_claimed === false);
+    }
+
     setFilteredEstablishments(filtered);
   };
 
@@ -190,6 +206,97 @@ export default function AdminHealthActors() {
     }
   };
 
+  const handleImportCartography = async () => {
+    try {
+      setIsImporting(true);
+      toast.info("Import en cours...");
+
+      // Map des types
+      const typeMap: Record<string, any> = {
+        'hopital': 'hopital',
+        'clinique': 'clinique',
+        'polyclinique': 'polyclinique',
+        'chr': 'chr',
+        'chu': 'chu',
+        'centre_medical': 'centre_medical',
+        'hopital_confessionnel': 'hopital_confessionnel',
+        'hopital_departemental': 'hopital_departemental',
+        'pharmacie': 'hopital',
+        'laboratoire': 'hopital'
+      };
+
+      const secteurMap: Record<string, any> = {
+        'Public': 'public',
+        'Privé': 'prive',
+        'Mixte': 'parapublic',
+        'Confessionnel': 'confessionnel'
+      };
+
+      // Préparer les données
+      const establishmentsToInsert = cartographyProviders.map((provider: any) => ({
+        raison_sociale: provider.nom,
+        type_etablissement: (typeMap[provider.type] || 'hopital') as any,
+        secteur: (secteurMap[provider.secteur] || 'prive') as any,
+        ville: provider.ville,
+        province: provider.province,
+        adresse_rue: provider.adresse_descriptive || '',
+        telephone_standard: provider.telephones?.[0] || null,
+        email: provider.email || null,
+        latitude: provider.coordonnees?.lat ? parseFloat(provider.coordonnees.lat) : null,
+        longitude: provider.coordonnees?.lng ? parseFloat(provider.coordonnees.lng) : null,
+        statut: 'actif' as any,
+        account_claimed: false,
+        numero_autorisation: `AUTO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      }));
+
+      // Insertion par lots
+      const batchSize = 50;
+      for (let i = 0; i < establishmentsToInsert.length; i += batchSize) {
+        const batch = establishmentsToInsert.slice(i, i + batchSize);
+        const { error } = await supabase
+          .from('establishments')
+          .insert(batch);
+
+        if (error) {
+          console.error('Batch error:', error);
+          throw error;
+        }
+      }
+
+      toast.success(`${establishmentsToInsert.length} établissements importés avec succès`);
+      loadData();
+    } catch (error: any) {
+      toast.error("Erreur lors de l'import: " + error.message);
+      console.error(error);
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const handleGenerateToken = async (establishment: Establishment) => {
+    try {
+      const { data, error } = await supabase.rpc('generate_establishment_invitation_token', {
+        _establishment_id: establishment.id
+      });
+
+      if (error) throw error;
+
+      setGeneratedToken(data);
+      setSelectedEstablishment(establishment);
+      setShowTokenDialog(true);
+      toast.success("Token généré avec succès");
+    } catch (error: any) {
+      toast.error("Erreur lors de la génération du token");
+      console.error(error);
+    }
+  };
+
+  const copyInvitationLink = () => {
+    const link = `${window.location.origin}/claim-establishment/${generatedToken}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Lien copié dans le presse-papier");
+  };
+
   const exportData = (type: 'establishments' | 'professionals') => {
     if (type === 'establishments') {
       const csv = [
@@ -235,7 +342,9 @@ export default function AdminHealthActors() {
     establishments: establishments.length,
     professionals: professionals.length,
     pending: establishments.filter(e => e.statut === 'en_validation').length,
-    active: establishments.filter(e => e.statut === 'actif').length
+    active: establishments.filter(e => e.statut === 'actif').length,
+    claimed: establishments.filter(e => e.account_claimed === true).length,
+    unclaimed: establishments.filter(e => e.account_claimed === false).length
   };
 
   return (
@@ -254,22 +363,24 @@ export default function AdminHealthActors() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {[
             { label: 'Établissements', value: stats.establishments, icon: Building2, color: 'from-blue-500 to-cyan-500' },
             { label: 'Professionnels', value: stats.professionals, icon: Users, color: 'from-purple-500 to-pink-500' },
             { label: 'En validation', value: stats.pending, icon: Clock, color: 'from-orange-500 to-amber-500' },
-            { label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-green-500 to-emerald-500' }
+            { label: 'Actifs', value: stats.active, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+            { label: 'Revendiqués', value: stats.claimed, icon: LinkIcon, color: 'from-indigo-500 to-purple-500' },
+            { label: 'Non revendiqués', value: stats.unclaimed, icon: FileText, color: 'from-red-500 to-pink-500' }
           ].map((stat, i) => (
             <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/70 transition-all">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-3xl font-bold mt-1">{stat.value}</p>
+                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    <p className="text-2xl font-bold mt-1">{stat.value}</p>
                   </div>
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
-                    <stat.icon className="w-6 h-6 text-white" />
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                    <stat.icon className="w-5 h-5 text-white" />
                   </div>
                 </div>
               </CardContent>
@@ -289,13 +400,25 @@ export default function AdminHealthActors() {
             <Card className="bg-card/50 backdrop-blur-xl border-border/50">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Filtres</CardTitle>
-                <Button onClick={() => exportData('establishments')} variant="outline" size="sm" className="gap-2">
-                  <Download className="w-4 h-4" />
-                  Exporter
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleImportCartography} 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2"
+                    disabled={isImporting}
+                  >
+                    <Upload className="w-4 h-4" />
+                    {isImporting ? "Import en cours..." : "Importer Carto"}
+                  </Button>
+                  <Button onClick={() => exportData('establishments')} variant="outline" size="sm" className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Exporter
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -327,6 +450,16 @@ export default function AdminHealthActors() {
                       ))}
                     </SelectContent>
                   </Select>
+                  <Select value={claimFilter} onValueChange={setClaimFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filtrer par revendication" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous</SelectItem>
+                      <SelectItem value="claimed">Revendiqués</SelectItem>
+                      <SelectItem value="unclaimed">Non revendiqués</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
             </Card>
@@ -348,6 +481,7 @@ export default function AdminHealthActors() {
                           <TableHead>Type</TableHead>
                           <TableHead>Localisation</TableHead>
                           <TableHead>Statut</TableHead>
+                          <TableHead>Revendication</TableHead>
                           <TableHead>Contact</TableHead>
                           <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
@@ -369,11 +503,35 @@ export default function AdminHealthActors() {
                                 {est.statut}
                               </Badge>
                             </TableCell>
+                            <TableCell>
+                              {est.account_claimed ? (
+                                <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-400/30">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Revendiqué
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-orange-500/10 text-orange-400 border-orange-400/30">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  Disponible
+                                </Badge>
+                              )}
+                            </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
                               {est.email || est.telephone_standard || '-'}
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
+                                {!est.account_claimed && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleGenerateToken(est)}
+                                    className="text-blue-500 hover:text-blue-600"
+                                    title="Générer un lien d'invitation"
+                                  >
+                                    <LinkIcon className="w-4 h-4" />
+                                  </Button>
+                                )}
                                 {est.statut === 'en_validation' && (
                                   <Button
                                     variant="ghost"
@@ -465,6 +623,46 @@ export default function AdminHealthActors() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Token Dialog */}
+        <Dialog open={showTokenDialog} onOpenChange={setShowTokenDialog}>
+          <DialogContent className="bg-card/95 backdrop-blur-xl border-border/50 max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Lien d'invitation généré</DialogTitle>
+              <DialogDescription>
+                Envoyez ce lien à l'établissement pour qu'il puisse revendiquer son compte
+              </DialogDescription>
+            </DialogHeader>
+            {selectedEstablishment && (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Établissement</p>
+                  <p className="font-medium text-lg">{selectedEstablishment.raison_sociale}</p>
+                  <p className="text-sm text-muted-foreground">{selectedEstablishment.ville}, {selectedEstablishment.province}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Lien d'invitation</p>
+                  <div className="flex gap-2">
+                    <Input
+                      value={`${window.location.origin}/claim-establishment/${generatedToken}`}
+                      readOnly
+                      className="font-mono text-sm"
+                    />
+                    <Button onClick={copyInvitationLink} variant="outline">
+                      Copier
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4 rounded-lg bg-muted/50">
+                  <p className="text-sm text-muted-foreground">
+                    Ce lien permettra à l'établissement de créer un compte et de revendiquer ses données. 
+                    Le lien est à usage unique et expire après utilisation.
+                  </p>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </SuperAdminLayout>
   );
