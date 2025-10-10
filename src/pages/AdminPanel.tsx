@@ -240,93 +240,113 @@ export default function AdminPanel() {
 
   return (
     <SuperAdminLayout>
-      <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              Panneau Super Admin
+      <div className="container max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                <Shield className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-primary" />
+              </div>
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Panneau Super Admin
+              </span>
             </h1>
-            <p className="text-muted-foreground mt-1">Gestion complète du système SANTE.GA</p>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Gestion complète du système SANTE.GA
+            </p>
           </div>
         </div>
 
-        {/* Comptes et données démo */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DatabaseIcon className="h-5 w-5" />
+        {/* Demo Accounts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <Card className="border-2 hover:shadow-lg transition-all duration-300 animate-fade-in">
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="p-1.5 bg-blue-500/10 rounded-lg">
+                  <DatabaseIcon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                </div>
                 Comptes démo
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Créer tous les comptes de démonstration du système
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Button 
                 onClick={handleCreateDemoAccounts} 
                 disabled={creatingDemoAccounts}
-                className="w-full"
+                className="w-full hover-scale"
+                size="lg"
               >
-                <Users className="mr-2 h-4 w-4" />
-                {creatingDemoAccounts ? "Création en cours..." : "Créer les comptes démo"}
+                <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-sm sm:text-base">
+                  {creatingDemoAccounts ? "Création en cours..." : "Créer les comptes démo"}
+                </span>
               </Button>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Stethoscope className="h-5 w-5" />
+          <Card className="border-2 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="p-1.5 bg-green-500/10 rounded-lg">
+                  <Stethoscope className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 dark:text-green-400" />
+                </div>
                 Données professionnelles
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Générer les données démo pour les professionnels de santé
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Button 
                 onClick={handleCreateDemoProfessionalData} 
                 disabled={creatingDemoProfessionalData}
-                className="w-full"
+                className="w-full hover-scale"
                 variant="secondary"
+                size="lg"
               >
-                <Stethoscope className="mr-2 h-4 w-4" />
-                {creatingDemoProfessionalData ? "Création en cours..." : "Générer les données pro"}
+                <Stethoscope className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-sm sm:text-base">
+                  {creatingDemoProfessionalData ? "Création en cours..." : "Générer les données pro"}
+                </span>
               </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Ajouter un admin */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserPlus className="h-5 w-5" />
+        {/* Add Admin Role Section */}
+        <Card className="border-2 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <CardHeader className="pb-3 sm:pb-4">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <div className="p-1.5 bg-purple-500/10 rounded-lg">
+                <UserPlus className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
+              </div>
               Attribuer un rôle administratif
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Donnez des permissions administratives à un utilisateur existant
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email de l'utilisateur</Label>
+                <Label htmlFor="email" className="text-xs sm:text-sm">Email de l'utilisateur</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="utilisateur@email.com"
                   value={newAdminEmail}
                   onChange={(e) => setNewAdminEmail(e.target.value)}
+                  className="text-sm"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="role">Rôle</Label>
+                <Label htmlFor="role" className="text-xs sm:text-sm">Rôle</Label>
                 <Select value={newAdminRole} onValueChange={(value) => setNewAdminRole(value as AppRole)}>
-                  <SelectTrigger id="role">
+                  <SelectTrigger id="role" className="text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -336,85 +356,113 @@ export default function AdminPanel() {
                 </Select>
               </div>
 
-              <div className="flex items-end">
-                <Button onClick={handleAddAdmin} className="w-full">
+              <div className="flex items-end sm:col-span-2 lg:col-span-1">
+                <Button onClick={handleAddAdmin} className="w-full hover-scale" size="lg">
                   <UserPlus className="mr-2 h-4 w-4" />
-                  Attribuer le rôle
+                  <span className="text-sm sm:text-base">Attribuer le rôle</span>
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Liste des utilisateurs */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Tous les utilisateurs ({users.length})
-            </CardTitle>
+        {/* Users List Section */}
+        <Card className="border-2 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <CardHeader className="pb-3 sm:pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <div className="p-1.5 bg-orange-500/10 rounded-lg">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                Tous les utilisateurs
+              </CardTitle>
+              <Badge variant="secondary" className="w-fit text-xs sm:text-sm">
+                {users.length} utilisateur{users.length > 1 ? 's' : ''}
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0 px-0 sm:px-6">
             {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="text-muted-foreground">Chargement...</div>
+              <div className="flex items-center justify-center py-12">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                  <p className="text-sm text-muted-foreground">Chargement des utilisateurs...</p>
+                </div>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Nom</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Téléphone</TableHead>
-                      <TableHead>Rôles</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((userProfile) => (
-                      <TableRow key={userProfile.id}>
-                        <TableCell className="font-medium">{userProfile.full_name}</TableCell>
-                        <TableCell>{userProfile.email || '-'}</TableCell>
-                        <TableCell>{userProfile.phone}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {userProfile.roles.length > 0 ? (
-                              userProfile.roles.map(role => (
-                                <Badge 
-                                  key={role} 
-                                  className={roleColors[role] || ""}
-                                  variant="secondary"
-                                >
-                                  {roleLabels[role] || role}
-                                </Badge>
-                              ))
-                            ) : (
-                              <span className="text-sm text-muted-foreground">Aucun rôle</span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {userProfile.roles.filter(r => r !== 'super_admin').length > 0 && (
-                            <div className="flex justify-end gap-2">
-                              {userProfile.roles.filter(r => r !== 'super_admin').map(role => (
-                                <Button
-                                  key={role}
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleRemoveRole(userProfile.id, role)}
-                                  title={`Retirer ${roleLabels[role]}`}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                              ))}
-                            </div>
-                          )}
-                        </TableCell>
+              <div className="overflow-x-auto -mx-3 sm:mx-0">
+                <div className="inline-block min-w-full align-middle">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="font-semibold text-xs sm:text-sm whitespace-nowrap">Nom</TableHead>
+                        <TableHead className="font-semibold text-xs sm:text-sm whitespace-nowrap hidden md:table-cell">Email</TableHead>
+                        <TableHead className="font-semibold text-xs sm:text-sm whitespace-nowrap hidden lg:table-cell">Téléphone</TableHead>
+                        <TableHead className="font-semibold text-xs sm:text-sm whitespace-nowrap">Rôles</TableHead>
+                        <TableHead className="font-semibold text-xs sm:text-sm text-right whitespace-nowrap">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((userProfile, index) => (
+                        <TableRow 
+                          key={userProfile.id} 
+                          className="hover:bg-muted/30 transition-colors animate-fade-in"
+                          style={{ animationDelay: `${index * 0.05}s` }}
+                        >
+                          <TableCell className="font-medium text-xs sm:text-sm">
+                            <div className="flex flex-col">
+                              <span className="font-semibold">{userProfile.full_name}</span>
+                              <span className="text-xs text-muted-foreground md:hidden">
+                                {userProfile.email || userProfile.phone}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm hidden md:table-cell">
+                            {userProfile.email || '-'}
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm hidden lg:table-cell">
+                            {userProfile.phone}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {userProfile.roles.length > 0 ? (
+                                userProfile.roles.map(role => (
+                                  <Badge 
+                                    key={role} 
+                                    className={`${roleColors[role] || ""} text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5`}
+                                    variant="secondary"
+                                  >
+                                    {roleLabels[role] || role}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <span className="text-xs text-muted-foreground">Aucun rôle</span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {userProfile.roles.filter(r => r !== 'super_admin').length > 0 && (
+                              <div className="flex justify-end gap-1 sm:gap-2">
+                                {userProfile.roles.filter(r => r !== 'super_admin').map(role => (
+                                  <Button
+                                    key={role}
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveRole(userProfile.id, role)}
+                                    title={`Retirer ${roleLabels[role]}`}
+                                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-destructive/10 hover:scale-110 transition-all"
+                                  >
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 text-destructive" />
+                                  </Button>
+                                ))}
+                              </div>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             )}
           </CardContent>
