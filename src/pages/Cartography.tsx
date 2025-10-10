@@ -61,11 +61,10 @@ export default function Cartography() {
         .from('osm_health_providers')
         .select('*');
 
-      // Charger depuis establishments actifs
+      // Charger depuis establishments (tous statuts)
       const { data: estabData, error: estabError } = await supabase
         .from('establishments')
-        .select('*')
-        .eq('statut', 'actif');
+        .select('*');
 
       if (osmError) throw osmError;
       if (estabError) throw estabError;
@@ -132,10 +131,17 @@ export default function Cartography() {
         nombre_lits: estab.nombre_lits_total
       }));
 
-      // Combiner les deux sources
-      const allProviders = [...osmProviders, ...estabProviders];
-      setProviders(allProviders);
-      toast.success(`${allProviders.length} établissements chargés`);
+      // Combiner les deux sources et dédupliquer
+      const combined = [...osmProviders, ...estabProviders];
+      const seenIds = new Set();
+      const uniqueProviders = combined.filter(p => {
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
+        return true;
+      });
+      
+      setProviders(uniqueProviders);
+      toast.success(`${uniqueProviders.length} établissements chargés`);
     } catch (error) {
       console.error('Erreur chargement données:', error);
       toast.error("Erreur lors du chargement des données");

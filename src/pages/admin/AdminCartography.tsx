@@ -12,7 +12,7 @@ import CartographySmartSearch from "@/components/cartography/CartographySmartSea
 import CartographyListView from "@/components/cartography/CartographyListView";
 import { CartographyProvider } from "@/types/cartography";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
-import cartographyData from "@/data/cartography-providers.json";
+
 
 type SortBy = "name-asc" | "name-desc" | "city-asc" | "city-desc" | "type-asc" | "distance-asc";
 
@@ -33,22 +33,20 @@ export default function AdminCartography() {
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("name-asc");
 
-  const baseProviders = useMemo(() => {
-    return (cartographyData as CartographyProvider[]);
-  }, []);
+  const [establishmentProviders, setEstablishmentProviders] = useState<CartographyProvider[]>([]);
 
   const allProviders = useMemo(() => {
-    const combined = [...baseProviders];
-    const existingIds = new Set(baseProviders.map(p => p.id));
+    const combined = [...osmProviders, ...establishmentProviders];
+    const seenIds = new Set();
     
-    osmProviders.forEach(osmProvider => {
-      if (!existingIds.has(osmProvider.id)) {
-        combined.push(osmProvider);
+    return combined.filter(provider => {
+      if (seenIds.has(provider.id)) {
+        return false;
       }
+      seenIds.add(provider.id);
+      return true;
     });
-    
-    return combined;
-  }, [baseProviders, osmProviders]);
+  }, [osmProviders, establishmentProviders]);
 
   useEffect(() => {
     loadData();
@@ -62,23 +60,62 @@ export default function AdminCartography() {
       const osmData = await getOSMProvidersFromSupabase();
       setOsmProviders(osmData);
 
-      // Calculer les statistiques
-      const combined = [...baseProviders];
-      const existingIds = new Set(baseProviders.map(p => p.id));
-      
-      osmData.forEach(osmProvider => {
-        if (!existingIds.has(osmProvider.id)) {
-          combined.push(osmProvider);
-        }
+      // Charger les establishments depuis Supabase
+      const { data: estabData, error: estabError } = await supabase
+        .from('establishments')
+        .select('*');
+
+      if (estabError) throw estabError;
+
+      // Convertir les establishments au format CartographyProvider
+      const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
+        id: estab.id,
+        nom: estab.raison_sociale,
+        type: estab.type_etablissement as any,
+        province: estab.province,
+        ville: estab.ville,
+        adresse: [estab.adresse_rue, estab.adresse_quartier, estab.adresse_arrondissement].filter(Boolean).join(', '),
+        adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province].filter(Boolean).join(', '),
+        coordonnees: estab.latitude && estab.longitude ? {
+          lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
+          lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
+        } : undefined,
+        telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
+        email: estab.email || undefined,
+        site_web: estab.site_web || undefined,
+        ouvert_24_7: estab.service_urgences_actif || false,
+        cnamgs: estab.cnamgs_conventionne || false,
+        conventionnement: {
+          cnamgs: estab.cnamgs_conventionne || false,
+          cnss: false
+        },
+        secteur: (estab.secteur as any) || 'prive',
+        services: [],
+        specialites: [],
+        has_account: true,
+        source: 'Plateforme',
+        statut_operationnel: estab.statut === 'actif' ? 'operationnel' : 'inconnu',
+        nombre_lits: estab.nombre_lits_total
+      }));
+
+      setEstablishmentProviders(estabProviders);
+
+      // Combiner et calculer les statistiques
+      const combined = [...osmData, ...estabProviders];
+      const seenIds = new Set();
+      const unique = combined.filter(p => {
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
+        return true;
       });
 
       setStats({
-        total: combined.length,
-        hopitaux: combined.filter(p => p.type === 'hopital').length,
-        cliniques: combined.filter(p => p.type === 'clinique').length,
-        pharmacies: combined.filter(p => p.type === 'pharmacie').length,
-        cabinets: combined.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
-        laboratoires: combined.filter(p => p.type === 'laboratoire').length,
+        total: unique.length,
+        hopitaux: unique.filter(p => p.type === 'hopital').length,
+        cliniques: unique.filter(p => p.type === 'clinique').length,
+        pharmacies: unique.filter(p => p.type === 'pharmacie').length,
+        cabinets: unique.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
+        laboratoires: unique.filter(p => p.type === 'laboratoire').length,
         withOSM: osmData.length
       });
     } catch (error: any) {
