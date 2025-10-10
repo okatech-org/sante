@@ -14,28 +14,29 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone } from "lucide-react";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone, RefreshCw } from "lucide-react";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import logoSante from "@/assets/logo_sante.png";
 import { CartographyProvider, CartographyFilters, Coordonnees } from "@/types/cartography";
 import { calculateDistance } from "@/utils/distance";
 import { filterProviders, sortProviders, calculateStats } from "@/utils/cartography-filters";
-import providersData from "@/data/cartography-providers.json";
 import provincesData from "@/data/cartography-provinces.json";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Cartography() {
   const { isSuperAdmin, user } = useAuth();
   const navigate = useNavigate();
-  const [providers, setProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
-  const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>(providersData as CartographyProvider[]);
+  const [providers, setProviders] = useState<CartographyProvider[]>([]);
+  const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>([]);
   const [userLocation, setUserLocation] = useState<Coordonnees | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [viewMode, setViewMode] = useState<'both' | 'map' | 'list'>('both');
   const [sortBy, setSortBy] = useState('distance');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   
   const [filters, setFilters] = useState<CartographyFilters>({
     types: [],
@@ -50,6 +51,103 @@ export default function Cartography() {
     searchText: ''
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Charger les données réelles depuis Supabase
+  const loadRealData = async () => {
+    setIsLoadingData(true);
+    try {
+      // Charger depuis OSM health providers
+      const { data: osmData, error: osmError } = await supabase
+        .from('osm_health_providers')
+        .select('*');
+
+      // Charger depuis establishments actifs
+      const { data: estabData, error: estabError } = await supabase
+        .from('establishments')
+        .select('*')
+        .eq('statut', 'actif');
+
+      if (osmError) throw osmError;
+      if (estabError) throw estabError;
+
+      // Convertir les données OSM au format CartographyProvider
+      const osmProviders: CartographyProvider[] = (osmData || []).map(osm => ({
+        id: osm.id,
+        nom: osm.nom,
+        type: osm.type as any,
+        province: osm.province,
+        ville: osm.ville,
+        adresse: osm.adresse_descriptive || '',
+        adresse_descriptive: osm.adresse_descriptive || '',
+        coordonnees: osm.latitude && osm.longitude ? {
+          lat: osm.latitude,
+          lng: osm.longitude
+        } : undefined,
+        telephones: osm.telephones || [],
+        email: osm.email || undefined,
+        site_web: osm.site_web || undefined,
+        horaires: osm.horaires || undefined,
+        ouvert_24_7: osm.ouvert_24_7 || false,
+        cnamgs: osm.cnamgs || false,
+        conventionnement: {
+          cnamgs: osm.cnamgs || false,
+          cnss: osm.cnss || false
+        },
+        secteur: (osm.secteur as any) || 'public',
+        services: osm.services || [],
+        specialites: osm.specialites || [],
+        has_account: false,
+        source: 'OpenStreetMap',
+        osm_id: osm.osm_id,
+        nombre_lits: osm.nombre_lits
+      }));
+
+      // Convertir les establishments au format CartographyProvider
+      const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
+        id: estab.id,
+        nom: estab.raison_sociale,
+        type: estab.type_etablissement as any,
+        province: estab.province,
+        ville: estab.ville,
+        adresse: [estab.adresse_rue, estab.adresse_quartier, estab.adresse_arrondissement].filter(Boolean).join(', '),
+        adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province].filter(Boolean).join(', '),
+        coordonnees: estab.latitude && estab.longitude ? {
+          lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
+          lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
+        } : undefined,
+        telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
+        email: estab.email || undefined,
+        site_web: estab.site_web || undefined,
+        ouvert_24_7: estab.service_urgences_actif || false,
+        cnamgs: estab.cnamgs_conventionne || false,
+        conventionnement: {
+          cnamgs: estab.cnamgs_conventionne || false,
+          cnss: false
+        },
+        secteur: (estab.secteur as any) || 'prive',
+        services: [],
+        specialites: [],
+        has_account: true,
+        source: 'Plateforme',
+        nombre_lits: estab.nombre_lits_total
+      }));
+
+      // Combiner les deux sources
+      const allProviders = [...osmProviders, ...estabProviders];
+      setProviders(allProviders);
+      toast.success(`${allProviders.length} établissements chargés`);
+    } catch (error) {
+      console.error('Erreur chargement données:', error);
+      toast.error("Erreur lors du chargement des données");
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  // Charger les données au montage
+  useEffect(() => {
+    loadRealData();
+  }, []);
 
   // Detect scroll for header background
   useEffect(() => {
@@ -272,9 +370,21 @@ export default function Cartography() {
         <div className="relative p-3 md:p-6 space-y-3 md:space-y-4">
           {/* Header - Compact sur mobile */}
           <div className="text-center space-y-1 md:space-y-2">
-            <h1 className="text-lg md:text-2xl lg:text-3xl font-bold">
-              Trouvez votre professionnel de santé
-            </h1>
+            <div className="flex items-center justify-center gap-2">
+              <h1 className="text-lg md:text-2xl lg:text-3xl font-bold">
+                Trouvez votre professionnel de santé
+              </h1>
+              <Button
+                onClick={loadRealData}
+                disabled={isLoadingData}
+                variant="ghost"
+                size="sm"
+                className="gap-2"
+              >
+                <RefreshCw className={cn("h-4 w-4", isLoadingData && "animate-spin")} />
+                <span className="hidden sm:inline">Actualiser</span>
+              </Button>
+            </div>
             <p className="text-xs md:text-sm text-muted-foreground">
               {providers.length} établissements disponibles
             </p>
