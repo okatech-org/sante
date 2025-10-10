@@ -560,9 +560,9 @@ export default function AdminHealthActors() {
                             <TableHead className="text-right text-[10px] sm:text-xs">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody className="divide-y-4 divide-background">
                           {filteredEstablishments.map((establishment) => (
-                            <TableRow key={establishment.id} className="block sm:table-row border-b sm:border-b-0 py-2 sm:py-0">
+                            <TableRow key={establishment.id} className="block sm:table-row border border-border rounded-lg mb-2 sm:mb-1 py-2 sm:py-0">
                               {/* Vue mobile - cards */}
                               <TableCell className="block sm:hidden p-2.5" colSpan={8}>
                                 <div className="space-y-2">
