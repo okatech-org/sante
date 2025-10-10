@@ -25,6 +25,7 @@ export default function AdminCartography() {
     pharmacies: 0,
     cabinets: 0,
     laboratoires: 0,
+    imagerie: 0,
     withOSM: 0
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -116,6 +117,7 @@ export default function AdminCartography() {
         pharmacies: unique.filter(p => p.type === 'pharmacie').length,
         cabinets: unique.filter(p => p.type === 'cabinet_medical' || p.type === 'cabinet_dentaire').length,
         laboratoires: unique.filter(p => p.type === 'laboratoire').length,
+        imagerie: unique.filter(p => p.type === 'imagerie').length,
         withOSM: osmData.length
       });
     } catch (error: any) {
@@ -248,7 +250,7 @@ export default function AdminCartography() {
         </div>
 
         {/* Statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {[
             { label: 'Total', value: stats.total, icon: Activity, color: 'from-blue-500 to-cyan-500' },
             { label: 'Hôpitaux', value: stats.hopitaux, icon: Building2, color: 'from-purple-500 to-pink-500' },
@@ -256,6 +258,7 @@ export default function AdminCartography() {
             { label: 'Pharmacies', value: stats.pharmacies, icon: MapPin, color: 'from-orange-500 to-amber-500' },
             { label: 'Cabinets', value: stats.cabinets, icon: Building2, color: 'from-indigo-500 to-blue-500' },
             { label: 'Laboratoires', value: stats.laboratoires, icon: Database, color: 'from-pink-500 to-rose-500' },
+            { label: 'Imagerie', value: stats.imagerie, icon: Upload, color: 'from-violet-500 to-purple-500' },
             { label: 'OSM', value: stats.withOSM, icon: Map, color: 'from-teal-500 to-cyan-500' }
           ].map((stat, i) => (
             <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50">
