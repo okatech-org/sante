@@ -62,10 +62,14 @@ import Support from "./pages/Support";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
+import AdminUsers from "./pages/AdminUsers";
+import AdminApprovals from "./pages/AdminApprovals";
+import AdminHealthActors from "./pages/AdminHealthActors";
 import AdminDemo from "./pages/AdminDemo";
 import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
 import AdminSettings from "./pages/AdminSettings";
+import AdminCartography from "./pages/admin/AdminCartography";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
 import OSMSync from "./pages/admin/OSMSync";
 
@@ -136,6 +140,26 @@ const App = () => (
             <Route path="/superadmin/dashboard" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <SuperAdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/users" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminUsers />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/approvals" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminApprovals />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/health-actors" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminHealthActors />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/cartography" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminCartography />
               </ProtectedRoute>
             } />
             <Route path="/superadmin/audit" element={

@@ -1,0 +1,376 @@
+import { useState, useEffect } from "react";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
+import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Clock, CheckCircle, XCircle, Search, Shield, FileText, User, Mail, Phone } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+interface PendingApproval {
+  id: string;
+  type: 'professional' | 'establishment';
+  name: string;
+  email: string;
+  phone: string;
+  profession?: string;
+  specialty?: string;
+  establishmentType?: string;
+  city: string;
+  province: string;
+  created_at: string;
+  documents?: any;
+}
+
+const typeLabels: Record<string, string> = {
+  professional: 'Professionnel de santé',
+  establishment: 'Établissement'
+};
+
+const typeColors: Record<string, string> = {
+  professional: 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-400 border-green-400/30',
+  establishment: 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400 border-blue-400/30'
+};
+
+export default function AdminApprovals() {
+  const { isSuperAdmin } = useAuth();
+  const [approvals, setApprovals] = useState<PendingApproval[]>([]);
+  const [filteredApprovals, setFilteredApprovals] = useState<PendingApproval[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedApproval, setSelectedApproval] = useState<PendingApproval | null>(null);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+
+  useEffect(() => {
+    loadApprovals();
+  }, []);
+
+  useEffect(() => {
+    filterApprovals();
+  }, [searchTerm, typeFilter, approvals]);
+
+  const loadApprovals = async () => {
+    try {
+      setIsLoading(true);
+      // TODO: Implémenter la récupération depuis Supabase
+      // Pour le moment, données de démo
+      const mockData: PendingApproval[] = [];
+      setApprovals(mockData);
+    } catch (error: any) {
+      toast.error("Erreur lors du chargement des approbations");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filterApprovals = () => {
+    let filtered = approvals;
+
+    if (searchTerm) {
+      filtered = filtered.filter(approval =>
+        approval.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        approval.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (typeFilter !== "all") {
+      filtered = filtered.filter(approval => approval.type === typeFilter);
+    }
+
+    setFilteredApprovals(filtered);
+  };
+
+  const handleApprove = async (approval: PendingApproval) => {
+    try {
+      // TODO: Implémenter l'approbation
+      toast.success(`${typeLabels[approval.type]} approuvé(e) avec succès`);
+      loadApprovals();
+    } catch (error: any) {
+      toast.error("Erreur lors de l'approbation");
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedApproval || !rejectReason.trim()) {
+      toast.error("Veuillez fournir une raison pour le rejet");
+      return;
+    }
+
+    try {
+      // TODO: Implémenter le rejet
+      toast.success("Demande rejetée");
+      setShowRejectDialog(false);
+      setRejectReason("");
+      setSelectedApproval(null);
+      loadApprovals();
+    } catch (error: any) {
+      toast.error("Erreur lors du rejet");
+    }
+  };
+
+  if (!isSuperAdmin) {
+    return (
+      <SuperAdminLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+            <CardContent className="p-8 text-center">
+              <Shield className="w-16 h-16 mx-auto mb-4 text-destructive" />
+              <h2 className="text-2xl font-bold mb-2">Accès refusé</h2>
+              <p className="text-muted-foreground">Seuls les super admins peuvent accéder à cette page.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </SuperAdminLayout>
+    );
+  }
+
+  const stats = {
+    total: approvals.length,
+    professionals: approvals.filter(a => a.type === 'professional').length,
+    establishments: approvals.filter(a => a.type === 'establishment').length
+  };
+
+  return (
+    <SuperAdminLayout>
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Gestion des Approbations
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Validez les demandes d'inscription des professionnels et établissements
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { label: 'En attente', value: stats.total, icon: Clock, color: 'from-orange-500 to-amber-500' },
+            { label: 'Professionnels', value: stats.professionals, icon: User, color: 'from-green-500 to-emerald-500' },
+            { label: 'Établissements', value: stats.establishments, icon: FileText, color: 'from-blue-500 to-cyan-500' }
+          ].map((stat, i) => (
+            <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/50 hover:bg-card/70 transition-all">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    <p className="text-3xl font-bold mt-1">{stat.value}</p>
+                  </div>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                    <stat.icon className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+          <CardHeader>
+            <CardTitle>Filtres</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filtrer par type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les types</SelectItem>
+                  <SelectItem value="professional">Professionnels</SelectItem>
+                  <SelectItem value="establishment">Établissements</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Approvals List */}
+        <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+          <CardHeader>
+            <CardTitle>Demandes en attente ({filteredApprovals.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="text-center py-12 text-muted-foreground">Chargement...</div>
+            ) : filteredApprovals.length === 0 ? (
+              <div className="text-center py-12">
+                <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-500" />
+                <p className="text-lg font-medium">Aucune demande en attente</p>
+                <p className="text-muted-foreground mt-1">Toutes les demandes ont été traitées</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredApprovals.map((approval) => (
+                  <div
+                    key={approval.id}
+                    className="p-4 rounded-lg border border-border/50 hover:bg-muted/30 transition-all"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-lg">{approval.name}</h3>
+                          <Badge variant="outline" className={typeColors[approval.type]}>
+                            {typeLabels[approval.type]}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4" />
+                            {approval.email}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4" />
+                            {approval.phone}
+                          </div>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {approval.city}, {approval.province} • {new Date(approval.created_at).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedApproval(approval);
+                            setShowDetailsDialog(true);
+                          }}
+                        >
+                          <FileText className="w-4 h-4 mr-2" />
+                          Détails
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleApprove(approval)}
+                          className="text-green-500 hover:text-green-600 border-green-500/30 hover:bg-green-500/10"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Approuver
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedApproval(approval);
+                            setShowRejectDialog(true);
+                          }}
+                          className="text-destructive hover:text-destructive border-destructive/30 hover:bg-destructive/10"
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Rejeter
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Details Dialog */}
+        <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+          <DialogContent className="bg-card/95 backdrop-blur-xl border-border/50 max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Détails de la demande</DialogTitle>
+              <DialogDescription>Informations complètes sur la demande</DialogDescription>
+            </DialogHeader>
+            {selectedApproval && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Nom</p>
+                    <p className="font-medium">{selectedApproval.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Type</p>
+                    <Badge variant="outline" className={typeColors[selectedApproval.type]}>
+                      {typeLabels[selectedApproval.type]}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{selectedApproval.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Téléphone</p>
+                    <p className="font-medium">{selectedApproval.phone}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Ville</p>
+                    <p className="font-medium">{selectedApproval.city}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Province</p>
+                    <p className="font-medium">{selectedApproval.province}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Reject Dialog */}
+        <AlertDialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+          <AlertDialogContent className="bg-card/95 backdrop-blur-xl border-border/50">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Rejeter la demande</AlertDialogTitle>
+              <AlertDialogDescription>
+                Veuillez fournir une raison pour le rejet de cette demande.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <Textarea
+              placeholder="Raison du rejet..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={4}
+            />
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setRejectReason("")}>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={handleReject} className="bg-destructive text-destructive-foreground">
+                Rejeter
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </SuperAdminLayout>
+  );
+}
