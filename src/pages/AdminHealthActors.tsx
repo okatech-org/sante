@@ -67,6 +67,7 @@ import {
   Trash2
 } from "lucide-react";
 import { toast } from "sonner";
+import { EstablishmentAccountCard } from "@/components/superadmin/EstablishmentAccountCard";
 
 interface Establishment {
   id: string;
@@ -82,6 +83,10 @@ interface Establishment {
   service_urgences_actif: boolean;
   statut: string;
   cnamgs_conventionne: boolean;
+  account_claimed: boolean | null;
+  invitation_token: string | null;
+  claimed_at: string | null;
+  claimed_by: string | null;
 }
 
 interface Professional {
@@ -1181,6 +1186,19 @@ export default function AdminHealthActors() {
                     </>
                   )}
                 </div>
+
+                <Separator />
+
+                {/* Gestion du compte pour les établissements */}
+                {'raison_sociale' in selectedItem && (
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold">Gestion du compte</Label>
+                    <EstablishmentAccountCard 
+                      establishment={selectedItem}
+                      onUpdate={loadData}
+                    />
+                  </div>
+                )}
 
                 <Separator />
 

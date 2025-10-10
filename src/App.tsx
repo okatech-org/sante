@@ -88,6 +88,7 @@ import DemoSettings from "./pages/demo/hospital/DemoSettings";
 import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
 
 import NotFound from "./pages/NotFound";
+import ClaimEstablishment from "./pages/ClaimEstablishment";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
+            <Route path="/claim-establishment/:token" element={<ClaimEstablishment />} />
             <Route path="/dashboard/patient" element={
               <ProtectedRoute requiredRoles={['patient']}>
                 <DashboardPatient />
