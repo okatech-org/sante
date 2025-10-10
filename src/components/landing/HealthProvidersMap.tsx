@@ -67,9 +67,11 @@ export default function HealthProvidersMap() {
       boxZoom: false
     }).setView(GABON_CENTER, DEFAULT_ZOOM);
     
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    // Utiliser une carte sans POI (points d'intérêt) pour n'afficher que nos propres données
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',
       maxZoom: 19,
+      subdomains: 'abcd'
     }).addTo(map);
 
     markersGroup.current = L.layerGroup().addTo(map);

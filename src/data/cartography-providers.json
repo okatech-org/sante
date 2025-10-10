@@ -71,6 +71,37 @@
     "notes": "Service d'urgence permanent. Mobile Money accepté."
   },
   {
+    "id": "CAB_LBV_SOS",
+    "type": "cabinet_medical",
+    "nom": "S.O.S Médecin",
+    "province": "G1",
+    "ville": "Libreville",
+    "coordonnees": {
+      "lat": 0.4170,
+      "lng": 9.4510
+    },
+    "adresse_descriptive": "Libreville",
+    "telephones": ["011 76 99 99", "062 00 00 00"],
+    "horaires": "24h/24, 7j/7",
+    "services": [
+      "Consultations à domicile",
+      "Urgences médicales",
+      "Médecine générale",
+      "Soins d'urgence"
+    ],
+    "specialites": ["Médecine générale", "Urgentiste"],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "primaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "011 76 99 99",
+    "notes": "Service de médecins à domicile disponible 24h/24. Urgences médicales."
+  },
+  {
     "id": "CAB_LBV_MONTAGNE",
     "type": "cabinet_medical",
     "nom": "Cabinet de Groupe - Montagne Sainte",
