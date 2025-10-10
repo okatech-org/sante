@@ -85,16 +85,17 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
 
   // Menu items pour super admin
   const superAdminMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/dashboard/superadmin', color: '#ff0088', badge: undefined },
-    { id: 'project', label: 'Projet', icon: BookOpen, path: '/admin/project', color: '#00d4ff', badge: undefined },
-    { id: 'users', label: 'Utilisateurs', icon: Users, path: '/admin/users', color: '#0088ff', badge: undefined },
-    { id: 'approvals', label: 'Approbations', icon: Clock, path: '/admin/approvals', color: '#ffaa00', badge: '43' },
-    { id: 'establishments', label: 'Établissements', icon: Building2, path: '/admin/establishments', color: '#00d4ff', badge: undefined },
-    { id: 'professionals', label: 'Professionnels', icon: Activity, path: '/admin/professionals', color: '#0088ff', badge: undefined },
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/superadmin', color: '#ff0088', badge: undefined },
+    { id: 'project', label: 'Projet', icon: BookOpen, path: '/superadmin/project', color: '#00d4ff', badge: undefined },
+    { id: 'users', label: 'Utilisateurs', icon: Users, path: '/superadmin/users', color: '#0088ff', badge: undefined },
+    { id: 'approvals', label: 'Approbations', icon: Clock, path: '/superadmin/approvals', color: '#ffaa00', badge: '43' },
+    { id: 'establishments', label: 'Établissements', icon: Building2, path: '/superadmin/establishments', color: '#00d4ff', badge: undefined },
+    { id: 'professionals', label: 'Professionnels', icon: Activity, path: '/superadmin/professionals', color: '#0088ff', badge: undefined },
     { id: 'cartography', label: 'Cartographie Santé', icon: Map, path: '/cartography', color: '#ffaa00', badge: undefined },
-    { id: 'demo', label: 'Démo', icon: Sparkles, path: '/admin/demo', color: '#ff0088', badge: undefined },
-    { id: 'audit', label: 'Audit', icon: Shield, path: '/admin/audit', color: '#00d4ff', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/settings', color: '#0088ff', badge: undefined }
+    { id: 'osm-sync', label: 'Sync OSM', icon: Map, path: '/superadmin/osm-sync', color: '#22c55e', badge: undefined },
+    { id: 'demo', label: 'Démo', icon: Sparkles, path: '/superadmin/demo', color: '#ff0088', badge: undefined },
+    { id: 'audit', label: 'Audit', icon: Shield, path: '/superadmin/audit', color: '#00d4ff', badge: undefined },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/superadmin/settings', color: '#0088ff', badge: undefined }
   ];
 
   const activeMenu = superAdminMenuItems.find(item => item.path === location.pathname)?.id || 'dashboard';

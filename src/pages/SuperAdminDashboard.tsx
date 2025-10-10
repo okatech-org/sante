@@ -1,12 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { SuperAdminHeader } from "@/components/superadmin/SuperAdminHeader";
 import { AdminStatCard } from "@/components/superadmin/AdminStatCard";
 import { AdminActionCard } from "@/components/superadmin/AdminActionCard";
 import { RecentActivityCard } from "@/components/superadmin/RecentActivityCard";
 import { Users, Building2, UserCog, Activity, Settings, Shield, FileText, AlertCircle, CheckCircle, Clock, UserPlus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function SuperAdminDashboard() {
@@ -59,21 +59,20 @@ export default function SuperAdminDashboard() {
 
   if (isLoading) {
     return (
-      <PatientDashboardLayout>
+      <SuperAdminLayout>
         <div className="flex items-center justify-center h-64">
           <p>Chargement...</p>
         </div>
-      </PatientDashboardLayout>
+      </SuperAdminLayout>
     );
   }
 
   if (!isSuperAdmin) {
-    navigate("/dashboard/admin");
-    return null;
+    return <Navigate to="/dashboard/admin" replace />;
   }
 
   return (
-    <PatientDashboardLayout>
+    <SuperAdminLayout>
       <div className="space-y-6">
         {/* Header */}
         <SuperAdminHeader />
@@ -85,14 +84,14 @@ export default function SuperAdminDashboard() {
             description="Voir et gérer tous les utilisateurs"
             icon={Users}
             color="#00d4ff"
-            onClick={() => navigate('/admin/users')}
+            onClick={() => navigate('/superadmin/users')}
           />
           <AdminActionCard
             title="Paramètres système"
             description="Configuration du système"
             icon={Settings}
             color="#ff0088"
-            onClick={() => navigate('/admin/settings')}
+            onClick={() => navigate('/superadmin/settings')}
           />
         </div>
 
@@ -104,7 +103,7 @@ export default function SuperAdminDashboard() {
             icon={Users}
             trend="Total des comptes"
             color="#00d4ff"
-            onClick={() => navigate('/admin/users')}
+            onClick={() => navigate('/superadmin/users')}
           />
           <AdminStatCard
             label="Établissements"
@@ -112,7 +111,7 @@ export default function SuperAdminDashboard() {
             icon={Building2}
             trend="Pharmacies et cliniques"
             color="#0088ff"
-            onClick={() => navigate('/admin/establishments')}
+            onClick={() => navigate('/superadmin/establishments')}
           />
           <AdminStatCard
             label="Professionnels"
@@ -120,7 +119,7 @@ export default function SuperAdminDashboard() {
             icon={UserCog}
             trend="Médecins et personnel"
             color="#ffaa00"
-            onClick={() => navigate('/admin/professionals')}
+            onClick={() => navigate('/superadmin/professionals')}
           />
           <AdminStatCard
             label="En attente"
@@ -128,7 +127,7 @@ export default function SuperAdminDashboard() {
             icon={Clock}
             trend="Demandes à traiter"
             color="#ff0088"
-            onClick={() => navigate('/admin/approvals')}
+            onClick={() => navigate('/superadmin/approvals')}
           />
         </div>
 
@@ -193,6 +192,6 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
       </div>
-    </PatientDashboardLayout>
+    </SuperAdminLayout>
   );
 }

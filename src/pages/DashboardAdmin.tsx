@@ -19,7 +19,7 @@ export default function DashboardAdmin() {
   // Rediriger les super admins vers leur dashboard spécifique
   useEffect(() => {
     if (isSuperAdmin) {
-      navigate("/dashboard/superadmin");
+      navigate("/superadmin");
     }
   }, [isSuperAdmin, navigate]);
 

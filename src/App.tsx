@@ -108,7 +108,7 @@ const App = () => (
             <Route path="/awareness" element={<Awareness />} />
             <Route path="/login/patient" element={<LoginPatient />} />
             <Route path="/login/pro" element={<LoginProfessional />} />
-            <Route path="/superadmin" element={<SuperAdminLogin />} />
+            <Route path="/login/superadmin" element={<SuperAdminLogin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
@@ -123,13 +123,65 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/dashboard/admin" element={
-              <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+              <ProtectedRoute requiredRoles={['admin']}>
                 <DashboardAdmin />
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/superadmin" element={
+            
+            {/* Super Admin Routes */}
+            <Route path="/superadmin" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <SuperAdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/dashboard" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <SuperAdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/users" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminUsers />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/approvals" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminApprovals />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/establishments" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminEstablishments />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/professionals" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminProfessionals />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/audit" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminAudit />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/settings" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminSettings />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/demo" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminDemo />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/project" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminProject />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/architecture" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <MultiEstablishmentArchitecture />
               </ProtectedRoute>
             } />
             <Route path="/appointments" element={
@@ -183,61 +235,11 @@ const App = () => (
                 <Profile />
               </ProtectedRoute>
             } />
-            <Route path="/admin" element={
+            <Route path="/superadmin/osm-sync" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminPanel />
               </ProtectedRoute>
             } />
-            <Route path="/admin/dashboard" element={
-              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-                <SuperAdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/demo" element={
-              <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminDemo />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/project" element={
-              <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminProject />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/users" element={
-              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-                <AdminUsers />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/approvals" element={
-              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-                <AdminApprovals />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/establishments" element={
-              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-                <AdminEstablishments />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/professionals" element={
-              <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-                <AdminProfessionals />
-              </ProtectedRoute>
-            } />
-          <Route path="/admin/audit" element={
-            <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
-              <AdminAudit />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/settings" element={
-            <ProtectedRoute requiredRoles={['super_admin']}>
-              <AdminSettings />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/architecture" element={
-            <ProtectedRoute requiredRoles={['super_admin']}>
-              <MultiEstablishmentArchitecture />
-            </ProtectedRoute>
-          } />
             <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
             <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
             <Route path="/demo/hospital" element={<DemoHospitalDashboard />} />

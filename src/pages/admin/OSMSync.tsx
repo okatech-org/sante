@@ -1,10 +1,10 @@
 import { OSMSyncButton } from "@/components/admin/OSMSyncButton";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function OSMSync() {
   return (
-    <MainLayout>
+    <SuperAdminLayout>
       <div className="container mx-auto py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <Card>
@@ -70,6 +70,6 @@ export default function OSMSync() {
           </Card>
         </div>
       </div>
-    </MainLayout>
+    </SuperAdminLayout>
   );
 }

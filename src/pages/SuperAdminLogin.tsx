@@ -48,9 +48,9 @@ export default function SuperAdminLogin() {
         description: "Bienvenue",
       });
       
-      // Rediriger vers le dashboard approprié selon le rôle
+      // Rediriger vers le dashboard super admin
       if (roles.includes('super_admin')) {
-        navigate("/dashboard/superadmin");
+        navigate("/superadmin");
       } else if (roles.includes('admin')) {
         navigate("/dashboard/admin");
       }
