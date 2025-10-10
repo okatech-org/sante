@@ -13,7 +13,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import cartographyProviders from "@/data/cartography-providers.json";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 
 interface Establishment {
@@ -85,7 +84,6 @@ export default function AdminHealthActors() {
   const [claimFilter, setClaimFilter] = useState("all");
   const [sortBy, setSortBy] = useState("smart");
   const [isLoading, setIsLoading] = useState(true);
-  const [isImporting, setIsImporting] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [showTokenDialog, setShowTokenDialog] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -112,7 +110,21 @@ export default function AdminHealthActors() {
     try {
       setIsLoading(true);
       
-      // Charger d'abord les données du JSON
+      // Charger les establishments depuis la DB
+      const { data: estData, error: estError } = await supabase
+        .from('establishments')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (estError) throw estError;
+
+      console.log(`Chargement de ${estData?.length || 0} établissements depuis la DB`);
+
+      // Charger les OSM providers
+      const osmProviders = await getOSMProvidersFromSupabase();
+      console.log(`Chargement de ${osmProviders.length} acteurs depuis OSM`);
+
+      // Convertir OSM providers en format Establishment
       const typeMap: Record<string, any> = {
         'hopital': 'chu',
         'clinique': 'clinique',
@@ -138,75 +150,71 @@ export default function AdminHealthActors() {
         'militaire': 'militaire'
       };
 
-      // Transformer TOUTES les données JSON en format Establishment
-      const jsonEstablishments = cartographyProviders.map((provider: any, index: number) => ({
-        id: provider.id || `json-${index}`,
-        raison_sociale: provider.nom,
-        type_etablissement: typeMap[provider.type?.toLowerCase()] || 'centre_medical',
-        secteur: secteurMap[provider.secteur?.toLowerCase()] || 'prive',
-        ville: provider.ville,
-        province: provider.province,
-        statut: 'actif',
-        email: provider.email || null,
-        telephone_standard: provider.telephones?.[0] || null,
-        created_at: new Date().toISOString(),
-        account_claimed: false,
-        claimed_at: null,
-        invitation_token: null,
-        isFromJson: true // Marqueur pour identifier les entrées JSON
-      }));
-
-      console.log(`Chargement de ${jsonEstablishments.length} acteurs depuis le JSON`);
-
-      // Load OSM providers from DB
-      const osmProviders = await getOSMProvidersFromSupabase();
-      const osmEstablishments = osmProviders.map((provider: any, index: number) => ({
+      const osmEstablishments = osmProviders.map((provider: any) => ({
         id: provider.id,
         raison_sociale: provider.nom,
         type_etablissement: typeMap[provider.type?.toLowerCase()] || 'centre_medical',
         secteur: secteurMap[provider.secteur?.toLowerCase()] || 'prive',
         ville: provider.ville,
         province: provider.province,
-        statut: 'actif',
+        statut: 'actif' as any,
         email: provider.email || null,
         telephone_standard: provider.telephones?.[0] || null,
+        telephone_urgences: null,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         account_claimed: false,
         claimed_at: null,
+        claimed_by: null,
         invitation_token: null,
-        isFromJson: true,
+        numero_rccm: null,
+        numero_autorisation: `OSM-${provider.osm_id}`,
+        forme_juridique: null,
+        capital: null,
+        directeur_general_nom: null,
+        directeur_general_telephone: null,
+        directeur_general_email: null,
+        directeur_medical_nom: null,
+        directeur_medical_numero_ordre: null,
+        adresse_rue: provider.adresse_descriptive || '',
+        adresse_quartier: null,
+        adresse_arrondissement: null,
+        code_postal: null,
+        latitude: provider.coordonnees?.lat || null,
+        longitude: provider.coordonnees?.lng || null,
+        repere_geographique: null,
+        site_web: provider.site_web || null,
+        whatsapp_business: null,
+        nombre_lits_total: provider.nombre_lits || 0,
+        nombre_blocs_operatoires: 0,
+        nombre_salles_consultation: 0,
+        service_urgences_actif: provider.ouvert_24_7 || false,
+        cnamgs_conventionne: provider.cnamgs || false,
+        cnamgs_numero_convention: null,
+        cnamgs_date_debut: null,
+        cnamgs_date_fin: null,
+        cnamgs_tiers_payant_actif: false,
+        taux_occupation: null,
+        satisfaction_moyenne: null,
+        nombre_avis: 0,
+        date_inscription: new Date().toISOString().split('T')[0],
         source: 'osm'
       }));
 
-      console.log(`Chargement de ${osmEstablishments.length} acteurs depuis OSM`);
+      // Combiner DB + OSM et dédupliquer par ID
+      const dbEstablishments = (estData || []).map(e => ({ ...e, source: 'db' }));
+      const combined = [...dbEstablishments];
+      const existingIds = new Set(dbEstablishments.map(e => e.id));
 
-      // Load establishments from DB
-      const { data: estData, error: estError } = await supabase
-        .from('establishments')
-        .select('*')
-        .order('created_at', { ascending: false });
+      osmEstablishments.forEach(oe => {
+        if (!existingIds.has(oe.id)) {
+          combined.push(oe);
+        }
+      });
 
-      if (estError) throw estError;
+      console.log(`Total: ${combined.length} acteurs (${dbEstablishments.length} DB + ${osmEstablishments.length} OSM, après déduplication)`);
 
-      console.log(`Chargement de ${estData?.length || 0} établissements depuis la DB`);
-
-      // Combiner toutes les sources
-      // Priorité aux données DB si elles existent (éviter les doublons)
-      const dbNames = new Set(estData?.map(e => e.raison_sociale.toLowerCase()) || []);
-      const uniqueJsonEstablishments = jsonEstablishments.filter(
-        je => !dbNames.has(je.raison_sociale.toLowerCase())
-      );
-      const uniqueOsmEstablishments = osmEstablishments.filter(
-        oe => !dbNames.has(oe.raison_sociale.toLowerCase())
-      );
-
-      console.log(`${uniqueJsonEstablishments.length} acteurs uniques du JSON non encore en DB`);
-      console.log(`${uniqueOsmEstablishments.length} acteurs uniques OSM non encore en DB`);
-
-      // Marquer les données DB
-      const dbEstablishments = (estData || []).map(e => ({ ...e, isFromJson: false, source: 'db' }));
-
-      setEstablishments([...dbEstablishments, ...uniqueJsonEstablishments, ...uniqueOsmEstablishments]);
+      setEstablishments(combined);
 
       // Load professionals with profiles
       const { data: profData, error: profError } = await supabase
@@ -386,72 +394,6 @@ export default function AdminHealthActors() {
     }
   };
 
-  const handleImportCartography = async () => {
-    try {
-      setIsImporting(true);
-      toast.info("Import en cours...");
-
-      // Map des types
-      const typeMap: Record<string, any> = {
-        'hopital': 'hopital',
-        'clinique': 'clinique',
-        'polyclinique': 'polyclinique',
-        'chr': 'chr',
-        'chu': 'chu',
-        'centre_medical': 'centre_medical',
-        'hopital_confessionnel': 'hopital_confessionnel',
-        'hopital_departemental': 'hopital_departemental',
-        'pharmacie': 'hopital',
-        'laboratoire': 'hopital'
-      };
-
-      const secteurMap: Record<string, any> = {
-        'Public': 'public',
-        'Privé': 'prive',
-        'Mixte': 'parapublic',
-        'Confessionnel': 'confessionnel'
-      };
-
-      // Préparer les données
-      const establishmentsToInsert = cartographyProviders.map((provider: any) => ({
-        raison_sociale: provider.nom,
-        type_etablissement: (typeMap[provider.type] || 'hopital') as any,
-        secteur: (secteurMap[provider.secteur] || 'prive') as any,
-        ville: provider.ville,
-        province: provider.province,
-        adresse_rue: provider.adresse_descriptive || '',
-        telephone_standard: provider.telephones?.[0] || null,
-        email: provider.email || null,
-        latitude: provider.coordonnees?.lat ? parseFloat(provider.coordonnees.lat) : null,
-        longitude: provider.coordonnees?.lng ? parseFloat(provider.coordonnees.lng) : null,
-        statut: 'actif' as any,
-        account_claimed: false,
-        numero_autorisation: `AUTO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      }));
-
-      // Insertion par lots
-      const batchSize = 50;
-      for (let i = 0; i < establishmentsToInsert.length; i += batchSize) {
-        const batch = establishmentsToInsert.slice(i, i + batchSize);
-        const { error } = await supabase
-          .from('establishments')
-          .insert(batch);
-
-        if (error) {
-          console.error('Batch error:', error);
-          throw error;
-        }
-      }
-
-      toast.success(`${establishmentsToInsert.length} établissements importés avec succès`);
-      loadData();
-    } catch (error: any) {
-      toast.error("Erreur lors de l'import: " + error.message);
-      console.error(error);
-    } finally {
-      setIsImporting(false);
-    }
-  };
 
   const handleGenerateToken = async (establishment: Establishment) => {
     try {
@@ -639,11 +581,10 @@ export default function AdminHealthActors() {
               <FileText className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-medium text-blue-400">
-                  {cartographyProviders.length} acteurs de santé référencés dans la cartographie
+                  {filteredEstablishments.length} acteurs de santé référencés
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Les données affichées incluent les établissements de la base de données et ceux du référentiel cartographique.
-                  Utilisez le bouton "Importer Carto" pour ajouter définitivement les établissements non importés.
+                  Les données affichées incluent les établissements de la base de données et ceux provenant d'OpenStreetMap.
                 </p>
               </div>
             </div>
@@ -710,16 +651,6 @@ export default function AdminHealthActors() {
                   </>
                 )}
                 
-                <Button 
-                  onClick={handleImportCartography} 
-                  variant="outline" 
-                  size="sm"
-                  disabled={isImporting}
-                  className="gap-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  <span className="hidden sm:inline">{isImporting ? "Import..." : "Importer"}</span>
-                </Button>
                 <Button onClick={() => exportData('establishments')} variant="outline" size="sm" className="gap-2">
                   <Download className="w-4 h-4" />
                   <span className="hidden sm:inline">Exporter</span>
