@@ -56,6 +56,7 @@ import Teleconsultation from "./pages/Teleconsultation";
 import Reimbursements from "./pages/Reimbursements";
 import Cartography from "./pages/Cartography";
 import Providers from "./pages/Providers";
+import PublicProviderSearch from "./pages/PublicProviderSearch";
 import Support from "./pages/Support";
 
 // Admin Pages
@@ -123,6 +124,11 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
+            
+            {/* Recherche Publique d'Établissements */}
+            <Route path="/find-providers" element={<PublicProviderSearch />} />
+            <Route path="/search" element={<PublicProviderSearch />} />
+            
             {/* Établissements Non-Revendiqués */}
             <Route path="/establishments/unclaimed" element={<UnclaimedEstablishments />} />
             <Route path="/establishments/:id/claim" element={

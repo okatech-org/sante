@@ -63,16 +63,16 @@ export default function Landing() {
     const params = new URLSearchParams();
     if (searchQuery) params.set('search', searchQuery);
     if (searchLocation) params.set('location', searchLocation);
-    navigate(`/providers?${params.toString()}`);
+    navigate(`/find-providers?${params.toString()}`);
   };
 
   const handleSpecialtyClick = (specialty: string) => {
-    navigate(`/providers?search=${encodeURIComponent(specialty)}`);
+    navigate(`/find-providers?search=${encodeURIComponent(specialty)}`);
   };
 
   const handleServiceClick = (index: number) => {
     const routes = [
-      '/providers',        // Prendre Rendez-vous
+      '/find-providers',   // Prendre Rendez-vous
       '/teleconsultation', // Téléconsultation
       '/medical-record',   // Mon Dossier Médical
       '/login/patient'     // Mes Droits CNAMGS
@@ -781,7 +781,7 @@ export default function Landing() {
               <h4 className="font-semibold text-lg mb-4">{t('landing.services') || "Services"}</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link to="/providers" className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Link to="/find-providers" className="text-muted-foreground hover:text-foreground transition-colors">
                     {t('landing.footer.findDoctor') || "Trouver un médecin"}
                   </Link>
                 </li>

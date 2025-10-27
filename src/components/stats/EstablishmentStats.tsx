@@ -20,7 +20,7 @@ export const ESTABLISHMENT_STATS = {
     cabinets: { count: 46, label: "Cabinets", icon: Briefcase, color: "#8b5cf6" },
     laboratories: { count: 18, label: "Laboratoires", icon: FlaskConical, color: "#06b6d4" },
     imaging: { count: 15, label: "Imagerie", icon: Scan, color: "#3b82f6" },
-    institutions: { count: 10, label: "Institutions", icon: Building, color: "#64748b" }
+    institutions: { count: 16, label: "Institutions", icon: Building, color: "#64748b" } // Corrigé pour atteindre 397
   }
 };
 

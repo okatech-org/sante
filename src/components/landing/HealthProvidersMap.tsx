@@ -10,6 +10,7 @@ import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { supabase } from "@/integrations/supabase/client";
+import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -88,52 +89,11 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
     const loadData = async () => {
       setIsLoading(true);
       try {
-        // Charger OSM providers
-        const osmData = await getOSMProvidersFromSupabase();
-        setOsmProviders(osmData);
+        // Utiliser les vraies données (397 établissements)
+        setOsmProviders(REAL_ESTABLISHMENTS);
+        setEstablishmentProviders([]);
 
-        // Charger establishments depuis Supabase
-        const { data: estabData, error: estabError } = await supabase
-          .from('establishments')
-          .select('*');
-
-        if (estabError) throw estabError;
-
-        // Convertir les establishments au format CartographyProvider
-        const estabProviders: CartographyProvider[] = (estabData || [])
-          .filter(estab => estab.latitude && estab.longitude)
-          .map(estab => ({
-            id: estab.id,
-            nom: estab.raison_sociale,
-            type: estab.type_etablissement as any,
-            province: estab.province,
-            ville: estab.ville,
-            adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province]
-              .filter(Boolean).join(', '),
-            coordonnees: {
-              lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
-              lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
-            },
-            telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
-            email: estab.email || undefined,
-            site_web: estab.site_web || undefined,
-            ouvert_24_7: estab.service_urgences_actif || false,
-            conventionnement: {
-              cnamgs: estab.cnamgs_conventionne || false,
-              cnss: false
-            },
-            secteur: (estab.secteur as any) || 'prive',
-            services: [],
-            specialites: [],
-            has_account: true,
-            source: 'Plateforme',
-            statut_operationnel: estab.statut === 'actif' ? 'operationnel' : 'inconnu',
-            nombre_lits: estab.nombre_lits_total
-          }));
-
-        setEstablishmentProviders(estabProviders);
-
-        const totalCount = osmData.length + estabProviders.length;
+        const totalCount = REAL_ESTABLISHMENTS.length;
         toast.success(`${totalCount} établissements chargés`);
       } catch (error) {
         console.error('Error loading data:', error);

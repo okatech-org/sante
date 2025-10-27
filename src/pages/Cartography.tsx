@@ -4,7 +4,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
+import EnhancedSmartSearch from "@/components/cartography/EnhancedSmartSearch";
 import CartographyFilterPanel from "@/components/cartography/CartographyFilterPanel";
+import AdvancedFilters from "@/components/cartography/AdvancedFilters";
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographyListView from "@/components/cartography/CartographyListView";
 import CartographyProviderModal from "@/components/cartography/CartographyProviderModal";
@@ -14,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone, RefreshCw } from "lucide-react";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone, RefreshCw, Settings2 } from "lucide-react";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import logoSante from "@/assets/logo_sante.png";
@@ -25,6 +27,7 @@ import provincesData from "@/data/cartography-provinces.json";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
+import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 export default function Cartography() {
   const { isSuperAdmin, user } = useAuth();
@@ -53,61 +56,20 @@ export default function Cartography() {
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Charger les données réelles depuis Supabase
+  // Charger les données réelles (397 établissements)
   const loadRealData = async () => {
     setIsLoadingData(true);
     try {
-      // Charger les données OSM via la fonction utilitaire
-      const osmProviders = await getOSMProvidersFromSupabase();
+      // Utiliser les vraies données au lieu de Supabase
+      const allProviders = REAL_ESTABLISHMENTS;
 
-      // Charger les establishments depuis Supabase
-      const { data: estabData, error: estabError } = await supabase
-        .from('establishments')
-        .select('*');
+      // Plus besoin de charger depuis Supabase
+      // const osmProviders = await getOSMProvidersFromSupabase();
+      // const { data: estabData } = await supabase.from('establishments').select('*');
 
-      if (estabError) throw estabError;
-
-      // Convertir les establishments au format CartographyProvider
-      const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
-        id: estab.id,
-        nom: estab.raison_sociale,
-        type: estab.type_etablissement as any,
-        province: estab.province,
-        ville: estab.ville,
-        adresse: [estab.adresse_rue, estab.adresse_quartier, estab.adresse_arrondissement].filter(Boolean).join(', '),
-        adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province].filter(Boolean).join(', '),
-        coordonnees: estab.latitude && estab.longitude ? {
-          lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
-          lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
-        } : undefined,
-        telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
-        email: estab.email || undefined,
-        site_web: estab.site_web || undefined,
-        ouvert_24_7: estab.service_urgences_actif || false,
-        cnamgs: estab.cnamgs_conventionne || false,
-        conventionnement: {
-          cnamgs: estab.cnamgs_conventionne || false,
-          cnss: false
-        },
-        secteur: (estab.secteur as any) || 'prive',
-        services: [],
-        specialites: [],
-        has_account: true,
-        source: 'Plateforme',
-        nombre_lits: estab.nombre_lits_total
-      }));
-
-      // Combiner les deux sources et dédupliquer
-      const combined = [...osmProviders, ...estabProviders];
-      const seenIds = new Set();
-      const uniqueProviders = combined.filter(p => {
-        if (seenIds.has(p.id)) return false;
-        seenIds.add(p.id);
-        return true;
-      });
-      
-      setProviders(uniqueProviders);
-      toast.success(`${uniqueProviders.length} établissements chargés`);
+      // Directement utiliser les données réelles
+      setProviders(allProviders);
+      toast.success(`${allProviders.length} établissements chargés`);
     } catch (error) {
       console.error('Erreur chargement données:', error);
       toast.error("Erreur lors du chargement des données");
@@ -362,13 +324,15 @@ export default function Cartography() {
             </p>
           </div>
 
-          {/* Barre de recherche - Priority 1 */}
+          {/* Barre de recherche améliorée - Priority 1 */}
           <div className="flex justify-center">
-            <CartographySmartSearch
+            <EnhancedSmartSearch
               providers={providers}
               onSearch={(text) => setFilters({ ...filters, searchText: text })}
               onProviderSelect={(provider) => setSelectedProvider(provider)}
+              onFiltersChange={(newFilters) => setFilters({ ...filters, ...newFilters })}
               searchQuery={filters.searchText}
+              userLocation={userLocation}
             />
           </div>
 
@@ -448,11 +412,9 @@ export default function Cartography() {
             
             {showAdvancedFilters && (
               <div className="animate-fade-in">
-                <CartographyFilterPanel
-                  filters={filters}
+                <AdvancedFilters
                   onFiltersChange={setFilters}
-                  provinces={provincesData.provinces}
-                  hasUserLocation={!!userLocation}
+                  totalResults={filteredProviders.length}
                 />
               </div>
             )}
@@ -518,14 +480,12 @@ export default function Cartography() {
                 </DialogTrigger>
                 <DialogContent className="w-[95vw] sm:max-w-md overflow-y-auto max-h-[85vh] p-4">
                   <DialogHeader>
-                    <DialogTitle>Filtres de recherche</DialogTitle>
+                    <DialogTitle>Filtres avancés</DialogTitle>
                   </DialogHeader>
                   <div className="pt-2">
-                    <CartographyFilterPanel
-                      filters={filters}
+                    <AdvancedFilters
                       onFiltersChange={setFilters}
-                      provinces={provincesData.provinces}
-                      hasUserLocation={!!userLocation}
+                      totalResults={filteredProviders.length}
                     />
                   </div>
                 </DialogContent>
