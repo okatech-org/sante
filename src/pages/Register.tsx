@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { UserRound, Stethoscope, ArrowRight, Menu, MapPin, Mail, Clock, Shield, CheckCircle2, ShieldCheck } from "lucide-react";
+import { User, Stethoscope, ArrowRight, Menu, MapPin, Mail, Clock, Shield, CheckCircle2, ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -171,7 +171,7 @@ const Register = () => {
               
               <CardHeader className="text-center pb-3 relative z-10">
                 <div className="mx-auto mb-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/50">
-                  <UserRound className="w-10 h-10 text-white" />
+                  <User className="w-10 h-10 text-white" />
                 </div>
                 <CardTitle className="text-2xl mb-2 text-white">
                   {t('register.patient.title') || "Patient"}

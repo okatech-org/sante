@@ -78,6 +78,9 @@ import DemoClinicDashboard from "./pages/demo/DemoClinicDashboard";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import DemoSpecialistDashboard from "./pages/demo/DemoSpecialistDashboard";
 import DemoHospitalDashboard from "./pages/demo/DemoHospitalDashboard";
+import DemoHospitalManageDashboard from "./pages/demo/DemoHospitalManageDashboard";
+import DemoClinicManageDashboard from "./pages/demo/DemoClinicManageDashboard";
+import DemoSogaraDashboard from "./pages/demo/DemoSogaraDashboard";
 import DemoAdmissions from "./pages/demo/hospital/DemoAdmissions";
 import DemoEmergency from "./pages/demo/hospital/DemoEmergency";
 import DemoLaboratory from "./pages/demo/hospital/DemoLaboratory";
@@ -87,6 +90,7 @@ import DemoFinances from "./pages/demo/hospital/DemoFinances";
 import DemoStatistics from "./pages/demo/hospital/DemoStatistics";
 import DemoSettings from "./pages/demo/hospital/DemoSettings";
 import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
+import EcosystemCMST from "./pages/demo/sogara/EcosystemCMST";
 
 import NotFound from "./pages/NotFound";
 import ClaimEstablishment from "./pages/ClaimEstablishment";
@@ -247,6 +251,9 @@ const App = () => (
             <Route path="/demo/specialist" element={<DemoSpecialistDashboard />} />
             <Route path="/demo/hospital" element={<DemoHospitalDashboard />} />
             <Route path="/demo/clinic" element={<DemoClinicDashboard />} />
+            <Route path="/demo/sogara" element={<DemoSogaraDashboard />} />
+            <Route path="/demo/hospital/manage" element={<DemoHospitalManageDashboard />} />
+            <Route path="/demo/clinic/manage" element={<DemoClinicManageDashboard />} />
             <Route path="/demo/hospital/admissions" element={<DemoAdmissions />} />
             <Route path="/demo/hospital/pharmacy" element={<DemoPharmacy />} />
             <Route path="/demo/hospital/laboratory" element={<DemoLaboratory />} />

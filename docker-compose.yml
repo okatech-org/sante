@@ -1,0 +1,150 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # SANTE.GA NEURAL SERVER
+  # ============================================
+  neural-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: sante-ga-neural
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      
+      # Database (PostgreSQL)
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: sante_ga
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      
+      # Supabase (if needed)
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:54321}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      
+      # Redis (Event Bus Phase 2)
+      REDIS_ENABLED: "true"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      # JWT
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_EXPIRES_IN: 24h
+      
+      # Logging
+      LOG_LEVEL: debug
+    
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+      - /app/node_modules
+    
+    depends_on:
+      - postgres
+      - redis
+    
+    networks:
+      - sante-ga-network
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+  # ============================================
+  # POSTGRESQL (Database)
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: sante-ga-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sante_ga
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - sante-ga-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # REDIS (Event Bus + Cache)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: sante-ga-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - sante-ga-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ============================================
+  # FRONTEND REACT (Optionnel en développement)
+  # ============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: sante-ga-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    volumes:
+      - ./frontend/src:/app/src
+      - /app/node_modules
+    networks:
+      - sante-ga-network
+    restart: unless-stopped
+    depends_on:
+      - neural-server
+
+  # ============================================
+  # ADMINER (Database GUI - Development only)
+  # ============================================
+  adminer:
+    image: adminer:latest
+    container_name: sante-ga-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    networks:
+      - sante-ga-network
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  sante-ga-network:
+    driver: bridge

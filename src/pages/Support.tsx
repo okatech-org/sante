@@ -32,10 +32,9 @@ import {
   Inbox,
   MailOpen,
   AlertCircle,
-  Hospital,
+  Building2,
   Stethoscope,
   FlaskConical,
-  Building2,
   Trash2,
   RefreshCw,
   Send,
@@ -550,7 +549,7 @@ export default function Support() {
   const getSenderIcon = (type: string) => {
     switch (type) {
       case 'doctor': return <Stethoscope className="h-5 w-5" />;
-      case 'hospital': return <Hospital className="h-5 w-5" />;
+      case 'hospital': return <Building2 className="h-5 w-5" />;
       case 'pharmacy': return <Pill className="h-5 w-5" />;
       case 'laboratory': return <FlaskConical className="h-5 w-5" />;
       case 'admin': return <Building2 className="h-5 w-5" />;

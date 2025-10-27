@@ -1,4 +1,4 @@
-import { Home, Users, Activity, Pill, DollarSign, Calendar, Settings, LogOut, Sun, Moon, Laptop, Menu, Building2, TestTube, Ambulance, BarChart3, UserCog, Globe } from "lucide-react";
+import { Home, Users, Activity, Pill, DollarSign, Calendar, Settings, LogOut, Sun, Moon, Laptop, Menu, Building2, TestTube, Siren, BarChart3, UserCog, Globe } from "lucide-react";
 import { useState, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -48,7 +48,7 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
   const menuItems = [
     { id: 'dashboard', label: 'Vue d\'ensemble', icon: Home, path: '/demo/hospital', color: '#00d4ff' },
     { id: 'admissions', label: 'Admissions', icon: Users, path: '/demo/hospital/admissions', color: '#0088ff' },
-    { id: 'emergency', label: 'Urgences', icon: Ambulance, path: '/demo/hospital/emergency', color: '#ff0088' },
+    { id: 'emergency', label: 'Urgences', icon: Siren, path: '/demo/hospital/emergency', color: '#ff0088' },
     { id: 'laboratory', label: 'Laboratoire', icon: TestTube, path: '/demo/hospital/laboratory', color: '#ffaa00' },
     { id: 'pharmacy', label: 'Pharmacie', icon: Pill, path: '/demo/hospital/pharmacy', color: '#00d4ff' },
     { id: 'staff', label: 'Personnel', icon: UserCog, path: '/demo/hospital/staff', color: '#8b5cf6' },
@@ -124,10 +124,10 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
                 <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
                 <div>
                   <h1 className="text-2xl font-bold text-sidebar-foreground">
-                    CHU OWENDO
+                    CMST SOGARA
                   </h1>
                   <p className="text-xs text-muted-foreground">
-                    Centre Hospitalier Universitaire
+                    Port-Gentil • Médecine du travail
                   </p>
                 </div>
               </div>
@@ -198,10 +198,10 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-sidebar-foreground truncate">
-                      CHU Owendo
+                      CMST SOGARA
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Hôpital Public
+                      Port-Gentil • Médecine du travail
                     </p>
                   </div>
                 </div>
@@ -217,10 +217,10 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
               <img src={logoSante} alt="SANTE.GA Logo" className="h-10 w-auto object-contain" />
               <div>
                 <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">
-                  CHU OWENDO
+                  Hôpital de SOGARA
                 </h1>
                 <p className="text-[10px] text-muted-foreground">
-                  Centre Hospitalier
+                  Port-Gentil
                 </p>
               </div>
             </div>
@@ -331,8 +331,8 @@ export function HospitalDashboardLayout({ children }: HospitalDashboardLayoutPro
                           <Building2 className="w-6 h-6" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white">CHU Owendo</p>
-                          <p className="text-xs text-white/70">Hôpital Public</p>
+                          <p className="text-sm font-medium text-white">Hôpital de SOGARA</p>
+                          <p className="text-xs text-white/70">Port-Gentil • Privé</p>
                         </div>
                       </div>
                     </div>

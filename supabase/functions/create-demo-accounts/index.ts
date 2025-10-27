@@ -6,12 +6,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Generate a secure random password
+// Use a fixed password for demo accounts (easier for testing)
+const DEMO_PASSWORD = 'Demo@2024!';
+
 function generateSecurePassword(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-  const array = new Uint8Array(16);
-  crypto.getRandomValues(array);
-  return Array.from(array, (byte) => chars[byte % chars.length]).join('');
+  return DEMO_PASSWORD; // Return fixed password for demos
 }
 
 interface DemoAccount {
@@ -124,6 +123,48 @@ const demoAccountTemplates: Omit<DemoAccount, 'password'>[] = [
     fullName: "Clinique Sainte-Marie",
     role: "clinic_admin",
     phone: "+24101234583"
+  },
+  {
+    email: "sogara.demo@sante.ga",
+    fullName: "Hôpital de SOGARA",
+    role: "sogara_admin",
+    phone: "+24101234584"
+  },
+  {
+    email: "dr.travail.sogara@sante.ga",
+    fullName: "Dr. Jean-Pierre MBENGONO",
+    role: "doctor",
+    phone: "+24101234585"
+  },
+  {
+    email: "infirmier.sogara@sante.ga",
+    fullName: "Pierre ONDIMBA",
+    role: "nurse",
+    phone: "+24101234586"
+  },
+  {
+    email: "infirmiere2.sogara@sante.ga",
+    fullName: "Martine NLEME",
+    role: "nurse",
+    phone: "+24101234587"
+  },
+  {
+    email: "patient.sogara.01@sante.ga",
+    fullName: "Alain MOUSSAVOU",
+    role: "patient",
+    phone: "+24101234588"
+  },
+  {
+    email: "patient.sogara.02@sante.ga",
+    fullName: "Rachel MVELE",
+    role: "patient",
+    phone: "+24101234589"
+  },
+  {
+    email: "patient.sogara.03@sante.ga",
+    fullName: "Yannick BANGA",
+    role: "patient",
+    phone: "+24101234590"
   }
 ];
 
@@ -282,58 +323,205 @@ serve(async (req) => {
         }
 
         // Create professional profile for health professionals
-        if (['doctor', 'specialist'].includes(account.role)) {
+        if (['doctor', 'specialist', 'nurse'].includes(account.role)) {
+          // Determine professional type and data based on role and email
+          const isSOGARAMedical = account.email.includes('sogara');
+          
+          let professionalData: any = {
+            user_id: userData.user.id,
+            full_name: account.fullName,
+            email: account.email,
+            phone: account.phone,
+            gender: 'homme',
+            title: account.role === 'doctor' ? 'docteur' : account.role === 'nurse' ? 'infirmier' : 'docteur',
+            birth_date: '1985-03-20',
+            nationality: 'Gabonaise',
+            status: 'actif',
+            verified: true,
+            documents_verified: true,
+            verification_date: new Date().toISOString()
+          }
+          
+          // Set professional type based on role
+          if (account.role === 'doctor') {
+            professionalData.professional_type = isSOGARAMedical ? 'medecin_du_travail' : 'medecin_generaliste'
+            professionalData.numero_ordre = isSOGARAMedical ? '241-MDT-2018-001' : '241-MG-2015-001'
+          } else if (account.role === 'specialist') {
+            professionalData.professional_type = 'medecin_specialiste'
+            professionalData.numero_ordre = '241-CAR-2020-001'
+          } else if (account.role === 'nurse') {
+            professionalData.professional_type = 'infirmier'
+            professionalData.numero_ordre = isSOGARAMedical ? '241-INF-2019-001' : '241-INF-2017-001'
+          }
+          
           const { data: professional, error: professionalError } = await supabaseAdmin
             .from('professionals')
-            .insert({
-              user_id: userData.user.id,
-              full_name: account.fullName,
-              email: account.email,
-              phone: account.phone,
-              professional_type: account.role === 'doctor' ? 'medecin_generaliste' : 'medecin_specialiste',
-              gender: 'homme',
-              title: 'docteur',
-              birth_date: '1980-05-15',
-              nationality: 'Gabonaise',
-              numero_ordre: account.role === 'doctor' ? '241-MG-2015-001' : '241-CAR-2020-001',
-              status: 'actif',
-              verified: true,
-              documents_verified: true,
-              verification_date: new Date().toISOString()
-            })
+            .insert(professionalData)
             .select()
             .single()
 
           if (!professionalError && professional) {
-            // Add practice location
+            // Add practice location (SOGARA or Libreville)
+            const locationName = isSOGARAMedical 
+              ? (account.role === 'doctor' ? 'Centre de Médecine du Travail SOGARA' : 'Infirmerie SOGARA')
+              : (account.role === 'doctor' ? 'Cabinet Médical du Centre' : 'Cabinet Infirmerie')
+            
+            const locationData = isSOGARAMedical
+              ? {
+                  professional_id: professional.id,
+                  name: locationName,
+                  location_type: 'cabinet_prive',
+                  address: 'Route de la Sogara',
+                  city: 'Port-Gentil',
+                  province: 'Ogooué-Maritime',
+                  quartier: 'Zone Port',
+                  is_primary: true
+                }
+              : {
+                  professional_id: professional.id,
+                  name: locationName,
+                  location_type: 'cabinet_prive',
+                  address: 'Avenue du Président Léon MBA',
+                  city: 'Libreville',
+                  province: 'Estuaire',
+                  quartier: 'Centre-ville',
+                  is_primary: true
+                }
+            
             await supabaseAdmin
               .from('practice_locations')
-              .insert({
-                professional_id: professional.id,
-                name: account.role === 'doctor' ? 'Cabinet Médical du Centre' : 'Centre de Cardiologie',
-                location_type: 'cabinet_prive',
-                address: 'Avenue du Président Léon MBA',
-                city: 'Libreville',
-                province: 'Estuaire',
-                quartier: 'Centre-ville',
-                is_primary: true
-              })
+              .insert(locationData)
 
             // Add diploma
+            const diplomaData = {
+              professional_id: professional.id,
+              title: isSOGARAMedical && account.role === 'doctor' 
+                ? 'Certificat Médecin du Travail'
+                : account.role === 'doctor' 
+                  ? 'Doctorat en Médecine'
+                  : account.role === 'nurse'
+                    ? 'Diplôme Infirmier'
+                    : 'Spécialisation en Cardiologie',
+              institution: isSOGARAMedical 
+                ? 'Institut Médecine Travail Gabon'
+                : 'Université des Sciences de la Santé',
+              year_obtained: isSOGARAMedical ? 2018 : (account.role === 'doctor' ? 2015 : 2020),
+              country: 'Gabon',
+              specialty: account.role === 'specialist' ? 'Cardiologie' : (isSOGARAMedical && account.role === 'doctor' ? 'Médecine du Travail' : null),
+              verified: true,
+              verification_status: 'verified'
+            }
+            
             await supabaseAdmin
               .from('professional_diplomas')
-              .insert({
-                professional_id: professional.id,
-                title: account.role === 'doctor' ? 'Doctorat en Médecine' : 'Spécialisation en Cardiologie',
-                institution: 'Université des Sciences de la Santé',
-                year_obtained: account.role === 'doctor' ? 2015 : 2020,
-                country: 'Gabon',
-                specialty: account.role === 'specialist' ? 'Cardiologie' : null,
-                verified: true,
-                verification_status: 'verified'
-              })
+              .insert(diplomaData)
 
             console.log(`Professional profile created for ${account.email}`)
+          }
+        }
+
+        // Create establishment profile for establishment admins
+        if (['hospital_admin', 'clinic_admin', 'sogara_admin'].includes(account.role)) {
+          let establishmentData: any = {}
+          
+          if (account.role === 'hospital_admin') {
+            establishmentData = {
+              raison_sociale: 'CHU Owendo',
+              type_etablissement: 'chu',
+              secteur: 'public',
+              numero_autorisation: '2024-CHU-001',
+              ville: 'Libreville',
+              province: 'Estuaire',
+              adresse_rue: 'Boulevard du Bord de Mer',
+              adresse_quartier: 'Centre-ville',
+              latitude: 0.415156,
+              longitude: 9.467267,
+              telephone_standard: '+241 01 74 10 00',
+              telephone_urgences: '+241 01 74 10 15',
+              email: 'hopital.demo@sante.ga',
+              nombre_lits_total: 450,
+              nombre_blocs_operatoires: 8,
+              nombre_salles_consultation: 25,
+              service_urgences_actif: true,
+              cnamgs_conventionne: true,
+              statut: 'actif'
+            }
+          } else if (account.role === 'clinic_admin') {
+            establishmentData = {
+              raison_sociale: 'Clinique Sainte-Marie',
+              type_etablissement: 'clinique',
+              secteur: 'prive',
+              numero_autorisation: '2024-CLINIQUE-001',
+              ville: 'Libreville',
+              province: 'Estuaire',
+              adresse_rue: 'Avenue de l\'Indépendance',
+              adresse_quartier: 'Quartier Bosset',
+              latitude: 0.409166,
+              longitude: 9.450000,
+              telephone_standard: '+241 01 74 20 00',
+              telephone_urgences: '+241 01 74 20 15',
+              email: 'clinique.demo@sante.ga',
+              nombre_lits_total: 120,
+              nombre_blocs_operatoires: 3,
+              nombre_salles_consultation: 12,
+              service_urgences_actif: true,
+              cnamgs_conventionne: true,
+              statut: 'actif'
+            }
+          } else if (account.role === 'sogara_admin') {
+            establishmentData = {
+              raison_sociale: 'Centre de Médecine de Santé au Travail (CMST) SOGARA',
+              type_etablissement: 'centre_medical',
+              secteur: 'prive',
+              numero_autorisation: '2024-CMST-SOGARA-001',
+              ville: 'Port-Gentil',
+              province: 'Ogooué-Maritime',
+              adresse_rue: 'Route de la Sogara',
+              adresse_quartier: 'Zone Port',
+              latitude: -0.681398,
+              longitude: 8.772557,
+              telephone_standard: '+241 01 55 26 21',
+              telephone_urgences: '+241 01 55 26 22',
+              email: 'sogara.demo@sante.ga',
+              site_web: 'https://www.sogara.com',
+              nombre_lits_total: 0,
+              nombre_blocs_operatoires: 0,
+              nombre_salles_consultation: 3,
+              service_urgences_actif: false,
+              cnamgs_conventionne: true,
+              statut: 'actif'
+            }
+          }
+
+          const { data: establishment, error: establishmentError } = await supabaseAdmin
+            .from('establishments')
+            .insert(establishmentData)
+            .select()
+            .single()
+
+          if (!establishmentError && establishment) {
+            // Add establishment admin user
+            await supabaseAdmin
+              .from('establishment_users')
+              .insert({
+                establishment_id: establishment.id,
+                user_id: userData.user.id,
+                role: 'administrateur',
+                permissions: {
+                  manage_staff: true,
+                  manage_services: true,
+                  manage_equipment: true,
+                  manage_finances: true,
+                  view_statistics: true,
+                  manage_appointments: true,
+                  manage_prescriptions: true
+                },
+                actif: true
+              })
+
+            console.log(`Establishment profile created for ${account.email}`)
+          } else {
+            console.error(`Error creating establishment for ${account.email}:`, establishmentError)
           }
         }
 

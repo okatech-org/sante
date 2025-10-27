@@ -17,7 +17,7 @@ import {
   FileText,
   Settings,
   Bell,
-  Ambulance,
+  Siren,
   Stethoscope,
   Pill,
   TestTube,
@@ -31,11 +31,11 @@ import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLa
 export default function DemoHospitalDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
 
-  // Données de démonstration pour CHU OWENDO
+  // Données de démonstration pour CMST SOGARA (Port-Gentil)
   const hospitalData = {
-    name: "CHU OWENDO",
-    type: "CHU",
-    sector: "public",
+    name: "Centre de Médecine de Santé au Travail (CMST) SOGARA",
+    type: "CMST",
+    sector: "prive",
     capacity: {
       totalBeds: 450,
       occupied: 312,
@@ -175,7 +175,7 @@ export default function DemoHospitalDashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Urgences en attente</CardTitle>
-                  <Ambulance className="h-4 w-4 text-muted-foreground" />
+                  <Siren className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{hospitalData.emergency.patientsWaiting}</div>

@@ -1,4 +1,4 @@
-import { Home, Calendar, FileText, TestTube, UserSearch, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus, Link2 } from "lucide-react";
+import { Home, Calendar, FileText, TestTube, Search, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus, Link2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,7 +22,7 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   const publicNavItems: NavItem[] = [
     { icon: Home, label: t('nav.home'), href: "/" },
     { icon: Info, label: t('nav.about'), href: "/#about" },
-    { icon: UserSearch, label: t('nav.services'), href: "/#services" },
+    { icon: Search, label: t('nav.services'), href: "/#services" },
     { icon: Heart, label: t('nav.awareness'), href: "/awareness" },
     { icon: HelpCircle, label: t('nav.faq'), href: "/#faq" },
     { icon: Phone, label: t('nav.contact'), href: "/#contact" },

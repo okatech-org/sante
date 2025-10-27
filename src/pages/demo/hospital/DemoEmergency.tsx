@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  AlertCircle, Clock, Ambulance, UserPlus, Activity, 
+  AlertCircle, Clock, Siren, UserPlus, Activity, 
   Stethoscope, Heart, TrendingUp, CheckCircle
 } from "lucide-react";
 import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
@@ -112,11 +112,11 @@ export default function DemoEmergency() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Service des Urgences</h1>
-            <p className="text-muted-foreground">CHU Libreville - Temps réel</p>
+            <p className="text-muted-foreground">CMST SOGARA - Port-Gentil • Temps réel</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" className="gap-2">
-              <Ambulance className="w-4 h-4" />
+              <Siren className="w-4 h-4" />
               Ambulances ({ambulances.filter(a => a.statut === "disponible").length})
             </Button>
             <Button className="gap-2">
@@ -226,7 +226,7 @@ export default function DemoEmergency() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Ambulance className="w-5 h-5" />
+              <Siren className="w-5 h-5" />
               État des ambulances
             </CardTitle>
           </CardHeader>

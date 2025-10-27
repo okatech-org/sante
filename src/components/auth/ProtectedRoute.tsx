@@ -25,15 +25,27 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
     return <Navigate to="/login/patient" replace />;
   }
 
-  // Check if user is a healthcare establishment (CHU, clinic, hospital)
-  const isEstablishment = user.email?.includes('hopital') || 
-                          user.email?.includes('chu') || 
-                          user.email?.includes('clinique') ||
-                          user.email?.includes('.demo@sante.ga');
+  // Déterminer si l'utilisateur est un établissement (basé sur les rôles)
+  const establishmentRoles: AppRole[] = [
+    'hospital_admin',
+    'clinic_admin',
+    'sogara_admin',
+    'pharmacy',
+    'radiology_center',
+  ];
+  const isEstablishment = userRoles.some((role) => establishmentRoles.includes(role as AppRole));
+
+  const getEstablishmentDemoPath = (): string => {
+    if (userRoles.includes('sogara_admin')) return '/demo/sogara';
+    if (userRoles.includes('clinic_admin')) return '/demo/clinic';
+    if (userRoles.includes('pharmacy')) return '/demo/pharmacy';
+    if (userRoles.includes('radiology_center')) return '/demo/radiology-center';
+    return '/demo/hospital';
+  };
 
   // Redirect establishments to their demo dashboard
   if (isEstablishment && window.location.pathname.includes('/dashboard/patient')) {
-    return <Navigate to="/demo/hospital" replace />;
+    return <Navigate to={getEstablishmentDemoPath()} replace />;
   }
 
   if (requiredRoles && requiredRoles.length > 0) {
@@ -41,7 +53,7 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
     if (!hasRequiredRole) {
       // Redirect based on user type
       if (isEstablishment) {
-        return <Navigate to="/demo/hospital" replace />;
+        return <Navigate to={getEstablishmentDemoPath()} replace />;
       }
       return <Navigate to="/dashboard/patient" replace />;
     }

@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Installation dépendances
+COPY package*.json ./
+RUN npm install
+
+# Copie code source
+COPY . .
+
+# Création dossier logs
+RUN mkdir -p logs
+
+# Exposition port
+EXPOSE 3000
+
+# Mode développement avec hot reload (nodemon)
+CMD ["npm", "run", "neural:dev"]

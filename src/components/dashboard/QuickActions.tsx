@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Pill, Video, Hospital } from "lucide-react";
+import { Search, Pill, Video, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -26,7 +26,7 @@ export function QuickActions() {
       color: 'accent'
     },
     {
-      icon: Hospital,
+      icon: Building2,
       label: t('quickActions.hospitals'),
       href: '/providers?type=hopital',
       color: 'success'

@@ -812,6 +812,44 @@
     "statut_operationnel": "operationnel"
   },
   {
+    "id": "HOP_PG_SOGARA",
+    "type": "hopital",
+    "nom": "Hôpital de SOGARA / Infirmerie SOGARA",
+    "province": "G2",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.681398,
+      "lng": 8.772557
+    },
+    "adresse_descriptive": "Zone SOGARA, Port-Gentil",
+    "telephones": [],
+    "horaires": "24h/24",
+    "services": [
+      "Urgences",
+      "Consultations",
+      "Maternité",
+      "Chirurgie",
+      "Radiologie",
+      "Laboratoire",
+      "Hospitalisation"
+    ],
+    "specialites": [
+      "Médecine générale",
+      "Gynécologie-Obstétrique",
+      "Chirurgie générale",
+      "Radiologie"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true
+    },
+    "secteur": "prive",
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "notes": "Structure d'entreprise SOGARA (démo)."
+  },
+  {
     "id": "CLI_PG_BILIE",
     "type": "clinique",
     "nom": "Polyclinique Bilie",

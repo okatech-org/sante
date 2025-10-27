@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CircleCheck, FileHeart, AlertCircle, MapPin, ChevronRight } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle2, FileHeart, AlertCircle, MapPin, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -296,7 +296,7 @@ export default function DashboardPatient() {
               { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
               { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
               { label: 'Analyses', value: '12', icon: Activity, trend: 'Cette année', color: '#ffaa00' },
-              { label: 'Complétude', value: '87%', icon: CircleCheck, trend: 'Dossier médical', color: '#ff0088' }
+              { label: 'Complétude', value: '87%', icon: CheckCircle2, trend: 'Dossier médical', color: '#ff0088' }
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (

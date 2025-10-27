@@ -3,7 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { 
   Home, Calendar, Users, Video, ClipboardList, Pill, 
   DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings,
-  Activity, TestTube, UserSearch, BarChart3, Sun, Moon, Laptop, LogOut, Globe
+  Activity, TestTube, Search, BarChart3, Sun, Moon, Laptop, LogOut, Globe
 } from "lucide-react";
 import logoSante from "@/assets/logo_sante.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -56,7 +56,7 @@ export const DemoDashboardLayout = ({ children, demoType = 'doctor' }: DemoDashb
       case 'hospital':
         return [
           { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/demo/hospital', color: '#00d4ff' },
-          { id: 'admissions', label: 'Admissions', icon: UserSearch, path: '/demo/hospital/admissions', color: '#0088ff' },
+          { id: 'admissions', label: 'Admissions', icon: Search, path: '/demo/hospital/admissions', color: '#0088ff' },
           { id: 'emergency', label: 'Urgences', icon: Activity, path: '/demo/hospital/emergency', color: '#ff0088' },
           { id: 'planning', label: 'Planification', icon: Calendar, path: '/demo/hospital/planning', color: '#00d4ff' },
           { id: 'staff', label: 'Personnel', icon: Users, path: '/demo/hospital/staff', color: '#0088ff' },
