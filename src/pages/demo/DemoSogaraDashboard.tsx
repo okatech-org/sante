@@ -46,15 +46,49 @@ export default function DemoSogaraDashboard() {
   const sogaraData = {
     name: "Centre de Médecine de Santé au Travail (CMST) SOGARA",
     location: "Port-Gentil, Route de la Sogara",
-    totalMembers: 10,
-    activeMembers: 8,
+    totalMembers: 13,
+    activeMembers: 12,
     consultationsThisMonth: 24,
     revenue: 2850000,
-    pendingApprovals: 2
+    pendingApprovals: 0
   };
 
   // Professionnels assignés au CMST SOGARA
   const professionals: CMSTMember[] = [
+    {
+      id: "prof-cmst-01",
+      type: "professional",
+      name: "Dr. Jean-Paul NZENZE",
+      email: "medecin.cmst@sogara.ga",
+      role: "Médecin du Travail",
+      speciality: "Médecine du Travail",
+      phone: "+241 06 XX XX XX",
+      status: "active",
+      joinedDate: "2025-01-13",
+      consultations: 0
+    },
+    {
+      id: "prof-cmst-02",
+      type: "professional",
+      name: "Marie BOUNDA",
+      email: "infirmiere.cmst@sogara.ga",
+      role: "Infirmière",
+      phone: "+241 06 XX XX XX",
+      status: "active",
+      joinedDate: "2025-01-13",
+      consultations: 0
+    },
+    {
+      id: "prof-cmst-03",
+      type: "professional",
+      name: "Paul OKANDZE",
+      email: "admin.cmst@sogara.ga",
+      role: "Administrateur",
+      phone: "+241 06 XX XX XX",
+      status: "active",
+      joinedDate: "2025-01-13",
+      consultations: 0
+    },
     {
       id: "prof-01",
       type: "professional",
@@ -293,13 +327,16 @@ export default function DemoSogaraDashboard() {
                     </h3>
                     <div className="space-y-2 text-sm">
                       <p>
-                        <span className="font-medium">Médecins:</span> 2
+                        <span className="font-medium">Médecins:</span> 3
                       </p>
                       <p>
                         <span className="font-medium">Infirmiers:</span> 2
                       </p>
+                      <p>
+                        <span className="font-medium">Administrateurs:</span> 1
+                      </p>
                       <p className="text-gray-500">
-                        Total: 4 professionnels assignés
+                        Total: 7 professionnels assignés
                       </p>
                     </div>
                   </div>
