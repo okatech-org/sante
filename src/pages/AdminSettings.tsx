@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -42,9 +43,11 @@ interface SystemSetting {
 export default function AdminSettings() {
   const { user, userRoles, isLoading } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [settings, setSettings] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [forbidden, setForbidden] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
@@ -67,7 +70,11 @@ export default function AdminSettings() {
       });
 
       setSettings(settingsMap);
+      setForbidden(false);
     } catch (error: any) {
+      const msg = String(error?.message || "");
+      const is403 = msg.includes("403") || msg.toLowerCase().includes("forbidden") || msg.toLowerCase().includes("permission");
+      setForbidden(is403);
       toast({
         title: "Erreur",
         description: "Impossible de charger les paramètres",
@@ -166,6 +173,29 @@ export default function AdminSettings() {
 
         {/* System Settings */}
         <TabsContent value="system" className="space-y-4">
+          {forbidden && (
+            <Card className="border-red-200">
+              <CardHeader>
+                <CardTitle className="text-red-600">Accès refusé (403)</CardTitle>
+                <CardDescription>
+                  Droits manquants sur <code>system_settings</code>. Appliquez ces commandes SQL puis réessayez.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <pre className="whitespace-pre-wrap text-xs bg-muted p-2 rounded">
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.system_settings TO authenticated;
+REVOKE ALL ON public.system_settings FROM anon;
+                </pre>
+                <Button variant="outline" onClick={() => navigator.clipboard.writeText(
+                  "GRANT USAGE ON SCHEMA public TO authenticated;\n"+
+                  "GRANT SELECT, INSERT, UPDATE, DELETE ON public.system_settings TO authenticated;\n"+
+                  "REVOKE ALL ON public.system_settings FROM anon;"
+                )}>Copier le SQL</Button>
+                <Button onClick={loadSettings} className="ml-2">Réessayer</Button>
+              </CardContent>
+            </Card>
+          )}
           <Card>
             <CardHeader>
               <CardTitle>Configuration générale</CardTitle>
@@ -263,6 +293,18 @@ export default function AdminSettings() {
                   </SelectContent>
                 </Select>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Outils Super Admin</CardTitle>
+              <CardDescription>Maintenance rapide et actions de correction</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button className="w-full" onClick={() => navigate('/superadmin/fix-roles')}>
+                Corriger les rôles démo
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

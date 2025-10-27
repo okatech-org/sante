@@ -98,6 +98,7 @@ export default function ProfessionalsManagement() {
   const { toast } = useToast();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
@@ -180,16 +181,37 @@ export default function ProfessionalsManagement() {
     multiAffiliation: professionals.filter(p => p.affiliations.length > 1).length
   };
 
+  // Obtenir la catégorie d'un professionnel
+  const getProfessionalCategory = (role: string): string => {
+    for (const [category, roles] of Object.entries(PROFESSIONAL_CATEGORIES)) {
+      if (roles.includes(role)) {
+        return category;
+      }
+    }
+    return 'Autre';
+  };
+
   const filteredProfessionals = professionals.filter(prof => {
     const matchesSearch = !searchTerm || 
       `${prof.firstName} ${prof.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
       prof.email.toLowerCase().includes(searchTerm.toLowerCase());
     
+    const matchesCategory = selectedCategory === 'all' || 
+      getProfessionalCategory(prof.userRole) === selectedCategory;
+    
     const matchesSpecialty = selectedSpecialty === 'all' || prof.specialty === selectedSpecialty;
     const matchesStatus = selectedStatus === 'all' || prof.status === selectedStatus;
     
-    return matchesSearch && matchesSpecialty && matchesStatus;
+    return matchesSearch && matchesCategory && matchesSpecialty && matchesStatus;
   });
+
+  // Grouper les professionnels par catégorie
+  const groupedProfessionals = Object.keys(PROFESSIONAL_CATEGORIES).reduce((acc, category) => {
+    acc[category] = filteredProfessionals.filter(
+      prof => getProfessionalCategory(prof.userRole) === category
+    );
+    return acc;
+  }, {} as Record<string, Professional[]>);
 
   const getRoleLabel = (role: string) => {
     const roleLabels: Record<string, string> = {
@@ -305,7 +327,7 @@ export default function ProfessionalsManagement() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Recherche</label>
                 <div className="relative">
@@ -317,6 +339,21 @@ export default function ProfessionalsManagement() {
                     className="pl-10"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Catégorie</label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toutes</SelectItem>
+                    {Object.keys(PROFESSIONAL_CATEGORIES).map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
@@ -370,8 +407,24 @@ export default function ProfessionalsManagement() {
               <p className="text-gray-600">Essayez de modifier vos critères de recherche</p>
             </Card>
           ) : (
-            <div className="space-y-4">
-              {filteredProfessionals.map((prof) => (
+            <div className="space-y-6">
+              {/* Affichage groupé par catégorie */}
+              {Object.entries(groupedProfessionals).map(([category, categoryProfs]) => {
+                if (categoryProfs.length === 0) return null;
+                
+                return (
+                  <div key={category} className="space-y-3">
+                    {/* En-tête de catégorie */}
+                    <div className="flex items-center gap-3 pb-2 border-b-2 border-primary/20">
+                      <h3 className="text-lg font-bold text-primary">{category}</h3>
+                      <Badge variant="secondary" className="text-sm">
+                        {categoryProfs.length} professionnel{categoryProfs.length > 1 ? 's' : ''}
+                      </Badge>
+                    </div>
+                    
+                    {/* Liste des professionnels de cette catégorie */}
+                    <div className="space-y-3">
+                      {categoryProfs.map((prof) => (
                 <Card key={prof.id}>
                   <CardContent className="pt-6">
                     <div className="flex justify-between items-start">
@@ -407,36 +460,48 @@ export default function ProfessionalsManagement() {
                             </span>
                           </div>
 
-                          {prof.affiliations.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-xs font-medium text-gray-600 mb-1">
-                                Affiliations ({prof.affiliations.length})
-                              </p>
-                              <div className="flex flex-wrap gap-1">
-                                {prof.affiliations.map((aff, idx) => (
-                                  <Badge key={idx} variant="secondary" className="text-xs">
-                                    <Building2 className="w-3 h-3 mr-1" />
-                                    {aff.establishmentName}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                           {prof.affiliations.length > 0 && (
+                             <div className="mt-4">
+                               <p className="text-xs font-medium text-gray-600 mb-1">
+                                 Affiliations ({prof.affiliations.length})
+                               </p>
+                               <div className="flex flex-wrap gap-1">
+                                 {prof.affiliations.map((aff, idx) => (
+                                   <div key={idx} className="flex items-center gap-1">
+                                     <Badge variant="secondary" className="text-xs">
+                                       <Building2 className="w-3 h-3 mr-1" />
+                                       {aff.establishmentName}
+                                     </Badge>
+                                     <Badge 
+                                       variant={aff.isAdmin ? "default" : "outline"} 
+                                       className="text-xs"
+                                     >
+                                       {aff.isAdmin ? "👔 Admin" : "🤝 Collaborateur"}
+                                     </Badge>
+                                   </div>
+                                 ))}
+                               </div>
+                             </div>
+                           )}
+                         </div>
+                       </div>
 
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" title="Voir détails">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" title="Modifier">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      </div>
+                       <div className="flex gap-2">
+                         <Button variant="ghost" size="sm" title="Voir détails">
+                           <Eye className="w-4 h-4" />
+                         </Button>
+                         <Button variant="ghost" size="sm" title="Modifier">
+                           <Edit className="w-4 h-4" />
+                         </Button>
+                       </div>
+                     </div>
+                   </CardContent>
+                 </Card>
+                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

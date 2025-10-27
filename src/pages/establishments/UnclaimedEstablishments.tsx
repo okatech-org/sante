@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Building2, 
@@ -27,7 +28,11 @@ import {
   Info,
   TrendingUp,
   Users,
-  Activity
+  Activity,
+  Eye,
+  ExternalLink,
+  UserCircle,
+  Key
 } from "lucide-react";
 import { claimService, ClaimStatus, type Establishment } from '@/services/EstablishmentClaimService';
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
@@ -53,6 +58,37 @@ const ESTABLISHMENT_TYPES = {
   cabinet: { label: 'Cabinet Médical', icon: Briefcase, color: 'purple' },
   pharmacy: { label: 'Pharmacie', icon: Pill, color: 'orange' },
   laboratory: { label: 'Laboratoire', icon: FlaskConical, color: 'pink' }
+};
+
+// Comptes d'accès démo pour les structures
+const DEMO_ACCESS_ACCOUNTS: Record<string, Array<{
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  speciality?: string;
+}>> = {
+  'cmst-sogara': [
+    {
+      name: 'Dr. Jean-Paul NZENZE',
+      email: 'medecin.cmst@sogara.ga',
+      password: 'Demo2025!',
+      role: 'Médecin du Travail',
+      speciality: 'Médecine du Travail'
+    },
+    {
+      name: 'Marie BOUNDA',
+      email: 'infirmiere.cmst@sogara.ga',
+      password: 'Demo2025!',
+      role: 'Infirmière'
+    },
+    {
+      name: 'Paul OKANDZE',
+      email: 'admin.cmst@sogara.ga',
+      password: 'Demo2025!',
+      role: 'Administrateur'
+    }
+  ]
 };
 
 // Données mock (en attendant la migration Supabase)
@@ -152,6 +188,181 @@ const DEMO_ESTABLISHMENTS: Partial<Establishment>[] = [
     services: ['Analyses Médicales', 'Prélèvements', 'Tests COVID']
   }
 ];
+
+// Composant Modal de détails avec visibilité
+function EstablishmentDetailModal({ establishment }: { establishment: Establishment }) {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const accessAccounts = DEMO_ACCESS_ACCOUNTS[establishment.id] || [];
+  const hasPublicPage = ['cmst-sogara'].includes(establishment.id);
+  
+  const handleViewPublicPage = () => {
+    navigate(`/establishment/${establishment.id}/public`);
+  };
+  
+  const handleCopyCredentials = (account: any) => {
+    const text = `Email: ${account.email}\nMot de passe: ${account.password}`;
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "✅ Identifiants copiés",
+      description: `Identifiants de ${account.name} copiés dans le presse-papiers`,
+    });
+  };
+  
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="w-full mt-2">
+          <Eye className="w-4 h-4 mr-2" />
+          Voir les détails
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">{establishment.name}</DialogTitle>
+          <DialogDescription>
+            {ESTABLISHMENT_TYPES[establishment.type as keyof typeof ESTABLISHMENT_TYPES]?.label} • {' '}
+            {establishment.sector === 'public' ? 'Public' : 'Privé'}
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="space-y-6">
+          {/* Informations générales */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <Building2 className="w-5 h-5" />
+              Informations générales
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 mt-1 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Adresse</p>
+                  <p className="text-sm text-muted-foreground">
+                    {establishment.address}<br />
+                    {establishment.city}, {establishment.province}
+                  </p>
+                </div>
+              </div>
+              
+              {establishment.public_contact_phone && (
+                <div className="flex items-start gap-2">
+                  <Phone className="w-4 h-4 mt-1 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Téléphone</p>
+                    <p className="text-sm text-muted-foreground">
+                      {establishment.public_contact_phone}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Services */}
+          {establishment.services && establishment.services.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="font-semibold text-lg">Services offerts</h3>
+              <div className="flex flex-wrap gap-2">
+                {establishment.services.map((service, idx) => (
+                  <Badge key={idx} variant="secondary">{service}</Badge>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Page publique */}
+          {hasPublicPage && (
+            <div className="space-y-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <ExternalLink className="w-5 h-5" />
+                Page d'accueil publique
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Consultez la page publique de cet établissement pour voir les informations visibles par les patients.
+              </p>
+              <Button onClick={handleViewPublicPage} className="w-full">
+                <Eye className="w-4 h-4 mr-2" />
+                Voir la page d'accueil
+              </Button>
+            </div>
+          )}
+          
+          {/* Comptes d'accès */}
+          {accessAccounts.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <UserCircle className="w-5 h-5" />
+                Comptes d'accès démo
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Utilisez ces identifiants pour tester les différents rôles dans cet établissement.
+              </p>
+              <div className="space-y-3">
+                {accessAccounts.map((account, idx) => (
+                  <Card key={idx} className="border-2">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1 flex-1">
+                          <p className="font-semibold">{account.name}</p>
+                          <p className="text-sm text-muted-foreground">{account.role}</p>
+                          <div className="mt-2 space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="w-3 h-3 text-muted-foreground" />
+                              <code className="bg-muted px-2 py-0.5 rounded text-xs">
+                                {account.email}
+                              </code>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Key className="w-3 h-3 text-muted-foreground" />
+                              <code className="bg-muted px-2 py-0.5 rounded text-xs">
+                                {account.password}
+                              </code>
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCopyCredentials(account)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2 V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                          </svg>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertTitle>Information</AlertTitle>
+                <AlertDescription>
+                  Ces identifiants sont des comptes de démonstration. En production, chaque utilisateur aura ses propres identifiants sécurisés.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 // Composant pour une carte d'établissement
 function EstablishmentCard({ 
@@ -285,10 +496,13 @@ function EstablishmentCard({
             </div>
           )}
           
+          {/* Bouton Voir les détails */}
+          <EstablishmentDetailModal establishment={establishment} />
+          
           {establishment.claim_status === ClaimStatus.UNCLAIMED && (
             <Button 
               onClick={() => onClaim(establishment.id)}
-              className="w-full mt-4"
+              className="w-full mt-2"
               variant="default"
             >
               <Shield className="w-4 h-4 mr-2" />

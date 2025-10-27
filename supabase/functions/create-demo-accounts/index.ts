@@ -268,12 +268,13 @@ serve(async (req) => {
           const existingUser = existingUsers.users.find(u => u.email === account.email)
           
           if (existingUser) {
-            // Update user metadata
+            // Update user metadata and reset password to demo default
             await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
               user_metadata: {
                 full_name: account.fullName,
                 phone: account.phone
-              }
+              },
+              password: account.password
             })
 
             // Check if role exists
@@ -295,7 +296,7 @@ serve(async (req) => {
 
             results.push({
               email: account.email,
-              status: 'updated',
+              status: 'updated_password_and_metadata',
               userId: existingUser.id
             })
           }

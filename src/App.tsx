@@ -5,9 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { MultiEstablishmentProvider } from "./contexts/MultiEstablishmentContext";
 import { ThemeProvider } from "next-themes";
 import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { EstablishmentGuard } from "./components/auth/EstablishmentGuard";
 
 // Pages
 import Index from "./pages/Index";
@@ -74,11 +76,15 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminCartography from "./pages/admin/AdminCartography";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
 import UnclaimedEstablishments from "./pages/establishments/UnclaimedEstablishments";
+import EstablishmentPublicPage from "./pages/establishments/EstablishmentPublicPage";
 import ClaimEstablishment from "./pages/establishments/ClaimEstablishment";
 import ClaimsManagement from "./pages/superadmin/ClaimsManagement";
 import ProfessionalsManagement from "./pages/superadmin/ProfessionalsManagement";
 import PatientsManagement from "./pages/superadmin/PatientsManagement";
 import FixDemoRoles from "./pages/superadmin/FixDemoRoles";
+import DoctorDashboard from "./pages/demo/DoctorDashboard";
+import NurseDashboard from "./pages/demo/NurseDashboard";
+import AdminDashboard from "./pages/demo/AdminDashboard";
 import OSMSync from "./pages/admin/OSMSync";
 
 // Demo Pages
@@ -109,10 +115,11 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <BrowserRouter>
         <AuthProvider>
-          <LanguageProvider>
-            <TooltipProvider>
-              {import.meta.env.DEV && <ConsoleSilencer />}
-              <Routes>
+          <MultiEstablishmentProvider>
+            <LanguageProvider>
+              <TooltipProvider>
+                {import.meta.env.DEV && <ConsoleSilencer />}
+                <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
@@ -132,11 +139,18 @@ const App = () => (
             
             {/* Établissements Non-Revendiqués */}
             <Route path="/establishments/unclaimed" element={<UnclaimedEstablishments />} />
+            <Route path="/establishment/:id/public" element={<EstablishmentPublicPage />} />
             <Route path="/establishments/:id/claim" element={
               <ProtectedRoute>
                 <ClaimEstablishment />
               </ProtectedRoute>
             } />
+            
+            {/* CMST SOGARA Demo Dashboards */}
+            <Route path="/demo/sogara" element={<DoctorDashboard />} />
+            <Route path="/demo/sogara/nurse" element={<NurseDashboard />} />
+            <Route path="/demo/sogara/admin" element={<AdminDashboard />} />
+            
             <Route path="/dashboard/patient" element={
               <ProtectedRoute requiredRoles={['patient']}>
                 <DashboardPatient />
@@ -144,7 +158,9 @@ const App = () => (
             } />
             <Route path="/dashboard/professional" element={
               <ProtectedRoute requiredRoles={['doctor', 'hospital', 'pharmacy', 'laboratory', 'medical_staff']}>
-                <Navigate to="/demo/doctor" replace />
+                <EstablishmentGuard>
+                  <DashboardProfessional />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/admin" element={
@@ -187,6 +203,11 @@ const App = () => (
             <Route path="/superadmin/audit" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminAudit />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/panel" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <AdminPanel />
               </ProtectedRoute>
             } />
             <Route path="/superadmin/settings" element={
@@ -313,70 +334,95 @@ const App = () => (
             } />
             <Route path="/professional/agenda" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalAgenda />
+                <EstablishmentGuard>
+                  <ProfessionalAgenda />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/patients" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalPatients />
+                <EstablishmentGuard>
+                  <ProfessionalPatients />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/teleconsultations" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalTeleconsultations />
+                <EstablishmentGuard>
+                  <ProfessionalTeleconsultations />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/consultations" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalConsultations />
+                <EstablishmentGuard>
+                  <ProfessionalConsultations />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/prescriptions" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalPrescriptions />
+                <EstablishmentGuard>
+                  <ProfessionalPrescriptions />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/finances" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalFinances />
+                <EstablishmentGuard>
+                  <ProfessionalFinances />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/stats" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalStatistics />
+                <EstablishmentGuard>
+                  <ProfessionalStatistics />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/messages" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalMessages />
+                <EstablishmentGuard>
+                  <ProfessionalMessages />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/tele-expertise" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalTeleExpertise />
+                <EstablishmentGuard>
+                  <ProfessionalTeleExpertise />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/settings" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalSettings />
+                <EstablishmentGuard>
+                  <ProfessionalSettings />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/integrations" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <ProfessionalIntegrations />
+                <EstablishmentGuard>
+                  <ProfessionalIntegrations />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
             <Route path="/professional/teleconsultation/:sessionId" element={
               <ProtectedRoute requiredRoles={['doctor', 'medical_staff']}>
-                <TeleconsultationSession />
+                <EstablishmentGuard>
+                  <TeleconsultationSession />
+                </EstablishmentGuard>
               </ProtectedRoute>
             } />
           <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
             <Sonner />
-          </TooltipProvider>
-          </LanguageProvider>
+              </TooltipProvider>
+            </LanguageProvider>
+          </MultiEstablishmentProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>

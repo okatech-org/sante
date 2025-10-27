@@ -66,7 +66,7 @@ export default function LoginProfessional() {
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur votre espace professionnel",
       });
-      navigate("/dashboard");
+      navigate("/professional/select-establishment");
     } catch (error: any) {
       const sanitized = sanitizeAuthError(error);
       if (sanitized.shouldLog) {
