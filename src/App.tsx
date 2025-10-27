@@ -74,6 +74,9 @@ import AdminCartography from "./pages/admin/AdminCartography";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
 import UnclaimedEstablishments from "./pages/establishments/UnclaimedEstablishments";
 import ClaimEstablishment from "./pages/establishments/ClaimEstablishment";
+import ClaimsManagement from "./pages/superadmin/ClaimsManagement";
+import ProfessionalsManagement from "./pages/superadmin/ProfessionalsManagement";
+import PatientsManagement from "./pages/superadmin/PatientsManagement";
 import OSMSync from "./pages/admin/OSMSync";
 
 // Demo Pages
@@ -96,7 +99,6 @@ import DemoStaffManagement from "./pages/demo/hospital/DemoStaffManagement";
 import EcosystemCMST from "./pages/demo/sogara/EcosystemCMST";
 
 import NotFound from "./pages/NotFound";
-import ClaimEstablishment from "./pages/ClaimEstablishment";
 
 const queryClient = new QueryClient();
 
@@ -186,6 +188,9 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/superadmin/demo" element={
+              <Navigate to="/establishments/unclaimed" replace />
+            } />
+            <Route path="/superadmin/demo-legacy" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <AdminDemoV2 />
               </ProtectedRoute>
@@ -198,6 +203,21 @@ const App = () => (
             <Route path="/superadmin/architecture" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <MultiEstablishmentArchitecture />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/claims" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <ClaimsManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/professionals" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <ProfessionalsManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/patients" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <PatientsManagement />
               </ProtectedRoute>
             } />
             <Route path="/appointments" element={

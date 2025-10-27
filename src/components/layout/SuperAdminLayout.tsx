@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Heart, LogOut, Menu, Shield, Settings, Sun, Moon, Laptop, Globe } from "lucide-react";
-import { BarChart3, BookOpen, Users, Clock, Building2, Activity, Map, Sparkles } from "lucide-react";
+import { BarChart3, BookOpen, Users, Clock, Building2, Activity, Map, Sparkles, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -83,17 +83,114 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
     return null;
   }
 
-  // Menu items pour super admin
+  // Menu items pour super admin - Nouvelle Architecture Multi-Établissements
   const superAdminMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, path: '/superadmin', color: '#ff0088', badge: undefined },
-    { id: 'project', label: 'Projet', icon: BookOpen, path: '/superadmin/project', color: '#00d4ff', badge: undefined },
-    { id: 'users', label: 'Utilisateurs', icon: Users, path: '/superadmin/users', color: '#0088ff', badge: undefined },
-    { id: 'approvals', label: 'Approbations', icon: Clock, path: '/superadmin/approvals', color: '#ffaa00', badge: undefined },
-    { id: 'health-actors', label: 'Acteurs de Santé', icon: Activity, path: '/superadmin/health-actors', color: '#00d4ff', badge: undefined },
-    { id: 'cartography', label: 'Cartographie', icon: Map, path: '/superadmin/cartography', color: '#22c55e', badge: undefined },
-    { id: 'demo', label: 'Démo', icon: Sparkles, path: '/superadmin/demo', color: '#ff0088', badge: undefined },
-    { id: 'audit', label: 'Audit', icon: Shield, path: '/superadmin/audit', color: '#00d4ff', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/superadmin/settings', color: '#0088ff', badge: undefined }
+    // Vue d'ensemble
+    { 
+      id: 'dashboard', 
+      label: 'Dashboard', 
+      icon: BarChart3, 
+      path: '/superadmin', 
+      color: '#ff0088', 
+      badge: undefined,
+      section: 'overview'
+    },
+    
+    // Section: STRUCTURES DE SANTÉ
+    { 
+      id: 'establishments', 
+      label: 'Établissements', 
+      icon: Building2, 
+      path: '/establishments/unclaimed', 
+      color: '#0088ff', 
+      badge: undefined,
+      section: 'structures',
+      description: 'Hôpitaux, Cliniques, Cabinets'
+    },
+    { 
+      id: 'claims', 
+      label: 'Revendications', 
+      icon: Shield, 
+      path: '/superadmin/claims', 
+      color: '#ffaa00', 
+      badge: undefined,
+      section: 'structures',
+      description: 'Vérifier les demandes'
+    },
+    { 
+      id: 'cartography', 
+      label: 'Cartographie', 
+      icon: Map, 
+      path: '/superadmin/cartography', 
+      color: '#22c55e', 
+      badge: undefined,
+      section: 'structures',
+      description: 'Carte interactive'
+    },
+    
+    // Section: UTILISATEURS
+    { 
+      id: 'professionals', 
+      label: 'Professionnels', 
+      icon: UserCheck, 
+      path: '/superadmin/professionals', 
+      color: '#00d4ff', 
+      badge: undefined,
+      section: 'users',
+      description: 'Médecins, Infirmiers, etc.'
+    },
+    { 
+      id: 'patients', 
+      label: 'Patients', 
+      icon: Users, 
+      path: '/superadmin/patients', 
+      color: '#8b5cf6', 
+      badge: undefined,
+      section: 'users',
+      description: 'Dossiers patients'
+    },
+    { 
+      id: 'approvals', 
+      label: 'Approbations', 
+      icon: Clock, 
+      path: '/superadmin/approvals', 
+      color: '#f59e0b', 
+      badge: undefined,
+      section: 'users',
+      description: 'Valider les inscriptions'
+    },
+    
+    // Section: SYSTÈME
+    { 
+      id: 'audit', 
+      label: 'Audit & Logs', 
+      icon: Shield, 
+      path: '/superadmin/audit', 
+      color: '#ef4444', 
+      badge: undefined,
+      section: 'system',
+      description: 'Traçabilité'
+    },
+    { 
+      id: 'project', 
+      label: 'Projet', 
+      icon: BookOpen, 
+      path: '/superadmin/project', 
+      color: '#06b6d4', 
+      badge: undefined,
+      section: 'system',
+      description: 'Gestion du projet'
+    },
+    { 
+      id: 'settings', 
+      label: 'Paramètres', 
+      icon: Settings, 
+      path: '/superadmin/settings', 
+      color: '#64748b', 
+      badge: undefined,
+      section: 'system',
+      description: 'Configuration'
+    }
   ];
 
   const activeMenu = superAdminMenuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
@@ -105,7 +202,8 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
 
   const renderMenu = () => (
     <nav className="space-y-1 flex-1 overflow-y-auto">
-      {superAdminMenuItems.map((item) => {
+      {/* Dashboard */}
+      {superAdminMenuItems.filter(item => item.section === 'overview').map((item) => {
         const Icon = item.icon;
         const isActive = activeMenu === item.id;
         return (
@@ -134,14 +232,177 @@ export const SuperAdminLayout = ({ children }: SuperAdminLayoutProps) => {
               </div>
               <span className="text-sm font-medium">{item.label}</span>
             </div>
-            {item.badge && (
-              <span 
-                className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
-                style={{ backgroundColor: item.color }}
-              >
-                {item.badge}
-              </span>
-            )}
+          </button>
+        );
+      })}
+      
+      {/* Section: STRUCTURES DE SANTÉ */}
+      <div className="mt-6 mb-2">
+        <div className="px-4 flex items-center gap-2">
+          <Building2 className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Structures de Santé
+          </span>
+        </div>
+      </div>
+      {superAdminMenuItems.filter(item => item.section === 'structures').map((item) => {
+        const Icon = item.icon;
+        const isActive = activeMenu === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => handleMenuClick(item.path)}
+            className={`w-full flex flex-col px-4 py-3 rounded-xl transition-all ${
+              isActive
+                ? 'bg-sidebar-accent text-sidebar-foreground'
+                : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <div 
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                    isActive ? '' : 'bg-sidebar-accent/30'
+                  }`}
+                  style={isActive ? {
+                    backgroundColor: `${item.color}20`
+                  } : {}}
+                >
+                  <Icon 
+                    className="w-5 h-5" 
+                    style={{ color: isActive ? item.color : '' }}
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">{item.label}</span>
+                  {item.description && (
+                    <span className="text-xs text-muted-foreground">{item.description}</span>
+                  )}
+                </div>
+              </div>
+              {item.badge && (
+                <span 
+                  className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                  style={{ backgroundColor: item.color }}
+                >
+                  {item.badge}
+                </span>
+              )}
+            </div>
+          </button>
+        );
+      })}
+      
+      {/* Section: UTILISATEURS */}
+      <div className="mt-6 mb-2">
+        <div className="px-4 flex items-center gap-2">
+          <Users className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Utilisateurs
+          </span>
+        </div>
+      </div>
+      {superAdminMenuItems.filter(item => item.section === 'users').map((item) => {
+        const Icon = item.icon;
+        const isActive = activeMenu === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => handleMenuClick(item.path)}
+            className={`w-full flex flex-col px-4 py-3 rounded-xl transition-all ${
+              isActive
+                ? 'bg-sidebar-accent text-sidebar-foreground'
+                : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <div 
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                    isActive ? '' : 'bg-sidebar-accent/30'
+                  }`}
+                  style={isActive ? {
+                    backgroundColor: `${item.color}20`
+                  } : {}}
+                >
+                  <Icon 
+                    className="w-5 h-5" 
+                    style={{ color: isActive ? item.color : '' }}
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">{item.label}</span>
+                  {item.description && (
+                    <span className="text-xs text-muted-foreground">{item.description}</span>
+                  )}
+                </div>
+              </div>
+              {item.badge && (
+                <span 
+                  className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                  style={{ backgroundColor: item.color }}
+                >
+                  {item.badge}
+                </span>
+              )}
+            </div>
+          </button>
+        );
+      })}
+      
+      {/* Section: SYSTÈME */}
+      <div className="mt-6 mb-2">
+        <div className="px-4 flex items-center gap-2">
+          <Settings className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Système
+          </span>
+        </div>
+      </div>
+      {superAdminMenuItems.filter(item => item.section === 'system').map((item) => {
+        const Icon = item.icon;
+        const isActive = activeMenu === item.id;
+        return (
+          <button
+            key={item.id}
+            onClick={() => handleMenuClick(item.path)}
+            className={`w-full flex flex-col px-4 py-3 rounded-xl transition-all ${
+              isActive
+                ? 'bg-sidebar-accent text-sidebar-foreground'
+                : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <div 
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                    isActive ? '' : 'bg-sidebar-accent/30'
+                  }`}
+                  style={isActive ? {
+                    backgroundColor: `${item.color}20`
+                  } : {}}
+                >
+                  <Icon 
+                    className="w-5 h-5" 
+                    style={{ color: isActive ? item.color : '' }}
+                  />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">{item.label}</span>
+                  {item.description && (
+                    <span className="text-xs text-muted-foreground">{item.description}</span>
+                  )}
+                </div>
+              </div>
+              {item.badge && (
+                <span 
+                  className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+                  style={{ backgroundColor: item.color }}
+                >
+                  {item.badge}
+                </span>
+              )}
+            </div>
           </button>
         );
       })}

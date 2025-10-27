@@ -17,9 +17,9 @@
 npm run dev
 
 # 2. Naviguer vers :
-# http://localhost:8080/superadmin/demo
-#    ou
-# http://localhost:8080/admin/demo
+# http://localhost:8081/establishments/unclaimed
+#    ou pour les comptes pré-intégrés :
+# http://localhost:8081/superadmin/demo (page legacy)
 ```
 
 **Actions** :

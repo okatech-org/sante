@@ -21,7 +21,6 @@ import {
   Shield,
   ChevronRight,
   Filter,
-  Hospital as HospitalIcon,
   Briefcase,
   FlaskConical,
   Pill,
@@ -31,6 +30,8 @@ import {
   Activity
 } from "lucide-react";
 import { claimService, ClaimStatus, type Establishment } from '@/services/EstablishmentClaimService';
+import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
+import { EstablishmentStatsCard, ESTABLISHMENT_STATS } from '@/components/stats/EstablishmentStats';
 
 // Données des provinces du Gabon
 const PROVINCES = [
@@ -47,12 +48,110 @@ const PROVINCES = [
 
 // Types d'établissements
 const ESTABLISHMENT_TYPES = {
-  hospital: { label: 'Hôpital', icon: HospitalIcon, color: 'blue' },
+  hospital: { label: 'Hôpital', icon: Building2, color: 'blue' },
   clinic: { label: 'Clinique', icon: Building2, color: 'green' },
   cabinet: { label: 'Cabinet Médical', icon: Briefcase, color: 'purple' },
   pharmacy: { label: 'Pharmacie', icon: Pill, color: 'orange' },
   laboratory: { label: 'Laboratoire', icon: FlaskConical, color: 'pink' }
 };
+
+// Données mock (en attendant la migration Supabase)
+const DEMO_ESTABLISHMENTS: Partial<Establishment>[] = [
+  {
+    id: 'chu-libreville',
+    name: 'Centre Hospitalier Universitaire de Libreville',
+    type: 'hospital',
+    sector: 'public',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Boulevard du Bord de Mer',
+    public_contact_phone: '+241 01 XX XX XX',
+    services: ['Urgences', 'Chirurgie', 'Maternité', 'Pédiatrie', 'Cardiologie'],
+    capacity: { beds: 500, operating_rooms: 10 }
+  },
+  {
+    id: 'chr-melen',
+    name: 'Centre Hospitalier Régional de Melen',
+    type: 'hospital',
+    sector: 'public',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Quartier Melen',
+    public_contact_phone: '+241 01 74 23 45',
+    services: ['Urgences', 'Médecine Générale', 'Maternité'],
+    capacity: { beds: 200 }
+  },
+  {
+    id: 'polyclinique-chambrier',
+    name: 'Polyclinique El Rapha Dr. Chambrier',
+    type: 'clinic',
+    sector: 'private',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Centre-ville',
+    public_contact_phone: '+241 01 44 38 38',
+    services: ['Consultations Spécialisées', 'Chirurgie', 'Imagerie'],
+    capacity: { beds: 120, operating_rooms: 5 }
+  },
+  {
+    id: 'clinique-sainte-marie',
+    name: 'Clinique Sainte-Marie',
+    type: 'clinic',
+    sector: 'confessional',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Quartier Louis',
+    public_contact_phone: '+241 01 76 22 22',
+    services: ['Médecine Générale', 'Pédiatrie', 'Gynécologie'],
+    capacity: { beds: 50 }
+  },
+  {
+    id: 'cmst-sogara',
+    name: 'CMST SOGARA',
+    type: 'clinic',
+    sector: 'private',
+    city: 'Port-Gentil',
+    province: 'Ogooué-Maritime',
+    address: 'Route de la Sogara',
+    public_contact_phone: '+241 01 55 26 21',
+    services: ['Médecine du Travail', 'Infirmerie', 'Vaccinations'],
+    capacity: { consultation_rooms: 4 }
+  },
+  {
+    id: 'cabinet-glass',
+    name: 'Cabinet Médical Glass',
+    type: 'cabinet',
+    sector: 'private',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Quartier Glass',
+    public_contact_phone: '+241 01 77 88 99',
+    services: ['Médecine Générale', 'Pédiatrie', 'Vaccinations'],
+    capacity: { consultation_rooms: 3 }
+  },
+  {
+    id: 'pharmacie-nkembo',
+    name: 'Pharmacie Nkembo',
+    type: 'pharmacy',
+    sector: 'private',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Quartier Nkembo',
+    public_contact_phone: '+241 01 74 55 66',
+    services: ['Dispensation', 'Conseil Pharmaceutique', 'Vaccination']
+  },
+  {
+    id: 'laboratoire-biolab',
+    name: 'Laboratoire BIOLAB',
+    type: 'laboratory',
+    sector: 'private',
+    city: 'Libreville',
+    province: 'Estuaire',
+    address: 'Centre-ville',
+    public_contact_phone: '+241 01 72 33 44',
+    services: ['Analyses Médicales', 'Prélèvements', 'Tests COVID']
+  }
+];
 
 // Composant pour une carte d'établissement
 function EstablishmentCard({ 
@@ -220,8 +319,8 @@ export default function UnclaimedEstablishments() {
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedType, setSelectedType] = useState<string>('');
-  const [selectedProvince, setSelectedProvince] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [selectedProvince, setSelectedProvince] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('unclaimed');
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -242,25 +341,35 @@ export default function UnclaimedEstablishments() {
     try {
       setLoading(true);
       
-      let data: Establishment[] = [];
+      // Pour l'instant, utiliser des données mockées car la migration n'est pas encore appliquée
+      const mockData: Establishment[] = DEMO_ESTABLISHMENTS.map(est => ({
+        ...est,
+        claim_status: ClaimStatus.UNCLAIMED,
+        is_pre_registered: true
+      }));
       
-      if (selectedStatus === 'unclaimed') {
-        data = await claimService.getUnclaimedEstablishments({
-          type: selectedType || undefined,
-          province: selectedProvince || undefined,
-          search: searchTerm || undefined
-        });
-      } else {
-        // Pour les autres statuts, utiliser une requête directe
-        // (à implémenter dans le service)
-        data = await claimService.getUnclaimedEstablishments({
-          type: selectedType || undefined,
-          province: selectedProvince || undefined,
-          search: searchTerm || undefined
-        });
+      // Appliquer les filtres
+      let filteredData = mockData;
+      
+      if (selectedType && selectedType !== 'all') {
+        filteredData = filteredData.filter(e => e.type === selectedType);
       }
       
-      setEstablishments(data);
+      if (selectedProvince && selectedProvince !== 'all') {
+        filteredData = filteredData.filter(e => e.province === selectedProvince);
+      }
+      
+      if (searchTerm) {
+        filteredData = filteredData.filter(e => 
+          e.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      if (selectedStatus !== 'all') {
+        filteredData = filteredData.filter(e => e.claim_status === selectedStatus);
+      }
+      
+      setEstablishments(filteredData);
     } catch (error) {
       console.error('Error loading establishments:', error);
       toast({
@@ -282,86 +391,74 @@ export default function UnclaimedEstablishments() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Établissements de Santé du Gabon
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Trouvez et revendiquez la gestion de votre établissement de santé
-              </p>
-            </div>
-            <Button 
-              variant="outline"
-              onClick={() => navigate('/my-claims')}
-            >
-              <Activity className="w-4 h-4 mr-2" />
-              Mes Revendications
-            </Button>
+    <SuperAdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Établissements de Santé du Gabon
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Trouvez et revendiquez la gestion de votre établissement de santé
+            </p>
+          </div>
+          <Button 
+            variant="outline"
+            onClick={() => navigate('/my-claims')}
+          >
+            <Activity className="w-4 h-4 mr-2" />
+            Mes Revendications
+          </Button>
+        </div>
+
+        {/* Statistiques */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Statistiques des établissements</h3>
+          <EstablishmentStatsCard variant="default" showTotal={true} columns={4} />
+          
+          {/* Statuts de revendication */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  Non-Revendiqués
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-gray-700">{stats.unclaimed}</div>
+                <p className="text-xs text-gray-500 mt-1">En attente de gestionnaire</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-orange-600">
+                  En Vérification
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">{stats.pending}</div>
+                <p className="text-xs text-gray-500 mt-1">Revendications en cours</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-green-600">
+                  Vérifiés
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">{stats.verified}</div>
+                <p className="text-xs text-gray-500 mt-1">Établissements actifs</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
-
-      {/* Statistiques */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Total Établissements
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
-              <p className="text-xs text-gray-500 mt-1">Dans la base de données</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Non-Revendiqués
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-700">{stats.unclaimed}</div>
-              <p className="text-xs text-gray-500 mt-1">En attente de gestionnaire</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-orange-600">
-                En Vérification
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{stats.pending}</div>
-              <p className="text-xs text-gray-500 mt-1">Revendications en cours</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-green-600">
-                Vérifiés
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.verified}</div>
-              <p className="text-xs text-gray-500 mt-1">Établissements actifs</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
 
       {/* Filtres et recherche */}
-      <div className="container mx-auto px-4 py-4">
-        <Card>
+      <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Filter className="w-5 h-5" />
@@ -390,7 +487,7 @@ export default function UnclaimedEstablishments() {
                     <SelectValue placeholder="Type d'établissement" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tous les types</SelectItem>
+                    <SelectItem value="all">Tous les types</SelectItem>
                     {Object.entries(ESTABLISHMENT_TYPES).map(([key, type]) => (
                       <SelectItem key={key} value={key}>
                         {type.label}
@@ -406,7 +503,7 @@ export default function UnclaimedEstablishments() {
                     <SelectValue placeholder="Province" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Toutes les provinces</SelectItem>
+                    <SelectItem value="all">Toutes les provinces</SelectItem>
                     {PROVINCES.map(province => (
                       <SelectItem key={province} value={province}>
                         {province}
@@ -430,10 +527,8 @@ export default function UnclaimedEstablishments() {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Information importante */}
-      <div className="container mx-auto px-4 py-4">
+        {/* Information importante */}
         <Alert>
           <Info className="h-4 w-4" />
           <AlertTitle>Comment ça marche ?</AlertTitle>
@@ -447,10 +542,8 @@ export default function UnclaimedEstablishments() {
             </ol>
           </AlertDescription>
         </Alert>
-      </div>
 
-      {/* Liste des établissements */}
-      <div className="container mx-auto px-4 py-6">
+        {/* Liste des établissements */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -490,9 +583,9 @@ export default function UnclaimedEstablishments() {
                 onClaim={handleClaim}
               />
             ))}
-          </div>
-        )}
+        </div>
+      )}
       </div>
-    </div>
+    </SuperAdminLayout>
   );
 }

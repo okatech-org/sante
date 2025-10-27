@@ -147,7 +147,8 @@ graph TD
 # 1. Démarrer le serveur dev
 npm run dev
 
-# 2. Aller sur http://localhost:8080/superadmin/demo (Super Admin > Gestion Démo)
+# 2. Aller sur http://localhost:8081/establishments/unclaimed (Système de Revendication)
+#    ou http://localhost:8081/superadmin/demo pour les comptes pré-intégrés (legacy)
 
 # 3. Cliquer "Initialiser" (crée tous les comptes démo)
 

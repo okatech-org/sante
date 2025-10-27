@@ -240,9 +240,7 @@ export class EstablishmentClaimService {
   /**
    * Initie une nouvelle revendication
    */
-  async initiateClai
-
-m(
+  async initiateClaim(
     establishmentId: string,
     claimData: {
       claimant_role: string;

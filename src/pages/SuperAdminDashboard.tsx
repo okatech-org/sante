@@ -8,6 +8,7 @@ import { Users, Building2, UserCog, Activity, Settings, Shield, FileText, AlertC
 import { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { EstablishmentStatsCard, ESTABLISHMENT_STATS } from "@/components/stats/EstablishmentStats";
 
 export default function SuperAdminDashboard() {
   const { user, isSuperAdmin, isLoading } = useAuth();
@@ -107,9 +108,9 @@ export default function SuperAdminDashboard() {
           />
           <AdminStatCard
             label="Établissements"
-            value={stats.establishments}
+            value={ESTABLISHMENT_STATS.total}
             icon={Building2}
-            trend="Pharmacies et cliniques"
+            trend={`${ESTABLISHMENT_STATS.categories.hospitals.count} hôpitaux, ${ESTABLISHMENT_STATS.categories.clinics.count} cliniques`}
             color="#0088ff"
             onClick={() => navigate('/superadmin/establishments')}
           />
@@ -129,6 +130,12 @@ export default function SuperAdminDashboard() {
             color="#ff0088"
             onClick={() => navigate('/superadmin/approvals')}
           />
+        </div>
+
+        {/* Détail des établissements */}
+        <div>
+          <h3 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">Répartition des établissements</h3>
+          <EstablishmentStatsCard variant="detailed" showTotal={true} />
         </div>
 
         {/* System Health */}

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, Eye, Edit, Trash2, MoreVertical, Filter, Grid3x3, List, ChevronLeft, ChevronRight, RefreshCw, MapPin, Phone, Globe } from "lucide-react";
+import { EstablishmentStatsCard } from "@/components/stats/EstablishmentStats";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -635,6 +636,12 @@ export default function AdminHealthActors() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Statistiques des établissements */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Répartition par type d'établissement</h3>
+          <EstablishmentStatsCard variant="detailed" showTotal={true} />
+        </div>
 
         {/* Establishments Section */}
         <div className="space-y-4">

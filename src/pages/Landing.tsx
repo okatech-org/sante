@@ -30,6 +30,7 @@ import {
   X,
   Globe
 } from "lucide-react";
+import { EstablishmentStatsCard, ESTABLISHMENT_STATS } from "@/components/stats/EstablishmentStats";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -103,8 +104,8 @@ export default function Landing() {
   };
 
   const stats = [
-    { value: "2,159", label: t('landing.stats.doctors') || "Médecins inscrits", icon: Users },
-    { value: "88", label: t('landing.stats.facilities') || "Hôpitaux & Cliniques", icon: Activity },
+    { value: ESTABLISHMENT_STATS.total.toString(), label: t('landing.stats.facilities') || "Établissements de santé", icon: Activity },
+    { value: (ESTABLISHMENT_STATS.categories.hospitals.count + ESTABLISHMENT_STATS.categories.clinics.count).toString(), label: t('landing.stats.hospitals') || "Hôpitaux & Cliniques", icon: Users },
     { value: "24/7", label: t('landing.stats.available') || "Service disponible", icon: Clock },
     { value: "100%", label: t('landing.stats.secure') || "Données sécurisées", icon: Shield }
   ];
