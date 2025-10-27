@@ -56,7 +56,8 @@ export default function EmbeddedProviderSearch({
     sortBy: "distance",
     searchText: "",
     province: "all",
-    urgent: false
+    urgent: false,
+    cityFilter: null
   });
 
   // Charger les données
@@ -179,31 +180,103 @@ export default function EmbeddedProviderSearch({
       </Card>
 
       {/* Contrôles */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <Tabs value={showMap ? "map" : "list"} onValueChange={(v) => setShowMap(v === "map")}>
-            <TabsList className="grid w-fit grid-cols-2">
-              <TabsTrigger value="map" className="gap-2">
-                <Map className="w-4 h-4" />
-                <span className="hidden sm:inline">Carte</span>
-              </TabsTrigger>
-              <TabsTrigger value="list" className="gap-2">
-                <List className="w-4 h-4" />
-                <span className="hidden sm:inline">Liste</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Tabs value={showMap ? "map" : "list"} onValueChange={(v) => setShowMap(v === "map")}>
+              <TabsList className="grid w-fit grid-cols-2">
+                <TabsTrigger value="map" className="gap-2">
+                  <Map className="w-4 h-4" />
+                  <span className="hidden sm:inline">Carte</span>
+                </TabsTrigger>
+                <TabsTrigger value="list" className="gap-2">
+                  <List className="w-4 h-4" />
+                  <span className="hidden sm:inline">Liste</span>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          
+          <p className="text-sm text-muted-foreground">
+            {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''}
+          </p>
         </div>
-        
-        <p className="text-sm text-muted-foreground">
-          {filteredProviders.length} résultat{filteredProviders.length > 1 ? 's' : ''}
-        </p>
+
+        {/* Filtres actifs */}
+        {(filters.cityFilter || filters.specialties.length > 0 || filters.services.length > 0 || filters.urgent) && (
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-muted-foreground">Filtres actifs:</span>
+            
+            {filters.cityFilter && (
+              <Badge variant="secondary" className="gap-1">
+                <MapPin className="w-3 h-3" />
+                {filters.cityFilter[0]}
+              </Badge>
+            )}
+            
+            {filters.specialties.length > 0 && (
+              <Badge variant="secondary" className="gap-1">
+                <Heart className="w-3 h-3" />
+                {filters.specialties.length} spécialité{filters.specialties.length > 1 ? 's' : ''}
+              </Badge>
+            )}
+            
+            {filters.services.length > 0 && (
+              <Badge variant="secondary" className="gap-1">
+                <Shield className="w-3 h-3" />
+                {filters.services.length} service{filters.services.length > 1 ? 's' : ''}
+              </Badge>
+            )}
+            
+            {filters.urgent && (
+              <Badge variant="destructive" className="gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Urgence
+              </Badge>
+            )}
+            
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setFilters({
+                  types: [],
+                  specialties: [],
+                  services: [],
+                  equipment: [],
+                  amenities: [],
+                  distance: [50],
+                  rating: [0],
+                  priceRange: "all",
+                  openNow: false,
+                  open24h: false,
+                  cnamgs: false,
+                  cnss: false,
+                  privateInsurance: false,
+                  languages: [],
+                  sortBy: "distance",
+                  searchText: "",
+                  province: "all",
+                  urgent: false,
+                  cityFilter: null
+                });
+              }}
+              className="h-6 text-xs"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Tout effacer
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Affichage Carte */}
       {showMap && (
         <div className="rounded-lg overflow-hidden h-[400px] md:h-[500px] border">
-          <HealthProvidersMap providers={filteredProviders} />
+          <HealthProvidersMap 
+            providers={filteredProviders} 
+            centerOnCity={filters.cityFilter?.[0] || null}
+          />
         </div>
       )}
 

@@ -13,12 +13,15 @@ serve(async (req) => {
   }
 
   try {
-    const { province, city } = await req.json();
-    
-    // Create Supabase client
+    const { province, city, saveToDatabase } = await req.json();
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') as string;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') as string;
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const supabase = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+      auth: { persistSession: false },
+    });
     
     console.log('Fetching OSM health providers for:', { province, city });
 
@@ -83,21 +86,30 @@ serve(async (req) => {
       out body center qt;
     `;
 
-    const overpassUrl = 'https://overpass-api.de/api/interpreter';
-    
-    const response = await fetch(overpassUrl, {
-      method: 'POST',
-      body: `data=${encodeURIComponent(overpassQuery)}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Overpass API error: ${response.statusText}`);
+    async function fetchOverpass(): Promise<any> {
+      const endpoints = [
+        'https://overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter',
+        'https://overpass.openstreetmap.fr/api/interpreter',
+      ];
+      let lastError: Error | null = null;
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            body: `data=${encodeURIComponent(overpassQuery)}`,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          });
+          if (res.ok) return await res.json();
+          lastError = new Error(`Overpass error ${res.status}: ${await res.text()}`);
+        } catch (e) {
+          lastError = e as Error;
+        }
+      }
+      throw lastError ?? new Error('Overpass fetch failed');
     }
 
-    const data = await response.json();
+    const data = await fetchOverpass();
     console.log(`Found ${data.elements.length} health facilities from OSM`);
 
     // Transformer les données OSM au format de notre application
@@ -224,38 +236,37 @@ serve(async (req) => {
 
     console.log(`Transformed ${providers.length} providers with coordinates`);
 
-    // Supprimer les anciens providers OSM
-    const { error: deleteError } = await supabase
-      .from('osm_health_providers')
-      .delete()
-      .neq('id', '');
+    if (saveToDatabase) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Non authentifié');
+      const { data: role } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'super_admin')
+        .single();
+      if (!role) throw new Error('Accès refusé - super admin requis');
 
-    if (deleteError) {
-      console.error('Error deleting old providers:', deleteError);
-      throw deleteError;
+      const { error: upsertError } = await supabase
+        .from('osm_health_providers')
+        .upsert(providers, { onConflict: 'id' });
+
+      if (upsertError) {
+        console.error('Error upserting providers:', upsertError);
+        throw upsertError;
+      }
+
+      console.log(`Saved ${providers.length} providers to database`);
+
+      return new Response(
+        JSON.stringify({ success: true, count: providers.length }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-
-    // Insérer les nouveaux providers
-    const { error: insertError } = await supabase
-      .from('osm_health_providers')
-      .insert(providers);
-
-    if (insertError) {
-      console.error('Error inserting providers:', insertError);
-      throw insertError;
-    }
-
-    console.log(`Successfully saved ${providers.length} providers to database`);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        count: providers.length,
-        message: `${providers.length} établissements sauvegardés dans la base de données`
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      JSON.stringify({ success: true, providers }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error fetching OSM health providers:', error);

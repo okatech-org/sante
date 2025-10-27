@@ -55,7 +55,7 @@ export default function AdminCartography() {
   }, [osmProviders, adminInstitutions]);
 
   useEffect(() => {
-    handleSync();
+    loadData();
   }, []);
 
   const loadData = async () => {
@@ -182,9 +182,9 @@ export default function AdminCartography() {
       setIsLoading(true);
       toast.info("Synchronisation avec OpenStreetMap en cours...");
       
-      // Appeler la fonction Edge pour récupérer les données OSM
+      // Appeler l'Edge Function avec sauvegarde en base (requiert super_admin)
       const { data, error } = await supabase.functions.invoke('fetch-osm-health-providers', {
-        body: { province: 'all', city: 'all' }
+        body: { province: 'all', city: 'all', saveToDatabase: true }
       });
 
       if (error) throw error;
@@ -193,7 +193,13 @@ export default function AdminCartography() {
         throw new Error(data.error || 'Échec de la synchronisation OSM');
       }
 
-      toast.success(`${data.count} établissements OSM importés`);
+      if (data.count) {
+        toast.success(`${data.count} établissements OSM importés`);
+      } else if (Array.isArray(data.providers)) {
+        toast.success(`${data.providers.length} établissements OSM récupérés`);
+      } else {
+        toast.success(`Synchronisation OSM terminée`);
+      }
       
       // Recharger les données depuis la base
       await loadData();

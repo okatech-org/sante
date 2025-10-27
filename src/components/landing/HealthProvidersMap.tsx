@@ -41,7 +41,30 @@ const TYPE_COLORS: Record<string, string> = {
 const GABON_CENTER: [number, number] = [0.4162, 9.4673];
 const DEFAULT_ZOOM = 6;
 
-export default function HealthProvidersMap({ providers: externalProviders }: { providers?: CartographyProvider[] }) {
+// Coordonnées des villes principales pour centrage automatique
+const CITY_COORDINATES: Record<string, [number, number]> = {
+  "Libreville": [0.4162, 9.4673],
+  "Port-Gentil": [-0.7193, 8.7815],
+  "Franceville": [-1.6333, 13.5833],
+  "Oyem": [1.5994, 11.5794],
+  "Moanda": [-1.5667, 13.2000],
+  "Tchibanga": [-2.9333, 11.0167],
+  "Koulamoutou": [-1.1333, 12.4667],
+  "Lambaréné": [-0.7000, 10.2333],
+  "Mouila": [-1.8667, 11.0167],
+  "Makokou": [0.5667, 12.8667],
+  "Bitam": [2.0833, 11.5000],
+  "Akanda": [0.5167, 9.4833],
+  "Owendo": [0.3000, 9.5000]
+};
+
+export default function HealthProvidersMap({ 
+  providers: externalProviders,
+  centerOnCity 
+}: { 
+  providers?: CartographyProvider[];
+  centerOnCity?: string | null;
+}) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const markersGroup = useRef<L.LayerGroup | null>(null);
@@ -166,6 +189,17 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
     
     return filtered;
   }, [providers, selectedType, searchQuery, externalProviders]);
+
+  // Centrer la carte sur une ville spécifique
+  useEffect(() => {
+    if (!mapInstance.current || !centerOnCity) return;
+    
+    const cityCoords = CITY_COORDINATES[centerOnCity];
+    if (cityCoords) {
+      mapInstance.current.setView(cityCoords, 12, { animate: true });
+      toast.success(`Carte centrée sur ${centerOnCity}`);
+    }
+  }, [centerOnCity]);
 
   // Mettre à jour les marqueurs
   useEffect(() => {
@@ -296,7 +330,8 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
       markersGroup.current?.addLayer(marker);
     });
 
-    if (filteredProviders.length > 0) {
+    // Ajuster le zoom seulement si pas de centrage spécifique sur une ville
+    if (filteredProviders.length > 0 && !centerOnCity) {
       const bounds = L.latLngBounds(
         filteredProviders
           .filter(p => p.coordonnees)
@@ -305,7 +340,7 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
       
       mapInstance.current?.fitBounds(bounds, { padding: [80, 80], maxZoom: 12 });
     }
-  }, [filteredProviders]);
+  }, [filteredProviders, centerOnCity]);
 
   const handleZoomIn = () => mapInstance.current?.zoomIn();
   const handleZoomOut = () => mapInstance.current?.zoomOut();

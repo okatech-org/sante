@@ -43,12 +43,15 @@ export default function AdminSettings() {
   const { user, userRoles, isLoading } = useAuth();
   const { toast } = useToast();
   const [settings, setSettings] = useState<Record<string, any>>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (isLoading) return;
+    if (!user || !userRoles.includes("super_admin")) return;
+    setLoading(true);
     loadSettings();
-  }, []);
+  }, [isLoading, user, userRoles]);
 
   const loadSettings = async () => {
     try {

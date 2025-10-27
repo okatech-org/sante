@@ -141,7 +141,13 @@ export default function EnhancedSmartSearch({
     if (!query.trim()) {
       onSearch("");
       if (onFiltersChange) {
-        onFiltersChange({ searchText: "" });
+        onFiltersChange({ 
+          searchText: "",
+          specialties: [],
+          cityFilter: null,
+          urgent: false,
+          open24h: false
+        });
       }
       return;
     }
@@ -168,7 +174,11 @@ export default function EnhancedSmartSearch({
     // Appliquer les filtres combinés
     if (onFiltersChange) {
       const filters: any = {
-        searchText: query
+        searchText: query,
+        specialties: [],
+        cityFilter: null,
+        urgent: false,
+        open24h: false
       };
 
       // Ajouter les spécialités si symptômes détectés
@@ -176,10 +186,9 @@ export default function EnhancedSmartSearch({
         filters.specialties = parsed.specialties;
       }
 
-      // Ajouter la localisation (filtre sur ville/province)
+      // Ajouter le filtre de ville/localisation
       if (parsed.locations.length > 0) {
-        // Utiliser le premier lieu détecté comme filtre principal
-        filters.searchText = `${query} ${parsed.locations.join(" ")}`;
+        filters.cityFilter = parsed.locations;
       }
 
       // Détecter si urgence

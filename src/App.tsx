@@ -78,6 +78,7 @@ import ClaimEstablishment from "./pages/establishments/ClaimEstablishment";
 import ClaimsManagement from "./pages/superadmin/ClaimsManagement";
 import ProfessionalsManagement from "./pages/superadmin/ProfessionalsManagement";
 import PatientsManagement from "./pages/superadmin/PatientsManagement";
+import FixDemoRoles from "./pages/superadmin/FixDemoRoles";
 import OSMSync from "./pages/admin/OSMSync";
 
 // Demo Pages
@@ -224,6 +225,11 @@ const App = () => (
             <Route path="/superadmin/patients" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
                 <PatientsManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/fix-roles" element={
+              <ProtectedRoute requiredRoles={['super_admin']}>
+                <FixDemoRoles />
               </ProtectedRoute>
             } />
             <Route path="/appointments" element={

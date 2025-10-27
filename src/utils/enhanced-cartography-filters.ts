@@ -20,6 +20,7 @@ export interface EnhancedFilters {
   province?: string;
   urgent?: boolean;
   proche?: boolean;
+  cityFilter?: string[] | null;
 }
 
 /**
@@ -105,8 +106,18 @@ export const filterProvidersEnhanced = (
       return false;
     }
 
-    // Filtre par recherche textuelle
-    if (filters.searchText) {
+    // Filtre par ville/quartier spécifique (prioritaire)
+    if (filters.cityFilter && filters.cityFilter.length > 0) {
+      const matchesCity = filters.cityFilter.some(city => 
+        provider.ville.toLowerCase().includes(city.toLowerCase()) ||
+        city.toLowerCase().includes(provider.ville.toLowerCase()) ||
+        provider.adresse_descriptive?.toLowerCase().includes(city.toLowerCase())
+      );
+      if (!matchesCity) return false;
+    }
+
+    // Filtre par recherche textuelle (si pas de cityFilter spécifique)
+    if (filters.searchText && !filters.cityFilter) {
       const searchLower = filters.searchText.toLowerCase();
       const searchableText = [
         provider.nom,
