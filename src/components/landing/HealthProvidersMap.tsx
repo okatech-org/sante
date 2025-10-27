@@ -139,6 +139,12 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
 
   // Filtrer les providers
   const filteredProviders = useMemo(() => {
+    // Si des providers externes sont fournis, ne pas appliquer les filtres locaux
+    // car ils sont déjà filtrés par le composant parent
+    if (externalProviders && externalProviders.length > 0) {
+      return providers;
+    }
+    
     let filtered = providers;
     
     // Filtrer par type
@@ -159,7 +165,7 @@ export default function HealthProvidersMap({ providers: externalProviders }: { p
     }
     
     return filtered;
-  }, [providers, selectedType, searchQuery]);
+  }, [providers, selectedType, searchQuery, externalProviders]);
 
   // Mettre à jour les marqueurs
   useEffect(() => {

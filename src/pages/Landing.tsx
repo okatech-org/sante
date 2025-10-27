@@ -11,6 +11,7 @@ import awarenessNews from "@/assets/awareness-news.jpg";
 import awarenessTutorials from "@/assets/awareness-tutorials.jpg";
 import awarenessFirstAid from "@/assets/awareness-first-aid.jpg";
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
+import EmbeddedProviderSearch from "@/components/landing/EmbeddedProviderSearch";
 import { 
   Calendar, 
   FileText, 
@@ -43,8 +44,6 @@ export default function Landing() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeService, setActiveService] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
   const [cnamgsNumber, setCnamgsNumber] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -58,17 +57,6 @@ export default function Landing() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   });
-
-  const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('search', searchQuery);
-    if (searchLocation) params.set('location', searchLocation);
-    navigate(`/find-providers?${params.toString()}`);
-  };
-
-  const handleSpecialtyClick = (specialty: string) => {
-    navigate(`/find-providers?search=${encodeURIComponent(specialty)}`);
-  };
 
   const handleServiceClick = (index: number) => {
     const routes = [
@@ -158,14 +146,6 @@ export default function Landing() {
       title: t('landing.step4.title') || "Consultez et suivez", 
       description: t('landing.step4.desc') || "En ligne ou en présentiel"
     }
-  ];
-
-  const specialties = [
-    t('landing.specialties.cardiologist') || 'Cardiologue',
-    t('landing.specialties.gynecologist') || 'Gynécologue', 
-    t('landing.specialties.pediatrician') || 'Pédiatre',
-    t('landing.specialties.dentist') || 'Dentiste',
-    t('landing.specialties.emergency') || 'Urgences'
   ];
 
   return (
@@ -331,65 +311,9 @@ export default function Landing() {
             <p className="text-xl sm:text-2xl mb-8 leading-relaxed text-muted-foreground max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
               {t('landing.hero.subtitle') || "Trouvez un médecin, prenez rendez-vous, consultez en ligne et gérez votre santé facilement depuis Libreville, Port-Gentil ou n'importe où au Gabon"}
             </p>
-          </div>
 
-          {/* Carte Interactive avec barre de recherche flottante */}
-          <div className="relative animate-scale-in mb-16" style={{ animationDelay: '0.4s' }}>
-            {/* Carte en arrière-plan */}
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-primary/20 ring-1 ring-primary/10">
-              <HealthProvidersMap />
-            </div>
-
-            {/* Barre de recherche flottante par-dessus la carte */}
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-4xl z-[1001]">
-              <div className="bg-white/30 dark:bg-black/30 rounded-2xl shadow-lg border border-border/30 dark:border-white/10 p-3">
-                <div className="flex flex-row gap-2 items-stretch">
-                  <div className="flex-1 min-w-0 flex items-center rounded-lg px-2 sm:px-3 py-2.5 bg-white/80 dark:bg-black/40 hover:bg-white/90 dark:hover:bg-black/50 transition-all duration-300 border border-border/60 dark:border-white/20 hover:border-primary/70 dark:hover:border-primary/70 group">
-                    <Stethoscope className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
-                    <input 
-                      type="text" 
-                      placeholder={t('landing.search.doctor') || "Médecin..."}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-foreground/60 dark:placeholder:text-white/80 text-xs sm:text-sm font-medium"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 flex items-center rounded-lg px-2 sm:px-3 py-2.5 bg-white/80 dark:bg-black/40 hover:bg-white/90 dark:hover:bg-black/50 transition-all duration-300 border border-border/60 dark:border-white/20 hover:border-secondary/70 dark:hover:border-secondary/70 group">
-                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-secondary group-hover:scale-110 transition-transform flex-shrink-0" />
-                    <input 
-                      type="text" 
-                      placeholder={t('landing.search.location') || "Ville..."}
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-transparent outline-none w-full text-foreground dark:text-white placeholder:text-foreground/60 dark:placeholder:text-white/80 text-xs sm:text-sm font-medium"
-                    />
-                  </div>
-                  <Button 
-                    onClick={handleSearch}
-                    size="sm"
-                    className="flex-shrink-0 px-3 sm:px-6 py-2.5 text-xs sm:text-sm shadow-xl hover:shadow-2xl hover-scale bg-blue-600 hover:bg-blue-700 transition-all duration-300"
-                  >
-                    <Search className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">{t('landing.search.button') || "Rechercher"}</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Access Chips avec animations */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-            {specialties.map((specialty, index) => (
-              <Button 
-                key={specialty}
-                onClick={() => handleSpecialtyClick(specialty)}
-                variant="outline"
-                className="rounded-full shadow-md hover:shadow-xl hover-scale bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300"
-                style={{ animationDelay: `${0.6 + index * 0.1}s` }}
-              >
-                {specialty}
-              </Button>
-            ))}
+            {/* Embedded Provider Search */}
+            <EmbeddedProviderSearch showTitle={false} />
           </div>
 
           {/* Stats Bar avec animations en cascade */}

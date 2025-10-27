@@ -24,7 +24,7 @@ interface EnhancedSmartSearchProps {
 }
 
 // Mapping symptômes -> spécialités/types
-const SYMPTOM_MAPPING = {
+const SYMPTOM_MAPPING: Record<string, string[]> = {
   "mal de tête": ["neurologie", "médecine générale"],
   "fièvre": ["médecine générale", "urgences", "pédiatrie"],
   "douleur dentaire": ["dentisterie", "cabinet_dentaire"],
@@ -43,6 +43,49 @@ const SYMPTOM_MAPPING = {
   "tension": ["cardiologie", "médecine générale"],
   "allergie": ["allergologie", "médecine générale"],
   "covid": ["dépistage", "laboratoire", "médecine générale"]
+};
+
+// Quartiers et zones connus du Gabon (principalement Libreville et Port-Gentil)
+const KNOWN_LOCATIONS: Record<string, string[]> = {
+  // Libreville et quartiers
+  "libreville": ["Libreville"],
+  "nzeng-ayong": ["Libreville"],
+  "nzeng ayong": ["Libreville"],
+  "nzemeyong": ["Libreville"],
+  "akanda": ["Akanda", "Libreville"],
+  "owendo": ["Owendo", "Libreville"],
+  "glass": ["Libreville"],
+  "montagne": ["Libreville"],
+  "nombakele": ["Libreville"],
+  "nombakélé": ["Libreville"],
+  "louis": ["Libreville"],
+  "lalala": ["Libreville"],
+  "okala": ["Libreville"],
+  "batterie 4": ["Libreville"],
+  "batterie iv": ["Libreville"],
+  "petit paris": ["Libreville"],
+  "sibang": ["Libreville"],
+  "atong abe": ["Libreville"],
+  
+  // Port-Gentil et quartiers
+  "port-gentil": ["Port-Gentil"],
+  "port gentil": ["Port-Gentil"],
+  "cap lopez": ["Port-Gentil"],
+  "mpita": ["Port-Gentil"],
+  
+  // Autres villes principales
+  "franceville": ["Franceville"],
+  "oyem": ["Oyem"],
+  "moanda": ["Moanda"],
+  "tchibanga": ["Tchibanga"],
+  "koulamoutou": ["Koulamoutou"],
+  "lambaréné": ["Lambaréné"],
+  "lambarene": ["Lambaréné"],
+  "mouila": ["Mouila"],
+  "makokou": ["Makokou"],
+  "bitam": ["Bitam"],
+  "mitzic": ["Mitzic"],
+  "lastoursville": ["Lastoursville"]
 };
 
 // Services médicaux courants
@@ -93,22 +136,73 @@ export default function EnhancedSmartSearch({
     }
   };
 
+  // Recherche intelligente combinée (symptômes + localisation)
+  const handleSmartSearch = (query: string) => {
+    if (!query.trim()) {
+      onSearch("");
+      if (onFiltersChange) {
+        onFiltersChange({ searchText: "" });
+      }
+      return;
+    }
+
+    const parsed = parseSmartQuery(query);
+    
+    // Construire le message informatif
+    let message = "Recherche";
+    if (parsed.symptoms.length > 0) {
+      message += ` pour: ${parsed.symptoms.join(", ")}`;
+    }
+    if (parsed.locations.length > 0) {
+      message += ` à ${parsed.locations.join(", ")}`;
+    }
+    
+    if (parsed.symptoms.length > 0 || parsed.locations.length > 0) {
+      toast.info(message);
+    }
+
+    // Sauvegarder la recherche
+    saveSearch(query);
+    onSearch(query);
+
+    // Appliquer les filtres combinés
+    if (onFiltersChange) {
+      const filters: any = {
+        searchText: query
+      };
+
+      // Ajouter les spécialités si symptômes détectés
+      if (parsed.specialties.length > 0) {
+        filters.specialties = parsed.specialties;
+      }
+
+      // Ajouter la localisation (filtre sur ville/province)
+      if (parsed.locations.length > 0) {
+        // Utiliser le premier lieu détecté comme filtre principal
+        filters.searchText = `${query} ${parsed.locations.join(" ")}`;
+      }
+
+      // Détecter si urgence
+      if (parsed.symptoms.some(s => 
+        s.includes("accident") || 
+        s.includes("urgence") || 
+        query.toLowerCase().includes("urgent")
+      )) {
+        filters.urgent = true;
+        filters.open24h = true;
+      }
+
+      onFiltersChange(filters);
+    }
+  };
+
   // Recherche par symptômes
   const searchBySymptom = (symptom: string) => {
     const relatedSpecialties = SYMPTOM_MAPPING[symptom.toLowerCase()] || [];
     if (relatedSpecialties.length > 0) {
       toast.info(`Recherche de professionnels pour: ${symptom}`);
       setInputValue(symptom);
-      onSearch(symptom);
-      saveSearch(symptom);
-      
-      // Appliquer les filtres appropriés
-      if (onFiltersChange) {
-        onFiltersChange({
-          specialites: relatedSpecialties,
-          urgent: symptom.includes("accident") || symptom.includes("urgence")
-        });
-      }
+      handleSmartSearch(symptom);
     }
   };
 
@@ -134,8 +228,7 @@ export default function EnhancedSmartSearch({
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setInputValue(transcript);
-      onSearch(transcript);
-      saveSearch(transcript);
+      handleSmartSearch(transcript);
       setIsListening(false);
       toast.success(`Recherche: "${transcript}"`);
     };
@@ -151,6 +244,93 @@ export default function EnhancedSmartSearch({
 
     recognition.start();
   };
+
+  // Parser intelligent de recherche combinée (symptôme + localisation)
+  function parseSmartQuery(query: string): {
+    symptoms: string[];
+    locations: string[];
+    specialties: string[];
+    rawQuery: string;
+  } {
+    const lowerQuery = query.toLowerCase().trim();
+    const result = {
+      symptoms: [] as string[],
+      locations: [] as string[],
+      specialties: [] as string[],
+      rawQuery: query
+    };
+
+    // Détecter les symptômes
+    Object.keys(SYMPTOM_MAPPING).forEach(symptom => {
+      if (lowerQuery.includes(symptom)) {
+        result.symptoms.push(symptom);
+        result.specialties.push(...SYMPTOM_MAPPING[symptom]);
+      }
+    });
+
+    // Détecter les localisations
+    Object.keys(KNOWN_LOCATIONS).forEach(location => {
+      if (lowerQuery.includes(location)) {
+        result.locations.push(...KNOWN_LOCATIONS[location]);
+      }
+    });
+
+    // Déduplication
+    result.locations = [...new Set(result.locations)];
+    result.specialties = [...new Set(result.specialties)];
+
+    return result;
+  }
+
+  // Calculer la distance (défini avant utilisation pour éviter les erreurs d'initialisation)
+  function calculateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number {
+    const R = 6371; // Rayon de la Terre en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  // Calculer le score de correspondance (défini avant utilisation)
+  function calculateMatchScore(
+    provider: CartographyProvider,
+    query: string
+  ): number {
+    let score = 0;
+
+    // Nom exact = score élevé
+    if (provider.nom.toLowerCase() === query) score += 10;
+    else if (provider.nom.toLowerCase().includes(query)) score += 5;
+
+    // Type correspondant
+    if ((provider as any).type?.includes?.(query)) score += 4;
+
+    // Ville correspondante
+    if ((provider as any).ville?.toLowerCase?.().includes(query)) score += 3;
+
+    // Services correspondants
+    if (provider.services?.some(s => s.toLowerCase().includes(query))) score += 3;
+
+    // Spécialités correspondantes
+    if (provider.specialites?.some(s => s.toLowerCase().includes(query))) score += 2;
+
+    // Bonus si ouvert 24/7 et recherche urgence
+    if ((provider as any).ouvert_24_7 && query.includes("urgence")) score += 5;
+
+    // Bonus si conventionné CNAMGS (tolérant au schéma)
+    if ((provider as any).cnamgs || (provider as any).conventionnement?.cnamgs) score += 1;
+
+    return score;
+  }
 
   // Suggestions intelligentes améliorées
   const smartSuggestions = useMemo(() => {
@@ -205,47 +385,7 @@ export default function EnhancedSmartSearch({
     return results;
   }, [inputValue, providers, userLocation]);
 
-  // Calculer le score de correspondance
-  const calculateMatchScore = (provider: CartographyProvider, query: string): number => {
-    let score = 0;
-    
-    // Nom exact = score élevé
-    if (provider.nom.toLowerCase() === query) score += 10;
-    else if (provider.nom.toLowerCase().includes(query)) score += 5;
-    
-    // Type correspondant
-    if (provider.type.includes(query)) score += 4;
-    
-    // Ville correspondante
-    if (provider.ville.toLowerCase().includes(query)) score += 3;
-    
-    // Services correspondants
-    if (provider.services?.some(s => s.toLowerCase().includes(query))) score += 3;
-    
-    // Spécialités correspondantes
-    if (provider.specialites?.some(s => s.toLowerCase().includes(query))) score += 2;
-    
-    // Bonus si ouvert 24/7 et recherche urgence
-    if (provider.ouvert_24_7 && query.includes("urgence")) score += 5;
-    
-    // Bonus si conventionné CNAMGS
-    if (provider.cnamgs) score += 1;
-    
-    return score;
-  };
-
-  // Calculer la distance
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Rayon de la Terre en km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  };
+  
 
   return (
     <Card className="p-4 bg-card/95 backdrop-blur-xl border-border/50 shadow-xl">
@@ -274,13 +414,12 @@ export default function EnhancedSmartSearch({
                 <Input
                   ref={inputRef}
                   type="text"
-                  placeholder="Rechercher un établissement, médecin, spécialité..."
+                  placeholder="Ex: J'ai la fièvre et je suis à Nzeng-Ayong..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
-                      onSearch(inputValue);
-                      saveSearch(inputValue);
+                      handleSmartSearch(inputValue);
                     }
                   }}
                   className="pl-10 pr-10 h-12 text-base"
@@ -293,6 +432,9 @@ export default function EnhancedSmartSearch({
                     onClick={() => {
                       setInputValue("");
                       onSearch("");
+                      if (onFiltersChange) {
+                        onFiltersChange({ searchText: "" });
+                      }
                     }}
                   >
                     <X className="w-4 h-4" />
@@ -310,10 +452,7 @@ export default function EnhancedSmartSearch({
               </Button>
               
               <Button
-                onClick={() => {
-                  onSearch(inputValue);
-                  saveSearch(inputValue);
-                }}
+                onClick={() => handleSmartSearch(inputValue)}
                 className="h-12"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -462,7 +601,8 @@ export default function EnhancedSmartSearch({
                     setSelectedService(key === selectedService ? null : key);
                     onSearch(service.label);
                     if (onFiltersChange) {
-                      onFiltersChange({ service: key });
+                      const normalizedKey = key === "analyse" ? "analyses" : key;
+                      onFiltersChange({ services: [normalizedKey] });
                     }
                   }}
                 >
@@ -490,7 +630,7 @@ export default function EnhancedSmartSearch({
                 onClick={() => {
                   setTimeFilter("open");
                   if (onFiltersChange) {
-                    onFiltersChange({ openNow: true });
+                  onFiltersChange({ openNow: true, open24h: false });
                   }
                 }}
                 className="gap-1"
@@ -504,7 +644,7 @@ export default function EnhancedSmartSearch({
                 onClick={() => {
                   setTimeFilter("24h");
                   if (onFiltersChange) {
-                    onFiltersChange({ ouvert24_7: true });
+                  onFiltersChange({ open24h: true, openNow: false });
                   }
                 }}
                 className="gap-1"
