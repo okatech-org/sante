@@ -66,11 +66,14 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminHealthActors from "./pages/AdminHealthActors";
 import AdminDemo from "./pages/AdminDemo";
+import AdminDemoV2 from "./pages/AdminDemoV2";
 import AdminProject from "./pages/AdminProject";
 import AdminAudit from "./pages/AdminAudit";
 import AdminSettings from "./pages/AdminSettings";
 import AdminCartography from "./pages/admin/AdminCartography";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
+import UnclaimedEstablishments from "./pages/establishments/UnclaimedEstablishments";
+import ClaimEstablishment from "./pages/establishments/ClaimEstablishment";
 import OSMSync from "./pages/admin/OSMSync";
 
 // Demo Pages
@@ -118,7 +121,13 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/register/patient" element={<RegisterPatient />} />
             <Route path="/register/pro" element={<RegisterProfessional />} />
-            <Route path="/claim-establishment/:token" element={<ClaimEstablishment />} />
+            {/* Établissements Non-Revendiqués */}
+            <Route path="/establishments/unclaimed" element={<UnclaimedEstablishments />} />
+            <Route path="/establishments/:id/claim" element={
+              <ProtectedRoute>
+                <ClaimEstablishment />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard/patient" element={
               <ProtectedRoute requiredRoles={['patient']}>
                 <DashboardPatient />
@@ -178,7 +187,7 @@ const App = () => (
             } />
             <Route path="/superadmin/demo" element={
               <ProtectedRoute requiredRoles={['super_admin']}>
-                <AdminDemo />
+                <AdminDemoV2 />
               </ProtectedRoute>
             } />
             <Route path="/superadmin/project" element={
