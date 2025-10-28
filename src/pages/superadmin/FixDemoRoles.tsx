@@ -116,7 +116,7 @@ export default function FixDemoRoles() {
             // Insérer le rôle s'il n'existe pas
             const { error } = await supabase
               .from('user_roles')
-              .insert({ user_id: profile.id, role: role });
+              .insert([{ user_id: profile.id, role: role as any }]);
 
             if (error) {
               if ((error as any).code === '22P02' || String((error as any).message || '').includes('invalid input value for enum')) {
@@ -203,10 +203,10 @@ export default function FixDemoRoles() {
         // 3. Assigner le rôle
         const { error: insertError } = await supabase
           .from('user_roles')
-          .insert({
+          .insert([{
             user_id: profile.id,
-            role: role
-          });
+            role: role as any
+          }]);
 
         if (insertError) {
           if ((insertError as any).code === '22P02' || String((insertError as any).message || '').includes('invalid input value for enum')) {
@@ -249,7 +249,10 @@ export default function FixDemoRoles() {
     const successCount = newResults.filter(r => r.status === 'success').length;
     const errorCount = newResults.filter(r => r.status === 'error').length;
     
-    toast.success(`Terminé ! ${successCount} succès, ${errorCount} erreurs`);
+    toast({
+      title: "Terminé",
+      description: `${successCount} succès, ${errorCount} erreurs`,
+    });
   };
 
   const getRoleLabel = (role: string) => {

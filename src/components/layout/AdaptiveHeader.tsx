@@ -1,9 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  useMultiEstablishment, 
-  EstablishmentSelector 
-} from '@/contexts/MultiEstablishmentContext';
+import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -45,7 +42,7 @@ interface NavigationItem {
 }
 
 export function AdaptiveHeader() {
-  const { workContext, hasPermission } = useMultiEstablishment();
+  const { workContext } = useMultiEstablishment();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -62,7 +59,7 @@ export function AdaptiveHeader() {
     ];
 
     // Navigation pour les professionnels de santé
-    if (hasPermission('consultation')) {
+    if (workContext?.permissions.includes('consultation')) {
       items.push({
         label: 'Consultations',
         path: '/consultations',
@@ -71,7 +68,7 @@ export function AdaptiveHeader() {
       });
     }
 
-    if (hasPermission('manage_appointments')) {
+    if (workContext?.permissions.includes('manage_appointments')) {
       items.push({
         label: 'Rendez-vous',
         path: '/appointments',
@@ -80,7 +77,7 @@ export function AdaptiveHeader() {
       });
     }
 
-    if (hasPermission('access_patient_dmp')) {
+    if (workContext?.permissions.includes('access_patient_dmp')) {
       items.push({
         label: 'Patients',
         path: '/patients',
@@ -89,7 +86,7 @@ export function AdaptiveHeader() {
       });
     }
 
-    if (hasPermission('prescription')) {
+    if (workContext?.permissions.includes('prescription')) {
       items.push({
         label: 'Prescriptions',
         path: '/prescriptions',
@@ -99,7 +96,7 @@ export function AdaptiveHeader() {
     }
 
     // Navigation administrative
-    if (hasPermission('billing')) {
+    if (workContext?.permissions.includes('billing')) {
       items.push({
         label: 'Facturation',
         path: '/billing',
@@ -108,7 +105,7 @@ export function AdaptiveHeader() {
       });
     }
 
-    if (hasPermission('view_analytics')) {
+    if (workContext?.permissions.includes('view_analytics')) {
       items.push({
         label: 'Statistiques',
         path: '/analytics',
@@ -190,13 +187,6 @@ export function AdaptiveHeader() {
                 )}
               </div>
             </Link>
-
-            {/* Sélecteur d'établissement pour multi-affiliations */}
-            {workContext && workContext.allAffiliations.length > 1 && (
-              <div className="ml-4 pl-4 border-l border-gray-300">
-                <EstablishmentSelector />
-              </div>
-            )}
           </div>
 
           {/* Navigation principale */}
