@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Calendar, Video, Stethoscope, Users, Activity, DollarSign, MessageSquare, ChevronRight, Edit, Plus, Building2, RefreshCw, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import { useProfessionalStats } from "@/hooks/useProfessionalStats";
 import { useProfessionalProfile } from "@/hooks/useProfessionalProfile";
 
 export default function DashboardProfessional() {
-  const { user } = useAuth();
+  const { user } = useOfflineAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
