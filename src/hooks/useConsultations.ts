@@ -37,7 +37,7 @@ export const useConsultations = () => {
 
         // Get professional ID
         const { data: professional, error: profError } = await supabase
-          .from("professionals")
+          .from("professional_profiles")
           .select("id")
           .eq("user_id", user.id)
           .maybeSingle();

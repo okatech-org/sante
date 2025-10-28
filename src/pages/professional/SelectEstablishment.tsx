@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfessionalProfile } from '@/hooks/useProfessionalProfile';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { 
@@ -29,9 +30,21 @@ export default function SelectEstablishment() {
   const [userName, setUserName] = useState('');
   const [language, setLanguage] = useState('fr');
 
+  // Utiliser le hook useProfessionalProfile pour éviter les boucles
+  const { 
+    profile: professionalProfile, 
+    loading: profileLoading, 
+    error: profileError 
+  } = useProfessionalProfile();
+
   useEffect(() => {
-    loadUserEstablishments();
-  }, [authUser]);
+    if (professionalProfile && !profileLoading) {
+      loadUserEstablishments();
+    } else if (profileError) {
+      toast.error('Erreur lors du chargement du profil professionnel');
+      navigate('/dashboard/professional');
+    }
+  }, [professionalProfile, profileLoading, profileError]);
 
   // Auto-sélection si un seul établissement ou présélection depuis localStorage
   useEffect(() => {
@@ -49,11 +62,23 @@ export default function SelectEstablishment() {
     }
   }, [userEstablishments]);
 
+  // Afficher un état de chargement si le profil professionnel se charge
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">Chargement du profil professionnel...</p>
+        </div>
+      </div>
+    );
+  }
+
   const loadUserEstablishments = async () => {
-    if (!authUser?.id) return;
+    if (!professionalProfile?.id || !authUser?.id) return;
 
     try {
-      // Charger le profil
+      // Charger le profil utilisateur
       const { data: profile } = await supabase
         .from('profiles')
         .select('full_name')
@@ -62,19 +87,6 @@ export default function SelectEstablishment() {
 
       if (profile) {
         setUserName(profile.full_name);
-      }
-
-      // Charger le profil professionnel
-      const { data: professionalProfile } = await supabase
-        .from('professional_profiles')
-        .select('id')
-        .eq('user_id', authUser.id)
-        .maybeSingle();
-
-      if (!professionalProfile) {
-        toast.error('Profil professionnel non trouvé');
-        navigate('/dashboard/professional');
-        return;
       }
 
       // Charger les établissements
