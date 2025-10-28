@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 
 export default function DashboardPatient() {
-  const { user } = useAuth();
+  const { user, userRoles, loading, hasAnyRole } = useAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<{
@@ -20,6 +20,30 @@ export default function DashboardPatient() {
   } | null>(null);
   
   const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+
+  // Garde d'authentification et de rôles
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      navigate('/login/patient');
+      return;
+    }
+
+    // Rediriger les admins vers leur espace
+    const isAdminRole = userRoles.some(r => r === 'admin' || r === 'super_admin');
+    if (isAdminRole) {
+      navigate('/login/admin');
+      return;
+    }
+
+    // Rediriger les professionnels vers leur espace
+    const professionalRoles = ['doctor', 'medical_staff', 'pharmacy', 'laboratory', 'hospital', 'moderator'];
+    const isProfessional = userRoles.some(r => professionalRoles.includes(r as unknown as string));
+    if (isProfessional && !userRoles.includes('patient' as unknown as any)) {
+      navigate('/professional/select-establishment');
+      return;
+    }
+  }, [user, userRoles, loading, navigate, hasAnyRole]);
 
   // Charger le profil depuis la base de données
   useEffect(() => {

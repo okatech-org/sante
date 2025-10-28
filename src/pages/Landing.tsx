@@ -125,15 +125,6 @@ export default function Landing() {
     }
   ];
 
-  const demoService = {
-    icon: Building2,
-    title: "Démonstration Multi-Établissements",
-    description: "Découvrez l'architecture avancée de SANTE.GA avec gestion multi-établissements",
-    action: "Voir la démo",
-    route: "/demo/multi-establishment",
-    isDemo: true
-  };
-
   const steps = [
     { 
       number: "1", 
@@ -364,7 +355,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
             {services.map((service, index) => (
               <div 
                 key={index}
@@ -422,30 +413,6 @@ export default function Landing() {
                 </button>
               </div>
             ))}
-            
-            {/* Carte de démonstration */}
-            <div 
-              className="group relative rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer backdrop-blur-xl bg-gradient-to-br from-blue-50/80 to-indigo-100/60 border border-blue-200 h-full flex flex-col hover:border-blue-300/30 animate-fade-in"
-            >
-              <div className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Building2 className="w-6 h-6 md:w-8 md:h-8" />
-              </div>
-              
-              <h3 className="text-sm md:text-lg font-bold mb-2 md:mb-3 text-gray-900 group-hover:text-blue-600 transition-colors">
-                {demoService.title}
-              </h3>
-              <p className="mb-3 md:mb-6 leading-snug text-xs md:text-sm text-gray-600 flex-grow">
-                {demoService.description}
-              </p>
-              
-              <Link 
-                to={demoService.route}
-                className="flex items-center text-xs md:text-sm font-semibold transition-all group-hover:gap-3 gap-2 mt-auto text-blue-600 hover:text-blue-700"
-              >
-                <span className="hidden md:inline">{demoService.action}</span>
-                <ChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
-              </Link>
-            </div>
           </div>
         </div>
       </section>

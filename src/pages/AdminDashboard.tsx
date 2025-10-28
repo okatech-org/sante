@@ -12,7 +12,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!loading && (!user || (!isSuperAdmin && !isAdmin))) {
-      navigate("/login");
+      navigate("/login/admin");
     }
   }, [user, isSuperAdmin, isAdmin, loading, navigate]);
 
