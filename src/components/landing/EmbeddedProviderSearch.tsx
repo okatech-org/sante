@@ -12,7 +12,7 @@ import HealthProvidersMap from "./HealthProvidersMap";
 import { 
   MapPin, Phone, Mail, Clock, Calendar, Shield, Heart,
   ChevronRight, LogIn, UserPlus, Building2, Star,
-  Map, List, AlertCircle, Info, Navigation
+  Map, List, AlertCircle, Info, Navigation, X
 } from "lucide-react";
 import { CartographyProvider } from "@/types/cartography";
 import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
@@ -311,7 +311,8 @@ export default function EmbeddedProviderSearch({
                     sortBy: "distance",
                     searchText: "",
                     province: "all",
-                    urgent: false
+                    urgent: false,
+                    cityFilter: null
                   });
                 }}
               >

@@ -77,89 +77,76 @@ export function MultiEstablishmentProvider({ children }: { children: ReactNode }
         return;
       }
 
-      // Récupérer le profil utilisateur
-      const { data: userProfile, error: profileError } = await supabase
-        .from('users')
-        .select('*, professional_profiles(*)')
-        .eq('id', user.id)
+      // Récupérer le profil professionnel de l'utilisateur
+      const { data: professionalProfile, error: profileError } = await supabase
+        .from('professional_profiles')
+        .select('*')
+        .eq('user_id', user.id)
         .single();
 
-      if (profileError || !userProfile) {
-        console.error('Erreur chargement profil:', profileError);
+      if (profileError || !professionalProfile) {
+        console.error('Erreur chargement profil professionnel:', profileError);
+        setWorkContext(null);
         return;
       }
 
-      // Si c'est un professionnel, charger ses affiliations
-      if (userProfile.user_type === 'professional' && userProfile.professional_profiles?.[0]) {
-        const professionalId = userProfile.professional_profiles[0].id;
+      // Charger toutes les affiliations actives
+      const { data: affiliations, error: affiliationError } = await supabase
+        .from('professional_affiliations')
+        .select('*, establishments(*)')
+        .eq('professional_id', professionalProfile.id)
+        .eq('status', 'active');
 
-        // Charger toutes les affiliations actives
-        const { data: affiliations, error: affiliationError } = await supabase
-          .from('professional_affiliations')
-          .select(`
-            *,
-            establishments (*)
-          `)
-          .eq('professional_id', professionalId)
-          .eq('status', 'active');
+      if (affiliationError) {
+        console.error('Erreur chargement affiliations:', affiliationError);
+        setWorkContext(null);
+        return;
+      }
 
-        if (affiliationError) {
-          console.error('Erreur chargement affiliations:', affiliationError);
-          return;
-        }
+      // Transformer les données
+      const formattedAffiliations: ProfessionalAffiliation[] = (affiliations || []).map((aff: any) => ({
+        id: aff.id,
+        establishmentId: aff.establishment_id,
+        establishment: {
+          id: aff.establishments?.id,
+          name: aff.establishments?.name,
+          type: aff.establishments?.type,
+          subtype: aff.establishments?.subtype,
+          sector: aff.establishments?.sector,
+          city: aff.establishments?.city,
+          province: aff.establishments?.province,
+          hasPortal: aff.establishments?.has_dedicated_portal,
+          portalSubdomain: aff.establishments?.portal_subdomain,
+          theme: aff.establishments?.portal_theme
+        },
+        role: aff.role,
+        department: aff.department,
+        permissions: aff.permissions || [],
+        isDepartmentHead: aff.is_department_head,
+        isEstablishmentAdmin: aff.is_establishment_admin,
+        schedule: aff.schedule,
+        status: aff.status
+      }));
 
-        // Transformer les données
-        const formattedAffiliations: ProfessionalAffiliation[] = (affiliations || []).map(aff => ({
-          id: aff.id,
-          establishmentId: aff.establishment_id,
-          establishment: {
-            id: aff.establishments.id,
-            name: aff.establishments.name,
-            type: aff.establishments.type,
-            subtype: aff.establishments.subtype,
-            sector: aff.establishments.sector,
-            city: aff.establishments.city,
-            province: aff.establishments.province,
-            hasPortal: aff.establishments.has_dedicated_portal,
-            portalSubdomain: aff.establishments.portal_subdomain,
-            theme: aff.establishments.portal_theme
-          },
-          role: aff.role,
-          department: aff.department,
-          permissions: aff.permissions || [],
-          isDepartmentHead: aff.is_department_head,
-          isEstablishmentAdmin: aff.is_establishment_admin,
-          schedule: aff.schedule,
-          status: aff.status
-        }));
+      // Récupérer le dernier contexte actif ou prendre le premier
+      const lastContextId = localStorage.getItem('lastEstablishmentId');
+      let currentAffiliation = formattedAffiliations.find(a => a.establishmentId === lastContextId);
+      
+      if (!currentAffiliation && formattedAffiliations.length > 0) {
+        currentAffiliation = formattedAffiliations[0];
+      }
 
-        // Récupérer le dernier contexte actif ou prendre le premier
-        const lastContextId = localStorage.getItem('lastEstablishmentId');
-        let currentAffiliation = formattedAffiliations.find(a => a.establishmentId === lastContextId);
-        
-        if (!currentAffiliation && formattedAffiliations.length > 0) {
-          currentAffiliation = formattedAffiliations[0];
-        }
+      setWorkContext({
+        userId: user.id,
+        currentEstablishment: currentAffiliation?.establishment,
+        currentAffiliation,
+        allAffiliations: formattedAffiliations,
+        permissions: currentAffiliation?.permissions || []
+      });
 
-        setWorkContext({
-          userId: user.id,
-          currentEstablishment: currentAffiliation?.establishment,
-          currentAffiliation,
-          allAffiliations: formattedAffiliations,
-          permissions: currentAffiliation?.permissions || []
-        });
-
-        // Sauvegarder le contexte actuel
-        if (currentAffiliation) {
-          localStorage.setItem('lastEstablishmentId', currentAffiliation.establishmentId);
-        }
-      } else {
-        // Pour les patients ou admins sans affiliations
-        setWorkContext({
-          userId: user.id,
-          allAffiliations: [],
-          permissions: userProfile.user_type === 'admin' ? ['*'] : []
-        });
+      // Sauvegarder le contexte actuel
+      if (currentAffiliation) {
+        localStorage.setItem('lastEstablishmentId', currentAffiliation.establishmentId);
       }
     } catch (error) {
       console.error('Erreur chargement contexte:', error);
