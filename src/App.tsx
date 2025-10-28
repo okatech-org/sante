@@ -30,7 +30,8 @@ import DashboardProfessional from "./pages/DashboardProfessional";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 
 // Pages de profil
-import Profile from "./pages/Profile";
+import ProfilePatient from "./pages/ProfilePatient";
+import ProfileProfessional from "./pages/ProfileProfessional";
 
 // Pages de services
 import MedicalRecord from "./pages/MedicalRecord";
@@ -46,6 +47,9 @@ import AdminApprovals from "./pages/AdminApprovals";
 
 // Pages de support
 import Support from "./pages/Support";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
@@ -92,7 +96,8 @@ function App() {
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
                     
                     {/* Routes de profil */}
-                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/profile/patient" element={<ProfilePatient />} />
+                    <Route path="/profile/professional" element={<ProfileProfessional />} />
                     
                     {/* Routes de services */}
                     <Route path="/medical-record" element={<MedicalRecord />} />
@@ -108,6 +113,9 @@ function App() {
                     
                     {/* Routes de support */}
                     <Route path="/support" element={<Support />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/terms" element={<Terms />} />
                     
                     {/* Routes de démonstration */}
                     <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />

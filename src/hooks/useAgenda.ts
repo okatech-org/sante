@@ -35,7 +35,7 @@ export const useAgenda = () => {
 
         // Get professional ID
         const { data: professional, error: profError } = await supabase
-          .from("professional_profiles")
+          .from("professionals")
           .select("id")
           .eq("user_id", user.id)
           .maybeSingle();

@@ -72,6 +72,7 @@ export const MultiEstablishmentProvider: React.FC<MultiEstablishmentProviderProp
         return;
       }
 
+<<<<<<< HEAD
       // Récupérer le profil utilisateur
       const { data: userProfile, error: profileError } = await supabase
         .from('profiles')
@@ -114,7 +115,16 @@ export const MultiEstablishmentProvider: React.FC<MultiEstablishmentProviderProp
         title: "Erreur",
         description: "Impossible de charger le contexte de travail",
         variant: "destructive"
+=======
+      // Simple context for now
+      setWorkContext({
+        userId: user.id,
+        allAffiliations: [],
+        permissions: []
+>>>>>>> bb9e55c4cfd6f179c938385b8b32b2120ce3b1ab
       });
+    } catch (error) {
+      console.error('Error loading work context:', error);
       setWorkContext(null);
     } finally {
       setLoading(false);

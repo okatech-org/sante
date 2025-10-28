@@ -183,7 +183,7 @@ export default function AdminApprovals() {
           .from('professional_profiles')
           .select('user_id, profession_type')
           .eq('id', approval.id)
-          .maybeSingle();
+          .single();
 
         if (profData) {
           // Déterminer le rôle selon le type de profession

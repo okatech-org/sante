@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, ChevronRight, MapPin, Users, Calendar, 
-  Shield, Briefcase, Clock, Star, Check, Home, Settings, LogOut, Sun, Moon, Laptop, Globe, Wifi, WifiOff
+  Shield, Briefcase, Clock, Star, Check, Home, Settings, LogOut, Sun, Moon, Laptop, Globe
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useOfflineAuth } from '@/contexts/OfflineAuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { 
@@ -18,380 +19,624 @@ import {
 } from '@/components/ui/dropdown-menu';
 import logoSante from '@/assets/logo_sante.png';
 
-export default function SelectEstablishmentOffline() {
+export default function SelectEstablishment() {
   const navigate = useNavigate();
-  const { user: authUser, loading: authLoading } = useOfflineAuth();
+  const { user: authUser } = useAuth();
   const { theme, setTheme } = useTheme();
   const [selectedEstablishment, setSelectedEstablishment] = useState<string | null>(null);
   const [userEstablishments, setUserEstablishments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
   const [language, setLanguage] = useState('fr');
-  const [isOffline, setIsOffline] = useState(true);
 
   useEffect(() => {
-    if (authUser && !authLoading) {
-      loadUserData();
-    }
-  }, [authUser, authLoading]);
+    loadUserEstablishments();
+  }, [authUser]);
 
-  const loadUserData = async () => {
+  // Auto-sélection si un seul établissement ou présélection depuis localStorage
+  useEffect(() => {
+    if (userEstablishments.length > 0) {
+      // Vérifier s'il y a un établissement en localStorage
+      const savedEstablishmentId = localStorage.getItem('selected_establishment_id');
+      if (savedEstablishmentId && userEstablishments.some(e => e.id === savedEstablishmentId)) {
+        setSelectedEstablishment(savedEstablishmentId);
+      } 
+      // Auto-sélection si un seul établissement
+      else if (userEstablishments.length === 1) {
+        setSelectedEstablishment(userEstablishments[0].id);
+        toast.info('Établissement unique sélectionné automatiquement');
+      }
+    }
+  }, [userEstablishments]);
+
+  const loadUserEstablishments = async () => {
     if (!authUser?.id) return;
 
     try {
-      setLoading(true);
+      // Charger le profil
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', authUser.id)
+        .single();
 
-      // Utiliser les données de l'utilisateur connecté
-      setUserName(authUser.user_metadata?.full_name || 'Dr. Professionnel');
+      if (profile) {
+        setUserName(profile.full_name);
+      }
 
-      // Données d'établissements simulées pour le mode hors-ligne
-      const mockEstablishments = [
-        {
-          id: 'est-1',
-          name: 'Hôpital Général de Libreville',
-          type: 'hospital',
-          sector: 'public',
-          city: 'Libreville',
-          province: 'Estuaire',
-          role: 'Médecin Chef de Service',
-          department: 'Cardiologie',
-          isAdmin: true,
-          permissions: ['*'],
-          status: 'active',
-          schedule: {
-            monday: '08:00-17:00',
-            tuesday: '08:00-17:00',
-            wednesday: '08:00-17:00',
-            thursday: '08:00-17:00',
-            friday: '08:00-17:00'
-          }
-        },
-        {
-          id: 'est-2', 
-          name: 'Clinique de la Santé',
-          type: 'clinic',
-          sector: 'private',
-          city: 'Libreville',
-          province: 'Estuaire',
-          role: 'Médecin Consultant',
-          department: 'Médecine Générale',
-          isAdmin: false,
-          permissions: ['consultations', 'patients', 'prescriptions'],
-          status: 'active',
-          schedule: {
-            monday: '09:00-16:00',
-            tuesday: '09:00-16:00',
-            wednesday: '09:00-16:00',
-            thursday: '09:00-16:00',
-            friday: '09:00-16:00'
-          }
-        },
-        {
-          id: 'est-3',
-          name: 'Centre Médical SOGARA',
-          type: 'clinic',
-          sector: 'public',
-          city: 'Port-Gentil',
-          province: 'Ogooué-Maritime',
-          role: 'Médecin Spécialiste',
-          department: 'Pneumologie',
-          isAdmin: false,
-          permissions: ['consultations', 'patients', 'imaging'],
-          status: 'active',
-          schedule: {
-            monday: '08:00-15:00',
-            tuesday: '08:00-15:00',
-            wednesday: '08:00-15:00',
-            thursday: '08:00-15:00',
-            friday: '08:00-15:00'
-          }
+      // Charger le profil professionnel
+      const { data: professionalProfile } = await supabase
+        .from('professional_profiles')
+        .select('id')
+        .eq('user_id', authUser.id)
+        .single();
+
+      if (!professionalProfile) {
+        toast.error('Profil professionnel non trouvé');
+        navigate('/dashboard/professional');
+        return;
+      }
+
+      // Charger les établissements
+      const { data: staffData, error } = await supabase
+        .from('establishment_staff')
+        .select(`
+          id,
+          establishment_id,
+          role_in_establishment,
+          is_admin,
+          permissions,
+          status,
+          schedule,
+          updated_at
+        `)
+        .eq('professional_id', professionalProfile.id)
+        .eq('status', 'active')
+        .order('is_admin', { ascending: false });
+
+      if (error) {
+        console.error('Erreur establishment_staff:', error);
+        throw error;
+      }
+
+      // Charger les détails des établissements séparément
+      const establishmentIds = staffData?.map(s => s.establishment_id) || [];
+      
+      if (establishmentIds.length === 0) {
+        setUserEstablishments([]);
+        setLoading(false);
+        return;
+      }
+
+      let establishmentsData: any[] = [];
+      
+      try {
+        const { data, error: estError } = await supabase
+          .from('establishments')
+          .select('id, raison_sociale, type_etablissement, ville, province, secteur')
+          .in('id', establishmentIds);
+
+        if (estError) {
+          console.error('Erreur establishments:', estError);
+          // Continue avec données partielles
+        } else {
+          establishmentsData = data || [];
         }
-      ];
+      } catch (estException) {
+        console.error('Exception establishments:', estException);
+        // Continue avec données partielles même en cas d'erreur
+      }
 
-      setUserEstablishments(mockEstablishments);
+      // Fusionner les données - afficher même si les détails des établissements ne sont pas disponibles
+      const formattedEstablishments = staffData?.map((staff: any, index: number) => {
+        const establishment = establishmentsData?.find(e => e.id === staff.establishment_id);
+        
+        return {
+          id: staff.establishment_id,
+          name: establishment?.raison_sociale || `Établissement (${staff.establishment_id.substring(0, 8)})`,
+          type: establishment ? getEstablishmentTypeLabel(establishment.type_etablissement) : 'Non renseigné',
+          city: establishment?.ville || 'Non renseigné',
+          province: establishment?.province || 'Non renseigné',
+          role: staff.role_in_establishment,
+          isAdmin: staff.is_admin,
+          permissions: staff.permissions || [],
+          schedule: staff.schedule || { days: [], hours: '' },
+          stats: {
+            patients: 0,
+            consultations: 0,
+            team: staff.is_admin ? 5 : null
+          },
+          isPrimary: index === 0,
+          lastAccess: staff.updated_at
+        };
+      }) || [];
 
+      setUserEstablishments(formattedEstablishments);
     } catch (error) {
-      console.error('Erreur lors du chargement:', error);
-      toast.error('Erreur lors du chargement des données');
+      console.error('Erreur lors du chargement des établissements:', error);
+      toast.error('Erreur lors du chargement des établissements');
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-sélection si un seul établissement
-  useEffect(() => {
-    if (userEstablishments.length === 1) {
-      setSelectedEstablishment(userEstablishments[0].id);
-      toast.info('Établissement unique sélectionné automatiquement');
-    }
-  }, [userEstablishments]);
-
-  const handleEstablishmentSelect = (establishmentId: string) => {
-    setSelectedEstablishment(establishmentId);
-    localStorage.setItem('selected_establishment_id', establishmentId);
+  const getEstablishmentTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'chu': 'CHU',
+      'chr': 'CHR',
+      'clinique': 'Clinique Privée',
+      'centre_medical': 'Centre Médical',
+      'polyclinique': 'Polyclinique',
+      'hopital_departemental': 'Hôpital Départemental',
+      'hopital_confessionnel': 'Hôpital Confessionnel'
+    };
+    return labels[type] || type;
   };
 
-  const handleContinue = () => {
+  const formatLastAccess = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffHours < 24) return 'Aujourd\'hui';
+    if (diffHours < 48) return 'Hier';
+    return `Il y a ${Math.floor(diffHours / 24)} jours`;
+  };
+
+  const handleContinue = async () => {
     if (selectedEstablishment) {
-      const establishment = userEstablishments.find(e => e.id === selectedEstablishment);
-      if (establishment) {
-        localStorage.setItem('selected_establishment_id', selectedEstablishment);
-        localStorage.setItem('selected_establishment_name', establishment.name);
-        localStorage.setItem('selected_establishment_type', establishment.type);
-        localStorage.setItem('selected_establishment_sector', establishment.sector);
-        toast.success(`Contexte de travail défini: ${establishment.name}`);
-        navigate('/dashboard/professional');
+      // Sauvegarder l'établissement sélectionné dans localStorage
+      localStorage.setItem('selected_establishment_id', selectedEstablishment);
+      
+      // Trouver les données complètes de l'établissement
+      const selectedEst = userEstablishments.find(e => e.id === selectedEstablishment);
+      if (selectedEst) {
+        localStorage.setItem('selected_establishment_name', selectedEst.name);
+        localStorage.setItem('selected_establishment_role', selectedEst.role);
+        localStorage.setItem('selected_establishment_is_admin', selectedEst.isAdmin.toString());
       }
+      
+      toast.success(`Connexion à ${selectedEst?.name || 'l\'établissement'}`);
+      navigate('/dashboard/professional');
     }
   };
 
   const handleLogout = async () => {
-    // Simuler la déconnexion
-    localStorage.removeItem('offline_user');
-    navigate('/');
-  };
-
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
-    toast.success(`Langue changée: ${lang === 'fr' ? 'Français' : 'English'}`);
-  };
-
-  const getEstablishmentIcon = (type: string) => {
-    switch (type) {
-      case 'hospital': return '🏥';
-      case 'clinic': return '🏥';
-      case 'cabinet': return '🏥';
-      case 'pharmacy': return '💊';
-      case 'laboratory': return '🔬';
-      default: return '🏥';
+    try {
+      await supabase.auth.signOut();
+      toast.success('Déconnexion réussie');
+      navigate('/');
+    } catch (error) {
+      toast.error('Erreur lors de la déconnexion');
     }
   };
 
-  const getSectorColor = (sector: string) => {
-    switch (sector) {
-      case 'public': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'private': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'confessional': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'military': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+  const handleThemeChange = async (newTheme: string) => {
+    setTheme(newTheme);
+    if (authUser?.id) {
+      await supabase
+        .from('profiles')
+        .update({ theme: newTheme })
+        .eq('id', authUser.id);
     }
   };
 
-  if (authLoading || loading) {
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    if (authUser?.id) {
+      await supabase
+        .from('profiles')
+        .update({ language: newLanguage })
+        .eq('id', authUser.id);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Chargement des établissements...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement...</p>
         </div>
       </div>
     );
   }
 
+  if (userEstablishments.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5 flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="pt-6 text-center">
+            <Building2 className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-2">Aucun établissement</h2>
+            <p className="text-muted-foreground mb-6">
+              Vous n'êtes actuellement lié à aucun établissement de santé.
+            </p>
+            <Button onClick={() => navigate('/dashboard/professional')}>
+              Retour au tableau de bord
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const displayName = userName || authUser?.email || 'Professionnel';
+  const initials = displayName.split(' ').map(n => n[0]).join('').slice(0, 2);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Header */}
-      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <img src={logoSante} alt="SANTE.GA" className="h-8 w-auto" />
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Sélection d'Établissement</h1>
-              {isOffline && (
-                <Badge variant="outline" className="text-orange-600 border-orange-300">
-                  <WifiOff className="h-3 w-3 mr-1" />
-                  Mode Hors-ligne
-                </Badge>
-              )}
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              {/* Language Selector */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Globe className="h-4 w-4 mr-2" />
-                    {language === 'fr' ? 'FR' : 'EN'}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => handleLanguageChange('fr')}>
-                    Français
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
-                    English
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Theme Toggle */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              >
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
-
-              {/* Logout */}
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Déconnexion
-              </Button>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Background avec effet étoiles */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-20 dark:opacity-40" style={{
+          backgroundImage: 'radial-gradient(circle at 20% 30%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 60% 70%, hsl(var(--foreground) / 0.05) 1px, transparent 1px), radial-gradient(circle at 80% 10%, hsl(var(--foreground) / 0.08) 1.5px, transparent 1.5px), radial-gradient(circle at 40% 80%, hsl(var(--foreground) / 0.04) 1px, transparent 1px), radial-gradient(circle at 90% 50%, hsl(var(--foreground) / 0.06) 1px, transparent 1px)',
+          backgroundSize: '200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px',
+          backgroundPosition: '0 0, 50px 50px, 100px 25px, 150px 75px, 25px 100px'
+        }} />
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Bienvenue, {userName || 'Dr. Professionnel'}
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-            Sélectionnez l'établissement dans lequel vous souhaitez travailler aujourd'hui
-          </p>
-          {isOffline && (
-            <p className="text-sm text-orange-600 dark:text-orange-400">
-              Mode hors-ligne - Données simulées pour démonstration
-            </p>
-          )}
-        </div>
+      <div className="relative flex">
+        {/* Sidebar Desktop - Glassmorphic */}
+        <aside className="hidden md:block w-72 h-screen fixed left-0 top-0 p-3 z-40">
+          <div className="h-full rounded-2xl backdrop-blur-xl p-5 bg-sidebar/90 border border-sidebar-border shadow-2xl flex flex-col">
+            {/* Logo */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <img src={logoSante} alt="SANTE.GA Logo" className="h-12 w-auto object-contain" />
+                <h1 className="text-2xl font-bold text-sidebar-foreground">
+                  SANTE.GA
+                </h1>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Sélection d'établissement
+              </p>
+            </div>
 
-        {/* Establishments Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {userEstablishments.map((establishment) => (
-            <Card 
-              key={establishment.id}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                selectedEstablishment === establishment.id 
-                  ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-                  : 'hover:shadow-md'
-              }`}
-              onClick={() => handleEstablishmentSelect(establishment.id)}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center text-2xl">
-                      {getEstablishmentIcon(establishment.type)}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        {establishment.name}
-                      </h3>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge className={`text-xs ${getSectorColor(establishment.sector)}`}>
-                          {establishment.sector}
-                        </Badge>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                          {establishment.type}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {selectedEstablishment === establishment.id && (
-                    <Check className="h-5 w-5 text-blue-600" />
-                  )}
+            {/* Navigation */}
+            <nav className="space-y-1 flex-1 overflow-y-auto">
+              <button
+                onClick={() => navigate('/dashboard/professional')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30">
+                  <Home className="w-5 h-5" />
                 </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {establishment.city}, {establishment.province}
-                  </div>
-                  
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                    <Briefcase className="h-4 w-4 mr-2" />
-                    {establishment.role}
-                  </div>
-
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                    <Users className="h-4 w-4 mr-2" />
-                    {establishment.department}
-                  </div>
-
-                  {establishment.isAdmin && (
-                    <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
-                      <Shield className="h-4 w-4 mr-2" />
-                      Administrateur
-                    </div>
-                  )}
+                <span className="text-sm font-medium">Tableau de bord</span>
+              </button>
+              
+              <button
+                onClick={() => navigate('/professional/settings')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-all"
+              >
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-sidebar-accent/30">
+                  <Settings className="w-5 h-5" />
                 </div>
+                <span className="text-sm font-medium">Paramètres</span>
+              </button>
+            </nav>
 
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {establishment.permissions.map((permission, idx) => (
-                    <Badge key={idx} variant="secondary" className="text-xs">
-                      {permission}
-                    </Badge>
-                  ))}
-                </div>
+            {/* User Profile & Controls */}
+            <div className="mt-auto pt-4 border-t border-sidebar-border space-y-2">
+              {/* Theme, Language & Logout Controls */}
+              <div className="flex items-center gap-2 px-2">
+                {/* Theme Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      {theme === 'dark' ? (
+                        <Moon className="w-4 h-4" />
+                      ) : theme === 'light' ? (
+                        <Sun className="w-4 h-4" />
+                      ) : (
+                        <Laptop className="w-4 h-4" />
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('light')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Sun className="w-4 h-4 mr-2" />
+                      Clair
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('dark')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Moon className="w-4 h-4 mr-2" />
+                      Sombre
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleThemeChange('system')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      <Laptop className="w-4 h-4 mr-2" />
+                      Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-                {/* Schedule */}
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center mb-1">
-                    <Clock className="h-3 w-3 mr-1" />
-                    Horaires
+                {/* Language Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-sidebar-accent/30 hover:bg-sidebar-accent transition-colors text-muted-foreground hover:text-sidebar-foreground">
+                      <Globe className="w-4 h-4" />
+                      <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover border-border">
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('fr')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇫🇷 Français
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleLanguageChange('en')}
+                      className="text-popover-foreground hover:bg-accent cursor-pointer"
+                    >
+                      🇬🇧 English
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Logout Button */}
+                <button 
+                  onClick={handleLogout}
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+                  title="Déconnexion"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* User Profile Card */}
+              <div className="p-3 rounded-lg bg-sidebar-accent/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                    {initials}
                   </div>
-                  <div className="text-xs">
-                    Lun-Ven: {establishment.schedule?.monday || '08:00-17:00'}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-sidebar-foreground truncate">
+                      Dr. {displayName.split(' ')[0]}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Professionnel
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* No Establishments Message */}
-        {userEstablishments.length === 0 && (
-          <div className="text-center py-12">
-            <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Aucun établissement trouvé
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Vous n'êtes pas encore affilié à un établissement.
-            </p>
-            <Button onClick={() => navigate('/professional/settings')}>
-              Configurer votre profil
-            </Button>
-          </div>
-        )}
-
-        {/* Continue Button */}
-        {selectedEstablishment && userEstablishments.length > 0 && (
-          <div className="mt-8 text-center">
-            <Button 
-              onClick={handleContinue}
-              size="lg"
-              className="px-8 py-3"
-            >
-              Continuer avec l'établissement sélectionné
-              <ChevronRight className="h-5 w-5 ml-2" />
-            </Button>
-          </div>
-        )}
-
-        {/* Offline Notice */}
-        {isOffline && (
-          <div className="mt-8 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-            <div className="flex items-center">
-              <WifiOff className="h-5 w-5 text-orange-600 mr-2" />
-              <div>
-                <h4 className="text-sm font-medium text-orange-800 dark:text-orange-200">
-                  Mode Hors-ligne
-                </h4>
-                <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
-                  L'application fonctionne en mode démonstration avec des données simulées. 
-                  La connexion à Supabase sera rétablie automatiquement dès que possible.
-                </p>
               </div>
             </div>
           </div>
-        )}
+        </aside>
+
+        {/* Main Content */}
+        <div className="flex-1 md:ml-72">
+          <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex justify-center mb-6">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-xl">
+              {initials}
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold mb-3">
+            Bonjour, {displayName.split(' ')[0]} 👋
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Sélectionnez l'établissement dans lequel vous souhaitez travailler
+          </p>
+        </div>
+
+        {/* Info Multi-Établissements */}
+        <Card className="mb-8 bg-gradient-to-r from-primary to-purple-600 text-primary-foreground border-0 shadow-lg">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-4">
+              <Briefcase className="h-6 w-6 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg mb-2">Activité Multi-Établissements</h3>
+                <p className="text-sm opacity-90">
+                  Vous intervenez dans <strong>{userEstablishments.length} établissements</strong> différents. 
+                  Chaque établissement a ses propres rôles, permissions et plannings. 
+                  Vos données professionnelles restent synchronisées partout.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Liste Établissements */}
+        <div className="grid gap-6">
+          {userEstablishments.map((establishment) => {
+            const isSelected = selectedEstablishment === establishment.id;
+            
+            return (
+              <Card
+                key={establishment.id}
+                onClick={() => setSelectedEstablishment(establishment.id)}
+                className={`
+                  cursor-pointer transition-all hover:shadow-xl border-2
+                  ${isSelected ? 'border-primary ring-4 ring-primary/20' : 'border-border'}
+                  ${establishment.isPrimary ? 'ring-2 ring-yellow-400' : ''}
+                `}
+              >
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className={`
+                        w-16 h-16 rounded-xl flex items-center justify-center text-primary-foreground shadow-md
+                        ${establishment.isPrimary 
+                          ? 'bg-gradient-to-br from-yellow-500 to-orange-600' 
+                          : 'bg-gradient-to-br from-primary to-purple-600'
+                        }
+                      `}>
+                        <Building2 className="h-8 w-8" />
+                      </div>
+
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-2xl font-bold">
+                            {establishment.name}
+                          </h3>
+                          {establishment.isPrimary && (
+                            <Badge variant="outline" className="bg-yellow-500/20 text-yellow-700 border-yellow-500/30 gap-1">
+                              <Star className="h-3 w-3 fill-current" />
+                              PRINCIPAL
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {establishment.city}, {establishment.province}
+                          </span>
+                          <Badge variant="secondary" className="text-xs">
+                            {establishment.type}
+                          </Badge>
+                          <span className="text-xs">
+                            Dernière connexion: {formatLastAccess(establishment.lastAccess)}
+                          </span>
+                        </div>
+
+                        {/* Rôle et Admin */}
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg border border-primary/20">
+                            <Briefcase className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-semibold">
+                              {establishment.role}
+                            </span>
+                          </div>
+                          {establishment.isAdmin && (
+                            <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 rounded-lg border border-destructive/20">
+                              <Shield className="h-4 w-4 text-destructive" />
+                              <span className="text-sm font-semibold text-destructive">
+                                Administrateur
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Planning */}
+                        {establishment.schedule.days?.length > 0 && (
+                          <div className="bg-muted rounded-lg p-4 mb-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm font-semibold">
+                                Planning
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {establishment.schedule.days.map((day: string, idx: number) => (
+                                <Badge key={idx} variant="outline" className="bg-background">
+                                  {day}
+                                </Badge>
+                              ))}
+                            </div>
+                            {establishment.schedule.hours && (
+                              <p className="text-sm text-muted-foreground">
+                                <Clock className="inline h-3 w-3 mr-1" />
+                                {establishment.schedule.hours}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Statistiques */}
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="text-center p-3 bg-primary/5 rounded-lg">
+                            <div className="text-2xl font-bold text-primary">
+                              {establishment.stats.patients}
+                            </div>
+                            <div className="text-xs text-muted-foreground font-medium">Patients</div>
+                          </div>
+                          <div className="text-center p-3 bg-green-500/10 rounded-lg">
+                            <div className="text-2xl font-bold text-green-700">
+                              {establishment.stats.consultations}
+                            </div>
+                            <div className="text-xs text-muted-foreground font-medium">Consultations</div>
+                          </div>
+                          {establishment.stats.team && (
+                            <div className="text-center p-3 bg-purple-500/10 rounded-lg">
+                              <div className="text-2xl font-bold text-purple-700">
+                                {establishment.stats.team}
+                              </div>
+                              <div className="text-xs text-muted-foreground font-medium">Équipe</div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Permissions */}
+                        <div className="mt-4">
+                          <p className="text-xs font-semibold text-muted-foreground mb-2">
+                            Vos permissions:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {establishment.permissions.slice(0, 5).map((perm: string, idx: number) => (
+                              <Badge key={idx} variant="secondary" className="text-xs">
+                                {perm}
+                              </Badge>
+                            ))}
+                            {establishment.permissions.length > 5 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{establishment.permissions.length - 5} autres
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Check / Arrow */}
+                    <div className="ml-4">
+                      {isSelected ? (
+                        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-6 w-6 text-primary-foreground" />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors">
+                          <ChevronRight className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+
+                {/* Pied de carte */}
+                {isSelected && (
+                  <div className="bg-primary/5 border-t px-6 py-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-primary font-medium">
+                        ✓ Établissement sélectionné
+                      </p>
+                      <Button onClick={handleContinue}>
+                        Continuer
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-12 text-center">
+          <Card className="inline-flex">
+            <CardContent className="flex items-center gap-2 px-6 py-3">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm">
+                Besoin de rejoindre un nouvel établissement ? 
+                <Button variant="link" className="ml-2 h-auto p-0 text-primary font-semibold">
+                  Faire une demande
+                </Button>
+              </span>
+            </CardContent>
+          </Card>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

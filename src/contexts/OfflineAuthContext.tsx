@@ -1,73 +1,75 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-interface User {
+interface OfflineUser {
   id: string;
   email: string;
-  user_metadata: {
-    full_name: string;
+  user_metadata?: {
+    full_name?: string;
+    roles?: string[];
   };
 }
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+interface OfflineAuthContextType {
+  user: OfflineUser | null;
+  isSuperAdmin: boolean;
+  isAdmin: boolean;
+  hasRole: (role: string) => boolean;
+  hasAnyRole: (roles: string[]) => boolean;
+  signIn: (email: string, roles?: string[]) => Promise<void>;
   signOut: () => Promise<void>;
-  isAuthenticated: boolean;
 }
 
-const OfflineAuthContext = createContext<AuthContextType | undefined>(undefined);
+const OfflineAuthContext = createContext<OfflineAuthContextType | undefined>(undefined);
 
 export function OfflineAuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<OfflineUser | null>(null);
 
   useEffect(() => {
-    // Simuler un utilisateur connecté pour le mode hors-ligne
-    const mockUser: User = {
-      id: '00339d76-81ca-4e18-aadd-25492917efc5',
-      email: 'dr.professionnel@sante.ga',
-      user_metadata: {
-        full_name: 'Dr. Pierre KOMBILA'
-      }
-    };
+    const raw = localStorage.getItem('offline_auth_user');
+    if (raw) {
+      try {
+        setUser(JSON.parse(raw));
+        return;
+      } catch {}
+    }
 
-    // Simuler un délai de chargement
-    setTimeout(() => {
-      setUser(mockUser);
-      setLoading(false);
-    }, 1000);
+    const defaultUser: OfflineUser = {
+      id: 'offline-super-admin',
+      email: 'superadmin@sante.ga',
+      user_metadata: { full_name: 'Super Admin', roles: ['super_admin'] },
+    };
+    setUser(defaultUser);
+    localStorage.setItem('offline_auth_user', JSON.stringify(defaultUser));
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    // Mode hors-ligne - simulation de connexion
-    const mockUser: User = {
-      id: '00339d76-81ca-4e18-aadd-25492917efc5',
-      email: email,
+  const roles = user?.user_metadata?.roles || [];
+  const hasRole = (role: string) => roles.includes(role);
+  const hasAnyRole = (r: string[]) => r.some(role => roles.includes(role));
+  const isSuperAdmin = hasRole('super_admin');
+  const isAdmin = isSuperAdmin || hasRole('admin');
+
+  const signIn = async (email: string, rolesOverride?: string[]) => {
+    const signedIn: OfflineUser = {
+      id: `offline-${Date.now()}`,
+      email,
       user_metadata: {
-        full_name: 'Dr. Pierre KOMBILA'
-      }
+        full_name: email.split('@')[0],
+        roles: rolesOverride && rolesOverride.length > 0 ? rolesOverride : ['patient'],
+      },
     };
-    
-    setUser(mockUser);
-    localStorage.setItem('offline_user', JSON.stringify(mockUser));
+    setUser(signedIn);
+    localStorage.setItem('offline_auth_user', JSON.stringify(signedIn));
   };
 
   const signOut = async () => {
     setUser(null);
-    localStorage.removeItem('offline_user');
+    localStorage.removeItem('offline_auth_user');
   };
 
-  const isAuthenticated = !!user;
-
   return (
-    <OfflineAuthContext.Provider value={{
-      user,
-      loading,
-      signIn,
-      signOut,
-      isAuthenticated
-    }}>
+    <OfflineAuthContext.Provider
+      value={{ user, isSuperAdmin, isAdmin, hasRole, hasAnyRole, signIn, signOut }}
+    >
       {children}
     </OfflineAuthContext.Provider>
   );
@@ -75,8 +77,10 @@ export function OfflineAuthProvider({ children }: { children: ReactNode }) {
 
 export function useOfflineAuth() {
   const context = useContext(OfflineAuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useOfflineAuth must be used within an OfflineAuthProvider');
   }
   return context;
 }
+
+

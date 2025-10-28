@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client"; // Commenté pour le mode hors-ligne
 import { toast } from "sonner";
 import { Users, Search, UserPlus, Download, Shield, User, Trash2, Mail } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -53,7 +53,7 @@ const roleColors: Record<string, string> = {
 };
 
 export default function AdminUsers() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useOfflineAuth();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,25 +74,53 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     try {
       setIsLoading(true);
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, full_name, email, phone, created_at')
-        .order('created_at', { ascending: false });
+      
+      // Données simulées pour le mode hors-ligne
+      const mockUsers: UserProfile[] = [
+        {
+          id: 'user-1',
+          full_name: 'Dr. Jean Nguema',
+          email: 'jean.nguema@example.com',
+          phone: '+241 01 23 45 67',
+          created_at: '2024-01-15T10:30:00Z',
+          roles: ['doctor', 'professional']
+        },
+        {
+          id: 'user-2',
+          full_name: 'Marie Okou',
+          email: 'marie.okou@example.com',
+          phone: '+241 01 23 45 68',
+          created_at: '2024-01-20T14:15:00Z',
+          roles: ['patient']
+        },
+        {
+          id: 'user-3',
+          full_name: 'Dr. Paul Mba',
+          email: 'paul.mba@example.com',
+          phone: '+241 01 23 45 69',
+          created_at: '2024-01-25T09:45:00Z',
+          roles: ['hospital', 'professional']
+        },
+        {
+          id: 'user-4',
+          full_name: 'Pharmacie Libreville',
+          email: 'pharmacie.libreville@example.com',
+          phone: '+241 01 23 45 70',
+          created_at: '2024-02-01T16:20:00Z',
+          roles: ['pharmacy', 'professional']
+        },
+        {
+          id: 'user-5',
+          full_name: 'Laboratoire Gabon',
+          email: 'lab.gabon@example.com',
+          phone: '+241 01 23 45 71',
+          created_at: '2024-02-05T11:30:00Z',
+          roles: ['laboratory', 'professional']
+        }
+      ];
 
-      if (profilesError) throw profilesError;
-
-      const { data: rolesData, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
-
-      if (rolesError) throw rolesError;
-
-      const usersWithRoles = profiles?.map(profile => ({
-        ...profile,
-        roles: rolesData?.filter(r => r.user_id === profile.id).map(r => r.role) || []
-      })) || [];
-
-      setUsers(usersWithRoles);
+      setUsers(mockUsers);
+      toast.success("Utilisateurs chargés (mode démonstration)");
     } catch (error: any) {
       toast.error("Erreur lors du chargement des utilisateurs");
       console.error(error);
@@ -131,19 +159,17 @@ export default function AdminUsers() {
         return;
       }
 
-      const { error } = await supabase.rpc('assign_user_role', {
-        target_user_id: user.id,
-        new_role: newRoleType as any
-      });
+      setUsers(prev => prev.map(u => {
+        if (u.id !== user.id) return u;
+        const updatedRoles = Array.from(new Set([...(u.roles || []), newRoleType]));
+        return { ...u, roles: updatedRoles };
+      }));
 
-      if (error) throw error;
-
-      toast.success("Rôle ajouté avec succès");
+      toast.success("Rôle ajouté (mode démonstration)");
       setNewRoleEmail("");
       setNewRoleType("");
-      loadUsers();
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de l'ajout du rôle");
+      toast.error(error.message || "Erreur lors de l'ajout du rôle (offline)");
     }
   };
 
@@ -151,19 +177,16 @@ export default function AdminUsers() {
     if (!userToRemoveRole) return;
 
     try {
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userToRemoveRole.userId)
-        .eq('role', userToRemoveRole.role as any);
+      const { userId, role } = userToRemoveRole;
+      setUsers(prev => prev.map(u => {
+        if (u.id !== userId) return u;
+        return { ...u, roles: (u.roles || []).filter(r => r !== role) };
+      }));
 
-      if (error) throw error;
-
-      toast.success("Rôle supprimé avec succès");
+      toast.success("Rôle supprimé (mode démonstration)");
       setUserToRemoveRole(null);
-      loadUsers();
     } catch (error: any) {
-      toast.error("Erreur lors de la suppression du rôle");
+      toast.error("Erreur lors de la suppression du rôle (offline)");
     }
   };
 
@@ -189,7 +212,7 @@ export default function AdminUsers() {
 
   if (!isSuperAdmin) {
     return (
-      <SuperAdminLayout>
+      <SuperAdminLayoutSimple>
         <div className="flex items-center justify-center min-h-screen">
           <Card className="bg-card/50 backdrop-blur-xl border-border/50">
             <CardContent className="p-8 text-center">
@@ -199,7 +222,7 @@ export default function AdminUsers() {
             </CardContent>
           </Card>
         </div>
-      </SuperAdminLayout>
+      </SuperAdminLayoutSimple>
     );
   }
 
@@ -211,7 +234,7 @@ export default function AdminUsers() {
   };
 
   return (
-    <SuperAdminLayout>
+    <SuperAdminLayoutSimple>
       <div className="p-6 space-y-6 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -408,6 +431,6 @@ export default function AdminUsers() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </SuperAdminLayout>
+    </SuperAdminLayoutSimple>
   );
 }

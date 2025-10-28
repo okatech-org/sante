@@ -57,10 +57,10 @@ export default function ProfessionalTeleconsultations() {
       if (!user) throw new Error("Non authentifié");
 
       const { data: professional } = await supabase
-        .from('professional_profiles')
+        .from('professionals')
         .select('id')
         .eq('user_id', user.id)
-        .maybeSingle();
+        .single();
 
       if (!professional) throw new Error("Profil professionnel non trouvé");
 
