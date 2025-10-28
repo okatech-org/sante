@@ -163,11 +163,18 @@ export default function ProfessionalsManagement() {
       setProfessionals(transformedProfessionals);
       
       if (transformedProfessionals.length === 0) {
-        toast.info("Aucun professionnel trouvé");
+        toast({
+          title: "Info",
+          description: "Aucun professionnel trouvé"
+        });
       }
     } catch (error: any) {
       console.error('Erreur lors du chargement des professionnels:', error);
-      toast.error("Erreur lors du chargement des professionnels");
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du chargement des professionnels",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

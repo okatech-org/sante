@@ -190,7 +190,7 @@ export function Step2ProfessionalInfo({ form }: Step2ProfessionalInfoProps) {
                       onSelect={field.onChange}
                       disabled={(date) => date > maxDate || date < minDate}
                       defaultMonth={field.value || defaultMonth}
-                      captionLayout="dropdown-buttons"
+                      captionLayout="dropdown"
                       fromYear={minDate.getFullYear()}
                       toYear={maxDate.getFullYear()}
                       locale={fr}

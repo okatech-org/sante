@@ -27,19 +27,17 @@ export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps)
 
   // Déterminer si l'utilisateur est un établissement (basé sur les rôles)
   const establishmentRoles: AppRole[] = [
-    'hospital_admin',
-    'clinic_admin',
-    'sogara_admin',
+    'establishment_admin',
+    'hospital',
     'pharmacy',
-    'radiology_center',
+    'laboratory',
   ];
   const isEstablishment = userRoles.some((role) => establishmentRoles.includes(role as AppRole));
 
   const getEstablishmentDemoPath = (): string => {
-    if (userRoles.includes('sogara_admin')) return '/demo/sogara';
-    if (userRoles.includes('clinic_admin')) return '/demo/clinic';
+    if (userRoles.includes('establishment_admin')) return '/demo/hospital';
     if (userRoles.includes('pharmacy')) return '/demo/pharmacy';
-    if (userRoles.includes('radiology_center')) return '/demo/radiology-center';
+    if (userRoles.includes('laboratory')) return '/demo/radiology-center';
     return '/demo/hospital';
   };
 

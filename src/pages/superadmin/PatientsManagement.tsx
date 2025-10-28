@@ -121,12 +121,18 @@ export default function PatientsManagement() {
 
       setPatients(transformedPatients);
       
-      if (transformedPatients.length === 0) {
-        toast.info("Aucun patient trouvé");
-      }
+      toast({
+        title: "Erreur",
+        description: "Vous n'avez pas la permission d'accéder à cette page",
+        variant: "destructive"
+      });
     } catch (error: any) {
       console.error('Erreur lors du chargement des patients:', error);
-      toast.error("Erreur lors du chargement des patients");
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du chargement des patients",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

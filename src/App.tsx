@@ -75,9 +75,7 @@ import AdminAudit from "./pages/AdminAudit";
 import AdminSettings from "./pages/AdminSettings";
 import AdminCartography from "./pages/admin/AdminCartography";
 import MultiEstablishmentArchitecture from "./pages/admin/MultiEstablishmentArchitecture";
-import UnclaimedEstablishments from "./pages/establishments/UnclaimedEstablishments";
 import EstablishmentPublicPage from "./pages/establishments/EstablishmentPublicPage";
-import ClaimEstablishment from "./pages/establishments/ClaimEstablishment";
 import ClaimsManagement from "./pages/superadmin/ClaimsManagement";
 import ProfessionalsManagement from "./pages/superadmin/ProfessionalsManagement";
 import PatientsManagement from "./pages/superadmin/PatientsManagement";
@@ -137,14 +135,8 @@ const App = () => (
             <Route path="/find-providers" element={<PublicProviderSearch />} />
             <Route path="/search" element={<PublicProviderSearch />} />
             
-            {/* Établissements Non-Revendiqués */}
-            <Route path="/establishments/unclaimed" element={<UnclaimedEstablishments />} />
+            {/* Pages publiques d'établissements */}
             <Route path="/establishment/:id/public" element={<EstablishmentPublicPage />} />
-            <Route path="/establishments/:id/claim" element={
-              <ProtectedRoute>
-                <ClaimEstablishment />
-              </ProtectedRoute>
-            } />
             
             {/* CMST SOGARA Demo Dashboards */}
             <Route path="/demo/sogara" element={<DoctorDashboard />} />

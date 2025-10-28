@@ -105,7 +105,7 @@ export const Step1PersonalInfo = ({ form }: Step1PersonalInfoProps) => {
                   }
                   initialFocus
                   className="pointer-events-auto"
-                  captionLayout="dropdown-buttons"
+                  captionLayout="dropdown"
                   fromYear={1900}
                   toYear={new Date().getFullYear()}
                 />

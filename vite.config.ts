@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
-  const plugins = [react()];
+  const plugins: any[] = [react()];
   if (mode === "development") {
     try {
       const { componentTagger } = await import("lovable-tagger");
