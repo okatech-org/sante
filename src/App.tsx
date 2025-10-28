@@ -18,6 +18,7 @@ import Awareness from "./pages/Awareness";
 import ForProfessionals from "./pages/ForProfessionals";
 
 // Pages d'authentification
+import Login from "./pages/Login";
 import LoginPatient from "./pages/LoginPatient";
 import LoginProfessional from "./pages/LoginProfessional";
 import Register from "./pages/Register";
@@ -82,6 +83,7 @@ function App() {
                     <Route path="/for-professionals" element={<ForProfessionals />} />
                     
                     {/* Routes d'authentification */}
+                    <Route path="/login" element={<Login />} />
                     <Route path="/login/patient" element={<LoginPatient />} />
                     <Route path="/login/professional" element={<LoginProfessional />} />
                     <Route path="/login/admin" element={<SuperAdminLogin />} />
@@ -105,6 +107,7 @@ function App() {
                     
                     {/* Routes d'administration */}
                     <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/dashboard/admin" element={<AdminDashboard />} />
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
