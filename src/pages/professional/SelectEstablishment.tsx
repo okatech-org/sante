@@ -69,7 +69,7 @@ export default function SelectEstablishment() {
         .from('professional_profiles')
         .select('id')
         .eq('user_id', authUser.id)
-        .single();
+        .maybeSingle();
 
       if (!professionalProfile) {
         toast.error('Profil professionnel non trouvé');

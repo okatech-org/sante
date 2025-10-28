@@ -42,10 +42,10 @@ export const useTeleconsultations = () => {
     if (!user?.id) return null;
 
     const { data, error } = await supabase
-      .from('professionals')
+      .from('professional_profiles')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error fetching professional ID:', error);

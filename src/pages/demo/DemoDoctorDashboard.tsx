@@ -75,7 +75,7 @@ export default function DemoDoctorDashboard() {
             .from('professional_profiles')
             .select('id')
             .eq('user_id', user.id)
-            .single();
+            .maybeSingle();
             
           if (profileData) {
             const { count } = await supabase

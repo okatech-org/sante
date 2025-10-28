@@ -79,8 +79,8 @@ export function MultiEstablishmentProvider({ children }: { children: ReactNode }
 
       // Récupérer le profil utilisateur
       const { data: userProfile, error: profileError } = await supabase
-        .from('users')
-        .select('*, professional_profiles(*)')
+        .from('profiles')
+        .select('*')
         .eq('id', user.id)
         .single();
 
@@ -89,76 +89,28 @@ export function MultiEstablishmentProvider({ children }: { children: ReactNode }
         return;
       }
 
-      // Si c'est un professionnel, charger ses affiliations
-      if (userProfile.user_type === 'professional' && userProfile.professional_profiles?.[0]) {
-        const professionalId = userProfile.professional_profiles[0].id;
+      // Vérifier si c'est un professionnel via les rôles
+      const { data: userRoles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
 
-        // Charger toutes les affiliations actives
-        const { data: affiliations, error: affiliationError } = await supabase
-          .from('professional_affiliations')
-          .select(`
-            *,
-            establishments (*)
-          `)
-          .eq('professional_id', professionalId)
-          .eq('status', 'active');
+      const professionalRoles = ['doctor', 'specialist', 'nurse', 'midwife', 'physiotherapist', 'psychologist', 'ophthalmologist', 'anesthesiologist', 'pharmacist', 'laboratory_technician', 'radiologist', 'clinic_admin', 'hospital_admin', 'sogara_admin', 'radiology_center'];
+      const isProfessional = userRoles?.some((r: any) => professionalRoles.includes(r.role));
 
-        if (affiliationError) {
-          console.error('Erreur chargement affiliations:', affiliationError);
-          return;
-        }
-
-        // Transformer les données
-        const formattedAffiliations: ProfessionalAffiliation[] = (affiliations || []).map(aff => ({
-          id: aff.id,
-          establishmentId: aff.establishment_id,
-          establishment: {
-            id: aff.establishments.id,
-            name: aff.establishments.name,
-            type: aff.establishments.type,
-            subtype: aff.establishments.subtype,
-            sector: aff.establishments.sector,
-            city: aff.establishments.city,
-            province: aff.establishments.province,
-            hasPortal: aff.establishments.has_dedicated_portal,
-            portalSubdomain: aff.establishments.portal_subdomain,
-            theme: aff.establishments.portal_theme
-          },
-          role: aff.role,
-          department: aff.department,
-          permissions: aff.permissions || [],
-          isDepartmentHead: aff.is_department_head,
-          isEstablishmentAdmin: aff.is_establishment_admin,
-          schedule: aff.schedule,
-          status: aff.status
-        }));
-
-        // Récupérer le dernier contexte actif ou prendre le premier
-        const lastContextId = localStorage.getItem('lastEstablishmentId');
-        let currentAffiliation = formattedAffiliations.find(a => a.establishmentId === lastContextId);
-        
-        if (!currentAffiliation && formattedAffiliations.length > 0) {
-          currentAffiliation = formattedAffiliations[0];
-        }
-
+      if (isProfessional) {
+        // Pour les professionnels, contexte simplifié sans affiliations (tables non encore créées)
         setWorkContext({
           userId: user.id,
-          currentEstablishment: currentAffiliation?.establishment,
-          currentAffiliation,
-          allAffiliations: formattedAffiliations,
-          permissions: currentAffiliation?.permissions || []
+          allAffiliations: [],
+          permissions: ['*'] // Permissions par défaut pour les professionnels
         });
-
-        // Sauvegarder le contexte actuel
-        if (currentAffiliation) {
-          localStorage.setItem('lastEstablishmentId', currentAffiliation.establishmentId);
-        }
       } else {
         // Pour les patients ou admins sans affiliations
         setWorkContext({
           userId: user.id,
           allAffiliations: [],
-          permissions: userProfile.user_type === 'admin' ? ['*'] : []
+          permissions: userRoles?.some((r: any) => r.role === 'super_admin' || r.role === 'admin') ? ['*'] : []
         });
       }
     } catch (error) {
