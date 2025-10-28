@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, ChevronRight, MapPin, Users, Calendar, 
-  Shield, Briefcase, Clock, Star, Check, Home, Settings, LogOut, Sun, Moon, Laptop, Globe, Wifi, WifiOff
+  Shield, Briefcase, Clock, Star, Check, Home, Settings, LogOut, Sun, Moon, Laptop, Globe
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useOfflineAuth } from '@/contexts/OfflineAuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import { 
@@ -18,22 +19,22 @@ import {
 } from '@/components/ui/dropdown-menu';
 import logoSante from '@/assets/logo_sante.png';
 
-export default function SelectEstablishmentOffline() {
+export default function SelectEstablishmentSimple() {
   const navigate = useNavigate();
-  const { user: authUser, loading: authLoading } = useOfflineAuth();
+  const { user: authUser } = useAuth();
   const { theme, setTheme } = useTheme();
   const [selectedEstablishment, setSelectedEstablishment] = useState<string | null>(null);
   const [userEstablishments, setUserEstablishments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
   const [language, setLanguage] = useState('fr');
-  const [isOffline, setIsOffline] = useState(true);
+  const [professionalId, setProfessionalId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authUser && !authLoading) {
+    if (authUser?.id) {
       loadUserData();
     }
-  }, [authUser, authLoading]);
+  }, [authUser?.id]);
 
   const loadUserData = async () => {
     if (!authUser?.id) return;
@@ -41,10 +42,49 @@ export default function SelectEstablishmentOffline() {
     try {
       setLoading(true);
 
-      // Utiliser les données de l'utilisateur connecté
-      setUserName(authUser.user_metadata?.full_name || 'Dr. Professionnel');
+      // Charger le profil utilisateur
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', authUser.id)
+        .single();
 
-      // Données d'établissements simulées pour le mode hors-ligne
+      if (profile) {
+        setUserName(profile.full_name);
+      }
+
+      // Essayer de trouver un ID professionnel (dans professional_profiles ou professionals)
+      let profId = null;
+
+      // Essayer d'abord professional_profiles
+      const { data: profProfile } = await supabase
+        .from('professional_profiles')
+        .select('id')
+        .eq('user_id', authUser.id)
+        .maybeSingle();
+
+      if (profProfile) {
+        profId = profProfile.id;
+      } else {
+        // Essayer professionals si professional_profiles n'existe pas
+        const { data: professional } = await supabase
+          .from('professionals')
+          .select('id')
+          .eq('user_id', authUser.id)
+          .maybeSingle();
+
+        if (professional) {
+          profId = professional.id;
+        } else {
+          // Créer un profil professionnel temporaire
+          console.log('Création d\'un profil professionnel temporaire...');
+          profId = authUser.id; // Utiliser l'ID utilisateur comme ID professionnel temporaire
+        }
+      }
+
+      setProfessionalId(profId);
+
+      // Charger les établissements (simulation pour l'instant)
       const mockEstablishments = [
         {
           id: 'est-1',
@@ -52,19 +92,10 @@ export default function SelectEstablishmentOffline() {
           type: 'hospital',
           sector: 'public',
           city: 'Libreville',
-          province: 'Estuaire',
-          role: 'Médecin Chef de Service',
-          department: 'Cardiologie',
+          role: 'Médecin',
           isAdmin: true,
           permissions: ['*'],
-          status: 'active',
-          schedule: {
-            monday: '08:00-17:00',
-            tuesday: '08:00-17:00',
-            wednesday: '08:00-17:00',
-            thursday: '08:00-17:00',
-            friday: '08:00-17:00'
-          }
+          status: 'active'
         },
         {
           id: 'est-2', 
@@ -72,39 +103,10 @@ export default function SelectEstablishmentOffline() {
           type: 'clinic',
           sector: 'private',
           city: 'Libreville',
-          province: 'Estuaire',
-          role: 'Médecin Consultant',
-          department: 'Médecine Générale',
+          role: 'Médecin',
           isAdmin: false,
-          permissions: ['consultations', 'patients', 'prescriptions'],
-          status: 'active',
-          schedule: {
-            monday: '09:00-16:00',
-            tuesday: '09:00-16:00',
-            wednesday: '09:00-16:00',
-            thursday: '09:00-16:00',
-            friday: '09:00-16:00'
-          }
-        },
-        {
-          id: 'est-3',
-          name: 'Centre Médical SOGARA',
-          type: 'clinic',
-          sector: 'public',
-          city: 'Port-Gentil',
-          province: 'Ogooué-Maritime',
-          role: 'Médecin Spécialiste',
-          department: 'Pneumologie',
-          isAdmin: false,
-          permissions: ['consultations', 'patients', 'imaging'],
-          status: 'active',
-          schedule: {
-            monday: '08:00-15:00',
-            tuesday: '08:00-15:00',
-            wednesday: '08:00-15:00',
-            thursday: '08:00-15:00',
-            friday: '08:00-15:00'
-          }
+          permissions: ['consultations', 'patients'],
+          status: 'active'
         }
       ];
 
@@ -137,8 +139,6 @@ export default function SelectEstablishmentOffline() {
       if (establishment) {
         localStorage.setItem('selected_establishment_id', selectedEstablishment);
         localStorage.setItem('selected_establishment_name', establishment.name);
-        localStorage.setItem('selected_establishment_type', establishment.type);
-        localStorage.setItem('selected_establishment_sector', establishment.sector);
         toast.success(`Contexte de travail défini: ${establishment.name}`);
         navigate('/dashboard/professional');
       }
@@ -146,8 +146,7 @@ export default function SelectEstablishmentOffline() {
   };
 
   const handleLogout = async () => {
-    // Simuler la déconnexion
-    localStorage.removeItem('offline_user');
+    await supabase.auth.signOut();
     navigate('/');
   };
 
@@ -156,28 +155,7 @@ export default function SelectEstablishmentOffline() {
     toast.success(`Langue changée: ${lang === 'fr' ? 'Français' : 'English'}`);
   };
 
-  const getEstablishmentIcon = (type: string) => {
-    switch (type) {
-      case 'hospital': return '🏥';
-      case 'clinic': return '🏥';
-      case 'cabinet': return '🏥';
-      case 'pharmacy': return '💊';
-      case 'laboratory': return '🔬';
-      default: return '🏥';
-    }
-  };
-
-  const getSectorColor = (sector: string) => {
-    switch (sector) {
-      case 'public': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'private': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'confessional': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'military': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
-
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
@@ -197,12 +175,6 @@ export default function SelectEstablishmentOffline() {
             <div className="flex items-center space-x-4">
               <img src={logoSante} alt="SANTE.GA" className="h-8 w-auto" />
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">Sélection d'Établissement</h1>
-              {isOffline && (
-                <Badge variant="outline" className="text-orange-600 border-orange-300">
-                  <WifiOff className="h-3 w-3 mr-1" />
-                  Mode Hors-ligne
-                </Badge>
-              )}
             </div>
             
             <div className="flex items-center space-x-4">
@@ -244,20 +216,15 @@ export default function SelectEstablishmentOffline() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Bienvenue, {userName || 'Dr. Professionnel'}
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Sélectionnez l'établissement dans lequel vous souhaitez travailler aujourd'hui
           </p>
-          {isOffline && (
-            <p className="text-sm text-orange-600 dark:text-orange-400">
-              Mode hors-ligne - Données simulées pour démonstration
-            </p>
-          )}
         </div>
 
         {/* Establishments Grid */}
@@ -275,21 +242,16 @@ export default function SelectEstablishmentOffline() {
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center text-2xl">
-                      {getEstablishmentIcon(establishment.type)}
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                      <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 dark:text-white">
                         {establishment.name}
                       </h3>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge className={`text-xs ${getSectorColor(establishment.sector)}`}>
-                          {establishment.sector}
-                        </Badge>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-                          {establishment.type}
-                        </span>
-                      </div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                        {establishment.type} • {establishment.sector}
+                      </p>
                     </div>
                   </div>
                   
@@ -301,17 +263,12 @@ export default function SelectEstablishmentOffline() {
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                     <MapPin className="h-4 w-4 mr-2" />
-                    {establishment.city}, {establishment.province}
+                    {establishment.city}
                   </div>
                   
                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                     <Briefcase className="h-4 w-4 mr-2" />
                     {establishment.role}
-                  </div>
-
-                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                    <Users className="h-4 w-4 mr-2" />
-                    {establishment.department}
                   </div>
 
                   {establishment.isAdmin && (
@@ -322,23 +279,12 @@ export default function SelectEstablishmentOffline() {
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-1 mb-3">
+                <div className="flex flex-wrap gap-1">
                   {establishment.permissions.map((permission, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {permission}
                     </Badge>
                   ))}
-                </div>
-
-                {/* Schedule */}
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center mb-1">
-                    <Clock className="h-3 w-3 mr-1" />
-                    Horaires
-                  </div>
-                  <div className="text-xs">
-                    Lun-Ven: {establishment.schedule?.monday || '08:00-17:00'}
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -372,24 +318,6 @@ export default function SelectEstablishmentOffline() {
               Continuer avec l'établissement sélectionné
               <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
-          </div>
-        )}
-
-        {/* Offline Notice */}
-        {isOffline && (
-          <div className="mt-8 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-            <div className="flex items-center">
-              <WifiOff className="h-5 w-5 text-orange-600 mr-2" />
-              <div>
-                <h4 className="text-sm font-medium text-orange-800 dark:text-orange-200">
-                  Mode Hors-ligne
-                </h4>
-                <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
-                  L'application fonctionne en mode démonstration avec des données simulées. 
-                  La connexion à Supabase sera rétablie automatiquement dès que possible.
-                </p>
-              </div>
-            </div>
           </div>
         )}
       </div>
