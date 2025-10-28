@@ -51,6 +51,9 @@ import Support from "./pages/Support";
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
+// Pages d'authentification admin
+import SuperAdminLogin from "./pages/SuperAdminLogin";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -84,6 +87,7 @@ function AppMain() {
                     {/* Routes d'authentification */}
                     <Route path="/login/patient" element={<LoginPatient />} />
                     <Route path="/login/professional" element={<LoginProfessional />} />
+                    <Route path="/login/pro" element={<LoginProfessional />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/register/patient" element={<RegisterPatient />} />
                     <Route path="/register/professional" element={<RegisterProfessional />} />
@@ -104,6 +108,7 @@ function AppMain() {
                     <Route path="/prescriptions" element={<Prescriptions />} />
 
                     {/* Routes d'administration */}
+                    <Route path="/login/superadmin" element={<SuperAdminLogin />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />

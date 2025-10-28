@@ -1,5 +1,11 @@
 // services/AccountService.js
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  trackApiCall, 
+  trackContextSwitch, 
+  trackIsolationCheck, 
+  trackConsentVerification 
+} from '@/utils/performanceMonitoring';
 
 class AccountService {
     /**

@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, ArrowLeft } from "lucide-react";
-import { authService } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 
 export default function SuperAdminLogin() {
   const [email, setEmail] = useState("");
@@ -16,49 +15,48 @@ export default function SuperAdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn } = useOfflineAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { user } = await authService.signIn(email, password);
-      
-      if (!user) {
-        throw new Error("Erreur lors de la connexion");
-      }
-      
-      // Vérifier que l'utilisateur a un rôle admin
-      const roles = await authService.getUserRoles(user.id);
-      const hasAdminRole = roles.includes('super_admin') || roles.includes('admin');
+      // Vérification simple pour le mode offline/demo
+      // En production, cela devrait valider avec une vraie base de données
+      const validAdmins = [
+        { email: "superadmin@sante.ga", password: "Asted1982*", roles: ["super_admin"] },
+        { email: "admin@sante.ga", password: "admin123", roles: ["admin"] },
+      ];
 
-      if (!hasAdminRole) {
-        // Déconnecter l'utilisateur
-        await authService.signOut();
+      const admin = validAdmins.find(
+        (a) => a.email === email && a.password === password
+      );
+
+      if (!admin) {
         toast({
           variant: "destructive",
-          title: "Accès refusé",
-          description: "Cet espace est réservé aux administrateurs uniquement.",
+          title: "Erreur de connexion",
+          description: "Email ou mot de passe incorrect",
         });
         return;
       }
+
+      // Connecter l'utilisateur avec ses rôles
+      await signIn(email, admin.roles);
       
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue",
+        description: `Bienvenue ${admin.roles.includes('super_admin') ? 'Super Admin' : 'Admin'}`,
       });
       
-      // Rediriger vers le dashboard super admin
-      if (roles.includes('super_admin')) {
-        navigate("/superadmin");
-      } else if (roles.includes('admin')) {
-        navigate("/dashboard/admin");
-      }
+      // Rediriger vers le dashboard admin
+      navigate("/admin");
     } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message,
+        description: error.message || "Une erreur est survenue",
       });
     } finally {
       setLoading(false);

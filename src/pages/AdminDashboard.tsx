@@ -1,30 +1,31 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Lock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { user, isSuperAdmin, isAdmin, loading } = useAuth();
+  const { user, isSuperAdmin, isAdmin } = useOfflineAuth();
+  const loading = false; // Pas de chargement en mode offline
 
   useEffect(() => {
-    if (!loading && (!user || (!isSuperAdmin && !isAdmin))) {
-      navigate("/login/admin");
+    if (!user || (!isSuperAdmin && !isAdmin)) {
+      navigate("/login/superadmin");
     }
-  }, [user, isSuperAdmin, isAdmin, loading, navigate]);
+  }, [user, isSuperAdmin, isAdmin, navigate]);
 
   if (loading) {
     return (
-      <SuperAdminLayout>
+      <SuperAdminLayoutSimple>
         <div className="container max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
             <p className="text-muted-foreground">Chargement...</p>
           </div>
         </div>
-      </SuperAdminLayout>
+      </SuperAdminLayoutSimple>
     );
   }
 
