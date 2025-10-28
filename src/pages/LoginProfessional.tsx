@@ -187,7 +187,7 @@ export default function LoginProfessional() {
           <div className="mt-6 text-center text-sm">
             <p className="text-muted-foreground">
               Pas encore inscrit ?{" "}
-              <Link to="/register/pro" className="text-primary hover:underline font-medium">
+              <Link to="/register/professional" className="text-primary hover:underline font-medium">
                 Créer un compte professionnel
               </Link>
             </p>

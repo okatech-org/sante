@@ -109,6 +109,7 @@ function App() {
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
                     <Route path="/superadmin" element={<SuperAdminDashboard />} />
+                    <Route path="/dashboard/superadmin" element={<SuperAdminDashboard />} />
                     
                     {/* Routes de support */}
                     <Route path="/support" element={<Support />} />

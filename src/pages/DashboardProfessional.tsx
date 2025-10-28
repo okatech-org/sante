@@ -11,7 +11,7 @@ import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { useProfessionalStats } from "@/hooks/useProfessionalStats";
 
 export default function DashboardProfessional() {
-  const { user } = useAuth();
+  const { user, userRoles, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [professionalId, setProfessionalId] = useState<string | undefined>();
@@ -25,6 +25,27 @@ export default function DashboardProfessional() {
   
   const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Dr. Pierre KOMBILA';
   const { stats, loading } = useProfessionalStats(professionalId);
+
+  // Garde d'authentification et de rôles
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      navigate('/login/professional');
+      return;
+    }
+
+    const isAdminRole = userRoles.some(r => r === 'admin' || r === 'super_admin');
+    if (isAdminRole) {
+      navigate('/login/admin');
+      return;
+    }
+
+    const professionalRoles = ['doctor', 'medical_staff', 'pharmacy', 'laboratory', 'hospital', 'moderator'];
+    const isProfessional = userRoles.some(r => professionalRoles.includes(r as unknown as string));
+    if (!isProfessional) {
+      navigate('/login/patient');
+    }
+  }, [user, userRoles, authLoading, navigate]);
 
   // Charger le profil depuis la base de données
   useEffect(() => {
