@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview --port 8080",
     "start": "node src/neural/server.js",
     "neural:dev": "nodemon src/neural/server.js",
     "neural:test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js",
