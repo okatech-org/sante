@@ -437,22 +437,22 @@ export default function SogaraPublic() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center mb-4 md:mb-6">
             {/* CNAMGS */}
-            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+            <div className="flex items-center justify-center">
               <img src="/cnamgs_logo.png" alt="CNAMGS" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* SOGARA */}
-            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+            <div className="flex items-center justify-center">
               <img src="/logo_sogara.png" alt="SOGARA" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* Ministère de la Santé */}
-            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+            <div className="flex items-center justify-center">
               <img src="/logo_sante.png" alt="Ministère de la Santé" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* Sceau du Gabon */}
-            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+            <div className="flex items-center justify-center">
               <img src="/Sceau du Gabon.png" alt="République Gabonaise" className="h-10 md:h-12 w-auto" />
             </div>
           </div>
