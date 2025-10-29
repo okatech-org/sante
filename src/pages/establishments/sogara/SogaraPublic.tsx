@@ -591,6 +591,13 @@ export default function SogaraPublic() {
                 <p className="text-xs text-gray-600">SOGARA</p>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              <img src="/logo_sante.png" alt="SANTE.GA" className="h-10 w-auto" />
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Partenaire de</p>
+                <p className="text-xs text-gray-600">SANTE.GA</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
