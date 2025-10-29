@@ -600,7 +600,7 @@ export default function SogaraPublic() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <img src="/logo_sante.png" alt="SANTE.GA" className="h-10 w-auto" />
+                <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-10 w-auto rounded-lg" />
                 <div>
                   <p className="font-bold">CMST SOGARA</p>
                   <p className="text-xs text-gray-400">Excellence Médicale</p>
