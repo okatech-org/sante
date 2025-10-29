@@ -30,11 +30,13 @@ import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 
+// Pages Patient
+import MedicalRecord from "./pages/patient/MedicalRecord";
+
 // Pages de profil
 import Profile from "./pages/Profile";
 
 // Pages de services
-import MedicalRecord from "./pages/MedicalRecord";
 import Appointments from "./pages/Appointments";
 import Teleconsultations from "./pages/professional/Teleconsultations";
 import Prescriptions from "./pages/Prescriptions";

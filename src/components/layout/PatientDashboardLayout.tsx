@@ -29,7 +29,16 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
   
   const userRoles = user?.user_metadata?.roles || [];
   const isProfessional = hasRole('doctor') || hasRole('medical_staff');
-  const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+  
+  // Récupérer les vraies informations du patient connecté
+  const fullName = (user?.user_metadata as any)?.full_name || 
+                   (user?.email?.split('@')[0]?.replace(/\./g, ' ')?.toUpperCase()) || 
+                   'Utilisateur';
+  
+  // Générer un numéro CNAMGS basé sur l'ID utilisateur
+  const cnamgsNumber = user?.id ? 
+    `GA${user.id.substring(0, 8).toUpperCase().replace(/-/g, '')}` : 
+    'Non renseigné';
 
   // Charger les préférences depuis localStorage (mode hors-ligne)
   useEffect(() => {
@@ -290,10 +299,14 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-sidebar-foreground truncate">
-                      {isProfessional ? 'Dr.' : fullName.split(' ')[0]}
+                      {isSuperAdmin ? 'Super Admin' : 
+                       isProfessional ? `Dr. ${fullName.split(' ')[0]}` : 
+                       fullName}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isSuperAdmin ? 'Super Admin' : 'N° ••••7891'}
+                      {isSuperAdmin ? 'Administrateur' : 
+                       isProfessional ? 'Professionnel de santé' : 
+                       cnamgsNumber}
                     </p>
                   </div>
                 </div>

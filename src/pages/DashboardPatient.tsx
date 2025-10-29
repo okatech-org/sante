@@ -1,25 +1,22 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle2, FileHeart, AlertCircle, MapPin, ChevronRight } from "lucide-react";
+import { Calendar, Video, Stethoscope, Shield, Activity, Pill, CheckCircle2, FileHeart, AlertCircle, MapPin, ChevronRight, Bell, User, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { patientService, type PatientProfile } from "@/services/patientService";
+import { toast } from "sonner";
 
 export default function DashboardPatient() {
   const { user, userRoles, loading, hasAnyRole } = useAuth();
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [profileData, setProfileData] = useState<{
-    full_name: string;
-    birth_date: string | null;
-    gender: string | null;
-    weight_kg: number | null;
-    height_m: number | null;
-    blood_group: string | null;
-    cnamgs_number: string | null;
-  } | null>(null);
+  const [profileData, setProfileData] = useState<PatientProfile | null>(null);
+  const [stats, setStats] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
   
-  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
+  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || user?.email?.split('@')[0] || 'Patient';
 
   // Garde d'authentification et de rôles
   useEffect(() => {
@@ -45,40 +42,49 @@ export default function DashboardPatient() {
     }
   }, [user, userRoles, loading, navigate, hasAnyRole]);
 
-  // Charger le profil depuis la base de données
+  // Charger les données du patient depuis le service
   useEffect(() => {
-    const loadProfile = async () => {
-      if (user?.id) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('full_name, birth_date, gender, avatar_url, weight_kg, height_m, blood_group, cnamgs_number')
-          .eq('id', user.id)
-          .single();
-        
-        if (data && !error) {
-          setProfileData({
-            full_name: data.full_name,
-            birth_date: data.birth_date,
-            gender: data.gender,
-            weight_kg: data.weight_kg,
-            height_m: data.height_m,
-            blood_group: data.blood_group,
-            cnamgs_number: data.cnamgs_number,
-          });
-          if (data.avatar_url) setAvatarUrl(data.avatar_url);
+    const loadPatientData = async () => {
+      if (!user?.id) return;
+      
+      setLoadingData(true);
+      try {
+        // Charger toutes les données en parallèle
+        const [profile, patientStats, patientNotifications] = await Promise.all([
+          patientService.getProfile(user.id),
+          patientService.getPatientStats(user.id),
+          patientService.getNotifications(user.id)
+        ]);
+
+        if (profile) {
+          setProfileData(profile);
+          // TODO: Gérer l'avatar depuis Supabase Storage
         }
+        
+        if (patientStats) {
+          setStats(patientStats);
+        }
+        
+        setNotifications(patientNotifications || []);
+        
+      } catch (error) {
+        console.error('Erreur lors du chargement des données:', error);
+        toast.error('Erreur lors du chargement de vos données');
+      } finally {
+        setLoadingData(false);
       }
     };
-    loadProfile();
+
+    loadPatientData();
   }, [user?.id]);
   
   // Séparer le nom et le prénom
   const nameParts = fullName.split(' ');
-  const firstName = nameParts.slice(0, -1).join(' ') || 'Jean-Pierre';
-  const lastName = nameParts[nameParts.length - 1] || 'Mbadinga';
+  const firstName = nameParts[0] || 'Patient';
+  const lastName = nameParts.slice(1).join(' ') || '';
 
   // Calculer l'âge à partir de la date de naissance
-  const calculateAge = (birthDate: string | null): number | null => {
+  const calculateAge = (birthDate: string | null | undefined): number | null => {
     if (!birthDate) return null;
     const today = new Date();
     const birth = new Date(birthDate);
@@ -90,7 +96,7 @@ export default function DashboardPatient() {
     return age;
   };
 
-  const age = calculateAge(profileData?.birth_date || null);
+  const age = calculateAge(profileData?.date_of_birth);
 
   // Traduire le genre
   const getGenderLabel = (gender: string | null): string => {
@@ -113,6 +119,18 @@ export default function DashboardPatient() {
       }
     }, 100);
   }, []);
+
+  // Afficher un loader pendant le chargement
+  if (loadingData) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Chargement de vos données...</p>
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
 
   return (
     <PatientDashboardLayout>
@@ -280,8 +298,16 @@ export default function DashboardPatient() {
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div className="flex-1">
                 <p className="text-xs sm:text-sm text-muted-foreground font-medium">Prochain Rendez-vous</p>
-                <p className="text-base sm:text-xl font-bold mt-0.5 sm:mt-1 text-card-foreground">Mardi 8 Oct - 14h30</p>
-                <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">Dr.Ékomi - Cardiologie</p>
+                <p className="text-base sm:text-xl font-bold mt-0.5 sm:mt-1 text-card-foreground">
+                  {stats?.nextAppointment ? 
+                    `${new Date(stats.nextAppointment.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' })} - ${stats.nextAppointment.time}` : 
+                    'Aucun rendez-vous'}
+                </p>
+                <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">
+                  {stats?.nextAppointment ? 
+                    `${stats.nextAppointment.doctor_name} - ${stats.nextAppointment.speciality}` : 
+                    'Prenez rendez-vous'}
+                </p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">Cabinet Montagne Sainte, Libreville</p>
               </div>
               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
@@ -299,9 +325,15 @@ export default function DashboardPatient() {
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div className="flex-1">
                 <p className="text-xs sm:text-sm text-muted-foreground font-medium">Couverture CNAMGS</p>
-                <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-card-foreground">100%</p>
-                <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">Statut: Actif</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">N° GA2384567891</p>
+                <p className="text-lg sm:text-3xl font-bold mt-1 sm:mt-2 text-card-foreground">
+                  {stats?.coveragePercentage || 100}%
+                </p>
+                <p className="text-xs sm:text-sm mt-1 sm:mt-2 text-muted-foreground font-medium">
+                  Statut: {stats?.insuranceStatus === 'active' ? 'Actif' : 'Inactif'}
+                </p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">
+                  N° {profileData?.cnamgs_number || 'Non renseigné'}
+                </p>
               </div>
               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center bg-[#00d4ff]/20 flex-shrink-0">
                 <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-[#00d4ff]" />
@@ -313,14 +345,35 @@ export default function DashboardPatient() {
           </div>
         </div>
 
+        {/* Notifications */}
+        {notifications.length > 0 && (
+          <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-orange-500/30 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Bell className="w-5 h-5 text-orange-500" />
+              <h3 className="text-sm font-semibold text-foreground">Notifications</h3>
+              <span className="ml-auto bg-orange-500/20 text-orange-500 px-2 py-0.5 rounded-full text-xs font-bold">
+                {notifications.filter(n => !n.read).length}
+              </span>
+            </div>
+            <div className="space-y-2">
+              {notifications.slice(0, 3).map((notif) => (
+                <div key={notif.id} className={`p-3 rounded-lg border ${notif.read ? 'border-border bg-muted/20' : 'border-orange-500/30 bg-orange-500/10'}`}>
+                  <p className="text-sm font-medium text-foreground">{notif.title}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{notif.message}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Stats Grid */}
         <div className="rounded-xl backdrop-blur-xl p-4 sm:p-6 bg-card/80 border border-border shadow-xl">
           <div className="grid grid-cols-4 gap-3 sm:gap-4">
             {[
-              { label: 'Consultations', value: '8', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
-              { label: 'Ordonnances actives', value: '3', icon: Pill, trend: 'En cours', color: '#0088ff' },
-              { label: 'Analyses', value: '12', icon: Activity, trend: 'Cette année', color: '#ffaa00' },
-              { label: 'Complétude', value: '87%', icon: CheckCircle2, trend: 'Dossier médical', color: '#ff0088' }
+              { label: 'Consultations', value: stats?.totalConsultations || '0', icon: Stethoscope, trend: 'Cette année', color: '#00d4ff' },
+              { label: 'Ordonnances actives', value: stats?.activePrescriptions || '0', icon: Pill, trend: 'En cours', color: '#0088ff' },
+              { label: 'RDV à venir', value: stats?.upcomingAppointments || '0', icon: Calendar, trend: 'Programmés', color: '#ffaa00' },
+              { label: 'Analyses', value: stats?.pendingLabResults || '0', icon: Activity, trend: 'En attente', color: '#ff0088' }
             ].map((stat, idx) => {
               const Icon = stat.icon;
               return (
