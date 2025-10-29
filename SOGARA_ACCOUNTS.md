@@ -18,10 +18,18 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
   - Horaires et contact
   - Bouton "Personnel SOGARA" pour se connecter
 
-### 2. **Page de Connexion Personnel**
+### 2. **Pages de Connexion Personnel**
+
+#### Option A : Page dédiée SOGARA
 - **URL**: `http://localhost:8081/login/sogara`
 - **Accès**: Personnel SOGARA uniquement
 - **Redirection après connexion**: `/establishments/sogara/admin`
+
+#### Option B : Page Professionnels générale ✅ **RECOMMANDÉ**
+- **URL**: `http://localhost:8081/login/pro` ou `http://localhost:8081/login/professional`
+- **Accès**: TOUS les professionnels (incluant SOGARA)
+- **Redirection après connexion**: `/establishments/sogara/admin` pour SOGARA
+- **Avantage**: Fonctionne avec TOUS les comptes SOGARA listés ci-dessous
 
 ### 3. **Dashboard Admin SOGARA**
 - **URL**: `http://localhost:8081/establishments/sogara/admin`
@@ -199,6 +207,12 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 
 ### Pour le Personnel SOGARA :
 
+#### ✅ **Méthode Recommandée** (via page professionnels)
+1. **Accéder directement** : `http://localhost:8081/login/pro`
+2. **Entrer vos identifiants** (email et mot de passe listés ci-dessus)
+3. **Accès automatique** au dashboard SOGARA
+
+#### Alternative (via page dédiée SOGARA)
 1. **Accéder à la page publique** : `http://localhost:8081/sogara`
 2. **Cliquer sur** : "Personnel SOGARA" (bouton en haut à droite)
 3. **Ou accéder directement** : `http://localhost:8081/login/sogara`
