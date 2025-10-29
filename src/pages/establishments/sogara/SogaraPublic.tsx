@@ -435,7 +435,7 @@ export default function SogaraPublic() {
                 <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-8 md:h-9 w-auto rounded" />
                 <div>
                   <p className="text-xs md:text-sm font-bold text-gray-900">CMST SOGARA</p>
-                  <p className="text-[10px] md:text-xs text-gray-600">Centre Médical de Santé au Travail</p>
+                  <p className="text-[10px] md:text-xs text-gray-600">Centre Médical</p>
                 </div>
               </div>
               <p className="text-[10px] md:text-xs text-gray-600">
