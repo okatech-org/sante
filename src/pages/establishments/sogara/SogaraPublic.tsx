@@ -427,53 +427,50 @@ export default function SogaraPublic() {
 
 
       {/* Partners & Certifications */}
-      <section className="bg-gray-50 py-12 md:py-16 lg:py-20 border-t">
+      <section className="bg-gray-50 py-8 md:py-10 border-t">
         <div className="container mx-auto px-4 lg:px-16">
-          <div className="text-center mb-8 md:mb-12">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 md:mb-3">
+          <div className="text-center mb-4 md:mb-6">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
               Nos Partenaires & Certifications
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Reconnu et certifié
-            </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 lg:gap-10 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-center mb-4 md:mb-6">
             {/* CNAMGS */}
-            <div className="flex items-center justify-center p-6 bg-white rounded-xl hover:shadow-md transition">
-              <img src="/cnamgs_logo.png" alt="CNAMGS" className="h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition" />
+            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+              <img src="/cnamgs_logo.png" alt="CNAMGS" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* SOGARA */}
-            <div className="flex items-center justify-center p-6 bg-white rounded-xl hover:shadow-md transition">
-              <img src="/logo_sogara.png" alt="SOGARA" className="h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition" />
+            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+              <img src="/logo_sogara.png" alt="SOGARA" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* Ministère de la Santé */}
-            <div className="flex items-center justify-center p-6 bg-white rounded-xl hover:shadow-md transition">
-              <img src="/logo_sante.png" alt="Ministère de la Santé" className="h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition" />
+            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+              <img src="/logo_sante.png" alt="Ministère de la Santé" className="h-10 md:h-12 w-auto" />
             </div>
 
             {/* Sceau du Gabon */}
-            <div className="flex items-center justify-center p-6 bg-white rounded-xl hover:shadow-md transition">
-              <img src="/Sceau du Gabon.png" alt="République Gabonaise" className="h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition" />
+            <div className="flex items-center justify-center p-3 md:p-4 bg-white rounded-lg hover:shadow-md transition">
+              <img src="/Sceau du Gabon.png" alt="République Gabonaise" className="h-10 md:h-12 w-auto" />
             </div>
           </div>
 
           {/* Certifications Text */}
-          <div className="mt-8 md:mt-12 text-center">
-            <div className="inline-flex items-center gap-4 md:gap-6 text-sm md:text-base text-gray-600">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span>Certifié ISO 9001</span>
+          <div className="text-center">
+            <div className="inline-flex flex-wrap justify-center items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-600">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                <span>ISO 9001</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span>Conventionné CNAMGS</span>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                <span>CNAMGS</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span>Agréé Ministère de la Santé</span>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                <span>Ministère Santé</span>
               </div>
             </div>
           </div>
