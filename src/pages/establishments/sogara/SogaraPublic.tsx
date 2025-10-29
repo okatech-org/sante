@@ -536,6 +536,10 @@ export default function SogaraPublic() {
             <div className="space-y-3 md:space-y-4">
               <div className="flex items-center gap-2">
                 <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-8 md:h-9 w-auto rounded" />
+                <div>
+                  <p className="text-xs md:text-sm font-bold text-gray-900">CMST SOGARA</p>
+                  <p className="text-[10px] md:text-xs text-gray-600">Centre Médical de Santé au Travail</p>
+                </div>
               </div>
               <p className="text-xs md:text-sm text-gray-600">
                 Excellence médicale depuis 1974
