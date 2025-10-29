@@ -1,5 +1,59 @@
 [
   {
+    "id": "CMST_SOGARA_POG",
+    "type": "hopital",
+    "nom": "Centre de Médecine de Santé au Travail (CMST) SOGARA",
+    "province": "G3",
+    "ville": "Port-Gentil",
+    "coordonnees": {
+      "lat": -0.681398,
+      "lng": 8.772557
+    },
+    "adresse_descriptive": "Route de la Sogara, Port-Gentil",
+    "telephones": ["011 55 26 21", "011 55 26 22", "011 55 26 23"],
+    "email": "service.rgc@sogara.com",
+    "horaires": "Lundi-Vendredi: 07h00-17h00, Service d'urgence 24/7",
+    "services": [
+      "Suivi Médical Réglementaire",
+      "Prévention des Risques Professionnels",
+      "Soins de Première Nécessité",
+      "Gestion des Accidents de Travail",
+      "Campagnes de Santé",
+      "Urgences 24/7",
+      "Consultations spécialisées",
+      "Maternité",
+      "Chirurgie",
+      "Radiologie",
+      "Laboratoire",
+      "Hospitalisation"
+    ],
+    "specialites": [
+      "Médecine du travail",
+      "Médecine générale",
+      "Chirurgie",
+      "Gynécologie-Obstétrique",
+      "Pédiatrie"
+    ],
+    "ouvert_24_7": true,
+    "conventionnement": {
+      "cnamgs": true,
+      "cnss": true,
+      "mutuelles": ["SOGARA"]
+    },
+    "secteur": "prive",
+    "equipements_specialises": [
+      "Radiologie numérique",
+      "Laboratoire d'analyses",
+      "Bloc opératoire",
+      "Ambulances (2)",
+      "Salle de réanimation"
+    ],
+    "niveau_reference": "secondaire",
+    "statut_operationnel": "operationnel",
+    "contact_urgence": "011 55 26 21",
+    "notes": "Service de santé au travail d'entreprise SOGARA - 1250 employés et 420 ayants droit"
+  },
+  {
     "id": "CLI_LBV_001",
     "type": "clinique",
     "nom": "Polyclinique Dr. Chambrier",

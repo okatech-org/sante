@@ -64,6 +64,14 @@ import AdminSystem from "./pages/admin/AdminSystem";
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
+// Pages SOGARA
+import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
+import SogaraDashboard from "./pages/establishments/sogara/SogaraDashboard";
+import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
+import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
+import SogaraEmployees from "./pages/establishments/sogara/SogaraEmployees";
+import SogaraManagement from "./pages/admin/establishments/SogaraManagement";
+
 // Pages d'authentification admin
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 
@@ -143,6 +151,19 @@ function AppMain() {
 
                     {/* Pages de démonstration */}
                     <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
+
+                    {/* Routes SOGARA */}
+                    {/* Page publique SOGARA */}
+                    <Route path="/sogara" element={<SogaraPublic />} />
+                    
+                    {/* Dashboard Admin SOGARA (pour l'admin de l'établissement) */}
+                    <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />
+                    <Route path="/establishments/sogara/admin/emergency" element={<SogaraEmergency />} />
+                    <Route path="/establishments/sogara/admin/consultations" element={<SogaraConsultations />} />
+                    <Route path="/establishments/sogara/admin/employees" element={<SogaraEmployees />} />
+                    
+                    {/* Page de gestion Super Admin pour SOGARA */}
+                    <Route path="/admin/establishments/sogara" element={<SogaraManagement />} />
 
                     {/* Redirection par défaut */}
                     <Route path="*" element={<Navigate to="/" replace />} />
