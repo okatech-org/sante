@@ -308,25 +308,35 @@ export default function AdminEstablishments() {
   // Convertir pour la carte
   const mapProviders = establishments.map(est => ({
     id: est.id,
-    type: est.type === 'hospital' ? 'hopital' : 
+    type: (est.type === 'hospital' ? 'hopital' : 
           est.type === 'clinic' ? 'clinique' :
           est.type === 'pharmacy' ? 'pharmacie' :
           est.type === 'laboratory' ? 'laboratoire' :
           est.type === 'imaging' ? 'imagerie' :
-          est.type === 'institution' ? 'institution' : 'cabinet_medical',
+          est.type === 'institution' ? 'institution' : 'cabinet_medical') as 'hopital' | 'clinique' | 'cabinet_medical' | 'cabinet_dentaire' | 'pharmacie' | 'laboratoire' | 'imagerie' | 'service_urgence' | 'institution',
     nom: est.nom,
-    name: est.nom,
-    address: est.adresse_descriptive || est.ville,
+    province: est.province || '',
     ville: est.ville,
-    city: est.ville,
     coordonnees: est.coordonnees,
-    lat: est.coordonnees.lat,
-    lng: est.coordonnees.lng,
-    phone: est.telephones?.[0],
-    telephones: est.telephones,
+    adresse_descriptive: est.adresse_descriptive || est.ville || '',
+    telephones: est.telephones || [],
     email: est.email,
+    site_web: est.site_web,
+    horaires: undefined,
     services: est.services || [],
-    claimed: est.claim_status !== 'unclaimed'
+    specialites: undefined,
+    ouvert_24_7: false,
+    conventionnement: est.conventionnement || { cnamgs: false, cnss: false, mutuelles: [] },
+    secteur: (est.secteur === 'mixte' ? 'parapublic' : (est.secteur as 'public' | 'prive' | 'parapublic' | 'confessionnel' | 'ong' | 'militaire')) || 'prive',
+    equipements_specialises: undefined,
+    niveau_reference: undefined,
+    statut_operationnel: undefined,
+    contact_urgence: undefined,
+    notes: undefined,
+    has_account: est.claim_status === 'verified',
+    source: 'admin' as const,
+    osm_id: undefined,
+    nombre_lits: undefined
   }));
 
   return (
