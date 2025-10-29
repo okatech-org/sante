@@ -575,7 +575,9 @@ export default function SogaraPublic() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Award className="w-10 h-10 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
+                <Award className="w-6 h-6 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Certifié</p>
                 <p className="text-xs text-gray-600">ISO 9001:2015</p>
