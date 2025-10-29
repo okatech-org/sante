@@ -156,7 +156,7 @@ export default function SogaraPublic() {
             {/* Left Content */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                   Excellence Médicale,
                   <span className="text-blue-600"> Bien-être Assuré</span>
                 </h1>
