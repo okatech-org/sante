@@ -5,117 +5,84 @@ import { useMapboxToken } from "@/hooks/useMapboxToken";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { 
-  Building2, Phone, Mail, MapPin, Clock, Users, Heart, 
-  Shield, Stethoscope, Activity, AlertTriangle, Truck,
-  Baby, Pill, FlaskConical, UserCheck, Calendar, Home,
-  ChevronRight, Info, Globe, Award, Target, Sparkles,
-  CheckCircle, ArrowRight, LogIn, ChevronLeft, Star,
-  TrendingUp, Smile, Eye, Microscope, Menu
-} from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Building2, Phone, Mail, MapPin, Clock, Users, Heart, Shield, Stethoscope, Activity, AlertTriangle, Truck, Baby, Pill, FlaskConical, UserCheck, Calendar, Home, ChevronRight, Info, Globe, Award, Target, Sparkles, CheckCircle, ArrowRight, LogIn, ChevronLeft, Star, TrendingUp, Smile, Eye, Microscope, Menu } from "lucide-react";
 import sogaraDoctorFemale from "@/assets/sogara-doctor-female.jpg";
 import sogaraDoctorMale from "@/assets/sogara-doctor-male.jpg";
 import sogaraPediatrician from "@/assets/sogara-pediatrician.jpg";
 import sogaraFamilyHealth from "@/assets/sogara-family-health.jpg";
 import sogaraReception from "@/assets/sogara-reception.jpg";
 import SogaraLocationMap from "@/components/maps/SogaraLocationMap";
-
 export default function SogaraPublic() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { token: mapboxToken } = useMapboxToken();
-
-  const doctors = [
-    {
-      name: "Dr. Sophie Taylor",
-      specialty: "Cardiologie",
-      image: sogaraDoctorFemale,
-      rating: 4.9,
-      patients: 1250
-    },
-    {
-      name: "Dr. Marc Dubois",
-      specialty: "Chirurgie",
-      image: sogaraDoctorMale,
-      rating: 4.8,
-      patients: 980
-    },
-    {
-      name: "Dr. Lisa Chen",
-      specialty: "Pédiatrie",
-      image: sogaraPediatrician,
-      rating: 5.0,
-      patients: 1520
-    },
-    {
-      name: "Dr. Jean Nkosi",
-      specialty: "Médecine du Travail",
-      image: sogaraDoctorMale,
-      rating: 4.9,
-      patients: 1100
-    }
-  ];
-
-  const services = [
-    {
-      icon: AlertTriangle,
-      title: "Service d'Urgences 24/7",
-      description: "Équipe médicale disponible jour et nuit pour toutes vos urgences"
-    },
-    {
-      icon: Baby,
-      title: "Maternité Moderne",
-      description: "Accompagnement complet de la grossesse à l'accouchement"
-    },
-    {
-      icon: Stethoscope,
-      title: "Consultations Spécialisées",
-      description: "Large gamme de spécialités médicales et chirurgicales"
-    },
-    {
-      icon: FlaskConical,
-      title: "Laboratoire d'Analyses",
-      description: "Analyses médicales complètes avec résultats rapides"
-    },
-    {
-      icon: Activity,
-      title: "Bloc Opératoire",
-      description: "Équipements chirurgicaux de dernière génération"
-    },
-    {
-      icon: Shield,
-      title: "Médecine Préventive",
-      description: "Bilans de santé et suivi médical personnalisé"
-    }
-  ];
-
-  const features = [
-    {
-      icon: Microscope,
-      title: "Équipements Modernes",
-      description: "Technologies médicales de pointe pour des diagnostics précis et des soins de qualité"
-    },
-    {
-      icon: TrendingUp,
-      title: "Système de Facturation Simple",
-      description: "Gestion facilitée avec la CNAMGS. Prise en charge directe et transparente"
-    },
-    {
-      icon: UserCheck,
-      title: "Personnel Qualifié",
-      description: "Équipe médicale hautement qualifiée et expérimentée à votre service"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-white">
+  const {
+    token: mapboxToken
+  } = useMapboxToken();
+  const doctors = [{
+    name: "Dr. Sophie Taylor",
+    specialty: "Cardiologie",
+    image: sogaraDoctorFemale,
+    rating: 4.9,
+    patients: 1250
+  }, {
+    name: "Dr. Marc Dubois",
+    specialty: "Chirurgie",
+    image: sogaraDoctorMale,
+    rating: 4.8,
+    patients: 980
+  }, {
+    name: "Dr. Lisa Chen",
+    specialty: "Pédiatrie",
+    image: sogaraPediatrician,
+    rating: 5.0,
+    patients: 1520
+  }, {
+    name: "Dr. Jean Nkosi",
+    specialty: "Médecine du Travail",
+    image: sogaraDoctorMale,
+    rating: 4.9,
+    patients: 1100
+  }];
+  const services = [{
+    icon: AlertTriangle,
+    title: "Service d'Urgences 24/7",
+    description: "Équipe médicale disponible jour et nuit pour toutes vos urgences"
+  }, {
+    icon: Baby,
+    title: "Maternité Moderne",
+    description: "Accompagnement complet de la grossesse à l'accouchement"
+  }, {
+    icon: Stethoscope,
+    title: "Consultations Spécialisées",
+    description: "Large gamme de spécialités médicales et chirurgicales"
+  }, {
+    icon: FlaskConical,
+    title: "Laboratoire d'Analyses",
+    description: "Analyses médicales complètes avec résultats rapides"
+  }, {
+    icon: Activity,
+    title: "Bloc Opératoire",
+    description: "Équipements chirurgicaux de dernière génération"
+  }, {
+    icon: Shield,
+    title: "Médecine Préventive",
+    description: "Bilans de santé et suivi médical personnalisé"
+  }];
+  const features = [{
+    icon: Microscope,
+    title: "Équipements Modernes",
+    description: "Technologies médicales de pointe pour des diagnostics précis et des soins de qualité"
+  }, {
+    icon: TrendingUp,
+    title: "Système de Facturation Simple",
+    description: "Gestion facilitée avec la CNAMGS. Prise en charge directe et transparente"
+  }, {
+    icon: UserCheck,
+    title: "Personnel Qualifié",
+    description: "Équipe médicale hautement qualifiée et expérimentée à votre service"
+  }];
+  return <div className="min-h-screen bg-white">
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white border-b">
         <div className="container mx-auto px-4 lg:px-8">
@@ -136,20 +103,11 @@ export default function SogaraPublic() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate("/")}
-                className="hidden sm:flex"
-              >
+              <Button variant="outline" size="sm" onClick={() => navigate("/")} className="hidden sm:flex">
                 <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
                 SANTE.GA
               </Button>
-              <Button 
-                size="sm"
-                className="bg-gray-900 hover:bg-gray-800 hidden md:flex"
-                onClick={() => navigate("/login/sogara")}
-              >
+              <Button size="sm" className="bg-gray-900 hover:bg-gray-800 hidden md:flex" onClick={() => navigate("/login/sogara")}>
                 <LogIn className="w-4 h-4 mr-2" />
                 Personnel CMST
               </Button>
@@ -169,53 +127,30 @@ export default function SogaraPublic() {
                     </SheetTitle>
                   </SheetHeader>
                   <div className="mt-8 flex flex-col gap-4">
-                    <a 
-                      href="#about" 
-                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <a href="#about" className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2" onClick={() => setMobileMenuOpen(false)}>
                       À Propos
                     </a>
-                    <a 
-                      href="#services" 
-                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <a href="#services" className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2" onClick={() => setMobileMenuOpen(false)}>
                       Services
                     </a>
-                    <a 
-                      href="#doctors" 
-                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <a href="#doctors" className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2" onClick={() => setMobileMenuOpen(false)}>
                       Médecins
                     </a>
-                    <a 
-                      href="#contact" 
-                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <a href="#contact" className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2" onClick={() => setMobileMenuOpen(false)}>
                       Contact
                     </a>
                     <div className="pt-4 mt-4 border-t space-y-3">
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          navigate("/");
-                        }}
-                      >
+                      <Button variant="outline" className="w-full justify-start" onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate("/");
+                    }}>
                         <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
                         SANTE.GA
                       </Button>
-                      <Button 
-                        className="w-full bg-gray-900 hover:bg-gray-800"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          navigate("/login/sogara");
-                        }}
-                      >
+                      <Button className="w-full bg-gray-900 hover:bg-gray-800" onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate("/login/sogara");
+                    }}>
                         <LogIn className="w-4 h-4 mr-2" />
                         Personnel CMST
                       </Button>
@@ -244,18 +179,10 @@ export default function SogaraPublic() {
             </p>
 
             <div className="flex gap-2 md:gap-3">
-              <Button 
-                size="lg" 
-                className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial"
-                onClick={() => navigate("/appointments")}
-              >
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                 Prendre RDV
               </Button>
-              <Button 
-                size="lg" 
-                variant="ghost"
-                className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial"
-              >
+              <Button size="lg" variant="ghost" className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial">
                 En savoir plus
                 <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
               </Button>
@@ -265,11 +192,7 @@ export default function SogaraPublic() {
 
         {/* Full Width Image */}
         <div className="container mx-auto px-4 lg:px-16 pb-10 md:pb-12 lg:pb-16">
-          <img 
-            src={sogaraDoctorFemale}
-            alt="Équipe Médicale" 
-            className="w-full h-[280px] md:h-[350px] lg:h-[500px] object-cover rounded-2xl md:rounded-3xl"
-          />
+          <img src={sogaraDoctorFemale} alt="Équipe Médicale" className="w-full h-[280px] md:h-[350px] lg:h-[500px] object-cover rounded-2xl md:rounded-3xl" />
         </div>
       </section>
 
@@ -319,11 +242,7 @@ export default function SogaraPublic() {
             <div className="space-y-10 md:space-y-12 lg:space-y-16">
               {/* Service 1 */}
               <div>
-                <img 
-                  src={sogaraDoctorMale}
-                  alt="Urgences"
-                  className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6"
-                />
+                <img src={sogaraDoctorMale} alt="Urgences" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
                 <div className="flex items-start gap-2.5 md:gap-3">
                   <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
                     <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-white" />
@@ -340,11 +259,7 @@ export default function SogaraPublic() {
 
               {/* Service 2 */}
               <div>
-                <img 
-                  src={sogaraPediatrician}
-                  alt="Maternité"
-                  className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6"
-                />
+                <img src={sogaraPediatrician} alt="Maternité" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
                 <div className="flex items-start gap-2.5 md:gap-3">
                   <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
                     <Baby className="w-4 h-4 md:w-5 md:h-5 text-white" />
@@ -361,11 +276,7 @@ export default function SogaraPublic() {
 
               {/* Service 3 */}
               <div>
-                <img 
-                  src={sogaraFamilyHealth}
-                  alt="Consultations"
-                  className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6"
-                />
+                <img src={sogaraFamilyHealth} alt="Consultations" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
                 <div className="flex items-start gap-2.5 md:gap-3">
                   <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
                     <Stethoscope className="w-4 h-4 md:w-5 md:h-5 text-white" />
@@ -420,14 +331,9 @@ export default function SogaraPublic() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
-            {doctors.map((doctor, index) => (
-              <div key={index} className="group">
+            {doctors.map((doctor, index) => <div key={index} className="group">
                 <div className="relative mb-3 md:mb-4 overflow-hidden rounded-xl md:rounded-2xl">
-                  <img 
-                    src={doctor.image} 
-                    alt={doctor.name}
-                    className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  <img src={doctor.image} alt={doctor.name} className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-0.5 md:mb-1">{doctor.name}</h3>
                 <p className="text-xs md:text-sm text-gray-600 mb-1.5 md:mb-2">{doctor.specialty}</p>
@@ -436,8 +342,7 @@ export default function SogaraPublic() {
                   <span className="font-semibold text-[10px] md:text-xs">{doctor.rating}</span>
                   <span className="text-[10px] md:text-xs text-gray-500">• {doctor.patients}</span>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -455,18 +360,10 @@ export default function SogaraPublic() {
               Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
             </p>
             <div className="flex gap-2 md:gap-3">
-              <Button 
-                size="lg" 
-                className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial"
-                onClick={() => navigate("/appointments")}
-              >
+              <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                 Prendre RDV
               </Button>
-              <Button 
-                size="lg" 
-                variant="ghost"
-                className="text-white px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial"
-              >
+              <Button size="lg" variant="ghost" className="text-white px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial">
                 <Phone className="w-4 h-4 mr-1 md:mr-2" />
                 Appeler
               </Button>
@@ -557,7 +454,7 @@ export default function SogaraPublic() {
             </div>
 
             <div>
-              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-2 md:mb-3">À Propos</h3>
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-2 md:mb-3">Centre Médical</h3>
               <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm text-gray-600">
                 <li><a href="#" className="hover:text-gray-900 transition">Notre Équipe</a></li>
                 <li><a href="#" className="hover:text-gray-900 transition">Nos Valeurs</a></li>
@@ -585,6 +482,5 @@ export default function SogaraPublic() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
