@@ -1,0 +1,653 @@
+
+🏥 INSTRUCTIONS POUR CRÉER LES COMPTES CMST SOGARA
+════════════════════════════════════════════════════════════
+
+1. Allez sur https://app.supabase.com
+2. Connectez-vous à votre projet
+3. Allez dans "Authentication" > "Users"
+4. Pour CHAQUE compte ci-dessous:
+   - Cliquez sur "Add user" > "Create new user"
+   - Remplissez les informations
+   - Cochez "Auto Confirm User"
+
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+═
+
+📋 COMPTES À CRÉER:
+
+👮 ADMINISTRATEURS:
+────────────────────────────────────────
+
+1. Jean-Pierre Mbadinga
+   📧 Email: admin@sogara.com
+   🔑 Password: Admin@SOGARA2024
+   🏢 Département: Administration
+   📌 Matricule: ADM-001
+
+2. Dr. François Obiang
+   📧 Email: directeur@sogara.com
+   🔑 Password: DirecteurSOGARA2024!
+   🏢 Département: Direction Médicale
+   📌 Matricule: DIR-001
+
+
+👨‍⚕️ MÉDECINS:
+────────────────────────────────────────
+
+1. Dr. Marie Okemba
+   📧 Email: dr.okemba@sogara.com
+   🔑 Password: Okemba@2024Med
+   🏢 Département: Médecine Générale
+   📌 Matricule: MED-012
+
+2. Dr. Paul Nguema
+   📧 Email: dr.nguema@sogara.com
+   🔑 Password: Nguema@Urgence24
+   🏢 Département: Urgences
+   📌 Matricule: MED-015
+
+3. Dr. Léa Mbina
+   📧 Email: dr.mbina@sogara.com
+   🔑 Password: Mbina@Cardio2024
+   🏢 Département: Cardiologie
+   📌 Matricule: MED-018
+
+4. Dr. Thomas Mezui
+   📧 Email: dr.mezui@sogara.com
+   🔑 Password: Mezui@Pediatrie24
+   🏢 Département: Pédiatrie
+   📌 Matricule: MED-022
+
+
+👩‍⚕️ PERSONNEL MÉDICAL:
+────────────────────────────────────────
+
+1. Sylvie Mba
+   📧 Email: nurse.mba@sogara.com
+   🔑 Password: MbaSI@2024
+   🏢 Département: Soins Intensifs
+   📌 Matricule: INF-025
+
+2. Patricia Nze
+   📧 Email: nurse.nze@sogara.com
+   🔑 Password: NzeUrg@2024
+   🏢 Département: Urgences
+   📌 Matricule: INF-028
+
+3. Claire Andeme
+   📧 Email: nurse.andeme@sogara.com
+   🔑 Password: Andeme@Mat2024
+   🏢 Département: Maternité
+   📌 Matricule: INF-030
+
+4. Nadège Oyono
+   📧 Email: accueil@sogara.com
+   🔑 Password: AccueilSOGARA@24
+   🏢 Département: Accueil
+   📌 Matricule: REC-002
+
+
+🔬 LABORATOIRE & PHARMACIE:
+────────────────────────────────────────
+
+1. André Moussavou
+   📧 Email: lab.tech@sogara.com
+   🔑 Password: LabSOGARA@2024
+   🏢 Département: Laboratoire
+   📌 Matricule: LAB-008
+
+2. Dr. Lydie Kombila
+   📧 Email: pharma@sogara.com
+   🔑 Password: PharmaSOGARA@24
+   🏢 Département: Pharmacie
+   📌 Matricule: PHAR-004
+
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+═
+
+5. Après avoir créé les comptes, exécutez ce SQL dans SQL Editor:
+
+-- SQL pour configurer les profils et rôles
+-- À exécuter après création des comptes dans Supabase
+
+-- Configuration pour Jean-Pierre Mbadinga
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'admin@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Jean-Pierre Mbadinga', 'admin@sogara.com', 'ADM-001')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'hospital')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'other', 'ADM-001', 'Administration', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Jean-Pierre Mbadinga configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur admin@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. François Obiang
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'directeur@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. François Obiang', 'directeur@sogara.com', 'DIR-001')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'hospital')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'other', 'DIR-001', 'Direction Médicale', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. François Obiang configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur directeur@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. Marie Okemba
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'dr.okemba@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. Marie Okemba', 'dr.okemba@sogara.com', 'MED-012')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'doctor')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'doctor', 'MED-012', 'Médecine Générale', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. Marie Okemba configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur dr.okemba@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. Paul Nguema
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'dr.nguema@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. Paul Nguema', 'dr.nguema@sogara.com', 'MED-015')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'doctor')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'doctor', 'MED-015', 'Urgences', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. Paul Nguema configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur dr.nguema@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. Léa Mbina
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'dr.mbina@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. Léa Mbina', 'dr.mbina@sogara.com', 'MED-018')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'doctor')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'doctor', 'MED-018', 'Cardiologie', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. Léa Mbina configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur dr.mbina@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. Thomas Mezui
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'dr.mezui@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. Thomas Mezui', 'dr.mezui@sogara.com', 'MED-022')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'doctor')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'doctor', 'MED-022', 'Pédiatrie', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. Thomas Mezui configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur dr.mezui@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Sylvie Mba
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'nurse.mba@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Sylvie Mba', 'nurse.mba@sogara.com', 'INF-025')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'medical_staff')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'nurse', 'INF-025', 'Soins Intensifs', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Sylvie Mba configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur nurse.mba@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Patricia Nze
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'nurse.nze@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Patricia Nze', 'nurse.nze@sogara.com', 'INF-028')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'medical_staff')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'nurse', 'INF-028', 'Urgences', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Patricia Nze configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur nurse.nze@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Claire Andeme
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'nurse.andeme@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Claire Andeme', 'nurse.andeme@sogara.com', 'INF-030')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'medical_staff')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'nurse', 'INF-030', 'Maternité', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Claire Andeme configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur nurse.andeme@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour André Moussavou
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'lab.tech@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'André Moussavou', 'lab.tech@sogara.com', 'LAB-008')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'laboratory')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'lab_tech', 'LAB-008', 'Laboratoire', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur André Moussavou configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur lab.tech@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Dr. Lydie Kombila
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'pharma@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Dr. Lydie Kombila', 'pharma@sogara.com', 'PHAR-004')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'pharmacy')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'pharmacist', 'PHAR-004', 'Pharmacie', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Dr. Lydie Kombila configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur pharma@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+-- Configuration pour Nadège Oyono
+DO $$
+DECLARE
+  v_user_id UUID;
+BEGIN
+  -- Récupérer l'ID de l'utilisateur
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'accueil@sogara.com';
+  
+  IF v_user_id IS NOT NULL THEN
+    -- Créer/Mettre à jour le profil
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (v_user_id, 'Nadège Oyono', 'accueil@sogara.com', 'REC-002')
+    ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
+    
+    -- Assigner le rôle
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (v_user_id, 'medical_staff')
+    ON CONFLICT DO NOTHING;
+    
+    -- Créer le profil professionnel
+    INSERT INTO public.professionals (user_id, professional_type, numero_ordre, specialite, etablissement, is_verified)
+    VALUES (v_user_id, 'receptionist', 'REC-002', 'Accueil', 'CMST SOGARA', true)
+    ON CONFLICT (user_id) DO UPDATE SET professional_type = EXCLUDED.professional_type, numero_ordre = EXCLUDED.numero_ordre;
+    
+    RAISE NOTICE 'Utilisateur Nadège Oyono configuré avec succès';
+  ELSE
+    RAISE NOTICE 'Utilisateur accueil@sogara.com non trouvé - Créez d''abord le compte dans Authentication';
+  END IF;
+END $$;
+
+
+
+✅ Une fois terminé, testez la connexion sur:
+   http://localhost:8080/login/professional
+

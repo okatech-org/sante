@@ -14,6 +14,7 @@ import {
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
@@ -261,6 +262,39 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
                     <DropdownMenuItem onClick={() => handleThemeChange('system')}>
                       <Laptop className="h-4 w-4 mr-2" />
                       Système
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* User Menu Desktop avec Déconnexion */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="hidden lg:flex items-center gap-2 h-9">
+                      <Avatar className="h-7 w-7">
+                        <AvatarFallback className="bg-gradient-to-br from-primary to-primary/70 text-white font-bold text-xs">
+                          {fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium">{fullName.split(' ')[0]}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{fullName}</p>
+                      <p className="text-xs text-muted-foreground">Super Admin</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Paramètres
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={handleSignOut} 
+                      className="text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Déconnexion
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
