@@ -20,14 +20,15 @@ interface PatientDashboardLayoutProps {
 }
 
 export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps) {
-  const { user, isSuperAdmin, hasRole, signOut } = useOfflineAuth();
+  const { user, hasRole, signOut } = useOfflineAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState('fr');
   
-  const userRoles = user?.user_metadata?.roles || [];
+  // IMPORTANT: PatientDashboardLayout affiche UNIQUEMENT le menu patient
+  // Même si l'utilisateur a d'autres rôles (admin, pro), on affiche le menu patient
   const isProfessional = hasRole('doctor') || hasRole('medical_staff');
   
   // Récupérer les vraies informations du patient connecté
@@ -80,21 +81,7 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     }
   };
   
-  // Menu items pour super admin - harmonisé avec SuperAdminLayout
-  const superAdminMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Shield, path: '/dashboard/superadmin', color: '#ff0088', badge: undefined },
-    { id: 'project', label: 'Projet', icon: FileHeart, path: '/admin/project', color: '#00d4ff', badge: undefined },
-    { id: 'users', label: 'Utilisateurs', icon: Home, path: '/admin/users', color: '#0088ff', badge: undefined },
-    { id: 'approvals', label: 'Approbations', icon: AlertCircle, path: '/admin/approvals', color: '#ffaa00', badge: '43' },
-    { id: 'establishments', label: 'Établissements', icon: Stethoscope, path: '/admin/establishments', color: '#00d4ff', badge: undefined },
-    { id: 'professionals', label: 'Professionnels', icon: Heart, path: '/admin/professionals', color: '#0088ff', badge: undefined },
-    { id: 'cartography', label: 'Cartographie Santé', icon: Activity, path: '/cartography', color: '#ffaa00', badge: undefined },
-    { id: 'demo', label: 'Démo', icon: Stethoscope, path: '/admin/demo', color: '#ff0088', badge: undefined },
-    { id: 'audit', label: 'Audit', icon: Activity, path: '/admin/audit', color: '#00d4ff', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/settings', color: '#0088ff', badge: undefined }
-  ];
-
-  // Menu items pour patient
+  // Menu items pour patient (PatientDashboardLayout affiche UNIQUEMENT le menu patient)
   const patientMenuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/patient', color: '#00d4ff', badge: undefined },
     { id: 'appointments', label: 'Mes rendez-vous', icon: Calendar, badge: '2', path: '/appointments', color: '#0088ff' },
@@ -107,23 +94,8 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
     { id: 'settings', label: 'Paramètres', icon: Settings, path: '/parametres', color: '#ff0088', badge: undefined }
   ];
 
-  // Menu items pour professionnels de santé
-  const professionalMenuItems = [
-    { id: 'dashboard', label: 'Tableau de bord', icon: Home, path: '/dashboard/professional', color: '#00d4ff', badge: undefined },
-    { id: 'agenda', label: 'Agenda & RDV', icon: Calendar, path: '/professional/agenda', color: '#0088ff', badge: '8' },
-    { id: 'patients', label: 'Mes patients', icon: Users, path: '/professional/patients', color: '#00d4ff', badge: undefined },
-    { id: 'teleconsultations', label: 'Téléconsultations', icon: Video, path: '/professional/teleconsultations', color: '#ffaa00', badge: undefined },
-    { id: 'consultations', label: 'Consultations', icon: ClipboardList, path: '/professional/consultations', color: '#ff0088', badge: undefined },
-    { id: 'prescriptions', label: 'Prescriptions', icon: Pill, path: '/professional/prescriptions', color: '#0088ff', badge: undefined },
-    { id: 'finances', label: 'Finances & CNAMGS', icon: DollarSign, path: '/professional/finances', color: '#00d4ff', badge: undefined },
-    { id: 'stats', label: 'Statistiques', icon: TrendingUp, path: '/professional/stats', color: '#ffaa00', badge: undefined },
-    { id: 'messages', label: 'Messages', icon: Mail, path: '/professional/messages', color: '#ff0088', badge: '5' },
-    { id: 'teleexpertise', label: 'Télé-expertise', icon: Stethoscope, path: '/professional/tele-expertise', color: '#0088ff', badge: undefined },
-    { id: 'integrations', label: 'Intégrations', icon: Link2, path: '/professional/integrations', color: '#00d4ff', badge: undefined },
-    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/professional/settings', color: '#ff0088', badge: undefined }
-  ];
-
-  const menuItems = isSuperAdmin ? superAdminMenuItems : (isProfessional ? professionalMenuItems : patientMenuItems);
+  // Toujours afficher le menu patient dans PatientDashboardLayout
+  const menuItems = patientMenuItems;
 
   const activeMenu = menuItems.find(item => item.path === location.pathname)?.id || 'dashboard';
 
@@ -288,25 +260,16 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
               <div className="p-3 rounded-lg bg-sidebar-accent/30">
                 <div className="flex items-center gap-3">
                   <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                    style={{ backgroundColor: isSuperAdmin ? '#ff0088' : '#00d4ff' }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold bg-[#00d4ff]"
                   >
-                    {isSuperAdmin ? (
-                      <Shield className="w-5 h-5" />
-                    ) : (
-                      <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
-                    )}
+                    <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-sidebar-foreground truncate">
-                      {isSuperAdmin ? 'Super Admin' : 
-                       isProfessional ? `Dr. ${fullName.split(' ')[0]}` : 
-                       fullName}
+                      {fullName}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {isSuperAdmin ? 'Administrateur' : 
-                       isProfessional ? 'Professionnel de santé' : 
-                       cnamgsNumber}
+                      {cnamgsNumber}
                     </p>
                   </div>
                 </div>
@@ -434,18 +397,13 @@ export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps
                     <div className="p-3 rounded-xl bg-white/5">
                       <div className="flex items-center gap-3">
                         <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                          style={{ backgroundColor: isSuperAdmin ? '#ff0088' : '#00d4ff' }}
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg bg-[#00d4ff]"
                         >
-                          {isSuperAdmin ? (
-                            <Shield className="w-6 h-6" />
-                          ) : (
-                            <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
-                          )}
+                          <span>{fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">{isProfessional ? 'Dr.' : fullName.split(' ')[0]}</p>
-                          <p className="text-xs text-gray-500">{isSuperAdmin ? 'Super Admin' : (isProfessional ? 'Professionnel' : 'Patient')}</p>
+                          <p className="text-sm font-semibold text-white truncate">{fullName.split(' ')[0]}</p>
+                          <p className="text-xs text-gray-500">{cnamgsNumber}</p>
                         </div>
                       </div>
                     </div>
