@@ -79,20 +79,24 @@ En tant qu'employée SOGARA, elle bénéficie :
 
 ## 🔧 CRÉATION DU COMPTE DANS SUPABASE
 
-### Méthode 1 : SQL Direct (Recommandé)
+### ⚠️ MÉTHODE OBLIGATOIRE (2 étapes)
+
+#### Étape 1 : Créer l'utilisateur (Dashboard)
 1. Ouvrir **https://app.supabase.com**
-2. SQL Editor > New Query
-3. Copier le contenu de **`create-pierrette-nomsi-accounts.sql`**
-4. Exécuter (Run)
+2. Aller dans **Authentication > Users**
+3. Cliquer **"Add User"**
+4. Remplir :
+   - Email : `pierrette.nomsi@gmail.com`
+   - Password : `Nomsi@Patient2024`
+   - ✅ **IMPORTANT** : Cocher "Auto Confirm User"
+5. Cliquer **"Create User"**
 
-### Méthode 2 : Manuel
-1. Authentication > Users > Add User
-2. Email : `pierrette.nomsi@gmail.com`
-3. Password : `Nomsi@Patient2024`
-4. ✅ Cocher "Auto Confirm User"
-5. Create User
+#### Étape 2 : Configurer le profil et les rôles (SQL)
 
-Puis exécuter ce SQL :
+1. Aller dans **SQL Editor > New Query**
+2. Copier et exécuter le script **`create-pierrette-nomsi-accounts.sql`**
+
+Ou copier/coller ce SQL :
 ```sql
 DO $$
 DECLARE v_user_id UUID;

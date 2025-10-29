@@ -1,58 +1,27 @@
 -- =====================================================
--- CRÉATION DU COMPTE PATIENT POUR PIERRETTE NOMSI
+-- CONFIGURATION DU COMPTE PATIENT POUR PIERRETTE NOMSI
+-- =====================================================
+-- ⚠️ IMPORTANT : Créez d'abord l'utilisateur via Supabase Dashboard
+-- Authentication > Users > Add User
+-- Email: pierrette.nomsi@gmail.com
+-- Password: Nomsi@Patient2024
+-- ✅ COCHER "Auto Confirm User"
 -- =====================================================
 -- Pierrette NOMSI est employée SOGARA (Chef QUALITÉ)
 -- Elle bénéficie des soins au CMST SOGARA
 -- Compte PATIENT uniquement (pas professionnel de santé)
 -- =====================================================
 
--- 1️⃣ COMPTE PATIENT - pierrette.nomsi@gmail.com
+-- 1️⃣ CONFIGURATION DU PROFIL PATIENT - pierrette.nomsi@gmail.com
 DO $$
 DECLARE
   v_user_id UUID;
-  v_encrypted_password TEXT;
 BEGIN
-  v_encrypted_password := crypt('Nomsi@Patient2024', gen_salt('bf'));
-  
-  INSERT INTO auth.users (
-    instance_id,
-    id,
-    aud,
-    role,
-    email,
-    encrypted_password,
-    email_confirmed_at,
-    raw_app_meta_data,
-    raw_user_meta_data,
-    created_at,
-    updated_at
-  ) VALUES (
-    '00000000-0000-0000-0000-000000000000',
-    gen_random_uuid(),
-    'authenticated',
-    'authenticated',
-    'pierrette.nomsi@gmail.com',
-    v_encrypted_password,
-    NOW(),
-    '{"provider":"email","providers":["email"]}'::jsonb,
-    jsonb_build_object(
-      'full_name', 'Pierrette NOMSI',
-      'date_of_birth', '1985-04-15',
-      'phone', '+241 07 45 67 89',
-      'gender', 'female',
-      'blood_group', 'O+'
-    ),
-    NOW(),
-    NOW()
-  ) ON CONFLICT (email) DO UPDATE
-  SET 
-    encrypted_password = v_encrypted_password,
-    email_confirmed_at = NOW(),
-    updated_at = NOW()
-  RETURNING id INTO v_user_id;
+  -- Récupérer l'ID de l'utilisateur depuis auth.users
+  SELECT id INTO v_user_id FROM auth.users WHERE email = 'pierrette.nomsi@gmail.com';
   
   IF v_user_id IS NULL THEN
-    SELECT id INTO v_user_id FROM auth.users WHERE email = 'pierrette.nomsi@gmail.com';
+    RAISE EXCEPTION '❌ Utilisateur pierrette.nomsi@gmail.com non trouvé. Créez d''abord le compte via Supabase Dashboard > Authentication > Users';
   END IF;
   
   -- Créer le profil
