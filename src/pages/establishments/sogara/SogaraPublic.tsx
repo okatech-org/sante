@@ -111,11 +111,11 @@ export default function SogaraPublic() {
       <header className="sticky top-0 z-50 bg-white border-b">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-3">
-              <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-16 w-auto rounded" />
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">CMST SOGARA</h1>
-                <p className="text-xs text-gray-500">Centre Médical de Santé au Travail</p>
+            <div className="flex items-center gap-2">
+              <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto rounded" />
+              <div className="flex items-baseline gap-2">
+                <h1 className="text-base font-bold text-gray-900">CMST SOGARA</h1>
+                <span className="text-xs text-gray-500 hidden sm:inline">Centre Médical de Santé au Travail</span>
               </div>
             </div>
             
