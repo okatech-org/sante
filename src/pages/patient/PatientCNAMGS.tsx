@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService } from "@/services/patientService";
 import { generateCNAMGSCard, generateAttestationDroits, generateRelevéRemboursements } from "@/utils/pdfGenerator";
+import { CNAMGSCard } from "@/components/medical/CNAMGSCard";
 import { 
   Shield, Download, Calendar, CheckCircle, 
   AlertCircle, Loader2, CreditCard, User,
@@ -104,6 +105,11 @@ export default function PatientCNAMGS() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Carte CNAMGS Interactive avec Attestation PDF */}
+        {profileData && (
+          <CNAMGSCard profile={profileData} />
+        )}
 
         {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

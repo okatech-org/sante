@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type MedicalRecord as MedicalRecordType } from "@/services/patientService";
 import { generateMedicalRecordPDF } from "@/utils/pdfGenerator";
+import { CNAMGSCard } from "@/components/medical/CNAMGSCard";
 import { 
   FileHeart, Calendar, User, Building2, Stethoscope, 
   Pill, AlertCircle, FileText, ChevronRight, Loader2,
@@ -22,8 +23,19 @@ export default function MedicalRecord() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecordType | null>(null);
+  const [profileData, setProfileData] = useState<any>(null);
   
   const patientName = (user?.user_metadata as any)?.full_name || 'Patient';
+
+  // Charger le profil pour la carte CNAMGS
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user?.id) return;
+      const profile = await patientService.getProfile(user.id);
+      setProfileData(profile);
+    };
+    loadProfile();
+  }, [user?.id]);
 
   useEffect(() => {
     const loadMedicalRecords = async () => {
@@ -179,6 +191,11 @@ export default function MedicalRecord() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Carte CNAMGS et Attestation */}
+        {profileData && (
+          <CNAMGSCard profile={profileData} />
+        )}
 
         {/* Filters */}
         <Card>
