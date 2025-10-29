@@ -45,6 +45,7 @@ import { useNavigate } from "react-router-dom";
 interface SogaraUser {
   id: string;
   email: string;
+  password: string; // Mot de passe visible pour l'admin
   full_name: string;
   role: 'admin' | 'doctor' | 'nurse' | 'receptionist' | 'lab_tech' | 'pharmacist';
   department: string;
@@ -73,10 +74,11 @@ export default function SogaraManagement() {
 
   // Charger les utilisateurs SOGARA
   useEffect(() => {
-    const mockUsers: SogaraUser[] = [
+    const sogaraUsers: SogaraUser[] = [
       {
         id: "sogara-admin-1",
         email: "admin@sogara.com",
+        password: "Admin@SOGARA2024",
         full_name: "Jean-Pierre Mbadinga",
         role: "admin",
         department: "Administration",
@@ -86,8 +88,21 @@ export default function SogaraManagement() {
         created_at: "2023-01-15"
       },
       {
+        id: "sogara-admin-2",
+        email: "directeur@sogara.com",
+        password: "DirecteurSOGARA2024!",
+        full_name: "Dr. François Obiang",
+        role: "admin",
+        department: "Direction Médicale",
+        matricule: "DIR-001",
+        is_active: true,
+        last_login: "2024-01-20 09:00",
+        created_at: "2023-01-10"
+      },
+      {
         id: "sogara-doc-1",
         email: "dr.okemba@sogara.com",
+        password: "Okemba@2024Med",
         full_name: "Dr. Marie Okemba",
         role: "doctor",
         department: "Médecine Générale",
@@ -99,6 +114,7 @@ export default function SogaraManagement() {
       {
         id: "sogara-doc-2",
         email: "dr.nguema@sogara.com",
+        password: "Nguema@Urgence24",
         full_name: "Dr. Paul Nguema",
         role: "doctor",
         department: "Urgences",
@@ -108,8 +124,33 @@ export default function SogaraManagement() {
         created_at: "2023-02-10"
       },
       {
+        id: "sogara-doc-3",
+        email: "dr.mbina@sogara.com",
+        password: "Mbina@Cardio2024",
+        full_name: "Dr. Léa Mbina",
+        role: "doctor",
+        department: "Cardiologie",
+        matricule: "MED-018",
+        is_active: true,
+        last_login: "2024-01-20 10:30",
+        created_at: "2023-06-15"
+      },
+      {
+        id: "sogara-doc-4",
+        email: "dr.mezui@sogara.com",
+        password: "Mezui@Pediatrie24",
+        full_name: "Dr. Thomas Mezui",
+        role: "doctor",
+        department: "Pédiatrie",
+        matricule: "MED-022",
+        is_active: true,
+        last_login: "2024-01-19 15:20",
+        created_at: "2023-07-01"
+      },
+      {
         id: "sogara-nurse-1",
         email: "nurse.mba@sogara.com",
+        password: "MbaSI@2024",
         full_name: "Sylvie Mba",
         role: "nurse",
         department: "Soins Intensifs",
@@ -119,17 +160,67 @@ export default function SogaraManagement() {
         created_at: "2023-04-05"
       },
       {
+        id: "sogara-nurse-2",
+        email: "nurse.nze@sogara.com",
+        password: "NzeUrg@2024",
+        full_name: "Patricia Nze",
+        role: "nurse",
+        department: "Urgences",
+        matricule: "INF-028",
+        is_active: true,
+        last_login: "2024-01-20 07:00",
+        created_at: "2023-05-10"
+      },
+      {
+        id: "sogara-nurse-3",
+        email: "nurse.andeme@sogara.com",
+        password: "Andeme@Mat2024",
+        full_name: "Claire Andeme",
+        role: "nurse",
+        department: "Maternité",
+        matricule: "INF-030",
+        is_active: true,
+        last_login: "2024-01-19 22:00",
+        created_at: "2023-06-20"
+      },
+      {
         id: "sogara-lab-1",
         email: "lab.tech@sogara.com",
+        password: "LabSOGARA@2024",
         full_name: "André Moussavou",
         role: "lab_tech",
         department: "Laboratoire",
         matricule: "LAB-008",
         is_active: true,
+        last_login: "2024-01-20 07:30",
         created_at: "2023-05-12"
+      },
+      {
+        id: "sogara-pharma-1",
+        email: "pharma@sogara.com",
+        password: "PharmaSOGARA@24",
+        full_name: "Dr. Lydie Kombila",
+        role: "pharmacist",
+        department: "Pharmacie",
+        matricule: "PHAR-004",
+        is_active: true,
+        last_login: "2024-01-20 08:00",
+        created_at: "2023-04-15"
+      },
+      {
+        id: "sogara-recept-1",
+        email: "accueil@sogara.com",
+        password: "AccueilSOGARA@24",
+        full_name: "Nadège Oyono",
+        role: "receptionist",
+        department: "Accueil",
+        matricule: "REC-002",
+        is_active: true,
+        last_login: "2024-01-20 13:00",
+        created_at: "2023-03-01"
       }
     ];
-    setUsers(mockUsers);
+    setUsers(sogaraUsers);
   }, []);
 
   const handleAddUser = () => {
@@ -141,6 +232,7 @@ export default function SogaraManagement() {
     const user: SogaraUser = {
       id: `sogara-${Date.now()}`,
       email: newUser.email,
+      password: newUser.password,
       full_name: newUser.full_name,
       role: newUser.role,
       department: newUser.department,
@@ -254,9 +346,10 @@ export default function SogaraManagement() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
+          <TabsList className="grid w-full max-w-4xl grid-cols-6">
             <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
             <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+            <TabsTrigger value="accounts">Comptes & Accès</TabsTrigger>
             <TabsTrigger value="config">Configuration</TabsTrigger>
             <TabsTrigger value="billing">Facturation</TabsTrigger>
             <TabsTrigger value="logs">Logs & Audit</TabsTrigger>
@@ -385,6 +478,152 @@ export default function SogaraManagement() {
                             CNSS
                           </Badge>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Comptes & Identifiants */}
+          <TabsContent value="accounts" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Key className="w-5 h-5 text-primary" />
+                  Comptes & Identifiants - CMST SOGARA
+                </CardTitle>
+                <CardDescription>
+                  Liste complète des comptes utilisateurs avec identifiants de connexion
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50">
+                        <TableHead className="font-bold">Nom Complet</TableHead>
+                        <TableHead className="font-bold">Email (Login)</TableHead>
+                        <TableHead className="font-bold">Mot de passe</TableHead>
+                        <TableHead className="font-bold">Rôle</TableHead>
+                        <TableHead className="font-bold">Département</TableHead>
+                        <TableHead className="font-bold">Matricule</TableHead>
+                        <TableHead className="font-bold">Statut</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow key={user.id} className="hover:bg-muted/30">
+                          <TableCell className="font-medium">{user.full_name}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Mail className="w-4 h-4 text-muted-foreground" />
+                              <code className="text-sm bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">
+                                {user.email}
+                              </code>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Lock className="w-4 h-4 text-muted-foreground" />
+                              <code className="text-sm bg-green-50 dark:bg-green-950 px-2 py-1 rounded font-mono">
+                                {user.password}
+                              </code>
+                            </div>
+                          </TableCell>
+                          <TableCell>{getRoleBadge(user.role)}</TableCell>
+                          <TableCell className="text-sm">{user.department}</TableCell>
+                          <TableCell>
+                            <code className="text-xs bg-muted px-2 py-1 rounded">
+                              {user.matricule || "-"}
+                            </code>
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant="outline" 
+                              className={user.is_active 
+                                ? "bg-green-500/20 text-green-700 border-green-500/30" 
+                                : "bg-red-500/20 text-red-700 border-red-500/30"
+                              }
+                            >
+                              {user.is_active ? "Actif" : "Inactif"}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Statistiques des comptes */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <Shield className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+                        <div className="text-2xl font-bold">
+                          {users.filter(u => u.role === 'admin').length}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Administrateurs</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <UserCheck className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                        <div className="text-2xl font-bold">
+                          {users.filter(u => u.role === 'doctor').length}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Médecins</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <Activity className="w-8 h-8 mx-auto mb-2 text-green-600" />
+                        <div className="text-2xl font-bold">
+                          {users.filter(u => u.role === 'nurse').length}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Infirmiers</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <Users className="w-8 h-8 mx-auto mb-2 text-cyan-600" />
+                        <div className="text-2xl font-bold">{users.length}</div>
+                        <p className="text-xs text-muted-foreground">Total comptes</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Informations importantes */}
+                <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg">
+                  <div className="flex gap-3">
+                    <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <div className="space-y-2">
+                      <p className="font-semibold text-yellow-900 dark:text-yellow-400">
+                        Informations sensibles - Super Admin uniquement
+                      </p>
+                      <p className="text-sm text-yellow-800 dark:text-yellow-300">
+                        Les mots de passe affichés sont des identifiants réels pour la structure CMST SOGARA. 
+                        Ces informations doivent rester confidentielles et ne doivent être partagées qu'avec 
+                        les personnes autorisées de l'établissement.
+                      </p>
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" variant="outline" className="text-yellow-700 border-yellow-300">
+                          <Download className="w-4 h-4 mr-2" />
+                          Exporter les identifiants
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-yellow-700 border-yellow-300">
+                          <FileText className="w-4 h-4 mr-2" />
+                          Générer PDF sécurisé
+                        </Button>
                       </div>
                     </div>
                   </div>
