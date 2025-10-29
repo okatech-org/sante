@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { 
   Key, Lock, Mail, Users, Shield, UserCheck, 
-  Hospital, Stethoscope, User, Search, Copy,
+  Building2, Stethoscope, User, Search, Copy,
   Download, Eye, EyeOff, AlertTriangle
 } from "lucide-react";
 import { AdminLayout } from "@/components/layout/AdminLayout";
@@ -294,7 +294,7 @@ export default function AdminCredentials() {
     const roleConfig: Record<string, { color: string; icon: any; label: string }> = {
       patient: { color: "bg-blue-500/20 text-blue-700 border-blue-500/30", icon: User, label: "Patient" },
       doctor: { color: "bg-green-500/20 text-green-700 border-green-500/30", icon: Stethoscope, label: "Médecin" },
-      hospital: { color: "bg-purple-500/20 text-purple-700 border-purple-500/30", icon: Hospital, label: "Admin Étab." },
+      hospital: { color: "bg-purple-500/20 text-purple-700 border-purple-500/30", icon: Building2, label: "Admin Étab." },
       medical_staff: { color: "bg-cyan-500/20 text-cyan-700 border-cyan-500/30", icon: UserCheck, label: "Personnel" },
       laboratory: { color: "bg-orange-500/20 text-orange-700 border-orange-500/30", icon: Users, label: "Laboratoire" },
       pharmacy: { color: "bg-pink-500/20 text-pink-700 border-pink-500/30", icon: Users, label: "Pharmacie" },
@@ -527,26 +527,32 @@ export default function AdminCredentials() {
               <User className="w-5 h-5" />
               Focus Patient : Pierrette NOMSI
             </CardTitle>
-            <CardDescription>Historique médical et accès</CardDescription>
+            <CardDescription>Employée SOGARA - Compte patient uniquement</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Compte Patient</p>
                   <p className="text-sm">Email: pierrette.nomsi@gmail.com</p>
                   <p className="text-sm">Mot de passe: Nomsi@Patient2024</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Connexion: /login/patient
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Compte Professionnel (SOGARA)</p>
-                  <p className="text-sm">Email: p.nomsi@sogara.ga</p>
+                  <p className="text-sm font-medium text-muted-foreground">Profil Employé SOGARA</p>
                   <p className="text-sm">Poste: Chef QUALITÉ et CONFORMITÉ</p>
+                  <p className="text-sm">Matricule: EMP-SOGARA-0006</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    ℹ️ Employée SOGARA avec accès privilégié au CMST
+                  </p>
                 </div>
               </div>
               
               <div className="border-t pt-4">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Historique Médical</p>
-                <div className="space-y-2">
+                <div className="flex flex-wrap gap-2">
                   <Badge variant="outline">✅ 3 consultations CMST SOGARA</Badge>
                   <Badge variant="outline">✅ 1 consultation médecin ville (Dr. OBIANG)</Badge>
                   <Badge variant="outline">✅ 1 radiologie thoracique</Badge>
