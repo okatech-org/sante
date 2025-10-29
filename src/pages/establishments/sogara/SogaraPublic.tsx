@@ -5,13 +5,20 @@ import { MAPBOX_PUBLIC_TOKEN } from "@/lib/mapbox-config";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { 
   Building2, Phone, Mail, MapPin, Clock, Users, Heart, 
   Shield, Stethoscope, Activity, AlertTriangle, Truck,
   Baby, Pill, FlaskConical, UserCheck, Calendar, Home,
   ChevronRight, Info, Globe, Award, Target, Sparkles,
   CheckCircle, ArrowRight, LogIn, ChevronLeft, Star,
-  TrendingUp, Smile, Eye, Microscope
+  TrendingUp, Smile, Eye, Microscope, Menu
 } from "lucide-react";
 import sogaraDoctorFemale from "@/assets/sogara-doctor-female.jpg";
 import sogaraDoctorMale from "@/assets/sogara-doctor-male.jpg";
@@ -22,6 +29,7 @@ import SogaraLocationMap from "@/components/maps/SogaraLocationMap";
 
 export default function SogaraPublic() {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const doctors = [
     {
@@ -110,7 +118,7 @@ export default function SogaraPublic() {
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white border-b">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto rounded" />
               <div className="flex items-baseline gap-2">
@@ -126,25 +134,95 @@ export default function SogaraPublic() {
               <a href="#contact" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">Contact</a>
             </nav>
 
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => navigate("/")}
-                  className="hidden sm:flex"
-                >
-                  <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
-                  SANTE.GA
-                </Button>
-                <Button 
-                  size="sm"
-                  className="bg-gray-900 hover:bg-gray-800"
-                  onClick={() => navigate("/login/sogara")}
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Personnel CMST
-                </Button>
-              </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/")}
+                className="hidden sm:flex"
+              >
+                <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
+                SANTE.GA
+              </Button>
+              <Button 
+                size="sm"
+                className="bg-gray-900 hover:bg-gray-800 hidden md:flex"
+                onClick={() => navigate("/login/sogara")}
+              >
+                <LogIn className="w-4 h-4 mr-2" />
+                Personnel CMST
+              </Button>
+              
+              {/* Mobile Menu */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="sm" className="md:hidden">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center gap-2">
+                      <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-10 w-auto rounded" />
+                      <span className="text-sm">CMST SOGARA</span>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-8 flex flex-col gap-4">
+                    <a 
+                      href="#about" 
+                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      À Propos
+                    </a>
+                    <a 
+                      href="#services" 
+                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Services
+                    </a>
+                    <a 
+                      href="#doctors" 
+                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Médecins
+                    </a>
+                    <a 
+                      href="#contact" 
+                      className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Contact
+                    </a>
+                    <div className="pt-4 mt-4 border-t space-y-3">
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          navigate("/");
+                        }}
+                      >
+                        <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
+                        SANTE.GA
+                      </Button>
+                      <Button 
+                        className="w-full bg-gray-900 hover:bg-gray-800"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          navigate("/login/sogara");
+                        }}
+                      >
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Personnel CMST
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </header>
