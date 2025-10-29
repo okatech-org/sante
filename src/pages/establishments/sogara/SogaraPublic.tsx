@@ -121,9 +121,9 @@ export default function SogaraPublic() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto rounded" />
-              <div className="flex items-baseline gap-2">
+              <div>
                 <h1 className="text-base font-bold text-gray-900">CMST SOGARA</h1>
-                <span className="text-xs text-gray-500 hidden sm:inline">Centre Médical de Santé au Travail</span>
+                <p className="text-[10px] text-gray-500">Centre Médical de Santé au Travail</p>
               </div>
             </div>
             
