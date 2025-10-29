@@ -14,7 +14,7 @@ import {
   Video,
   UserCheck,
   Package,
-  ChartBar,
+  BarChart3,
   Bell,
   LogOut,
   Menu,
@@ -90,7 +90,7 @@ export default function ProfessionalDashboardLayout({ children }: ProfessionalDa
     {
       title: 'Statistiques',
       href: '/professional/analytics',
-      icon: ChartBar,
+      icon: BarChart3,
     },
     {
       title: 'Établissements',
@@ -111,11 +111,12 @@ export default function ProfessionalDashboardLayout({ children }: ProfessionalDa
 
   const getUserInitials = () => {
     if (!user?.user_metadata) return 'P';
-    const { first_name, last_name } = user.user_metadata;
-    if (first_name && last_name) {
-      return `${first_name[0]}${last_name[0]}`.toUpperCase();
+    const fullName = user.user_metadata.full_name || user.email || '';
+    if (fullName.includes(' ')) {
+      const parts = fullName.split(' ');
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
     }
-    return user.email?.[0]?.toUpperCase() || 'P';
+    return fullName[0]?.toUpperCase() || 'P';
   };
 
   return (
@@ -137,7 +138,7 @@ export default function ProfessionalDashboardLayout({ children }: ProfessionalDa
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} />
+                    <AvatarImage src={user?.user_metadata?.full_name} />
                     <AvatarFallback>{getUserInitials()}</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -223,12 +224,12 @@ export default function ProfessionalDashboardLayout({ children }: ProfessionalDa
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="w-full justify-start">
                     <Avatar className="h-8 w-8 mr-2">
-                      <AvatarImage src={user?.user_metadata?.avatar_url} />
+                      <AvatarImage src="" />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                     <div className="text-left flex-1">
                       <p className="text-sm font-medium">
-                        {user?.user_metadata?.first_name} {user?.user_metadata?.last_name}
+                        {user?.user_metadata?.full_name || user?.email}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         Professionnel de santé

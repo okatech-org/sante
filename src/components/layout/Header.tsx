@@ -94,7 +94,7 @@ export function Header() {
           <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                {user.user_metadata?.role === 'super_admin' && (
+                {user.user_metadata?.roles?.includes('super_admin') && (
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/admin/dashboard">{t('header.adminPanel')}</Link>
                   </Button>
@@ -157,7 +157,7 @@ export function Header() {
                 <div className="border-t pt-4 mt-4 flex flex-col gap-2">
                   {user ? (
                     <>
-                      {user.user_metadata?.role === 'super_admin' && (
+                      {user.user_metadata?.roles?.includes('super_admin') && (
                         <Button variant="ghost" size="sm" asChild className="justify-start">
                           <Link to="/admin/dashboard">{t('header.admin')}</Link>
                         </Button>
