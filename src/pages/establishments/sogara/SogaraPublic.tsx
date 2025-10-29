@@ -454,21 +454,21 @@ export default function SogaraPublic() {
             <p className="text-base md:text-lg text-gray-400 mb-6 md:mb-8">
               Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
             </p>
-            <div className="flex flex-wrap gap-2 md:gap-3">
+            <div className="flex gap-2 md:gap-3">
               <Button 
                 size="lg" 
-                className="bg-white text-gray-900 hover:bg-gray-100 px-7 py-5 rounded-full"
+                className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial"
                 onClick={() => navigate("/appointments")}
               >
-                Prendre Rendez-vous
+                Prendre RDV
               </Button>
               <Button 
                 size="lg" 
                 variant="ghost"
-                className="text-white px-7 py-5 rounded-full hover:bg-white/10"
+                className="text-white px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial"
               >
-                <Phone className="w-4 h-4 mr-2" />
-                011 55 26 21
+                <Phone className="w-4 h-4 mr-1 md:mr-2" />
+                Appeler
               </Button>
             </div>
           </div>
