@@ -12,6 +12,11 @@ import {
   CheckCircle, ArrowRight, LogIn, ChevronLeft, Star,
   TrendingUp, Smile, Eye, Microscope
 } from "lucide-react";
+import sogaraDoctorFemale from "@/assets/sogara-doctor-female.jpg";
+import sogaraDoctorMale from "@/assets/sogara-doctor-male.jpg";
+import sogaraPediatrician from "@/assets/sogara-pediatrician.jpg";
+import sogaraFamilyHealth from "@/assets/sogara-family-health.jpg";
+import sogaraReception from "@/assets/sogara-reception.jpg";
 
 export default function SogaraPublic() {
   const navigate = useNavigate();
@@ -20,28 +25,28 @@ export default function SogaraPublic() {
     {
       name: "Dr. Sophie Taylor",
       specialty: "Cardiologie",
-      image: "/src/assets/professionals-hero.jpg",
+      image: sogaraDoctorFemale,
       rating: 4.9,
       patients: 1250
     },
     {
       name: "Dr. Marc Dubois",
       specialty: "Chirurgie",
-      image: "/src/assets/doctor-consultation.jpg",
+      image: sogaraDoctorMale,
       rating: 4.8,
       patients: 980
     },
     {
       name: "Dr. Lisa Chen",
       specialty: "Pédiatrie",
-      image: "/src/assets/professionals-hero.jpg",
+      image: sogaraPediatrician,
       rating: 5.0,
       patients: 1520
     },
     {
       name: "Dr. Jean Nkosi",
       specialty: "Médecine du Travail",
-      image: "/src/assets/doctor-consultation.jpg",
+      image: sogaraDoctorMale,
       rating: 4.9,
       patients: 1100
     }
@@ -182,10 +187,10 @@ export default function SogaraPublic() {
               <div className="flex items-center gap-8 pt-8">
                 <div className="flex -space-x-3">
                   {[
-                  { src: "/src/assets/professionals-hero.jpg", name: "Dr. M" },
-                  { src: "/src/assets/doctor-consultation.jpg", name: "Dr. S" },
-                  { src: "/src/assets/professionals-hero.jpg", name: "Dr. L" },
-                  { src: "/src/assets/doctor-consultation.jpg", name: "Dr. J" }
+                  { src: sogaraDoctorFemale, name: "Dr. M" },
+                  { src: sogaraDoctorMale, name: "Dr. S" },
+                  { src: sogaraPediatrician, name: "Dr. L" },
+                  { src: sogaraDoctorMale, name: "Dr. J" }
                 ].map((doctor, i) => (
                     <Avatar key={i} className="border-2 border-white w-12 h-12">
                       <AvatarImage src={doctor.src} />
@@ -215,7 +220,7 @@ export default function SogaraPublic() {
             {/* Right Content - Doctor Image */}
             <div className="relative hidden lg:block">
               <img 
-                src="/src/assets/professionals-hero.jpg" 
+                src={sogaraDoctorFemale}
                 alt="Équipe Médicale" 
                 className="w-full h-[500px] object-cover rounded-2xl shadow-lg"
               />
@@ -321,7 +326,7 @@ export default function SogaraPublic() {
             {/* Right - Image */}
             <div>
               <img 
-                src="/src/assets/family-health.jpg" 
+                src={sogaraFamilyHealth}
                 alt="Santé Familiale"
                 className="w-full h-[500px] object-cover rounded-xl shadow-lg"
               />
@@ -364,7 +369,7 @@ export default function SogaraPublic() {
             {/* Left - Image */}
             <div>
               <img 
-                src="/src/assets/hospital-reception.jpg" 
+                src={sogaraReception}
                 alt="Réception CMST SOGARA"
                 className="w-full h-[500px] object-cover rounded-xl shadow-lg"
               />
