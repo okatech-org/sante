@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MAPBOX_PUBLIC_TOKEN } from "@/lib/mapbox-config";
+import { useMapboxToken } from "@/hooks/useMapboxToken";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,6 +30,7 @@ import SogaraLocationMap from "@/components/maps/SogaraLocationMap";
 export default function SogaraPublic() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { token: mapboxToken } = useMapboxToken();
 
   const doctors = [
     {
@@ -629,7 +630,7 @@ export default function SogaraPublic() {
 
             {/* Map */}
             <div>
-              <SogaraLocationMap accessToken={MAPBOX_PUBLIC_TOKEN} />
+              <SogaraLocationMap accessToken={mapboxToken} />
             </div>
           </div>
         </div>
