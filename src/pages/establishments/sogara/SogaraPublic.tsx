@@ -533,7 +533,7 @@ export default function SogaraPublic() {
       <footer className="bg-white border-t py-8 md:py-10 lg:py-12">
         <div className="container mx-auto px-4 lg:px-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-10 lg:mb-12">
-            <div className="space-y-3 md:space-y-4">
+            <div className="space-y-2 md:space-y-3">
               <div className="flex items-center gap-2">
                 <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-8 md:h-9 w-auto rounded" />
                 <div>
@@ -541,7 +541,7 @@ export default function SogaraPublic() {
                   <p className="text-[10px] md:text-xs text-gray-600">Centre Médical de Santé au Travail</p>
                 </div>
               </div>
-              <p className="text-xs md:text-sm text-gray-600">
+              <p className="text-[10px] md:text-xs text-gray-600">
                 Excellence médicale depuis 1974
               </p>
             </div>
