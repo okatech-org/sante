@@ -563,8 +563,8 @@ export default function SogaraPublic() {
             <div className="flex items-center gap-3">
               <img src="/emblem_gabon.png" alt="République Gabonaise" className="h-10 w-auto opacity-70" />
               <div>
-                <p className="text-sm font-semibold text-gray-900">Agréé</p>
-                <p className="text-xs text-gray-600">République Gabonaise</p>
+                <p className="text-sm font-semibold text-gray-900">Agréé par</p>
+                <p className="text-xs text-gray-600">République Gabonaise<br />Ministère de la Santé</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
