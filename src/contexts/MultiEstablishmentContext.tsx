@@ -72,56 +72,11 @@ export const MultiEstablishmentProvider: React.FC<MultiEstablishmentProviderProp
         return;
       }
 
-<<<<<<< HEAD
-      // Récupérer le profil utilisateur
-      const { data: userProfile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError || !userProfile) {
-        console.error('Erreur chargement profil:', profileError);
-        return;
-      }
-
-      // Vérifier si c'est un professionnel via les rôles
-      const { data: userRoles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id);
-
-      const professionalRoles = ['doctor', 'specialist', 'nurse', 'midwife', 'physiotherapist', 'psychologist', 'ophthalmologist', 'anesthesiologist', 'pharmacist', 'laboratory_technician', 'radiologist', 'clinic_admin', 'hospital_admin', 'sogara_admin', 'radiology_center'];
-      const isProfessional = userRoles?.some((r: any) => professionalRoles.includes(r.role));
-
-      if (isProfessional) {
-        // Pour les professionnels, contexte simplifié sans affiliations (tables non encore créées)
-        setWorkContext({
-          userId: user.id,
-          allAffiliations: [],
-          permissions: ['*'] // Permissions par défaut pour les professionnels
-        });
-      } else {
-        // Pour les patients ou admins sans affiliations
-        setWorkContext({
-          userId: user.id,
-          allAffiliations: [],
-          permissions: userRoles?.some((r: any) => r.role === 'super_admin' || r.role === 'admin') ? ['*'] : []
-        });
-      }
-    } catch (error) {
-      console.error('Erreur chargement contexte:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger le contexte de travail",
-        variant: "destructive"
-=======
       // Simple context for now
       setWorkContext({
         userId: user.id,
         allAffiliations: [],
         permissions: []
->>>>>>> bb9e55c4cfd6f179c938385b8b32b2120ce3b1ab
       });
     } catch (error) {
       console.error('Error loading work context:', error);

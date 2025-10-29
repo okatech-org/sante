@@ -45,13 +45,14 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminHealthActors from "./pages/AdminHealthActors";
 import AdminApprovals from "./pages/AdminApprovals";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
-import SuperAdminDashboard from "./pages/SuperAdminDashboard";
+// import SuperAdminDashboard from "./pages/SuperAdminDashboard"; // Temporarily disabled
 
 // Pages de support
 import Support from "./pages/Support";
 
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
+import Sogara from "./pages/Sogara";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -111,14 +112,17 @@ function App() {
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
-                    <Route path="/superadmin" element={<SuperAdminDashboard />} />
-                    <Route path="/dashboard/superadmin" element={<SuperAdminDashboard />} />
+                    {/* <Route path="/superadmin" element={<SuperAdminDashboard />} /> */}
+                    {/* <Route path="/dashboard/superadmin" element={<SuperAdminDashboard />} /> */}
                     
                     {/* Routes de support */}
                     <Route path="/support" element={<Support />} />
                     
                     {/* Routes de démonstration */}
                     <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
+                    
+                    {/* Route Sogara */}
+                    <Route path="/sogara" element={<Sogara />} />
                     
                     {/* Redirection par défaut */}
                     <Route path="*" element={<Navigate to="/" replace />} />
