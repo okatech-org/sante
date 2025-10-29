@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type Prescription } from "@/services/patientService";
+import { generatePrescriptionPDF } from "@/utils/pdfGenerator";
 import { 
   Pill, Calendar, User, Building2, Download, 
   Search, Loader2, ChevronRight, CheckCircle,
@@ -20,6 +21,8 @@ export default function PatientPrescriptions() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
+  
+  const patientName = (user?.user_metadata as any)?.full_name || 'Patient';
 
   useEffect(() => {
     const loadPrescriptions = async () => {
@@ -322,7 +325,7 @@ export default function PatientPrescriptions() {
               <Button variant="outline" onClick={() => setSelectedPrescription(null)}>
                 Fermer
               </Button>
-              <Button>
+              <Button onClick={() => generatePrescriptionPDF(selectedPrescription, patientName)}>
                 <Download className="w-4 h-4 mr-2" />
                 Télécharger PDF
               </Button>

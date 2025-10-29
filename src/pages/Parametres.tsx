@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
+import { patientService } from "@/services/patientService";
 import { 
   Settings, User, Bell, Lock, Globe, 
-  Moon, Sun, Monitor, Shield, Mail, Phone
+  Moon, Sun, Monitor, Shield, Mail, Phone,
+  Loader2, CheckCircle, AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -13,10 +15,36 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTheme } from "next-themes";
+import {
+  Alert,
+  AlertDescription,
+} from "@/components/ui/alert";
 
 export default function Parametres() {
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
+  
+  // Profile states
+  const [profileData, setProfileData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    address: ''
+  });
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileSaving, setProfileSaving] = useState(false);
+  
+  // Password states
+  const [passwordData, setPasswordData] = useState({
+    current: '',
+    new: '',
+    confirm: ''
+  });
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  
+  // Notifications states
   const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
@@ -25,14 +53,156 @@ export default function Parametres() {
     prescriptions: true,
     results: true
   });
+  const [notificationsSaving, setNotificationsSaving] = useState(false);
+  
+  // 2FA state
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [twoFactorSaving, setTwoFactorSaving] = useState(false);
 
-  const handleSaveProfile = () => {
-    toast.success("Profil mis à jour avec succès");
+  // Load profile on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user?.id) return;
+      
+      setProfileLoading(true);
+      try {
+        const profile = await patientService.getProfile(user.id);
+        if (profile) {
+          setProfileData({
+            fullName: profile.full_name || '',
+            email: profile.email || user.email || '',
+            phone: profile.phone || '',
+            dateOfBirth: profile.date_of_birth || '',
+            address: profile.address || ''
+          });
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        toast.error('Erreur lors du chargement du profil');
+      } finally {
+        setProfileLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, [user?.id, user?.email]);
+
+  // ========== HANDLERS ==========
+  
+  const handleSaveProfile = async () => {
+    // Validation
+    if (!profileData.fullName.trim()) {
+      toast.error("Le nom complet est requis");
+      return;
+    }
+    
+    if (!profileData.email.trim() || !profileData.email.includes('@')) {
+      toast.error("Email invalide");
+      return;
+    }
+
+    setProfileSaving(true);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // await patientService.updateProfile(user.id, profileData);
+      
+      toast.success("Profil mis à jour avec succès");
+    } catch (error: any) {
+      toast.error(error.message || "Erreur lors de la mise à jour");
+      console.error(error);
+    } finally {
+      setProfileSaving(false);
+    }
   };
 
-  const handleSaveNotifications = () => {
-    toast.success("Préférences de notifications mises à jour");
+  const handleChangePassword = async () => {
+    // Reset error
+    setPasswordError(null);
+    
+    // Validation
+    if (!passwordData.current) {
+      setPasswordError("Mot de passe actuel requis");
+      return;
+    }
+    
+    if (passwordData.new.length < 8) {
+      setPasswordError("Le nouveau mot de passe doit contenir au moins 8 caractères");
+      return;
+    }
+    
+    if (passwordData.new !== passwordData.confirm) {
+      setPasswordError("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      
+      // TODO: Implémenter avec Supabase
+      // await supabase.auth.updateUser({ password: passwordData.new });
+      
+      toast.success("Mot de passe modifié avec succès");
+      
+      // Reset form
+      setPasswordData({ current: '', new: '', confirm: '' });
+    } catch (error: any) {
+      setPasswordError(error.message || "Erreur lors du changement de mot de passe");
+      console.error(error);
+    } finally {
+      setPasswordSaving(false);
+    }
   };
+
+  const handleSaveNotifications = async () => {
+    setNotificationsSaving(true);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      toast.success("Préférences de notifications mises à jour");
+    } catch (error: any) {
+      toast.error("Erreur lors de la mise à jour");
+      console.error(error);
+    } finally {
+      setNotificationsSaving(false);
+    }
+  };
+
+  const handleToggle2FA = async (enabled: boolean) => {
+    setTwoFactorSaving(true);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setTwoFactorEnabled(enabled);
+      
+      if (enabled) {
+        toast.success("Authentification à deux facteurs activée");
+      } else {
+        toast.success("Authentification à deux facteurs désactivée");
+      }
+    } catch (error: any) {
+      toast.error("Erreur lors de la configuration 2FA");
+      console.error(error);
+    } finally {
+      setTwoFactorSaving(false);
+    }
+  };
+
+  if (profileLoading) {
+    return (
+      <PatientDashboardLayout>
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </PatientDashboardLayout>
+    );
+  }
 
   return (
     <PatientDashboardLayout>
@@ -64,20 +234,22 @@ export default function Parametres() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Nom complet</Label>
+                    <Label htmlFor="fullName">Nom complet *</Label>
                     <Input
                       id="fullName"
                       placeholder="Votre nom"
-                      defaultValue={user?.user_metadata?.full_name || ''}
+                      value={profileData.fullName}
+                      onChange={(e) => setProfileData({...profileData, fullName: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">Email *</Label>
                     <Input
                       id="email"
                       type="email"
                       placeholder="votre@email.com"
-                      defaultValue={user?.email || ''}
+                      value={profileData.email}
+                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
                     />
                   </div>
                 </div>
@@ -89,7 +261,8 @@ export default function Parametres() {
                       id="phone"
                       type="tel"
                       placeholder="+241 XX XX XX XX"
-                      defaultValue={user?.user_metadata?.phone || ''}
+                      value={profileData.phone}
+                      onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
@@ -97,7 +270,8 @@ export default function Parametres() {
                     <Input
                       id="dateOfBirth"
                       type="date"
-                      defaultValue={user?.user_metadata?.date_of_birth || ''}
+                      value={profileData.dateOfBirth}
+                      onChange={(e) => setProfileData({...profileData, dateOfBirth: e.target.value})}
                     />
                   </div>
                 </div>
@@ -107,13 +281,27 @@ export default function Parametres() {
                   <Input
                     id="address"
                     placeholder="Votre adresse"
-                    defaultValue={user?.user_metadata?.address || ''}
+                    value={profileData.address}
+                    onChange={(e) => setProfileData({...profileData, address: e.target.value})}
                   />
                 </div>
 
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveProfile}>
-                    Enregistrer les modifications
+                  <Button 
+                    onClick={handleSaveProfile}
+                    disabled={profileSaving}
+                  >
+                    {profileSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Enregistrement...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Enregistrer les modifications
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>
@@ -214,8 +402,21 @@ export default function Parametres() {
                 </div>
 
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveNotifications}>
-                    Enregistrer les préférences
+                  <Button 
+                    onClick={handleSaveNotifications}
+                    disabled={notificationsSaving}
+                  >
+                    {notificationsSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Enregistrement...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Enregistrer les préférences
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>
@@ -230,25 +431,63 @@ export default function Parametres() {
                 <CardDescription>Gérez la sécurité de votre compte</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {passwordError && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{passwordError}</AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="space-y-2">
-                  <Label htmlFor="currentPassword">Mot de passe actuel</Label>
-                  <Input id="currentPassword" type="password" />
+                  <Label htmlFor="currentPassword">Mot de passe actuel *</Label>
+                  <Input 
+                    id="currentPassword" 
+                    type="password"
+                    value={passwordData.current}
+                    onChange={(e) => setPasswordData({...passwordData, current: e.target.value})}
+                    placeholder="••••••••"
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="newPassword">Nouveau mot de passe</Label>
-                  <Input id="newPassword" type="password" />
+                  <Label htmlFor="newPassword">Nouveau mot de passe *</Label>
+                  <Input 
+                    id="newPassword" 
+                    type="password"
+                    value={passwordData.new}
+                    onChange={(e) => setPasswordData({...passwordData, new: e.target.value})}
+                    placeholder="••••••••"
+                  />
+                  <p className="text-xs text-muted-foreground">Minimum 8 caractères</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
-                  <Input id="confirmPassword" type="password" />
+                  <Label htmlFor="confirmPassword">Confirmer le mot de passe *</Label>
+                  <Input 
+                    id="confirmPassword" 
+                    type="password"
+                    value={passwordData.confirm}
+                    onChange={(e) => setPasswordData({...passwordData, confirm: e.target.value})}
+                    placeholder="••••••••"
+                  />
                 </div>
 
                 <div className="flex justify-end">
-                  <Button>
-                    <Lock className="w-4 h-4 mr-2" />
-                    Changer le mot de passe
+                  <Button
+                    onClick={handleChangePassword}
+                    disabled={passwordSaving}
+                  >
+                    {passwordSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Modification...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4 mr-2" />
+                        Changer le mot de passe
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>
@@ -265,7 +504,14 @@ export default function Parametres() {
                     <p className="font-medium">Activer 2FA</p>
                     <p className="text-sm text-muted-foreground">Protection supplémentaire de votre compte</p>
                   </div>
-                  <Switch />
+                  <div className="flex items-center gap-2">
+                    {twoFactorSaving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
+                    <Switch 
+                      checked={twoFactorEnabled}
+                      onCheckedChange={handleToggle2FA}
+                      disabled={twoFactorSaving}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>

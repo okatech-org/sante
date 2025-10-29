@@ -16,6 +16,7 @@ export default function Messages() {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const loadNotifications = async () => {
@@ -47,6 +48,70 @@ export default function Messages() {
     }
   };
 
+  // ========== HANDLERS ==========
+  
+  const handleMarkAsRead = async (notificationId: string) => {
+    setActionLoading(notificationId);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setNotifications(prev => 
+        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      );
+      
+      toast.success("Message marqué comme lu");
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour");
+      console.error(error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (unreadCount === 0) {
+      toast.info("Aucun message non lu");
+      return;
+    }
+
+    setActionLoading('all');
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setNotifications(prev => 
+        prev.map(n => ({ ...n, read: true }))
+      );
+      
+      toast.success(`${unreadCount} message(s) marqué(s) comme lu(s)`);
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour");
+      console.error(error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDelete = async (notificationId: string) => {
+    setActionLoading(notificationId);
+    try {
+      // Simuler appel API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setNotifications(prev => 
+        prev.filter(n => n.id !== notificationId)
+      );
+      
+      toast.success("Message supprimé");
+    } catch (error) {
+      toast.error("Erreur lors de la suppression");
+      console.error(error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   if (loading) {
     return (
       <PatientDashboardLayout>
@@ -70,8 +135,16 @@ export default function Messages() {
             </h1>
             <p className="text-muted-foreground">{unreadCount} message(s) non lu(s)</p>
           </div>
-          <Button variant="outline">
-            <CheckCircle className="w-4 h-4 mr-2" />
+          <Button 
+            variant="outline"
+            onClick={handleMarkAllAsRead}
+            disabled={actionLoading === 'all' || unreadCount === 0}
+          >
+            {actionLoading === 'all' ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <CheckCircle className="w-4 h-4 mr-2" />
+            )}
             Tout marquer comme lu
           </Button>
         </div>
@@ -166,12 +239,32 @@ export default function Messages() {
                       
                       <div className="flex gap-2 flex-shrink-0">
                         {!notif.read && (
-                          <Button size="sm" variant="ghost">
-                            <Eye className="w-4 h-4" />
+                          <Button 
+                            size="sm" 
+                            variant="ghost"
+                            onClick={() => handleMarkAsRead(notif.id)}
+                            disabled={actionLoading === notif.id}
+                            title="Marquer comme lu"
+                          >
+                            {actionLoading === notif.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </Button>
                         )}
-                        <Button size="sm" variant="ghost">
-                          <Trash2 className="w-4 h-4" />
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleDelete(notif.id)}
+                          disabled={actionLoading === notif.id}
+                          title="Supprimer"
+                        >
+                          {actionLoading === notif.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                     </div>
@@ -198,11 +291,31 @@ export default function Messages() {
                     </div>
                     
                     <div className="flex gap-2 flex-shrink-0">
-                      <Button size="sm" variant="ghost">
-                        <Eye className="w-4 h-4" />
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleMarkAsRead(notif.id)}
+                        disabled={actionLoading === notif.id}
+                        title="Marquer comme lu"
+                      >
+                        {actionLoading === notif.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
                       </Button>
-                      <Button size="sm" variant="ghost">
-                        <Trash2 className="w-4 h-4" />
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleDelete(notif.id)}
+                        disabled={actionLoading === notif.id}
+                        title="Supprimer"
+                      >
+                        {actionLoading === notif.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </Button>
                     </div>
                   </div>

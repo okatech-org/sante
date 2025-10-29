@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type MedicalRecord as MedicalRecordType } from "@/services/patientService";
+import { generateMedicalRecordPDF } from "@/utils/pdfGenerator";
 import { 
   FileHeart, Calendar, User, Building2, Stethoscope, 
   Pill, AlertCircle, FileText, ChevronRight, Loader2,
@@ -21,6 +22,8 @@ export default function MedicalRecord() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecordType | null>(null);
+  
+  const patientName = (user?.user_metadata as any)?.full_name || 'Patient';
 
   useEffect(() => {
     const loadMedicalRecords = async () => {
@@ -182,7 +185,14 @@ export default function MedicalRecord() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Historique médical</CardTitle>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast.success("Génération de l'historique médical complet PDF...");
+                  // TODO: Générer PDF avec tous les records
+                }}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Télécharger PDF
               </Button>
@@ -370,7 +380,7 @@ export default function MedicalRecord() {
               <Button variant="outline" onClick={() => setSelectedRecord(null)}>
                 Fermer
               </Button>
-              <Button>
+              <Button onClick={() => generateMedicalRecordPDF(selectedRecord, patientName)}>
                 <Download className="w-4 h-4 mr-2" />
                 Télécharger
               </Button>

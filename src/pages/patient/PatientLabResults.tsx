@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type LabResult } from "@/services/patientService";
+import { generateLabResultPDF } from "@/utils/pdfGenerator";
 import { 
   Activity, Calendar, Building2, Download, 
   Search, Loader2, ChevronRight, CheckCircle,
@@ -21,6 +22,8 @@ export default function PatientLabResults() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedResult, setSelectedResult] = useState<LabResult | null>(null);
+  
+  const patientName = (user?.user_metadata as any)?.full_name || 'Patient';
 
   useEffect(() => {
     const loadLabResults = async () => {
@@ -332,12 +335,10 @@ export default function PatientLabResults() {
               <Button variant="outline" onClick={() => setSelectedResult(null)}>
                 Fermer
               </Button>
-              {selectedResult.pdf_url && (
-                <Button>
-                  <Download className="w-4 h-4 mr-2" />
-                  Télécharger PDF
-                </Button>
-              )}
+              <Button onClick={() => generateLabResultPDF(selectedResult, patientName)}>
+                <Download className="w-4 h-4 mr-2" />
+                Télécharger PDF
+              </Button>
             </div>
           </div>
         </div>

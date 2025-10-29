@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService } from "@/services/patientService";
+import { generateCNAMGSCard, generateAttestationDroits, generateRelevéRemboursements } from "@/utils/pdfGenerator";
 import { 
   Shield, Download, Calendar, CheckCircle, 
   AlertCircle, Loader2, CreditCard, User,
@@ -93,7 +94,10 @@ export default function PatientCNAMGS() {
                 </div>
               </div>
               
-              <Button className="flex-shrink-0">
+              <Button 
+                className="flex-shrink-0"
+                onClick={() => generateCNAMGSCard(profileData)}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Télécharger Carte
               </Button>
@@ -246,7 +250,11 @@ export default function PatientCNAMGS() {
                     <p className="text-sm text-muted-foreground">Valide jusqu'au 31/12/2025</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => generateCNAMGSCard(profileData)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Télécharger
                 </Button>
@@ -262,7 +270,11 @@ export default function PatientCNAMGS() {
                     <p className="text-sm text-muted-foreground">Générée le {new Date().toLocaleDateString('fr-FR')}</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => generateAttestationDroits(profileData)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Télécharger
                 </Button>
@@ -278,7 +290,11 @@ export default function PatientCNAMGS() {
                     <p className="text-sm text-muted-foreground">Année 2024</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => generateRelevéRemboursements(2024)}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Télécharger
                 </Button>
