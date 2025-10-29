@@ -132,8 +132,8 @@ export default function SogaraPublic() {
                   onClick={() => navigate("/")}
                   className="hidden sm:flex"
                 >
-                  <Home className="w-4 h-4 mr-2" />
-                  Accueil
+                  <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
+                  SANTE.GA
                 </Button>
                 <Button 
                   size="sm"
