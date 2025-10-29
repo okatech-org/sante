@@ -9,7 +9,7 @@ import {
   Stethoscope, Heart, TrendingUp, CheckCircle, Search,
   Phone, User
 } from "lucide-react";
-import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
+import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -111,7 +111,7 @@ export default function SogaraEmergency() {
   };
 
   return (
-    <HospitalDashboardLayout>
+    <SogaraDashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -528,7 +528,7 @@ export default function SogaraEmergency() {
           </Card>
         </div>
       </div>
-    </HospitalDashboardLayout>
+    </SogaraDashboardLayout>
   );
 }
 

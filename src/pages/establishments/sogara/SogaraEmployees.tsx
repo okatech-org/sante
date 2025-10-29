@@ -8,7 +8,7 @@ import {
   CheckCircle, Clock, Activity, Phone, Mail,
   Briefcase, MapPin, Calendar
 } from "lucide-react";
-import { HospitalDashboardLayout } from "@/components/layout/HospitalDashboardLayout";
+import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -148,7 +148,7 @@ export default function SogaraEmployees() {
   );
 
   return (
-    <HospitalDashboardLayout>
+    <SogaraDashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -485,7 +485,7 @@ export default function SogaraEmployees() {
           </DialogContent>
         </Dialog>
       </div>
-    </HospitalDashboardLayout>
+    </SogaraDashboardLayout>
   );
 }
 

@@ -71,6 +71,10 @@ import SogaraDashboard from "./pages/establishments/sogara/SogaraDashboard";
 import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
 import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
 import SogaraEmployees from "./pages/establishments/sogara/SogaraEmployees";
+import SogaraWorkMedicine from "./pages/establishments/sogara/SogaraWorkMedicine";
+import SogaraHospitalization from "./pages/establishments/sogara/SogaraHospitalization";
+import SogaraTechnical from "./pages/establishments/sogara/SogaraTechnical";
+import SogaraStaff from "./pages/establishments/sogara/SogaraStaff";
 import SogaraManagement from "./pages/admin/establishments/SogaraManagement";
 
 // Pages d'authentification admin
@@ -162,9 +166,13 @@ function AppMain() {
                     
                     {/* Dashboard Admin SOGARA (pour l'admin de l'établissement) */}
                     <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />
-                    <Route path="/establishments/sogara/admin/emergency" element={<SogaraEmergency />} />
                     <Route path="/establishments/sogara/admin/consultations" element={<SogaraConsultations />} />
+                    <Route path="/establishments/sogara/admin/emergency" element={<SogaraEmergency />} />
                     <Route path="/establishments/sogara/admin/employees" element={<SogaraEmployees />} />
+                    <Route path="/establishments/sogara/admin/work-medicine" element={<SogaraWorkMedicine />} />
+                    <Route path="/establishments/sogara/admin/hospitalization" element={<SogaraHospitalization />} />
+                    <Route path="/establishments/sogara/admin/technical" element={<SogaraTechnical />} />
+                    <Route path="/establishments/sogara/admin/staff" element={<SogaraStaff />} />
                     
                     {/* Page de gestion Super Admin pour SOGARA */}
                     <Route path="/admin/establishments/sogara" element={<SogaraManagement />} />
