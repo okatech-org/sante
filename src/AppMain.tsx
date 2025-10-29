@@ -60,6 +60,7 @@ import AdminSecurity from "./pages/admin/AdminSecurity";
 import AdminSupport from "./pages/admin/AdminSupport";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminSystem from "./pages/admin/AdminSystem";
+import AdminCredentials from "./pages/admin/AdminCredentials";
 
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
@@ -147,6 +148,7 @@ function AppMain() {
                     <Route path="/admin/support" element={<AdminSupport />} />
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
                     <Route path="/admin/system" element={<AdminSystem />} />
+                    <Route path="/admin/credentials" element={<AdminCredentials />} />
                     
                     {/* Route de cartographie publique */}
                     <Route path="/cartography" element={<Cartography />} />
