@@ -32,14 +32,19 @@ import SelectEstablishment from "./pages/professional/SelectEstablishment";
 
 // Pages Patient
 import MedicalRecord from "./pages/patient/MedicalRecord";
+import Appointments from "./pages/Appointments";
+import Prescriptions from "./pages/Prescriptions";
+import Results from "./pages/Results";
+import Reimbursements from "./pages/Reimbursements";
+import Teleconsultation from "./pages/Teleconsultation";
+import Messages from "./pages/Messages";
+import Parametres from "./pages/Parametres";
 
 // Pages de profil
 import Profile from "./pages/Profile";
 
 // Pages de services
-import Appointments from "./pages/Appointments";
 import Teleconsultations from "./pages/professional/Teleconsultations";
-import Prescriptions from "./pages/Prescriptions";
 
 // Pages d'administration
 import AdminDashboard from "./pages/AdminDashboard";
@@ -133,8 +138,13 @@ function AppMain() {
                     {/* Routes de services */}
                     <Route path="/medical-record" element={<MedicalRecord />} />
                     <Route path="/appointments" element={<Appointments />} />
-                    <Route path="/professional/teleconsultations" element={<Teleconsultations />} />
                     <Route path="/prescriptions" element={<Prescriptions />} />
+                    <Route path="/results" element={<Results />} />
+                    <Route path="/reimbursements" element={<Reimbursements />} />
+                    <Route path="/teleconsultation" element={<Teleconsultation />} />
+                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/parametres" element={<Parametres />} />
+                    <Route path="/professional/teleconsultations" element={<Teleconsultations />} />
 
                     {/* Routes d'administration */}
                     <Route path="/login/superadmin" element={<SuperAdminLogin />} />
