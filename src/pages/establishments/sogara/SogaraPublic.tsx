@@ -568,7 +568,7 @@ export default function SogaraPublic() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <img src="/cnamgs_logo.png" alt="CNAMGS" className="h-10 w-auto opacity-70" />
+              <img src="/emblem_gabon.png" alt="CNAMGS" className="h-10 w-auto opacity-70" />
               <div>
                 <p className="text-sm font-semibold text-gray-900">Conventionné</p>
                 <p className="text-xs text-gray-600">CNAMGS</p>
