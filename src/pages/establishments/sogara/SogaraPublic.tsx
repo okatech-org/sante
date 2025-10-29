@@ -141,7 +141,7 @@ export default function SogaraPublic() {
                   onClick={() => navigate("/login/sogara")}
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  Personnel SOGARA
+                  Personnel CMST
                 </Button>
               </div>
           </div>
