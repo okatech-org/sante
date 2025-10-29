@@ -266,11 +266,11 @@ export default function SogaraPublic() {
             </div>
 
             {/* Right Content - Doctor Image */}
-            <div className="relative hidden lg:block">
+            <div className="relative">
               <img 
                 src={sogaraDoctorFemale}
                 alt="Équipe Médicale" 
-                className="w-full h-[400px] object-cover rounded-xl shadow-lg"
+                className="w-full h-[300px] md:h-[350px] lg:h-[400px] object-cover rounded-xl shadow-lg"
               />
             </div>
           </div>
