@@ -263,27 +263,6 @@ export default function SogaraPublic() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
-
-              {/* Stats */}
-              <div className="flex items-center gap-6 pt-4">
-                <div className="flex -space-x-3">
-                  {[
-                  { src: sogaraDoctorFemale, name: "Dr. M" },
-                  { src: sogaraDoctorMale, name: "Dr. S" },
-                  { src: sogaraPediatrician, name: "Dr. L" },
-                  { src: sogaraDoctorMale, name: "Dr. J" }
-                ].map((doctor, i) => (
-                    <Avatar key={i} className="border-2 border-white w-12 h-12">
-                      <AvatarImage src={doctor.src} />
-                      <AvatarFallback>{doctor.name}</AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">150k+</p>
-                  <p className="text-sm text-gray-600">Patients Satisfaits</p>
-                </div>
-              </div>
             </div>
 
             {/* Right Content - Doctor Image */}
