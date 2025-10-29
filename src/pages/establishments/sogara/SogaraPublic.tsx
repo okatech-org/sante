@@ -17,6 +17,7 @@ import sogaraDoctorMale from "@/assets/sogara-doctor-male.jpg";
 import sogaraPediatrician from "@/assets/sogara-pediatrician.jpg";
 import sogaraFamilyHealth from "@/assets/sogara-family-health.jpg";
 import sogaraReception from "@/assets/sogara-reception.jpg";
+import SogaraLocationMap from "@/components/maps/SogaraLocationMap";
 
 export default function SogaraPublic() {
   const navigate = useNavigate();
@@ -547,13 +548,9 @@ export default function SogaraPublic() {
               </div>
             </div>
 
-            {/* Image */}
+            {/* Map */}
             <div>
-              <img 
-                src="/src/assets/services-hero.jpg" 
-                alt="Services CMST SOGARA"
-                className="w-full h-[400px] object-cover rounded-xl shadow-lg"
-              />
+              <SogaraLocationMap accessToken={import.meta.env.VITE_MAPBOX_TOKEN} />
             </div>
           </div>
         </div>
