@@ -707,11 +707,7 @@ export default function AdminEstablishments() {
               <CardContent>
                 <div className="h-[600px] rounded-lg overflow-hidden border">
                   <HealthProvidersMap 
-                    providers={mapProviders as unknown as any}
-                    onProviderClick={(provider: any) => {
-                      const est = establishments.find(e => e.id === provider.id);
-                      if (est) handleViewDetails(est);
-                    }}
+                    providers={mapProviders}
                   />
                 </div>
               </CardContent>

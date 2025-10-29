@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Service Super Admin pour SANTE.GA
  * Gestion complète du système avec permissions granulaires

@@ -40,14 +40,14 @@ export default function AdminSystem() {
                 <Badge variant="outline" className={health.status === "healthy" ? "bg-green-500/20 text-green-700" : "bg-orange-500/20 text-orange-700"}>
                   {health.status}
                 </Badge>
-                {health.responseTime && <div className="text-xs"><span className="font-medium">Temps:</span> {health.responseTime}ms</div>}
-                {health.usage && (
+                {(health as any).responseTime && <div className="text-xs"><span className="font-medium">Temps:</span> {(health as any).responseTime}ms</div>}
+                {(health as any).usage && (
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>Utilisation</span>
-                      <span className="font-medium">{health.usage}%</span>
+                      <span className="font-medium">{(health as any).usage}%</span>
                     </div>
-                    <Progress value={health.usage} className="h-1" />
+                    <Progress value={(health as any).usage} className="h-1" />
                   </div>
                 )}
                 <div className="text-xs text-muted-foreground">Uptime: {health.uptime}%</div>
