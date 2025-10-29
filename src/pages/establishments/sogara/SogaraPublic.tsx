@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { MAPBOX_PUBLIC_TOKEN } from "@/lib/mapbox-config";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -550,7 +551,7 @@ export default function SogaraPublic() {
 
             {/* Map */}
             <div>
-              <SogaraLocationMap accessToken={import.meta.env.VITE_MAPBOX_TOKEN} />
+              <SogaraLocationMap accessToken={MAPBOX_PUBLIC_TOKEN} />
             </div>
           </div>
         </div>
