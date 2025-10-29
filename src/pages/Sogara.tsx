@@ -1,82 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { 
-  Building2, Phone, Mail, MapPin, Heart, 
-  Shield, Stethoscope, Activity, AlertTriangle,
-  Baby, FlaskConical, Calendar, Users, Award,
-  CheckCircle, Clock, Truck, Bed, UserCheck, HeartPulse
+  Building2, Phone, Mail, MapPin, Calendar,
+  Heart, Shield, Stethoscope, Activity, AlertTriangle,
+  Baby, FlaskConical, Clock, Users, Award, ArrowRight, ChevronRight
 } from "lucide-react";
 
 export default function Sogara() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("presentation");
-
-  const stats = [
-    { icon: Users, value: "1,250", label: "Employés" },
-    { icon: UserCheck, value: "420", label: "Ayants droit" },
-    { icon: Bed, value: "85", label: "Lits" },
-    { icon: Stethoscope, value: "12", label: "Médecins" },
-    { icon: HeartPulse, value: "28", label: "Infirmiers" },
-    { icon: Truck, value: "2", label: "Ambulances" }
-  ];
 
   const services = [
-    {
-      icon: AlertTriangle,
-      title: "Urgences 24/7",
-      description: "Service d'urgence disponible jour et nuit pour toute situation médicale"
-    },
-    {
-      icon: Stethoscope,
-      title: "Consultations",
-      description: "Médecine générale et consultations spécialisées"
-    },
-    {
-      icon: Baby,
-      title: "Maternité",
-      description: "Suivi de grossesse et soins maternels complets"
-    },
-    {
-      icon: Activity,
-      title: "Chirurgie",
-      description: "Bloc opératoire moderne pour interventions chirurgicales"
-    },
-    {
-      icon: FlaskConical,
-      title: "Laboratoire",
-      description: "Analyses médicales et examens biologiques"
-    },
-    {
-      icon: Shield,
-      title: "Médecine du Travail",
-      description: "Suivi santé des employés et prévention des risques"
-    }
+    { icon: AlertTriangle, title: "Urgences 24/7", description: "Service d'urgence disponible jour et nuit" },
+    { icon: Stethoscope, title: "Consultations", description: "Médecine générale et spécialisée" },
+    { icon: Baby, title: "Maternité", description: "Suivi de grossesse complet" },
+    { icon: Activity, title: "Chirurgie", description: "Bloc opératoire moderne" },
+    { icon: FlaskConical, title: "Laboratoire", description: "Analyses médicales complètes" },
+    { icon: Shield, title: "Médecine du Travail", description: "Prévention et suivi santé" }
   ];
 
-  const certifications = [
-    { label: "ISO 9001:2015", description: "Management de la qualité" },
-    { label: "CNAMGS", description: "Conventionné assurance maladie" },
-    { label: "CNSS", description: "Agréé sécurité sociale" }
-  ];
-
-  const missionItems = [
-    "Assurer la santé et le bien-être des employés SOGARA",
-    "Prévenir les risques professionnels",
-    "Offrir des soins de qualité aux ayants droit",
-    "Gérer les urgences médicales 24h/24"
+  const team = [
+    { name: "Dr. Jean-Paul NZENZE", specialty: "Médecin du Travail", initials: "JN" },
+    { name: "Dr. Marie BOUNDA", specialty: "Médecin Généraliste", initials: "MB" },
+    { name: "Dr. Sophie NDONG", specialty: "Médecin Urgentiste", initials: "SN" }
   ];
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center">
                 <Building2 className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -84,13 +42,13 @@ export default function Sogara() {
                 <p className="text-xs text-muted-foreground">Centre de Médecine de Santé au Travail</p>
               </div>
             </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
-                <MapPin className="w-4 h-4 mr-2" />
-                Accueil SANTE.GA
-              </Button>
-              <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" size="sm">
-                Espace Professionnel
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#about" className="text-sm font-medium hover:text-primary transition-colors">À propos</a>
+              <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
+              <a href="#team" className="text-sm font-medium hover:text-primary transition-colors">Équipe</a>
+              <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">Contact</a>
+              <Button onClick={() => navigate("/appointments")} className="bg-gradient-to-r from-blue-600 to-blue-500">
+                Prendre Rendez-vous
               </Button>
             </nav>
           </div>
@@ -98,292 +56,379 @@ export default function Sogara() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:30px_30px]" />
-        <div className="container mx-auto px-6 py-20 relative">
-          <div className="text-center text-white space-y-6 max-w-5xl mx-auto">
-            <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-              <Award className="w-3 h-3 mr-1" />
-              Établissement Certifié ISO 9001
-            </Badge>
-            
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-              Centre de Médecine de Santé au Travail
-              <span className="block mt-2">SOGARA</span>
-            </h1>
-            
-            <p className="text-xl text-blue-50 max-w-3xl mx-auto">
-              Excellence médicale au service des employés SOGARA et leurs familles depuis 1974
-            </p>
+      <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-background">
+        <div className="container mx-auto px-6 py-20 md:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                  Centre de Médecine{" "}
+                  <span className="block">de Santé au Travail</span>
+                  <span className="text-blue-600">SOGARA</span>
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-xl">
+                  Excellence médicale au service des employés SOGARA et leurs familles. Des soins de qualité avec des équipements de pointe depuis 1974.
+                </p>
+              </div>
 
-            <div className="flex flex-wrap gap-4 justify-center pt-4">
-              <Button 
-                size="lg" 
-                className="bg-white text-blue-600 hover:bg-blue-50"
-                onClick={() => navigate("/appointments")}
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Prendre Rendez-vous
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white text-white hover:bg-white/10"
-              >
-                <Phone className="w-5 h-5 mr-2" />
-                Nous Contacter
-              </Button>
-            </div>
+              <div className="flex flex-wrap gap-4">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full px-8">
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Prendre Rendez-vous
+                </Button>
+                <Button size="lg" variant="outline" className="rounded-full px-8">
+                  Nous Contacter
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-12">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-                    <Icon className="w-8 h-8 text-white mb-3 mx-auto" />
-                    <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                    <div className="text-sm text-blue-100">{stat.label}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Navigation Tabs */}
-      <section className="bg-white dark:bg-gray-900 border-b sticky top-[73px] z-40">
-        <div className="container mx-auto px-6">
-          <nav className="flex gap-8">
-            {["presentation", "services", "horaires", "contact"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-4 px-2 text-sm font-medium border-b-2 transition-colors capitalize ${
-                  activeTab === tab
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </section>
-
-      {/* Content Sections */}
-      <div className="container mx-auto px-6 py-16">
-        {/* Presentation Tab */}
-        {activeTab === "presentation" && (
-          <div className="max-w-6xl mx-auto space-y-12">
-            <Card>
-              <CardContent className="p-8">
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              {/* Patient Stats */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3].map((i) => (
+                      <Avatar key={i} className="w-12 h-12 border-2 border-background">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600">
+                          P{i}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold mb-4">À propos du CMST SOGARA</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Le Centre de Médecine de Santé au Travail (CMST) SOGARA est un établissement de santé d'excellence dédié aux employés de la Société Gabonaise de Raffinage et à leurs familles. Situé à Port-Gentil, notre centre offre une gamme complète de services médicaux avec des équipements de pointe et une équipe médicale hautement qualifiée.
-                    </p>
+                    <div className="font-semibold text-lg">1,670+ Employés</div>
+                    <div className="text-sm text-muted-foreground">Pris en charge chaque année</div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card>
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
-                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <h3 className="text-xl font-bold">Notre Mission</h3>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-4xl font-bold">50+</div>
+                    <div className="text-sm text-muted-foreground">Années d'expérience</div>
                   </div>
-                  <ul className="space-y-3">
-                    {missionItems.map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div>
+                    <div className="text-4xl font-bold">28+</div>
+                    <div className="text-sm text-muted-foreground">Personnel Médical</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Doctor Placeholder */}
+            <div className="relative">
+              <div className="relative aspect-[4/5] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-3xl overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <div className="w-32 h-32 mx-auto rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Stethoscope className="w-16 h-16 text-blue-600" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Floating Badge */}
+                <div className="absolute top-8 right-8 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback className="bg-blue-100 text-blue-600 text-sm font-semibold">12</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-semibold text-sm">12+ Médecins</div>
+                      <div className="text-xs text-muted-foreground">Qualifiés</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Badge */}
+                <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className="bg-blue-100 text-xs">Dr</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="text-xs font-semibold">Disponible 24/7</div>
+                      <div className="text-[10px] text-muted-foreground">Urgences</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div className="space-y-6">
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                Une gamme complète de{" "}
+                <span className="block">services médicaux</span>
+              </h2>
+              
+              {/* Large Service Card */}
+              <Card className="overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-0">
+                <CardContent className="p-0 relative aspect-[4/5]">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-48 h-48 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Stethoscope className="w-24 h-24 text-blue-600/40" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%]">
+                    <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-semibold">Dr. NZENZE</div>
+                            <div className="text-xs text-muted-foreground">Médecin du Travail</div>
+                            <Badge variant="outline" className="mt-2 text-[10px]">
+                              Disponible Maintenant
+                            </Badge>
+                          </div>
+                          <Avatar className="w-12 h-12">
+                            <AvatarFallback className="bg-blue-100 text-blue-600">JN</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                      <Award className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              
+              {/* Service Icons */}
+              <div className="flex gap-8 justify-center pt-4">
+                {[Activity, Shield, Heart].map((Icon, i) => (
+                  <div key={i} className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                      <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <h3 className="text-xl font-bold">Nos Certifications</h3>
                   </div>
-                  <ul className="space-y-4">
-                    {certifications.map((cert, index) => (
-                      <li key={index}>
-                        <Badge variant="outline" className="mb-2">{cert.label}</Badge>
-                        <p className="text-sm text-muted-foreground">{cert.description}</p>
-                      </li>
-                    ))}
-                  </ul>
+                ))}
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge variant="outline" className="text-blue-600 border-blue-600">
+                  Excellence Médicale
+                </Badge>
+                <p className="text-muted-foreground">
+                  Nous vous traitons comme une famille, offrant des services de santé complets et personnalisés adaptés à vos besoins individuels.
+                </p>
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold">
+                  Votre santé,<br />Notre priorité
+                </h3>
+                <p className="text-muted-foreground">
+                  Depuis 1974, le CMST SOGARA offre des soins de qualité aux employés et à leurs familles avec une équipe médicale expérimentée et des équipements modernes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Services Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-0 bg-gray-50 dark:bg-gray-800">
+                  <CardContent className="p-6">
+                    <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
+                    <p className="text-muted-foreground text-sm">{service.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section id="team" className="py-20 bg-gray-50 dark:bg-background">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Équipe Hautement Qualifiée
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Rencontrez nos médecins hautement qualifiés
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {team.map((member, index) => (
+              <Card key={index} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-white dark:bg-gray-900">
+                <CardContent className="p-0">
+                  <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 flex items-center justify-center relative">
+                    <Avatar className="w-32 h-32">
+                      <AvatarFallback className="bg-white dark:bg-gray-800 text-4xl font-bold text-blue-600">
+                        {member.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-bold text-lg mb-1">{member.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{member.specialty}</p>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="ghost" className="rounded-full w-10 h-10 p-0">
+                        <Phone className="w-4 h-4" />
+                      </Button>
+                      <Button size="sm" variant="ghost" className="rounded-full w-10 h-10 p-0">
+                        <Mail className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Side - Features */}
+            <div className="space-y-12">
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold">Équipements Modernes</h3>
+                <p className="text-muted-foreground">
+                  Des équipements médicaux de dernière génération pour des diagnostics précis et des soins de qualité optimale.
+                </p>
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold">Système de Facturation Simplifié</h3>
+                <p className="text-muted-foreground">
+                  Conventionné CNAMGS et CNSS pour une prise en charge simplifiée de vos soins médicaux.
+                </p>
+              </div>
+              
+              <div className="space-y-6">
+                <h3 className="text-3xl font-bold">Personnel Qualifié</h3>
+                <p className="text-muted-foreground">
+                  Une équipe de 28 infirmiers et 12 médecins qualifiés pour vous offrir les meilleurs soins.
+                </p>
+              </div>
+            </div>
+            
+            {/* Right Side - Doctor Card */}
+            <div className="relative">
+              <Card className="overflow-hidden border-0 shadow-2xl">
+                <CardContent className="p-0">
+                  <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-gray-900 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-48 h-48 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <Stethoscope className="w-24 h-24 text-blue-600/40" />
+                      </div>
+                    </div>
+                    
+                    {/* Stats Card */}
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%]">
+                      <Card className="bg-white/95 backdrop-blur-sm border-0">
+                        <CardContent className="p-6">
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="text-center">
+                              <div className="flex items-center justify-center gap-2 mb-2">
+                                <Users className="w-5 h-5 text-blue-600" />
+                                <span className="text-3xl font-bold">1,670</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">Employés Couverts</p>
+                            </div>
+                            <div className="text-center">
+                              <div className="flex items-center justify-center gap-2 mb-2">
+                                <Heart className="w-5 h-5 text-blue-600" />
+                                <span className="text-3xl font-bold">98%</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">Satisfaction</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* Services Tab */}
-        {activeTab === "services" && (
-          <div className="max-w-6xl mx-auto">
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-50 dark:bg-background">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Nos Services Médicaux</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Une gamme complète de services médicaux pour répondre à tous vos besoins de santé
+              <h2 className="text-4xl font-bold mb-4">Nous Contacter</h2>
+              <p className="text-muted-foreground">
+                Prenez contact avec notre équipe pour plus d'informations
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service, index) => {
-                const Icon = service.icon;
-                return (
-                  <Card key={index} className="hover:shadow-lg transition-all duration-300">
-                    <CardContent className="p-6">
-                      <div className="w-14 h-14 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-4">
-                        <Icon className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold mb-2">{service.title}</h3>
-                      <p className="text-muted-foreground text-sm">{service.description}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="p-6 text-center hover:shadow-lg transition-shadow border-0">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-4">
+                  <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold mb-2">Téléphone</h3>
+                <p className="text-sm text-muted-foreground">+241 01 55 55 00</p>
+                <p className="text-xs text-muted-foreground mt-1">Urgences 24/7</p>
+              </Card>
+
+              <Card className="p-6 text-center hover:shadow-lg transition-shadow border-0">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold mb-2">Email</h3>
+                <p className="text-sm text-muted-foreground">cmst@sogara.ga</p>
+              </Card>
+
+              <Card className="p-6 text-center hover:shadow-lg transition-shadow border-0">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-4">
+                  <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-semibold mb-2">Adresse</h3>
+                <p className="text-sm text-muted-foreground">Zone Industrielle SOGARA</p>
+                <p className="text-xs text-muted-foreground mt-1">Port-Gentil, Gabon</p>
+              </Card>
             </div>
           </div>
-        )}
-
-        {/* Horaires Tab */}
-        {activeTab === "horaires" && (
-          <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardContent className="p-8">
-                <h2 className="text-3xl font-bold mb-8 text-center">Horaires d'Ouverture</h2>
-                <div className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div>
-                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-blue-600" />
-                        Consultations Programmées
-                      </h3>
-                      <div className="space-y-2 text-muted-foreground">
-                        <p>Lundi - Vendredi: 7h30 - 16h30</p>
-                        <p>Samedi: 8h00 - 12h00</p>
-                        <p>Dimanche: Fermé</p>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                        <AlertTriangle className="w-5 h-5 text-red-600" />
-                        Urgences
-                      </h3>
-                      <div className="space-y-2 text-muted-foreground">
-                        <p className="font-semibold text-foreground">24h/24 - 7j/7</p>
-                        <p>Service d'urgence disponible en permanence</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Contact Tab */}
-        {activeTab === "contact" && (
-          <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardContent className="p-8">
-                <h2 className="text-3xl font-bold mb-8 text-center">Contactez-nous</h2>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Adresse</h3>
-                        <p className="text-muted-foreground">
-                          Zone Industrielle SOGARA<br />
-                          Port-Gentil, Gabon
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Téléphone</h3>
-                        <p className="text-muted-foreground">
-                          +241 01 55 55 00<br />
-                          +241 01 55 55 01
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Email</h3>
-                        <p className="text-muted-foreground">cmst@sogara.ga</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-2xl p-8 flex items-center justify-center">
-                    <div className="text-center">
-                      <Building2 className="w-24 h-24 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
-                      <p className="text-muted-foreground">
-                        Notre équipe est à votre écoute pour répondre à toutes vos questions
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-500 text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Besoin de soins médicaux ?</h2>
-          <p className="text-xl text-emerald-50 max-w-2xl mx-auto mb-8">
-            Prenez rendez-vous en ligne ou contactez-nous directement pour bénéficier de nos services médicaux de qualité.
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Prêt à prendre soin de votre santé ?
+          </h2>
+          <p className="text-blue-50 mb-8 max-w-2xl mx-auto text-lg">
+            Prenez rendez-vous dès maintenant et bénéficiez de notre expertise médicale
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button 
               size="lg" 
-              className="bg-white text-emerald-600 hover:bg-emerald-50"
+              variant="secondary"
+              className="rounded-full px-8"
               onClick={() => navigate("/appointments")}
             >
               <Calendar className="w-5 h-5 mr-2" />
               Prendre Rendez-vous
+              <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white text-white hover:bg-white/10"
+              className="bg-white/10 border-white text-white hover:bg-white/20 rounded-full px-8"
             >
               <Phone className="w-5 h-5 mr-2" />
-              +241 01 55 55 00
+              Appeler Maintenant
             </Button>
           </div>
         </div>
