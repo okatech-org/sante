@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { SuperAdminLayoutSimpleSimple } from "@/components/layout/SuperAdminLayoutSimpleSimple";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
 import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

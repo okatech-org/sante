@@ -52,6 +52,15 @@ import Support from "./pages/Support";
 import Cartography from "./pages/Cartography";
 import AdminCartography from "./pages/admin/AdminCartography";
 
+// Pages Admin Super Admin
+import AdminEstablishments from "./pages/admin/AdminEstablishments";
+import AdminBilling from "./pages/admin/AdminBilling";
+import AdminAPI from "./pages/admin/AdminAPI";
+import AdminSecurity from "./pages/admin/AdminSecurity";
+import AdminSupport from "./pages/admin/AdminSupport";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminSystem from "./pages/admin/AdminSystem";
+
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
@@ -116,8 +125,15 @@ function AppMain() {
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
+                    <Route path="/admin/establishments" element={<AdminEstablishments />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
                     <Route path="/admin/cartography" element={<AdminCartography />} />
+                    <Route path="/admin/billing" element={<AdminBilling />} />
+                    <Route path="/admin/api" element={<AdminAPI />} />
+                    <Route path="/admin/security" element={<AdminSecurity />} />
+                    <Route path="/admin/support" element={<AdminSupport />} />
+                    <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                    <Route path="/admin/system" element={<AdminSystem />} />
                     
                     {/* Route de cartographie publique */}
                     <Route path="/cartography" element={<Cartography />} />
