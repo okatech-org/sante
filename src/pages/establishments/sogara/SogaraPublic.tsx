@@ -140,8 +140,8 @@ export default function SogaraPublic() {
                   className="bg-gray-900 hover:bg-gray-800"
                   onClick={() => navigate("/login/sogara")}
                 >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Personnel SOGARA
+                  <img src="/logo_sante.png" alt="SANTE.GA" className="w-4 h-4 mr-2" />
+                  SANTE.GA
                 </Button>
               </div>
           </div>
