@@ -66,6 +66,7 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
 // Pages SOGARA
 import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
+import SogaraLogin from "./pages/SogaraLogin";
 import SogaraDashboard from "./pages/establishments/sogara/SogaraDashboard";
 import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
 import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
@@ -155,6 +156,9 @@ function AppMain() {
                     {/* Routes SOGARA */}
                     {/* Page publique SOGARA */}
                     <Route path="/sogara" element={<SogaraPublic />} />
+                    
+                    {/* Connexion Personnel SOGARA */}
+                    <Route path="/login/sogara" element={<SogaraLogin />} />
                     
                     {/* Dashboard Admin SOGARA (pour l'admin de l'établissement) */}
                     <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />

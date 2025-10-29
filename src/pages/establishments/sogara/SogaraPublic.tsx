@@ -119,25 +119,25 @@ export default function SogaraPublic() {
               <a href="#contact" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">Contact</a>
             </nav>
 
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate("/")}
-                className="hidden sm:flex"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Accueil
-              </Button>
-              <Button 
-                size="sm"
-                className="bg-gray-900 hover:bg-gray-800"
-                onClick={() => navigate("/login/professional")}
-              >
-                <LogIn className="w-4 h-4 mr-2" />
-                Connexion
-              </Button>
-            </div>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate("/")}
+                  className="hidden sm:flex"
+                >
+                  <Home className="w-4 h-4 mr-2" />
+                  Accueil
+                </Button>
+                <Button 
+                  size="sm"
+                  className="bg-gray-900 hover:bg-gray-800"
+                  onClick={() => navigate("/login/sogara")}
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Personnel SOGARA
+                </Button>
+              </div>
           </div>
         </div>
       </header>
