@@ -284,18 +284,6 @@ export default function SogaraPublic() {
                   <p className="text-sm text-gray-600">Patients Satisfaits</p>
                 </div>
               </div>
-
-              {/* Experience Stats */}
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1">
-                  <p className="text-4xl font-bold text-gray-900">15+</p>
-                  <p className="text-sm text-gray-600">Années d'Excellence</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-4xl font-bold text-gray-900">20+</p>
-                  <p className="text-sm text-gray-600">Médecins Spécialistes</p>
-                </div>
-              </div>
             </div>
 
             {/* Right Content - Doctor Image */}
