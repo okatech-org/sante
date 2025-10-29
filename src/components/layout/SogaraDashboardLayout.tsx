@@ -17,7 +17,6 @@ import {
   Briefcase, Bed, Activity, UserCheck
 } from "lucide-react";
 import { toast } from "sonner";
-import logoSante from "@/assets/logo_sante.png";
 
 interface SogaraDashboardLayoutProps {
   children: ReactNode;
@@ -102,9 +101,7 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
         <div className="flex flex-col flex-1 overflow-y-auto">
           {/* Logo et titre */}
           <div className="flex items-center gap-3 px-6 py-6 border-b border-border/50">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg">
-              <Building2 className="w-6 h-6 text-white" />
-            </div>
+            <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto" />
             <div>
               <h1 className="text-lg font-bold text-foreground">CMST SOGARA</h1>
               <p className="text-xs text-muted-foreground">Centre Médical</p>
@@ -189,7 +186,7 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
                   <div className="flex flex-col h-full">
                     {/* Logo mobile */}
                     <div className="flex items-center gap-3 px-6 py-6 border-b border-border/50">
-                      <img src={logoSante} alt="SOGARA" className="h-8 w-8" />
+                      <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto" />
                       <div>
                         <h1 className="text-lg font-bold text-foreground">CMST SOGARA</h1>
                         <p className="text-xs text-muted-foreground">Centre Médical</p>
