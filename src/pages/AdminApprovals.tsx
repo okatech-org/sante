@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,7 +54,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default function AdminApprovals() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useOfflineAuth();
   const [approvals, setApprovals] = useState<PendingApproval[]>([]);
   const [filteredApprovals, setFilteredApprovals] = useState<PendingApproval[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -273,7 +273,7 @@ export default function AdminApprovals() {
 
   if (!isSuperAdmin) {
     return (
-      <SuperAdminLayout>
+      <SuperAdminLayoutSimple>
         <div className="flex items-center justify-center min-h-screen">
           <Card className="bg-card/50 backdrop-blur-xl border-border/50">
             <CardContent className="p-8 text-center">
@@ -283,7 +283,7 @@ export default function AdminApprovals() {
             </CardContent>
           </Card>
         </div>
-      </SuperAdminLayout>
+      </SuperAdminLayoutSimple>
     );
   }
 
@@ -294,7 +294,7 @@ export default function AdminApprovals() {
   };
 
   return (
-    <SuperAdminLayout>
+    <SuperAdminLayoutSimple>
       <div className="p-6 space-y-6 max-w-7xl mx-auto">
         {/* Header */}
         <div>
@@ -542,6 +542,6 @@ export default function AdminApprovals() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </SuperAdminLayout>
+    </SuperAdminLayoutSimple>
   );
 }

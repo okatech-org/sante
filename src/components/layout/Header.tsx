@@ -5,11 +5,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logoSante from "@/assets/logo_sante.png";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
-import { useAuth } from "@/contexts/AuthContext";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
-  const { user, signOut, userRoles } = useAuth();
+  const { user, signOut } = useOfflineAuth();
+  const userRoles = user?.user_metadata?.roles || [];
   const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();

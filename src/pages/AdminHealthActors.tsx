@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +74,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AdminHealthActors() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useOfflineAuth();
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [filteredEstablishments, setFilteredEstablishments] = useState<Establishment[]>([]);
@@ -537,7 +537,7 @@ export default function AdminHealthActors() {
 
   if (!isSuperAdmin) {
     return (
-      <SuperAdminLayout>
+      <SuperAdminLayoutSimple>
         <div className="flex items-center justify-center min-h-screen">
           <Card className="bg-card/50 backdrop-blur-xl border-border/50">
             <CardContent className="p-8 text-center">
@@ -547,7 +547,7 @@ export default function AdminHealthActors() {
             </CardContent>
           </Card>
         </div>
-      </SuperAdminLayout>
+      </SuperAdminLayoutSimple>
     );
   }
 
@@ -570,7 +570,7 @@ export default function AdminHealthActors() {
   };
 
   return (
-    <SuperAdminLayout>
+    <SuperAdminLayoutSimple>
       <div className="p-6 space-y-4 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -1358,6 +1358,6 @@ export default function AdminHealthActors() {
           </DialogContent>
         </Dialog>
       </div>
-    </SuperAdminLayout>
+    </SuperAdminLayoutSimple>
   );
 }

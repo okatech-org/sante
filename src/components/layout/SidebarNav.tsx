@@ -1,7 +1,7 @@
 import { Home, Calendar, FileText, TestTube, Search, CreditCard, User, BarChart3, Users, Clock, Building2, Activity, Shield, Settings, LucideIcon, Info, Phone, Mail, HelpCircle, Sparkles, BookOpen, Map, Heart, Pill, Video, ClipboardList, DollarSign, TrendingUp, Stethoscope, UserPlus, Link2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SidebarNavProps {
@@ -16,7 +16,8 @@ interface NavItem {
 }
 
 export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
-  const { user, userRoles } = useAuth();
+  const { user } = useOfflineAuth();
+  const userRoles = user?.user_metadata?.roles || [];
   const { t } = useLanguage();
   
   const publicNavItems: NavItem[] = [

@@ -48,6 +48,10 @@ import AdminApprovals from "./pages/AdminApprovals";
 // Pages de support
 import Support from "./pages/Support";
 
+// Pages de cartographie
+import Cartography from "./pages/Cartography";
+import AdminCartography from "./pages/admin/AdminCartography";
+
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
@@ -113,6 +117,10 @@ function AppMain() {
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
+                    <Route path="/admin/cartography" element={<AdminCartography />} />
+                    
+                    {/* Route de cartographie publique */}
+                    <Route path="/cartography" element={<Cartography />} />
 
                     {/* Routes de support */}
                     <Route path="/support" element={<Support />} />

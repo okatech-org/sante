@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
 import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
 import EnhancedSmartSearch from "@/components/cartography/EnhancedSmartSearch";
 import CartographyFilterPanel from "@/components/cartography/CartographyFilterPanel";
@@ -30,7 +30,7 @@ import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 export default function Cartography() {
-  const { isSuperAdmin, user } = useAuth();
+  const { isSuperAdmin, user } = useOfflineAuth();
   const navigate = useNavigate();
   const [providers, setProviders] = useState<CartographyProvider[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>([]);
@@ -550,11 +550,17 @@ export default function Cartography() {
     </div>
   );
 
-  return isSuperAdmin ? (
-    <SuperAdminLayout>
-      {content}
-    </SuperAdminLayout>
-  ) : (
+  // Pour les admins, utiliser le layout admin
+  if (isSuperAdmin || user?.user_metadata?.roles?.includes('admin')) {
+    return (
+      <SuperAdminLayoutSimple>
+        {content}
+      </SuperAdminLayoutSimple>
+    );
+  }
+
+  // Pour les autres utilisateurs, afficher sans layout admin
+  return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {content}
     </div>

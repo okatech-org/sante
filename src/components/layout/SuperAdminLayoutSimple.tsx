@@ -60,7 +60,7 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
     navigate("/");
   };
 
-  // Menu items pour super admin - Nouvelle Architecture Multi-Établissements
+  // Menu items pour super admin - Architecture simplifiée
   const superAdminMenuItems = [
     // Vue d'ensemble
     { 
@@ -98,41 +98,14 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
       color: '#f59e0b',
       description: 'Validation des demandes'
     },
-    // Établissements
-    { 
-      id: 'establishments', 
-      label: 'Établissements', 
-      icon: Building2, 
-      path: '/admin/establishments', 
-      color: '#06b6d4',
-      description: 'Gestion des établissements de santé'
-    },
     // Cartographie
     { 
       id: 'cartography', 
       label: 'Cartographie', 
       icon: Map, 
-      path: '/cartography', 
+      path: '/admin/cartography', 
       color: '#ef4444',
-      description: 'Visualisation géographique'
-    },
-    // Audit
-    { 
-      id: 'audit', 
-      label: 'Audit', 
-      icon: Activity, 
-      path: '/admin/audit', 
-      color: '#84cc16',
-      description: 'Traçabilité et conformité'
-    },
-    // Documentation
-    { 
-      id: 'docs', 
-      label: 'Documentation', 
-      icon: BookOpen, 
-      path: '/admin/docs', 
-      color: '#6366f1',
-      description: 'Guide d\'utilisation'
+      description: 'Gestion de la cartographie'
     }
   ];
 

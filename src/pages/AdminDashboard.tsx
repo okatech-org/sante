@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <SuperAdminLayout>
+    <SuperAdminLayoutSimple>
       <div className="container max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* En-tête */}
         <div className="space-y-2">
@@ -138,6 +138,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-    </SuperAdminLayout>
+    </SuperAdminLayoutSimple>
   );
 }

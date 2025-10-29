@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import { SuperAdminLayout } from "@/components/layout/SuperAdminLayout";
-import { useAuth } from "@/contexts/AuthContext";
+import { SuperAdminLayoutSimpleSimple } from "@/components/layout/SuperAdminLayoutSimpleSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,7 +18,7 @@ import { dedupeProviders } from "@/utils/cartography-dedupe";
 type SortBy = "name-asc" | "name-desc" | "city-asc" | "city-desc" | "type-asc" | "distance-asc";
 
 export default function AdminCartography() {
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin } = useOfflineAuth();
   const [stats, setStats] = useState({ 
     total: 0, 
     hopitaux: 0, 
@@ -266,7 +266,7 @@ export default function AdminCartography() {
 
   if (!isSuperAdmin) {
     return (
-      <SuperAdminLayout>
+      <SuperAdminLayoutSimple>
         <div className="flex items-center justify-center min-h-screen">
           <Card className="bg-card/50 backdrop-blur-xl border-border/50">
             <CardContent className="p-8 text-center">
@@ -276,12 +276,12 @@ export default function AdminCartography() {
             </CardContent>
           </Card>
         </div>
-      </SuperAdminLayout>
+      </SuperAdminLayoutSimple>
     );
   }
 
   return (
-    <SuperAdminLayout>
+    <SuperAdminLayoutSimple>
       <div className="p-6 space-y-4 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -402,6 +402,6 @@ export default function AdminCartography() {
           </div>
         )}
       </div>
-    </SuperAdminLayout>
+    </SuperAdminLayoutSimple>
   );
 }

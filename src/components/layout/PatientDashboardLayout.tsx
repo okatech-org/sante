@@ -1,4 +1,4 @@
-import { useAuth } from "@/contexts/AuthContext";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop, Users, ClipboardList, DollarSign, TrendingUp, Mail, Link2 } from "lucide-react";
 import { useState, ReactNode, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -20,59 +20,43 @@ interface PatientDashboardLayoutProps {
 }
 
 export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps) {
-  const { user, isSuperAdmin, userRoles } = useAuth();
+  const { user, isSuperAdmin, hasRole, signOut } = useOfflineAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState('fr');
   
-  const isProfessional = userRoles.includes('doctor') || userRoles.includes('medical_staff');
+  const userRoles = user?.user_metadata?.roles || [];
+  const isProfessional = hasRole('doctor') || hasRole('medical_staff');
   const fullName = (user?.user_metadata as any)?.full_name || 'Jean-Pierre Mbadinga';
 
-  // Charger les préférences depuis la base de données
+  // Charger les préférences depuis localStorage (mode hors-ligne)
   useEffect(() => {
-    const loadPreferences = async () => {
-      if (user?.id) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('language, theme')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          if (data.language) setLanguage(data.language);
-          if (data.theme) setTheme(data.theme);
-        }
-      }
+    const loadPreferences = () => {
+      const savedLanguage = localStorage.getItem('user_language') || 'fr';
+      const savedTheme = localStorage.getItem('user_theme') || 'system';
+      
+      setLanguage(savedLanguage);
+      setTheme(savedTheme);
     };
     loadPreferences();
-  }, [user?.id, setTheme]);
+  }, [setTheme]);
 
-  // Sauvegarder les préférences
+  // Sauvegarder les préférences dans localStorage (mode hors-ligne)
   const handleLanguageChange = async (newLanguage: string) => {
     setLanguage(newLanguage);
-    if (user?.id) {
-      await supabase
-        .from('profiles')
-        .update({ language: newLanguage })
-        .eq('id', user.id);
-    }
+    localStorage.setItem('user_language', newLanguage);
   };
 
   const handleThemeChange = async (newTheme: string) => {
     setTheme(newTheme);
-    if (user?.id) {
-      await supabase
-        .from('profiles')
-        .update({ theme: newTheme })
-        .eq('id', user.id);
-    }
+    localStorage.setItem('user_theme', newTheme);
   };
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOut();
       toast({
         title: "Déconnexion réussie",
         description: "À bientôt !",

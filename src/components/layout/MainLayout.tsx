@@ -3,7 +3,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { MobileBottomNav } from "./MobileBottomNav";
-import { useAuth } from "@/contexts/AuthContext";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { ChevronRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,7 +44,7 @@ const routeLabels: Record<string, string> = {
 };
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
-  const { user } = useAuth();
+  const { user } = useOfflineAuth();
   const location = useLocation();
   const navigate = useNavigate();
 

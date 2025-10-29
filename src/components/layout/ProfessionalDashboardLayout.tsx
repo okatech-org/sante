@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/AuthContext';
+import { useOfflineAuth } from '@/contexts/OfflineAuthContext';
 import { toast } from 'sonner';
 import { EstablishmentContextSwitcher } from '@/components/professional/EstablishmentContextSwitcher';
 import {
@@ -43,7 +43,7 @@ interface ProfessionalDashboardLayoutProps {
 export default function ProfessionalDashboardLayout({ children }: ProfessionalDashboardLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useOfflineAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigationItems = [
