@@ -8,6 +8,9 @@ import {
   Heart, Shield, Stethoscope, Activity, AlertTriangle,
   Baby, FlaskConical, Clock, Users, Award, ArrowRight, ChevronRight
 } from "lucide-react";
+import sogaraHero from "@/assets/sogara-hero.jpg";
+import sogaraDoctor from "@/assets/sogara-doctor.jpg";
+import sogaraEquipment from "@/assets/sogara-equipment.jpg";
 
 export default function Sogara() {
   const navigate = useNavigate();
@@ -114,16 +117,14 @@ export default function Sogara() {
               </div>
             </div>
 
-            {/* Right Side - Doctor Placeholder */}
+            {/* Right Side - Medical Center Image */}
             <div className="relative">
-              <div className="relative aspect-[4/5] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-3xl overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center space-y-4">
-                    <div className="w-32 h-32 mx-auto rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Stethoscope className="w-16 h-16 text-blue-600" />
-                    </div>
-                  </div>
-                </div>
+              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+                <img 
+                  src={sogaraHero} 
+                  alt="CMST SOGARA - Centre Médical"
+                  className="w-full h-full object-cover"
+                />
                 
                 {/* Floating Badge */}
                 <div className="absolute top-8 right-8 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
@@ -167,13 +168,13 @@ export default function Sogara() {
               </h2>
               
               {/* Large Service Card */}
-              <Card className="overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-0">
+              <Card className="overflow-hidden border-0 shadow-xl">
                 <CardContent className="p-0 relative aspect-[4/5]">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-48 h-48 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <Stethoscope className="w-24 h-24 text-blue-600/40" />
-                    </div>
-                  </div>
+                  <img 
+                    src={sogaraDoctor} 
+                    alt="Médecin du CMST SOGARA"
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%]">
                     <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
                       <CardContent className="p-4">
@@ -318,16 +319,16 @@ export default function Sogara() {
               </div>
             </div>
             
-            {/* Right Side - Doctor Card */}
+            {/* Right Side - Equipment Image */}
             <div className="relative">
               <Card className="overflow-hidden border-0 shadow-2xl">
                 <CardContent className="p-0">
-                  <div className="aspect-[3/4] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-gray-900 relative">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-48 h-48 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <Stethoscope className="w-24 h-24 text-blue-600/40" />
-                      </div>
-                    </div>
+                  <div className="aspect-[3/4] relative">
+                    <img 
+                      src={sogaraEquipment} 
+                      alt="Équipements médicaux modernes du CMST SOGARA"
+                      className="w-full h-full object-cover"
+                    />
                     
                     {/* Stats Card */}
                     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%]">

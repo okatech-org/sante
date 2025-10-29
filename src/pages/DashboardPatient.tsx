@@ -96,7 +96,7 @@ export default function DashboardPatient() {
     return age;
   };
 
-  const age = calculateAge(profileData?.date_of_birth);
+  const age = calculateAge(profileData?.birth_date);
 
   // Traduire le genre
   const getGenderLabel = (gender: string | null): string => {

@@ -5,13 +5,13 @@ export interface PatientProfile {
   id: string;
   email: string;
   full_name: string;
-  date_of_birth?: string;
-  gender?: 'male' | 'female' | 'other';
+  birth_date?: string | null;
+  gender?: string | null;
   phone?: string;
   address?: string;
-  city?: string;
+  city?: string | null;
   country?: string;
-  blood_group?: string;
+  blood_group?: string | null;
   allergies?: string[];
   chronic_conditions?: string[];
   emergency_contact?: {
@@ -19,8 +19,10 @@ export interface PatientProfile {
     phone: string;
     relationship: string;
   };
-  cnamgs_number?: string;
+  cnamgs_number?: string | null;
   insurance_status?: 'active' | 'inactive' | 'pending';
+  weight_kg?: number | null;
+  height_m?: number | null;
   created_at?: string;
   updated_at?: string;
 }

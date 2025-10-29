@@ -72,7 +72,7 @@ export default function Parametres() {
             fullName: profile.full_name || '',
             email: profile.email || user.email || '',
             phone: profile.phone || '',
-            dateOfBirth: profile.date_of_birth || '',
+            dateOfBirth: profile.birth_date || '',
             address: profile.address || ''
           });
         }
