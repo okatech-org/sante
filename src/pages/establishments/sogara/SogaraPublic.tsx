@@ -681,25 +681,25 @@ export default function SogaraPublic() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="bg-gray-900 text-white py-6 md:py-8">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-10 w-auto rounded" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
+            <div className="space-y-2 md:space-y-4">
+              <div className="flex items-center gap-2">
+                <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-8 md:h-10 w-auto rounded" />
                 <div>
-                  <p className="font-bold">CMST SOGARA</p>
-                  <p className="text-xs text-gray-400">Excellence Médicale</p>
+                  <p className="text-xs md:text-sm font-bold">CMST SOGARA</p>
+                  <p className="text-[10px] md:text-xs text-gray-400">Excellence Médicale</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-400">
+              <p className="text-xs md:text-sm text-gray-400">
                 Centre médical moderne dédié à votre santé depuis 1974
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Services</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h3 className="text-sm md:text-base font-semibold mb-2 md:mb-4">Services</h3>
+              <ul className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-400">
                 <li><a href="#" className="hover:text-white transition">Urgences</a></li>
                 <li><a href="#" className="hover:text-white transition">Consultations</a></li>
                 <li><a href="#" className="hover:text-white transition">Chirurgie</a></li>
@@ -708,8 +708,8 @@ export default function SogaraPublic() {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">À Propos</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h3 className="text-sm md:text-base font-semibold mb-2 md:mb-4">À Propos</h3>
+              <ul className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-400">
                 <li><a href="#" className="hover:text-white transition">Notre Équipe</a></li>
                 <li><a href="#" className="hover:text-white transition">Nos Valeurs</a></li>
                 <li><a href="#" className="hover:text-white transition">Carrières</a></li>
@@ -718,8 +718,8 @@ export default function SogaraPublic() {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h3 className="text-sm md:text-base font-semibold mb-2 md:mb-4">Contact</h3>
+              <ul className="space-y-1 md:space-y-2 text-xs md:text-sm text-gray-400">
                 <li>Port-Gentil, Gabon</li>
                 <li>011 55 26 21</li>
                 <li>service.rgc@sogara.com</li>
