@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: sante-ga-frontend
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_SUPABASE_URL
+        scope: build
+        value: ${VITE_SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        scope: build
+        value: ${VITE_SUPABASE_ANON_KEY}
+      - key: VITE_API_URL
+        scope: build
+        value: ${VITE_API_URL}
+    staticSiteDir: dist
+    routes:
+      - type: route
+        path: /
+        destination: /index.html
+        matchType: prefix
+
+  - type: web
+    name: sante-ga-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${DATABASE_URL}
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_SERVICE_KEY
+        value: ${SUPABASE_SERVICE_KEY}
+    routes:
+      - type: route
+        path: /api
+        destination: http://localhost:3000/api
+        matchType: prefix
+    healthCheckPath: /health
+    healthCheckInterval: 30
+    healthCheckTimeout: 10

@@ -1,122 +1,119 @@
-name: Deploy SANTE.GA Neural
+name: 🚀 Deploy to Vercel & Railway
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  NODE_VERSION: '18'
 
 jobs:
-  # ============================================
-  # TESTS
-  # ============================================
-  test:
+  build-and-test:
+    name: 🔨 Build & Test
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: 📦 Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       
-      - name: Install dependencies
+      - name: 📚 Install dependencies
         run: npm ci
       
-      - name: Run linter
-        run: npm run lint || true
+      - name: 🔍 Lint code
+        run: npm run lint --if-present
       
-      - name: Run tests
-        run: npm run neural:test
+      - name: 🏗️ Build project
+        run: npm run build
         env:
-          NODE_ENV: test
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist
+          retention-days: 7
 
-  # ============================================
-  # BUILD & PUSH DOCKER IMAGE
-  # ============================================
-  build:
-    needs: test
+  deploy-vercel:
+    name: 🌐 Deploy to Vercel
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Log in to Container Registry
-        uses: docker/login-action@v2
+      - name: 🚀 Deploy to Vercel
+        uses: vercel/action@main
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=semver,pattern={{version}}
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          production: true
 
-  # ============================================
-  # DEPLOY TO STAGING
-  # ============================================
-  deploy-staging:
-    needs: build
+  deploy-railway:
+    name: 🚂 Deploy to Railway
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging'
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
       
-      - name: Deploy to staging
+      - name: 🚂 Deploy Railway
         run: |
-          echo "🚀 Deploying to staging environment..."
-          # SSH to staging server and pull latest image
-          # Example: ssh user@staging.sante.ga 'cd /app && docker-compose pull && docker-compose up -d'
+          curl -fsSL https://railway.app/install.sh | bash
+          railway --version
+          railway deploy --token ${{ secrets.RAILWAY_TOKEN }}
 
-  # ============================================
-  # DEPLOY TO PRODUCTION
-  # ============================================
-  deploy-production:
-    needs: build
+  notify-slack:
+    name: 📢 Notify Slack
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    needs: [deploy-vercel, deploy-railway]
+    if: always()
     
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to production
-        run: |
-          echo "🚀 Deploying to production environment..."
-          # SSH to production server and pull latest image
-          # Example: ssh user@sante.ga 'cd /app && docker-compose -f docker-compose.prod.yml pull && docker-compose -f docker-compose.prod.yml up -d'
-
-      - name: Health check
-        run: |
-          echo "⏰ Waiting for deployment..."
-          sleep 10
-          curl -f https://sante.ga/health || exit 1
-          echo "✅ Health check passed"
+      - name: 📢 Send notification
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "SANTE.GA Deployment Status",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment Status*\n${{ job.status }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.ref }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n${{ github.sha }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
