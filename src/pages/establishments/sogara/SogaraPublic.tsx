@@ -150,16 +150,16 @@ export default function SogaraPublic() {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
-        <div className="container mx-auto px-4 lg:px-8 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 lg:px-8 py-12">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
-                <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                   Excellence Médicale,
                   <span className="text-blue-600"> Bien-être Assuré</span>
                 </h1>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-base text-gray-600 leading-relaxed">
                   Centre médical moderne au service des employés SOGARA et leurs familles. 
                   Équipements de pointe, équipe qualifiée et soins de qualité depuis 1974.
                 </p>
@@ -185,7 +185,7 @@ export default function SogaraPublic() {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center gap-8 pt-8">
+              <div className="flex items-center gap-6 pt-4">
                 <div className="flex -space-x-3">
                   {[
                   { src: sogaraDoctorFemale, name: "Dr. M" },
@@ -206,7 +206,7 @@ export default function SogaraPublic() {
               </div>
 
               {/* Experience Stats */}
-              <div className="grid grid-cols-2 gap-6 pt-4">
+              <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="space-y-1">
                   <p className="text-4xl font-bold text-gray-900">15+</p>
                   <p className="text-sm text-gray-600">Années d'Excellence</p>
@@ -223,7 +223,7 @@ export default function SogaraPublic() {
               <img 
                 src={sogaraDoctorFemale}
                 alt="Équipe Médicale" 
-                className="w-full h-[500px] object-cover rounded-2xl shadow-lg"
+                className="w-full h-[400px] object-cover rounded-xl shadow-lg"
               />
             </div>
           </div>
@@ -231,16 +231,16 @@ export default function SogaraPublic() {
       </section>
 
       {/* Highly Qualified Team */}
-      <section id="doctors" className="py-16 bg-white">
+      <section id="doctors" className="py-10 bg-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Notre Équipe Médicale</h2>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Notre Équipe Médicale</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Médecins spécialistes dévoués à votre santé
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {doctors.map((doctor, index) => (
               <div key={index} className="group">
                 <div className="relative mb-4 overflow-hidden rounded-xl">
@@ -268,18 +268,18 @@ export default function SogaraPublic() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-16 bg-gray-50">
+      <section id="about" className="py-10 bg-gray-50">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left - Content */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <Badge className="bg-blue-100 text-blue-700 border-0">
                 Notre Histoire
               </Badge>
-              <h2 className="text-4xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900">
                 Plus de 50 ans d'Excellence Médicale
               </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base text-gray-600 leading-relaxed">
                 Depuis 1974, le CMST SOGARA s'engage à offrir des soins de santé de qualité supérieure 
                 aux employés de la Société Gabonaise de Raffinage et à leurs familles.
               </p>
@@ -308,18 +308,18 @@ export default function SogaraPublic() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 pt-6">
-                <div className="text-center p-4 bg-blue-50 rounded-xl">
-                  <p className="text-3xl font-bold text-blue-600">85</p>
-                  <p className="text-sm text-gray-600">Lits</p>
+              <div className="grid grid-cols-3 gap-3 pt-4">
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <p className="text-2xl font-bold text-blue-600">85</p>
+                  <p className="text-xs text-gray-600">Lits</p>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-xl">
-                  <p className="text-3xl font-bold text-blue-600">12</p>
-                  <p className="text-sm text-gray-600">Médecins</p>
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <p className="text-2xl font-bold text-blue-600">12</p>
+                  <p className="text-xs text-gray-600">Médecins</p>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-xl">
-                  <p className="text-3xl font-bold text-blue-600">28</p>
-                  <p className="text-sm text-gray-600">Infirmiers</p>
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <p className="text-2xl font-bold text-blue-600">28</p>
+                  <p className="text-xs text-gray-600">Infirmiers</p>
                 </div>
               </div>
             </div>
@@ -329,7 +329,7 @@ export default function SogaraPublic() {
               <img 
                 src={sogaraFamilyHealth}
                 alt="Santé Familiale"
-                className="w-full h-[500px] object-cover rounded-xl shadow-lg"
+                className="w-full h-[350px] object-cover rounded-xl shadow-lg"
               />
             </div>
           </div>
@@ -337,10 +337,10 @@ export default function SogaraPublic() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-16 bg-white">
+      <section id="services" className="py-10 bg-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Nos Services Médicaux
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -348,13 +348,13 @@ export default function SogaraPublic() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {services.map((service, index) => {
               const Icon = service.icon;
               return (
-                <div key={index} className="group p-6 rounded-xl border border-gray-200 hover:border-blue-600 hover:shadow-md transition-all">
-                  <Icon className="w-10 h-10 text-blue-600 mb-4" />
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{service.title}</h3>
+                <div key={index} className="group p-4 rounded-lg border border-gray-200 hover:border-blue-600 hover:shadow-md transition-all">
+                  <Icon className="w-8 h-8 text-blue-600 mb-3" />
+                  <h3 className="text-base font-bold text-gray-900 mb-1">{service.title}</h3>
                   <p className="text-gray-600 text-sm">{service.description}</p>
                 </div>
               );
@@ -364,20 +364,20 @@ export default function SogaraPublic() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left - Image */}
             <div>
               <img 
                 src={sogaraReception}
                 alt="Réception CMST SOGARA"
-                className="w-full h-[500px] object-cover rounded-xl shadow-lg"
+                className="w-full h-[350px] object-cover rounded-xl shadow-lg"
               />
             </div>
 
             {/* Right - Features */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -396,18 +396,18 @@ export default function SogaraPublic() {
       </section>
 
       {/* Mobile App Section */}
-      <section className="py-16 bg-white">
+      <section className="py-10 bg-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left - Content */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <Badge className="bg-blue-100 text-blue-700 border-0">
                 Application Mobile
               </Badge>
-              <h2 className="text-4xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900">
                 Gestion Simplifiée de vos Soins
               </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base text-gray-600 leading-relaxed">
                 Prenez rendez-vous, consultez vos résultats, suivez vos traitements et 
                 communiquez avec votre médecin directement depuis votre smartphone.
               </p>
@@ -447,7 +447,7 @@ export default function SogaraPublic() {
               <img 
                 src="/src/assets/hero-telemedicine.jpg" 
                 alt="Application Mobile"
-                className="w-full max-w-md h-[500px] object-cover rounded-xl shadow-lg"
+                className="w-full max-w-md h-[350px] object-cover rounded-xl shadow-lg"
               />
             </div>
           </div>
@@ -455,13 +455,13 @@ export default function SogaraPublic() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-10 bg-blue-600 text-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold">
               Prêt à Prendre Soin de Votre Santé ?
             </h2>
-            <p className="text-xl text-blue-100">
+            <p className="text-lg text-blue-100">
               Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -487,22 +487,22 @@ export default function SogaraPublic() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 bg-white">
+      <section id="contact" className="py-10 bg-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-8">
             {/* Contact Info */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Nous Contacter</h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-3">Nous Contacter</h2>
                 <p className="text-gray-600">
                   Notre équipe est à votre disposition pour répondre à toutes vos questions
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-blue-600" />
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">Adresse</p>
@@ -510,9 +510,9 @@ export default function SogaraPublic() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-blue-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">Téléphone</p>
@@ -523,9 +523,9 @@ export default function SogaraPublic() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-blue-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">Email</p>
@@ -533,9 +533,9 @@ export default function SogaraPublic() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-blue-600" />
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900">Horaires</p>
@@ -557,9 +557,9 @@ export default function SogaraPublic() {
       </section>
 
       {/* Certifications */}
-      <section className="py-12 bg-gray-50 border-y">
+      <section className="py-8 bg-gray-50 border-y">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-12">
+          <div className="flex flex-wrap items-center justify-center gap-8">
             <div className="flex items-center gap-3">
               <img src="/Sceau du Gabon.png" alt="République Gabonaise" className="h-10 w-auto" />
               <div>
@@ -595,9 +595,9 @@ export default function SogaraPublic() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-10 w-auto rounded" />
