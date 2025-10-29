@@ -581,6 +581,13 @@ export default function SogaraPublic() {
                 <p className="text-xs text-gray-600">ISO 9001:2015</p>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              <img src="/logo_sogara.png" alt="SOGARA" className="h-12 w-auto opacity-70" />
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Créé par</p>
+                <p className="text-xs text-gray-600">SOGARA</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
