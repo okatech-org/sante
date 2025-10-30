@@ -66,10 +66,10 @@ export default function SogaraLogin() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4">
           <div className="flex items-center justify-between">
-            <Link to="/">
+            <Link to="/sogara">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Accueil
+                Retour à CMST SOGARA
               </Button>
             </Link>
           </div>

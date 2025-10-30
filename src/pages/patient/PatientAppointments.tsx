@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type Appointment } from "@/services/patientService";
+import { BookingModal } from "@/components/appointments/BookingModal";
+import { useAppointmentStore } from "@/stores/appointmentStore";
 import { 
   Calendar, Clock, MapPin, User, Building2, 
   Plus, Search, Filter, Loader2, ChevronRight,
@@ -16,11 +19,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function PatientAppointments() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { setProvider } = useAppointmentStore();
+  
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+
+  // Vérifier si on doit ouvrir le modal de prise de RDV
+  useEffect(() => {
+    const providerId = searchParams.get('provider');
+    if (providerId) {
+      // Créer un provider temporaire pour CMST SOGARA
+      if (providerId === 'cmst-sogara') {
+        setProvider({
+          id: 'cmst-sogara',
+          name: 'CMST SOGARA',
+          avatar: '/logo_sogara.png',
+          specialty: 'Centre Médical',
+          phone: '+241 01 55 26 21',
+          location: 'Port-Gentil',
+          address: 'Route de la Sogara, Port-Gentil',
+          consultationPrice: 30000,
+          cnamgsPrice: 25000,
+          cnamgsConventioned: true,
+          onlineBooking: true,
+          rating: 4.8,
+          consultations: 150
+        } as any);
+        setShowBookingModal(true);
+        
+        // Nettoyer l'URL
+        navigate('/appointments', { replace: true });
+      }
+    }
+  }, [searchParams, setProvider, navigate]);
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -139,7 +176,7 @@ export default function PatientAppointments() {
             </h1>
             <p className="text-muted-foreground">Gérez vos rendez-vous médicaux</p>
           </div>
-          <Button>
+          <Button onClick={() => setShowBookingModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Nouveau RDV
           </Button>
@@ -273,6 +310,12 @@ export default function PatientAppointments() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de prise de rendez-vous */}
+      <BookingModal 
+        open={showBookingModal} 
+        onClose={() => setShowBookingModal(false)} 
+      />
     </PatientDashboardLayout>
   );
 }

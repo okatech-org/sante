@@ -114,7 +114,11 @@ export default function Sogara() {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full px-8">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-full px-8"
+                  onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: 'cmst-sogara' })}
+                >
                   <Calendar className="w-5 h-5 mr-2" />
                   Prendre Rendez-vous
                 </Button>
@@ -465,9 +469,10 @@ export default function Sogara() {
               size="lg" 
               variant="outline" 
               className="bg-white/10 border-white text-white hover:bg-white/20 rounded-full px-8"
+              onClick={() => navigate('/login/sogara')}
             >
-              <Phone className="w-5 h-5 mr-2" />
-              Appeler Maintenant
+              <Building2 className="w-5 h-5 mr-2" />
+              Personnel CMST
             </Button>
           </div>
         </div>

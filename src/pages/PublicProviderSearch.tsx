@@ -19,18 +19,17 @@ import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 import { filterProvidersEnhanced, sortProvidersEnhanced } from "@/utils/enhanced-cartography-filters";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 
 export default function PublicProviderSearch() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, userRoles } = useAuth();
   
   const [providers, setProviders] = useState<CartographyProvider[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
-  const [pendingAction, setPendingAction] = useState<'booking' | 'contact' | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [showFilters, setShowFilters] = useState(false);
   
@@ -129,35 +128,6 @@ export default function PublicProviderSearch() {
     return R * c;
   };
 
-  // Gérer les actions nécessitant une authentification
-  const handleAuthRequiredAction = (action: 'booking' | 'contact', provider: CartographyProvider) => {
-    if (user) {
-      // Si connecté, rediriger directement
-      if (action === 'booking') {
-        navigate(`/book/${provider.id}`);
-      } else {
-        setSelectedProvider(provider);
-      }
-    } else {
-      // Sinon, afficher le prompt de connexion
-      setSelectedProvider(provider);
-      setPendingAction(action);
-      setShowAuthPrompt(true);
-    }
-  };
-
-  // Gérer la connexion depuis le prompt
-  const handleAuthPromptAction = (action: 'login' | 'register') => {
-    // Sauvegarder l'intention de l'utilisateur
-    const returnUrl = pendingAction === 'booking' && selectedProvider
-      ? `/book/${selectedProvider.id}`
-      : `/providers/${selectedProvider?.id}`;
-    
-    localStorage.setItem('returnUrl', returnUrl);
-    localStorage.setItem('selectedProviderId', selectedProvider?.id || '');
-    
-    navigate(action === 'login' ? '/login/patient' : '/register/patient');
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -343,7 +313,7 @@ export default function PublicProviderSearch() {
                           <Button
                             variant="default"
                             size="sm"
-                            onClick={() => handleAuthRequiredAction('booking', provider)}
+                            onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id })}
                           >
                             <Calendar className="w-4 h-4 mr-2" />
                             Prendre RDV
@@ -371,7 +341,7 @@ export default function PublicProviderSearch() {
       </div>
 
       {/* Modal détails établissement */}
-      <Dialog open={!!selectedProvider && !showAuthPrompt} onOpenChange={(open) => !open && setSelectedProvider(null)}>
+      <Dialog open={!!selectedProvider} onOpenChange={(open) => !open && setSelectedProvider(null)}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           {selectedProvider && (
             <>
@@ -444,7 +414,7 @@ export default function PublicProviderSearch() {
                 <div className="flex gap-2 pt-4 border-t">
                   <Button
                     className="flex-1"
-                    onClick={() => handleAuthRequiredAction('booking', selectedProvider)}
+                    onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: selectedProvider.id })}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Prendre rendez-vous
@@ -461,67 +431,6 @@ export default function PublicProviderSearch() {
               </div>
             </>
           )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Modal prompt d'authentification */}
-      <Dialog open={showAuthPrompt} onOpenChange={setShowAuthPrompt}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              Connexion requise
-            </DialogTitle>
-            <DialogDescription className="text-base pt-2">
-              Pour prendre rendez-vous avec <strong>{selectedProvider?.nom}</strong>,
-              vous devez d'abord vous connecter ou créer un compte.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <h4 className="font-semibold text-sm">Pourquoi se connecter ?</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li className="flex items-start gap-2">
-                  <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  Gérer vos rendez-vous facilement
-                </li>
-                <li className="flex items-start gap-2">
-                  <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  Accéder à votre dossier médical
-                </li>
-                <li className="flex items-start gap-2">
-                  <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  Recevoir des rappels automatiques
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <DialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => handleAuthPromptAction('register')}
-              className="w-full"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Créer un compte (gratuit)
-            </Button>
-            <Button
-              onClick={() => handleAuthPromptAction('login')}
-              variant="outline"
-              className="w-full"
-            >
-              <LogIn className="w-4 h-4 mr-2" />
-              J'ai déjà un compte
-            </Button>
-            <Button
-              onClick={() => setShowAuthPrompt(false)}
-              variant="ghost"
-              className="w-full"
-            >
-              Continuer sans compte
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

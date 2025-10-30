@@ -24,13 +24,13 @@ export const handleAppointmentRedirect = ({
 
   if (isAuthenticated && isPatient) {
     if (establishmentId) {
-      navigate(`/appointments/new?provider=${establishmentId}`);
+      navigate(`/appointments?provider=${establishmentId}`);
     } else {
       navigate('/appointments');
     }
   } else {
     const redirectPath = returnUrl || (establishmentId 
-      ? `/appointments/new?provider=${establishmentId}` 
+      ? `/appointments?provider=${establishmentId}` 
       : '/appointments');
     
     localStorage.setItem('appointment_redirect', redirectPath);

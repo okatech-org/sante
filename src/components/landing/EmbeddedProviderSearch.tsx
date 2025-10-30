@@ -18,6 +18,7 @@ import { CartographyProvider } from "@/types/cartography";
 import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 import { filterProvidersEnhanced, sortProvidersEnhanced } from "@/utils/enhanced-cartography-filters";
 import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 
 interface EmbeddedProviderSearchProps {
   showTitle?: boolean;
@@ -29,13 +30,12 @@ export default function EmbeddedProviderSearch({
   className = "" 
 }: EmbeddedProviderSearchProps) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, userRoles } = useAuth();
   
   const [providers, setProviders] = useState<CartographyProvider[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showMap, setShowMap] = useState(true);
   
   const [filters, setFilters] = useState({
@@ -140,19 +140,6 @@ export default function EmbeddedProviderSearch({
     return R * c;
   };
 
-  const handleBooking = (provider: CartographyProvider) => {
-    if (user) {
-      navigate(`/book/${provider.id}`);
-    } else {
-      setSelectedProvider(provider);
-      setShowAuthPrompt(true);
-    }
-  };
-
-  const handleAuthAction = (action: 'login' | 'register') => {
-    localStorage.setItem('selectedProviderId', selectedProvider?.id || '');
-    navigate(action === 'login' ? '/login/patient' : '/register/patient');
-  };
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -392,7 +379,7 @@ export default function EmbeddedProviderSearch({
                         <Button
                           size="sm"
                           className="text-xs h-7"
-                          onClick={() => handleBooking(provider)}
+                          onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id })}
                         >
                           <Calendar className="w-3 h-3 mr-1" />
                           RDV
@@ -419,7 +406,7 @@ export default function EmbeddedProviderSearch({
       )}
 
       {/* Modal détails */}
-      <Dialog open={!!selectedProvider && !showAuthPrompt} onOpenChange={(open) => !open && setSelectedProvider(null)}>
+      <Dialog open={!!selectedProvider} onOpenChange={(open) => !open && setSelectedProvider(null)}>
         <DialogContent>
           {selectedProvider && (
             <>
@@ -510,7 +497,7 @@ export default function EmbeddedProviderSearch({
                 <div className="flex gap-2">
                   <Button
                     className="flex-1"
-                    onClick={() => handleBooking(selectedProvider)}
+                    onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: selectedProvider.id })}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Prendre RDV
@@ -526,57 +513,6 @@ export default function EmbeddedProviderSearch({
               </div>
             </>
           )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Modal auth */}
-      <Dialog open={showAuthPrompt} onOpenChange={setShowAuthPrompt}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              Connexion requise
-            </DialogTitle>
-            <DialogDescription>
-              Pour prendre rendez-vous, connectez-vous ou créez un compte.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-            <h4 className="font-semibold text-sm">Avantages :</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
-              <li className="flex items-center gap-2">
-                <ChevronRight className="w-4 h-4" />
-                Gérer vos rendez-vous
-              </li>
-              <li className="flex items-center gap-2">
-                <ChevronRight className="w-4 h-4" />
-                Votre dossier médical
-              </li>
-              <li className="flex items-center gap-2">
-                <ChevronRight className="w-4 h-4" />
-                Rappels automatiques
-              </li>
-            </ul>
-          </div>
-
-          <DialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => handleAuthAction('register')}
-              className="w-full"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Créer un compte (gratuit)
-            </Button>
-            <Button
-              onClick={() => handleAuthAction('login')}
-              variant="outline"
-              className="w-full"
-            >
-              <LogIn className="w-4 h-4 mr-2" />
-              Se connecter
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
