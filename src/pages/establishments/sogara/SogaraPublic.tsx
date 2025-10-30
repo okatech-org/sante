@@ -227,70 +227,68 @@ export default function SogaraPublic() {
       {/* Services Showcase */}
       <section id="services" className="bg-white py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 lg:px-16">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-start mb-12 md:mb-16 lg:mb-20">
-            <div className="lg:sticky lg:top-24">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                Nos Services
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-5 leading-tight">
-                Transformez votre
-                <br />
-                vision en santé
-              </h2>
-              <p className="text-sm md:text-base text-gray-600">
-                Des services médicaux complets pour prendre soin de vous et de votre famille
-              </p>
+          {/* Header - Full Width */}
+          <div className="mb-10 md:mb-12 lg:mb-16">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Nos Services
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-5 leading-tight">
+              Transformez votre vision en santé
+            </h2>
+            <p className="text-sm md:text-base text-gray-600 max-w-2xl">
+              Des services médicaux complets pour prendre soin de vous et de votre famille
+            </p>
+          </div>
+
+          {/* Services Grid - Full Width */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            {/* Service 1 */}
+            <div>
+              <img src={sogaraDoctorMale} alt="Urgences" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
+              <div className="flex items-start gap-2.5 md:gap-3">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Service d'Urgences 24/7</h3>
+                  <p className="text-sm md:text-base text-gray-600">
+                    Équipe médicale disponible jour et nuit pour toutes vos urgences. 
+                    Prise en charge rapide et efficace.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
-              {/* Service 1 */}
-              <div>
-                <img src={sogaraDoctorMale} alt="Urgences" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
-                <div className="flex items-start gap-2.5 md:gap-3">
-                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Service d'Urgences 24/7</h3>
-                    <p className="text-sm md:text-base text-gray-600">
-                      Équipe médicale disponible jour et nuit pour toutes vos urgences. 
-                      Prise en charge rapide et efficace.
-                    </p>
-                  </div>
+            {/* Service 2 */}
+            <div>
+              <img src={sogaraPediatrician} alt="Maternité" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
+              <div className="flex items-start gap-2.5 md:gap-3">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <Baby className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Maternité Moderne</h3>
+                  <p className="text-sm md:text-base text-gray-600">
+                    Accompagnement complet de la grossesse à l'accouchement avec 
+                    des équipements de pointe.
+                  </p>
                 </div>
               </div>
+            </div>
 
-              {/* Service 2 */}
-              <div>
-                <img src={sogaraPediatrician} alt="Maternité" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
-                <div className="flex items-start gap-2.5 md:gap-3">
-                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-                    <Baby className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Maternité Moderne</h3>
-                    <p className="text-sm md:text-base text-gray-600">
-                      Accompagnement complet de la grossesse à l'accouchement avec 
-                      des équipements de pointe.
-                    </p>
-                  </div>
+            {/* Service 3 */}
+            <div>
+              <img src={sogaraFamilyHealth} alt="Consultations" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
+              <div className="flex items-start gap-2.5 md:gap-3">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <Stethoscope className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
-              </div>
-
-              {/* Service 3 */}
-              <div>
-                <img src={sogaraFamilyHealth} alt="Consultations" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
-                <div className="flex items-start gap-2.5 md:gap-3">
-                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-                    <Stethoscope className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Consultations Spécialisées</h3>
-                    <p className="text-sm md:text-base text-gray-600">
-                      Large gamme de spécialités médicales et chirurgicales pour 
-                      tous vos besoins de santé.
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1.5 md:mb-2">Consultations Spécialisées</h3>
+                  <p className="text-sm md:text-base text-gray-600">
+                    Large gamme de spécialités médicales et chirurgicales pour 
+                    tous vos besoins de santé.
+                  </p>
                 </div>
               </div>
             </div>
