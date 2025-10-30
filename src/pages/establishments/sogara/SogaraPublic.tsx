@@ -163,36 +163,39 @@ export default function SogaraPublic() {
         </div>
       </header>
 
-      {/* Hero Section - Optimized */}
+      {/* Hero Section - Two Columns */}
       <section className="relative bg-white overflow-hidden">
-        <div className="container mx-auto px-4 lg:px-16 pt-6 pb-8 md:pt-8 md:pb-10">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 leading-[1.1] tracking-tight">
-              Excellence
-              <br />
-              <span className="text-gray-400">Médicale sans</span>
-              <br />
-              contraintes
-            </h1>
-            <p className="text-base md:text-lg text-gray-600 mb-5 md:mb-6 max-w-2xl">
-              Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
-            </p>
+        <div className="container mx-auto px-4 lg:px-16 py-8 md:py-10 lg:py-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Text Content */}
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 leading-[1.1] tracking-tight">
+                Excellence
+                <br />
+                <span className="text-gray-400">Médicale sans</span>
+                <br />
+                contraintes
+              </h1>
+              <p className="text-base md:text-lg text-gray-600 mb-5 md:mb-6">
+                Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
+              </p>
 
-            <div className="flex gap-2 md:gap-3">
-              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
-                Prendre RDV
-              </Button>
-              <Button size="lg" variant="ghost" className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial">
-                En savoir plus
-                <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
-              </Button>
+              <div className="flex gap-2 md:gap-3">
+                <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
+                  Prendre RDV
+                </Button>
+                <Button size="lg" variant="ghost" className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial">
+                  En savoir plus
+                  <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Image */}
+            <div className="order-first lg:order-last">
+              <img src={sogaraDoctorFemale} alt="Équipe Médicale" className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover rounded-2xl md:rounded-3xl" />
             </div>
           </div>
-        </div>
-
-        {/* Full Width Image - Optimized */}
-        <div className="container mx-auto px-4 lg:px-16 pb-8 md:pb-10">
-          <img src={sogaraDoctorFemale} alt="Équipe Médicale" className="w-full h-[240px] md:h-[300px] lg:h-[420px] object-cover rounded-2xl md:rounded-3xl" />
         </div>
       </section>
 
