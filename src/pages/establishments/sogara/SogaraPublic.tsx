@@ -202,13 +202,9 @@ export default function SogaraPublic() {
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
               </p>
 
-              <div className="flex gap-2 md:gap-3 mb-8 md:mb-10">
+              <div className="mb-8 md:mb-10">
                 <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                   Prendre RDV
-                </Button>
-                <Button size="lg" variant="ghost" className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial">
-                  En savoir plus
-                  <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
                 </Button>
               </div>
 
@@ -381,34 +377,6 @@ export default function SogaraPublic() {
                 <p className="text-base md:text-lg text-gray-400 mb-5 md:mb-6">
                   Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
                 </p>
-                
-                {/* Boutons alignés */}
-                <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-6">
-                  {/* Bouton Urgence */}
-                  <a 
-                    href="tel:+241074521880" 
-                    className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base transition-colors whitespace-nowrap"
-                  >
-                    <Phone className="w-4 h-4" />
-                    Urgence : +241 07 45 21 88
-                  </a>
-                  
-                  <Button 
-                    size="lg" 
-                    className="bg-white text-gray-900 hover:bg-gray-100 px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base"
-                    onClick={() => navigate("/appointments")}
-                  >
-                    Prendre RDV
-                  </Button>
-                  
-                  <a 
-                    href="tel:+241015611280"
-                    className="inline-flex items-center justify-center gap-2 text-white px-4 md:px-6 h-12 md:h-14 rounded-full hover:bg-white/10 text-sm md:text-base transition-colors border border-white/20 whitespace-nowrap"
-                  >
-                    <Phone className="w-4 h-4" />
-                    +241 01 56 11 28
-                  </a>
-                </div>
               </div>
 
               {/* Contact Info */}
