@@ -27,9 +27,9 @@ export default function Sogara() {
 
       if (ogTitle) ogTitle.setAttribute('content', 'CMST SOGARA - Centre de Médecine de Santé au Travail');
       if (ogDescription) ogDescription.setAttribute('content', 'Excellence médicale au service des employés SOGARA et leurs familles. Des soins de qualité avec des équipements de pointe depuis 1974.');
-      if (ogImage) ogImage.setAttribute('content', 'https://sante.ga/cmst_sogara_logo.png');
+      if (ogImage) ogImage.setAttribute('content', 'https://sante.ga/logo_sogara.png');
       if (ogUrl) ogUrl.setAttribute('content', 'https://sante.ga/sogara');
-      if (twitterImage) twitterImage.setAttribute('content', 'https://sante.ga/cmst_sogara_logo.png');
+      if (twitterImage) twitterImage.setAttribute('content', 'https://sante.ga/logo_sogara.png');
     };
 
     updateMetaTags();

@@ -88,7 +88,7 @@ export default function SogaraPublic() {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-12 w-auto rounded" />
+              <img src="/logo_sogara.png" alt="CMST SOGARA" className="h-12 w-auto rounded" />
               <div>
                 <h1 className="text-base font-bold text-gray-900">CMST SOGARA</h1>
                 <p className="text-[10px] text-gray-500">Centre Médical de Santé au Travail</p>
@@ -122,7 +122,7 @@ export default function SogaraPublic() {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
-                      <img src="/cmst_sogara_logo.png" alt="CMST SOGARA" className="h-10 w-auto rounded" />
+                      <img src="/logo_sogara.png" alt="CMST SOGARA" className="h-10 w-auto rounded" />
                       <span className="text-sm">CMST SOGARA</span>
                     </SheetTitle>
                   </SheetHeader>
