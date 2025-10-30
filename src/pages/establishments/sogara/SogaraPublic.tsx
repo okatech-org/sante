@@ -361,6 +361,16 @@ export default function SogaraPublic() {
                 <p className="text-base md:text-lg text-gray-400 mb-5 md:mb-6">
                   Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
                 </p>
+                
+                {/* Bouton Urgence */}
+                <a 
+                  href="tel:+241074521880" 
+                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm md:text-base mb-4 transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  Urgence : +241 07 45 21 88
+                </a>
+                
                 <div className="flex gap-2 md:gap-3 mb-6">
                   <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                     Prendre RDV
@@ -385,16 +395,11 @@ export default function SogaraPublic() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Urgences</p>
-                  <p className="text-sm text-white font-semibold">+241 07 45 21 88</p>
-                </div>
-
-                <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Email</p>
                   <p className="text-sm text-white">contact@cmst-sogara.ga</p>
                 </div>
 
-                <div className="col-span-2">
+                <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Horaires</p>
                   <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h • Sam: 8h - 12h</p>
                 </div>
