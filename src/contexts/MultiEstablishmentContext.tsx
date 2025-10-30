@@ -73,8 +73,12 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         .eq('user_id', user.id)
         .maybeSingle();
 
+      // Si pas de profil professionnel, c'est OK (patient, admin, etc.)
       if (profError || !professional) {
-        console.error('Erreur de chargement du profil:', profError);
+        // Ne pas afficher d'erreur pour les non-professionnels
+        if (profError?.code !== 'PGRST116') { // PGRST116 = table doesn't exist
+          console.debug('Utilisateur non-professionnel ou table professionals manquante');
+        }
         setIsLoading(false);
         return;
       }

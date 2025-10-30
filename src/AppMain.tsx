@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { MultiEstablishmentProvider } from "./contexts/MultiEstablishmentContext";
+import { SogaraAuthProvider } from "./contexts/SogaraAuthContext";
 import { ThemeProvider } from "next-themes";
 import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
 
@@ -106,11 +107,12 @@ function AppMain() {
         <LanguageProvider>
           <AuthProvider>
             <MultiEstablishmentProvider>
-              <TooltipProvider>
-              <BrowserRouter>
-                <ConsoleSilencer />
-                <div className="min-h-screen bg-background">
-                  <Routes>
+              <SogaraAuthProvider>
+                <TooltipProvider>
+                <BrowserRouter>
+                  <ConsoleSilencer />
+                  <div className="min-h-screen bg-background">
+                    <Routes>
                     {/* Routes publiques */}
                     <Route path="/" element={<Index />} />
                     <Route path="/landing" element={<Landing />} />
@@ -204,6 +206,7 @@ function AppMain() {
                 <Sonner />
               </BrowserRouter>
               </TooltipProvider>
+              </SogaraAuthProvider>
             </MultiEstablishmentProvider>
           </AuthProvider>
         </LanguageProvider>
