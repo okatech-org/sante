@@ -191,7 +191,7 @@ export default function SogaraPublic() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Text Content */}
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 leading-[1.1] tracking-tight">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-2 md:mb-4 leading-tight md:leading-[1.1] tracking-tight">
                 Excellence Médicale
                 <br />
                 <span className="text-gray-400">Sans contraintes</span>
