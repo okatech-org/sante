@@ -242,7 +242,7 @@ export default function SogaraPublic() {
               </p>
             </div>
 
-            <div className="space-y-10 md:space-y-12 lg:space-y-16">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
               {/* Service 1 */}
               <div>
                 <img src={sogaraDoctorMale} alt="Urgences" className="w-full h-[240px] md:h-[280px] lg:h-[320px] object-cover rounded-xl md:rounded-2xl mb-4 md:mb-5 lg:mb-6" />
