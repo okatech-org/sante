@@ -227,15 +227,15 @@ export default function SogaraPublic() {
               <div className="grid grid-cols-3 gap-4 md:gap-6">
                 <div>
                   <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">85</div>
-                  <p className="text-xs md:text-sm text-gray-600">Lits disponibles</p>
+                  <p className="text-xs md:text-sm text-gray-600 leading-tight">Lits<br className="md:hidden" /> disponibles</p>
                 </div>
                 <div>
                   <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">12</div>
-                  <p className="text-xs md:text-sm text-gray-600">Médecins qualifiés</p>
+                  <p className="text-xs md:text-sm text-gray-600 leading-tight">Médecins<br className="md:hidden" /> qualifiés</p>
                 </div>
                 <div>
                   <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">50+</div>
-                  <p className="text-xs md:text-sm text-gray-600">Années d'excellence</p>
+                  <p className="text-xs md:text-sm text-gray-600 leading-tight">Années<br className="md:hidden" /> d'excellence</p>
                 </div>
               </div>
             </div>
