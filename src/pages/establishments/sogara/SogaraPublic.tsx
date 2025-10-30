@@ -202,9 +202,28 @@ export default function SogaraPublic() {
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
               </p>
 
-              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base mb-8 md:mb-10" onClick={() => navigate("/appointments")}>
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base mb-4 md:mb-5" onClick={() => navigate("/appointments")}>
                 Prendre RDV
               </Button>
+
+              {/* Boutons Téléphone */}
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-8 md:mb-10">
+                <a 
+                  href="tel:+241074521880" 
+                  className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  Urgence : +241 07 45 21 88
+                </a>
+                
+                <a 
+                  href="tel:+241015611280"
+                  className="inline-flex items-center justify-center gap-2 text-gray-900 px-4 py-3 rounded-full hover:bg-gray-100 text-sm transition-colors border border-gray-300"
+                >
+                  <Phone className="w-4 h-4" />
+                  +241 01 56 11 28
+                </a>
+              </div>
 
               {/* Stats Inline */}
               <div className="grid grid-cols-3 gap-4 md:gap-6">
