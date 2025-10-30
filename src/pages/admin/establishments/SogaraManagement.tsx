@@ -77,7 +77,7 @@ export default function SogaraManagement() {
     const sogaraUsers: SogaraUser[] = [
       {
         id: "sogara-admin-1",
-        email: "admin@sogara.com",
+        email: "admin.sogara@sante.ga",
         password: "Admin@SOGARA2024",
         full_name: "Jean-Pierre Mbadinga",
         role: "admin",
@@ -89,9 +89,9 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-admin-2",
-        email: "directeur@sogara.com",
+        email: "directeur.sogara@sante.ga",
         password: "DirecteurSOGARA2024!",
-        full_name: "Dr. François Obiang",
+        full_name: "Dr. Jules DJEKI",
         role: "admin",
         department: "Direction Médicale",
         matricule: "DIR-001",
@@ -101,7 +101,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-doc-1",
-        email: "dr.okemba@sogara.com",
+        email: "dr.okemba.sogara@sante.ga",
         password: "Okemba@2024Med",
         full_name: "Dr. Marie Okemba",
         role: "doctor",
@@ -113,7 +113,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-doc-2",
-        email: "dr.nguema@sogara.com",
+        email: "dr.nguema.sogara@sante.ga",
         password: "Nguema@Urgence24",
         full_name: "Dr. Paul Nguema",
         role: "doctor",
@@ -125,7 +125,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-doc-3",
-        email: "dr.mbina@sogara.com",
+        email: "dr.mbina.sogara@sante.ga",
         password: "Mbina@Cardio2024",
         full_name: "Dr. Léa Mbina",
         role: "doctor",
@@ -137,7 +137,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-doc-4",
-        email: "dr.mezui@sogara.com",
+        email: "dr.mezui.sogara@sante.ga",
         password: "Mezui@Pediatrie24",
         full_name: "Dr. Thomas Mezui",
         role: "doctor",
@@ -149,7 +149,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-nurse-1",
-        email: "nurse.mba@sogara.com",
+        email: "nurse.mba.sogara@sante.ga",
         password: "MbaSI@2024",
         full_name: "Sylvie Mba",
         role: "nurse",
@@ -161,7 +161,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-nurse-2",
-        email: "nurse.nze@sogara.com",
+        email: "nurse.nze.sogara@sante.ga",
         password: "NzeUrg@2024",
         full_name: "Patricia Nze",
         role: "nurse",
@@ -173,7 +173,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-nurse-3",
-        email: "nurse.andeme@sogara.com",
+        email: "nurse.andeme.sogara@sante.ga",
         password: "Andeme@Mat2024",
         full_name: "Claire Andeme",
         role: "nurse",
@@ -185,7 +185,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-lab-1",
-        email: "lab.tech@sogara.com",
+        email: "lab.tech.sogara@sante.ga",
         password: "LabSOGARA@2024",
         full_name: "André Moussavou",
         role: "lab_tech",
@@ -197,7 +197,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-pharma-1",
-        email: "pharma@sogara.com",
+        email: "pharma.sogara@sante.ga",
         password: "PharmaSOGARA@24",
         full_name: "Dr. Lydie Kombila",
         role: "pharmacist",
@@ -209,7 +209,7 @@ export default function SogaraManagement() {
       },
       {
         id: "sogara-recept-1",
-        email: "accueil@sogara.com",
+        email: "accueil.sogara@sante.ga",
         password: "AccueilSOGARA@24",
         full_name: "Nadège Oyono",
         role: "receptionist",
