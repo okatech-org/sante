@@ -163,18 +163,18 @@ export default function SogaraPublic() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section - Optimized */}
       <section className="relative bg-white overflow-hidden">
-        <div className="container mx-auto px-4 lg:px-16 pt-8 pb-10 md:pt-10 md:pb-12 lg:pt-12 lg:pb-16">
+        <div className="container mx-auto px-4 lg:px-16 pt-6 pb-8 md:pt-8 md:pb-10">
           <div className="max-w-4xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-5 lg:mb-6 leading-[1.1] tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 leading-[1.1] tracking-tight">
               Excellence
               <br />
               <span className="text-gray-400">Médicale sans</span>
               <br />
               contraintes
             </h1>
-            <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 max-w-2xl">
+            <p className="text-base md:text-lg text-gray-600 mb-5 md:mb-6 max-w-2xl">
               Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
             </p>
 
@@ -190,9 +190,9 @@ export default function SogaraPublic() {
           </div>
         </div>
 
-        {/* Full Width Image */}
-        <div className="container mx-auto px-4 lg:px-16 pb-10 md:pb-12 lg:pb-16">
-          <img src={sogaraDoctorFemale} alt="Équipe Médicale" className="w-full h-[280px] md:h-[350px] lg:h-[500px] object-cover rounded-2xl md:rounded-3xl" />
+        {/* Full Width Image - Optimized */}
+        <div className="container mx-auto px-4 lg:px-16 pb-8 md:pb-10">
+          <img src={sogaraDoctorFemale} alt="Équipe Médicale" className="w-full h-[240px] md:h-[300px] lg:h-[420px] object-cover rounded-2xl md:rounded-3xl" />
         </div>
       </section>
 
@@ -347,10 +347,10 @@ export default function SogaraPublic() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gray-900 text-white py-12 md:py-16 lg:py-20">
+      {/* CTA Section with Contact Info */}
+      <section id="contact" className="bg-gray-900 text-white py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 lg:px-16">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             <div>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-5 lg:mb-6 leading-tight">
                 Prêt à commencer
@@ -360,7 +360,7 @@ export default function SogaraPublic() {
               <p className="text-base md:text-lg text-gray-400 mb-6 md:mb-8">
                 Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
               </p>
-              <div className="flex gap-2 md:gap-3">
+              <div className="flex gap-2 md:gap-3 mb-8">
                 <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                   Prendre RDV
                 </Button>
@@ -369,55 +369,38 @@ export default function SogaraPublic() {
                   Appeler
                 </Button>
               </div>
+
+              {/* Contact Info */}
+              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/20">
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 mb-1">Adresse</p>
+                  <p className="text-sm text-white">Route de la Sogara<br />Port-Gentil, Gabon</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 mb-1">Téléphone</p>
+                  <p className="text-sm text-white">+241 01 56 11 28</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 mb-1">Email</p>
+                  <p className="text-sm text-white">contact@cmst-sogara.ga</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 mb-1">Horaires</p>
+                  <p className="text-sm text-white">Lun - Ven: 8h - 17h<br />Sam: 8h - 12h</p>
+                </div>
+              </div>
             </div>
             
             {/* Map */}
-            <div className="h-64 rounded-xl overflow-hidden">
+            <div className="h-64 lg:h-80 rounded-xl overflow-hidden">
               <SogaraLocationMap accessToken={mapboxToken} />
             </div>
           </div>
         </div>
       </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="bg-white py-8 md:py-10">
-        <div className="container mx-auto px-4 lg:px-16">
-          <div className="max-w-2xl mx-auto">
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                Contact
-              </p>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Nous Contacter</h2>
-              <p className="text-sm md:text-base text-gray-600">
-                Notre équipe est à votre disposition
-              </p>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">Adresse</p>
-                <p className="text-sm md:text-base text-gray-600">Route de la Sogara<br />Port-Gentil, Gabon</p>
-              </div>
-
-              <div>
-                <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">Téléphone</p>
-                <p className="text-sm md:text-base text-gray-600">+241 01 56 11 28</p>
-              </div>
-
-              <div>
-                <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">Email</p>
-                <p className="text-sm md:text-base text-gray-600">contact@cmst-sogara.ga</p>
-              </div>
-
-              <div>
-                <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">Horaires</p>
-                <p className="text-sm md:text-base text-gray-600">Lun - Ven: 8h - 17h<br />Sam: 8h - 12h</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
 
       {/* Partners & Certifications */}
       <section className="bg-gray-50 py-8 md:py-10 border-t">
