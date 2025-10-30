@@ -10,6 +10,7 @@ export interface PatientProfile {
   phone?: string;
   address?: string;
   city?: string | null;
+  province?: string | null;
   country?: string;
   blood_group?: string | null;
   allergies?: string[];
@@ -20,9 +21,11 @@ export interface PatientProfile {
     relationship: string;
   };
   cnamgs_number?: string | null;
+  cnamgs_fund?: string | null;
   insurance_status?: 'active' | 'inactive' | 'pending';
   weight_kg?: number | null;
   height_m?: number | null;
+  avatar_url?: string | null;
   created_at?: string;
   updated_at?: string;
 }

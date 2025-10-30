@@ -1,6 +1,8 @@
 import { NavigateFunction } from 'react-router-dom';
 import { User } from '@supabase/supabase-js';
-import { AppRole } from '@/types/auth';
+import { Database } from '@/integrations/supabase/types';
+
+type AppRole = Database['public']['Enums']['app_role'];
 
 export interface AppointmentRedirectOptions {
   user: User | null;
