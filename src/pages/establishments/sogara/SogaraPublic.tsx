@@ -362,22 +362,24 @@ export default function SogaraPublic() {
                   Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
                 </p>
                 
-                {/* Bouton Urgence */}
-                <a 
-                  href="tel:+241074521880" 
-                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm md:text-base mb-4 transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  Urgence : +241 07 45 21 88
-                </a>
-                
-                <div className="flex gap-2 md:gap-3 mb-6">
-                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
+                {/* Boutons alignés */}
+                <div className="flex flex-wrap gap-2 md:gap-3 mb-6">
+                  {/* Bouton Urgence */}
+                  <a 
+                    href="tel:+241074521880" 
+                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm md:text-base transition-colors"
+                  >
+                    <Phone className="w-4 h-4" />
+                    Urgence : +241 07 45 21 88
+                  </a>
+                  
+                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base" onClick={() => navigate("/appointments")}>
                     Prendre RDV
                   </Button>
+                  
                   <a 
                     href="tel:+241015611280"
-                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial transition-colors border border-white/20"
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base transition-colors border border-white/20"
                   >
                     <Phone className="w-4 h-4" />
                     +241 01 56 11 28
