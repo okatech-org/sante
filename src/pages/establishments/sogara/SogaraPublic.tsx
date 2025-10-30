@@ -13,8 +13,11 @@ import sogaraPediatrician from "@/assets/sogara-pediatrician.jpg";
 import sogaraFamilyHealth from "@/assets/sogara-family-health.jpg";
 import sogaraReception from "@/assets/sogara-reception.jpg";
 import SogaraLocationMap from "@/components/maps/SogaraLocationMap";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 export default function SogaraPublic() {
   const navigate = useNavigate();
+  const { user, userRoles } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const {
     token: mapboxToken
@@ -202,7 +205,7 @@ export default function SogaraPublic() {
 
               {/* Boutons */}
               <div className="flex gap-2 md:gap-3 mb-8 md:mb-10">
-                <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base flex-1" onClick={() => navigate("/appointments")}>
+                <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base flex-1" onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: 'cmst-sogara' })}>
                   Prendre RDV
                 </Button>
                 
@@ -407,7 +410,7 @@ export default function SogaraPublic() {
                   <Button 
                     size="lg" 
                     className="bg-white text-gray-900 hover:bg-gray-100 px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base"
-                    onClick={() => navigate("/appointments")}
+                    onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: 'cmst-sogara' })}
                   >
                     Prendre RDV
                   </Button>

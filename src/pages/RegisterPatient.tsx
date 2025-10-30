@@ -73,10 +73,20 @@ export default function RegisterPatient() {
         return;
       }
 
-      toast.success("Inscription réussie !", {
-        description: "Votre compte patient a été créé avec succès.",
-      });
-      navigate("/dashboard/patient");
+      const redirectUrl = localStorage.getItem('appointment_redirect');
+      if (redirectUrl) {
+        localStorage.removeItem('appointment_redirect');
+        localStorage.removeItem('selected_provider_id');
+        toast.success("Inscription réussie !", {
+          description: "Redirection vers votre rendez-vous...",
+        });
+        navigate(redirectUrl);
+      } else {
+        toast.success("Inscription réussie !", {
+          description: "Votre compte patient a été créé avec succès.",
+        });
+        navigate("/dashboard/patient");
+      }
     } catch (error: any) {
       toast.error("Erreur lors de l'inscription", {
         description: "Une erreur est survenue. Veuillez réessayer.",

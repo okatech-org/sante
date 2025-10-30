@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 import { 
   Building2, Phone, Mail, MapPin, Calendar,
   Heart, Shield, Stethoscope, Activity, AlertTriangle,
@@ -15,6 +17,7 @@ import sogaraEquipment from "@/assets/sogara-equipment.jpg";
 
 export default function Sogara() {
   const navigate = useNavigate();
+  const { user, userRoles } = useAuth();
 
   // Update Open Graph meta tags for social sharing
   useEffect(() => {
@@ -85,7 +88,7 @@ export default function Sogara() {
               <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
               <a href="#team" className="text-sm font-medium hover:text-primary transition-colors">Équipe</a>
               <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">Contact</a>
-              <Button onClick={() => navigate("/appointments")} className="bg-gradient-to-r from-blue-600 to-blue-500">
+              <Button onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: 'cmst-sogara' })} className="bg-gradient-to-r from-blue-600 to-blue-500">
                 Prendre Rendez-vous
               </Button>
             </nav>
@@ -452,7 +455,7 @@ export default function Sogara() {
               size="lg" 
               variant="secondary"
               className="rounded-full px-8"
-              onClick={() => navigate("/appointments")}
+              onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: 'cmst-sogara' })}
             >
               <Calendar className="w-5 h-5 mr-2" />
               Prendre Rendez-vous

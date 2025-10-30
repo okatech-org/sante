@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 import { 
   Building2, 
   MapPin, 
@@ -131,6 +133,7 @@ const ESTABLISHMENTS_DATA: Record<string, any> = {
 export default function EstablishmentPublicPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user, userRoles } = useAuth();
   const [establishment, setEstablishment] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingInEmail, setSigningInEmail] = useState<string | null>(null);
@@ -193,7 +196,7 @@ export default function EstablishmentPublicPage() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Retour
             </Button>
-            <Button className="hidden md:flex bg-gray-900 hover:bg-gray-800">
+            <Button className="hidden md:flex bg-gray-900 hover:bg-gray-800" onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: id })}>
               <Calendar className="w-4 h-4 mr-2" />
               Rendez-vous
             </Button>
@@ -233,7 +236,7 @@ export default function EstablishmentPublicPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800" onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: id })}>
                   <Calendar className="w-5 h-5 mr-2" />
                   Prendre Rendez-vous
                 </Button>
@@ -352,7 +355,7 @@ export default function EstablishmentPublicPage() {
                     <p>{doctor.qualification}</p>
                     <p className="text-blue-600 font-medium">{doctor.experience} d'expérience</p>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full mt-4">
+                  <Button variant="outline" size="sm" className="w-full mt-4" onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: id })}>
                     <Calendar className="w-4 h-4 mr-2" />
                     Prendre RDV
                   </Button>
@@ -521,7 +524,7 @@ export default function EstablishmentPublicPage() {
             Prenez rendez-vous en ligne ou contactez-nous directement
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" onClick={() => handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: id })}>
               <Calendar className="w-5 h-5 mr-2" />
               Prendre Rendez-vous
             </Button>

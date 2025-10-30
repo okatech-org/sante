@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistance } from "@/utils/distance";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 
 interface CartographyProviderModalProps {
   provider: CartographyProvider | null;
@@ -44,6 +46,7 @@ export default function CartographyProviderModal({
   onClose
 }: CartographyProviderModalProps) {
   const navigate = useNavigate();
+  const { user, userRoles } = useAuth();
   
   if (!provider) return null;
   
@@ -144,7 +147,7 @@ export default function CartographyProviderModal({
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     size="sm"
-                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=physical`) : null}
+                    onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
                     disabled={!hasAccount}
                     className={cn(!hasAccount && "opacity-50")}
                   >
@@ -154,7 +157,7 @@ export default function CartographyProviderModal({
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=video`) : null}
+                    onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
                     disabled={!hasAccount}
                     className={cn(!hasAccount && "opacity-50")}
                   >
@@ -227,7 +230,7 @@ export default function CartographyProviderModal({
                 </h3>
                 <Button
                   size="sm"
-                  onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=exam`) : null}
+                  onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
                   disabled={!hasAccount}
                   className={cn(
                     "w-full bg-purple-600 hover:bg-purple-700",

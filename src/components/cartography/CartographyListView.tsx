@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CartographyProvider } from "@/types/cartography";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 import {
   Table,
   TableBody,
@@ -50,6 +52,7 @@ export default function CartographyListView({
   onProviderClick
 }: CartographyListViewProps) {
   const navigate = useNavigate();
+  const { user, userRoles } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -101,7 +104,7 @@ export default function CartographyListView({
               </Button>
             )}
             <Button
-              onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}`) : null}
+              onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
               variant={hasAccount ? "default" : "outline"}
               size="sm"
               disabled={!hasAccount}
@@ -164,7 +167,7 @@ export default function CartographyListView({
               </Button>
             )}
             <Button
-              onClick={() => hasAccount ? navigate(`/appointments/new?provider=${provider.id}&type=exam`) : null}
+              onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
               variant={hasAccount ? "default" : "outline"}
               size="sm"
               disabled={!hasAccount}
