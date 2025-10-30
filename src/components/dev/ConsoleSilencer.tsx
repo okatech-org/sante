@@ -19,7 +19,17 @@ export default function ConsoleSilencer() {
         msg.includes("allow-scripts and allow-same-origin") ||
         msg.includes("/_sandbox/dev-server") ||
         msg.includes("The deferred DOM Node could not be resolved") ||
-        msg.includes("We're hiring!")
+        msg.includes("We're hiring!") ||
+        msg.includes("lovable.dev/careers") ||
+        msg.includes("lovable-api.com") ||
+        msg.includes("firestore.googleapis.com") ||
+        msg.includes("ERR_INTERNET_DISCONNECTED") ||
+        msg.includes("ERR_NETWORK_IO_SUSPENDED") ||
+        msg.includes("ERR_NETWORK_CHANGED") ||
+        msg.includes("ERR_QUIC_PROTOCOL_ERROR") ||
+        msg.includes("Initializing RudderStack Analytics") ||
+        msg.includes("Cookies accepted:") ||
+        msg.includes("lovableproject.com")
       );
     };
 

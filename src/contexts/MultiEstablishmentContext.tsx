@@ -3,12 +3,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
 
-interface Department {
-  id: string;
-  name: string;
-  code: string;
-}
-
 interface Establishment {
   id: string;
   name: string;
@@ -24,37 +18,26 @@ interface StaffRole {
   id: string;
   establishmentId: string;
   establishment: Establishment;
-  departmentId?: string;
-  department?: Department;
   role: string;
-  position?: string;
-  isDepartmentHead: boolean;
-  isEstablishmentAdmin: boolean;
-  permissions: Record<string, any>;
+  permissions: string[];
   status: string;
-  matricule?: string;
+  isAdmin: boolean;
 }
 
 interface MultiEstablishmentContextType {
   // États
   establishments: StaffRole[];
   currentEstablishment: StaffRole | null;
-  currentPermissions: Record<string, any>;
   isLoading: boolean;
   
   // Actions
   selectEstablishment: (staffRoleId: string) => Promise<void>;
   switchEstablishment: (staffRoleId: string) => Promise<void>;
   refreshEstablishments: () => Promise<void>;
-  hasPermission: (module: string, action: string) => boolean;
-  hasAnyPermission: (module: string, actions: string[]) => boolean;
   
   // Helpers
-  isDirector: boolean;
   isAdmin: boolean;
-  isDepartmentHead: boolean;
   canManageStaff: boolean;
-  canViewReports: boolean;
 }
 
 const MultiEstablishmentContext = createContext<MultiEstablishmentContextType | undefined>(undefined);
@@ -63,7 +46,6 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   const { user } = useAuth();
   const [establishments, setEstablishments] = useState<StaffRole[]>([]);
   const [currentEstablishment, setCurrentEstablishment] = useState<StaffRole | null>(null);
-  const [currentPermissions, setCurrentPermissions] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   // Charger les établissements du professionnel
@@ -81,32 +63,23 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (profError) {
-        console.error('Erreur lors du chargement du profil professionnel:', profError);
+      if (profError || !professional) {
+        console.error('Erreur de chargement du profil:', profError);
         setIsLoading(false);
         return;
       }
 
-      if (!professional) {
-        setIsLoading(false);
-        return;
-      }
-
-      // 2. Récupérer tous les établissements où travaille le professionnel
+      // 2. Récupérer les rôles dans les établissements
       const { data: staffRoles, error: staffError } = await supabase
         .from('establishment_staff')
         .select(`
           id,
           establishment_id,
-          department_id,
-          role,
-          position,
-          is_department_head,
-          is_establishment_admin,
+          role_in_establishment,
           permissions,
+          is_admin,
           status,
-          matricule,
-          establishments!inner (
+          establishments (
             id,
             name,
             type,
@@ -115,25 +88,19 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
             city,
             logo_url,
             is_active
-          ),
-          establishment_departments (
-            id,
-            name,
-            code
           )
         `)
-        .eq('professional_id', professional.id)
-        .eq('status', 'active');
+        .eq('professional_id', professional.id);
 
       if (staffError) {
-        console.error('Erreur lors du chargement des établissements:', staffError);
+        console.error('Erreur de chargement des établissements:', staffError);
         toast.error('Impossible de charger vos établissements');
         setIsLoading(false);
         return;
       }
 
       // 3. Transformer les données
-      const formattedStaffRoles: StaffRole[] = (staffRoles || []).map(role => ({
+      const formattedStaffRoles: StaffRole[] = (staffRoles || []).map((role: any) => ({
         id: role.id,
         establishmentId: role.establishment_id,
         establishment: {
@@ -146,39 +113,16 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
           logoUrl: role.establishments.logo_url,
           isActive: role.establishments.is_active
         },
-        departmentId: role.department_id,
-        department: role.establishment_departments ? {
-          id: role.establishment_departments.id,
-          name: role.establishment_departments.name,
-          code: role.establishment_departments.code
-        } : undefined,
-        role: role.role,
-        position: role.position,
-        isDepartmentHead: role.is_department_head,
-        isEstablishmentAdmin: role.is_establishment_admin,
-        permissions: role.permissions || {},
-        status: role.status,
-        matricule: role.matricule
+        role: role.role_in_establishment,
+        permissions: role.permissions || [],
+        status: role.status || 'active',
+        isAdmin: role.is_admin || false
       }));
 
       setEstablishments(formattedStaffRoles);
 
-      // 4. Récupérer la session établissement actuelle
-      const { data: session } = await supabase
-        .from('user_establishment_session')
-        .select('staff_id')
-        .eq('user_id', user.id)
-        .single();
-
-      // 5. Sélectionner l'établissement (session ou premier disponible)
-      if (session?.staff_id) {
-        const savedRole = formattedStaffRoles.find(r => r.id === session.staff_id);
-        if (savedRole) {
-          await selectEstablishment(savedRole.id, formattedStaffRoles);
-        } else if (formattedStaffRoles.length > 0) {
-          await selectEstablishment(formattedStaffRoles[0].id, formattedStaffRoles);
-        }
-      } else if (formattedStaffRoles.length > 0) {
+      // 4. Sélectionner le premier établissement par défaut
+      if (formattedStaffRoles.length > 0) {
         await selectEstablishment(formattedStaffRoles[0].id, formattedStaffRoles);
       }
     } catch (error) {
@@ -199,100 +143,42 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       return;
     }
 
-    try {
-      // 1. Récupérer les permissions complètes
-      const { data: permissions, error: permError } = await supabase.rpc(
-        'get_user_establishment_permissions',
-        {
-          p_user_id: user?.id,
-          p_establishment_id: selectedRole.establishmentId
-        }
-      );
-
-      if (permError) {
-        console.error('Erreur lors du chargement des permissions:', permError);
-      }
-
-      // 2. Mettre à jour le contexte
-      setCurrentEstablishment(selectedRole);
-      setCurrentPermissions(permissions || {});
-
-      // 3. Sauvegarder la session
-      if (user?.id) {
-        await supabase
-          .from('user_establishment_session')
-          .upsert({
-            user_id: user.id,
-            establishment_id: selectedRole.establishmentId,
-            staff_id: selectedRole.id,
-            last_accessed: new Date().toISOString()
-          }, {
-            onConflict: 'user_id'
-          });
-      }
-    } catch (error) {
-      console.error('Erreur lors de la sélection de l\'établissement:', error);
-      toast.error('Impossible de sélectionner cet établissement');
-    }
+    setCurrentEstablishment(selectedRole);
+    toast.success(`Connecté à ${selectedRole.establishment.name}`);
   };
 
   // Changer d'établissement
   const switchEstablishment = async (staffRoleId: string) => {
     await selectEstablishment(staffRoleId);
-    toast.success('Établissement changé avec succès');
   };
 
-  // Rafraîchir la liste des établissements
+  // Rafraîchir les établissements
   const refreshEstablishments = async () => {
-    setIsLoading(true);
     await loadEstablishments();
   };
 
-  // Vérifier une permission
-  const hasPermission = (module: string, action: string): boolean => {
-    if (!currentPermissions[module]) return false;
-    if (Array.isArray(currentPermissions[module])) {
-      return currentPermissions[module].includes(action);
-    }
-    return currentPermissions[module][action] === true;
-  };
-
-  // Vérifier si au moins une permission existe
-  const hasAnyPermission = (module: string, actions: string[]): boolean => {
-    return actions.some(action => hasPermission(module, action));
-  };
-
-  // Helpers pour les rôles courants
-  const isDirector = currentEstablishment?.role === 'director';
-  const isAdmin = currentEstablishment?.isEstablishmentAdmin || isDirector;
-  const isDepartmentHead = currentEstablishment?.isDepartmentHead || false;
-  const canManageStaff = hasAnyPermission('staff', ['add', 'edit', 'delete']);
-  const canViewReports = hasPermission('reports', 'view');
-
-  // Charger les établissements au montage et quand l'utilisateur change
+  // Charger au montage et à chaque changement d'utilisateur
   useEffect(() => {
     loadEstablishments();
   }, [user?.id]);
 
+  // Helpers
+  const isAdmin = currentEstablishment?.isAdmin || false;
+  const canManageStaff = isAdmin;
+
+  const value: MultiEstablishmentContextType = {
+    establishments,
+    currentEstablishment,
+    isLoading,
+    selectEstablishment,
+    switchEstablishment,
+    refreshEstablishments,
+    isAdmin,
+    canManageStaff
+  };
+
   return (
-    <MultiEstablishmentContext.Provider
-      value={{
-        establishments,
-        currentEstablishment,
-        currentPermissions,
-        isLoading,
-        selectEstablishment,
-        switchEstablishment,
-        refreshEstablishments,
-        hasPermission,
-        hasAnyPermission,
-        isDirector,
-        isAdmin,
-        isDepartmentHead,
-        canManageStaff,
-        canViewReports
-      }}
-    >
+    <MultiEstablishmentContext.Provider value={value}>
       {children}
     </MultiEstablishmentContext.Provider>
   );
