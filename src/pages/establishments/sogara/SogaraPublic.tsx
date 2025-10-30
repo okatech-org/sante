@@ -388,10 +388,10 @@ export default function SogaraPublic() {
               </div>
 
               {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-5 border-t border-white/20">
+              <div className="flex flex-wrap gap-x-6 gap-y-3 pt-5 border-t border-white/20">
                 <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Adresse</p>
-                  <p className="text-sm text-white leading-tight">Route de la Sogara<br />Port-Gentil, Gabon</p>
+                  <p className="text-sm text-white leading-tight">Route de la Sogara, Port-Gentil</p>
                 </div>
 
                 <div>
@@ -399,7 +399,7 @@ export default function SogaraPublic() {
                   <p className="text-sm text-white">sogara@sante.ga</p>
                 </div>
 
-                <div className="col-span-2">
+                <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Horaires</p>
                   <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h • Sam: 8h - 12h</p>
                 </div>
