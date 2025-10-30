@@ -208,18 +208,18 @@ export default function SogaraPublic() {
                 
                 <a 
                   href="tel:+241074521880" 
-                  className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base transition-colors whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base transition-colors"
                 >
                   <Phone className="w-4 h-4" />
-                  Urgence : +241 07 45 21 88
+                  Urgence
                 </a>
                 
                 <a 
                   href="tel:+241015611280"
-                  className="inline-flex items-center justify-center gap-2 text-gray-900 px-4 md:px-6 h-12 md:h-14 rounded-full hover:bg-gray-100 text-sm md:text-base transition-colors border border-gray-300 whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 text-gray-900 px-4 md:px-6 h-12 md:h-14 rounded-full hover:bg-gray-100 text-sm md:text-base transition-colors border border-gray-300"
                 >
                   <Phone className="w-4 h-4" />
-                  +241 01 56 11 28
+                  Appel
                 </a>
               </div>
 
