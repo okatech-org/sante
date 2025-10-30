@@ -1927,10 +1927,7 @@ export type Database = {
         Args: { _establishment_id: string }
         Returns: string
       }
-      generate_prescription_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_prescription_number: { Args: never; Returns: string }
       get_user_establishments: {
         Args: { _user_id: string }
         Returns: {
