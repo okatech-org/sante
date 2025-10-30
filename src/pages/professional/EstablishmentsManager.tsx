@@ -139,9 +139,9 @@ export default function EstablishmentsManager() {
       logo_url: staff.establishment.logoUrl,
       roles: [{
         role: staff.role,
-        department: staff.department?.name,
+        department: typeof staff.department === 'string' ? staff.department : staff.department?.name,
         position: staff.position || '',
-        is_admin: staff.isEstablishmentAdmin,
+        is_admin: staff.isAdmin,
         start_date: new Date().toISOString()
       }]
     }));
@@ -161,6 +161,9 @@ export default function EstablishmentsManager() {
   };
 
   const loadInvitations = async () => {
+    // Table inexistante - désactivé
+    setInvitations([]);
+    /*
     const { data, error } = await supabase
       .from('establishment_invitations')
       .select(`
@@ -189,9 +192,13 @@ export default function EstablishmentsManager() {
         created_at: inv.created_at
       })));
     }
+    */
   };
 
   const loadRequests = async () => {
+    // Table inexistante - désactivé
+    setRequests([]);
+    /*
     const { data: professional } = await supabase
       .from('professionals')
       .select('id')
@@ -210,7 +217,7 @@ export default function EstablishmentsManager() {
           )
         `)
         .eq('professional_id', professional.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false});
 
       if (!error && data) {
         setRequests(data.map(req => ({
@@ -226,6 +233,7 @@ export default function EstablishmentsManager() {
         })));
       }
     }
+    */
   };
 
   const acceptInvitation = async (invitationId: string, token: string) => {

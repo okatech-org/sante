@@ -72,49 +72,11 @@ export default function LoginProfessionalNew() {
         }
       }
 
-      // Récupérer les établissements du professionnel
-      const { data: establishments } = await supabase
-        .from('professional_establishments')
-        .select('*, establishments(*)')
-        .eq('professional_id', user.id)
-        .eq('is_active', true);
-
-      // Si un établissement est spécifié dans l'URL et que l'utilisateur y a accès
-      if (establishmentId && establishments?.some(e => e.establishment_id === establishmentId)) {
-        localStorage.setItem('selected_establishment_id', establishmentId);
-        const selectedEst = establishments.find(e => e.establishment_id === establishmentId);
-        if (selectedEst?.establishments) {
-          localStorage.setItem('selected_establishment_name', selectedEst.establishments.name);
-        }
-        toast.success("Connexion réussie !", {
-          description: `Bienvenue dans votre espace professionnel`,
-        });
-        navigate("/dashboard/professional");
-        return;
-      }
-
-      // Si un seul établissement, connexion directe
-      if (establishments && establishments.length === 1) {
-        const est = establishments[0];
-        localStorage.setItem('selected_establishment_id', est.establishment_id || est.establishments?.id);
-        localStorage.setItem('selected_establishment_name', est.establishments?.name || '');
-        toast.success("Connexion réussie !", {
-          description: `Bienvenue à ${est.establishments?.name}`,
-        });
-        navigate("/dashboard/professional");
-      } else if (establishments && establishments.length > 1) {
-        // Si plusieurs établissements, page de sélection
-        toast.success("Connexion réussie !", {
-          description: "Veuillez sélectionner un établissement",
-        });
-        navigate("/professional/select-establishment");
-      } else {
-        // Aucun établissement trouvé
-        toast.warning("Aucun établissement associé", {
-          description: "Veuillez contacter l'administrateur pour obtenir l'accès à un établissement.",
-        });
-        navigate("/professional/claim-establishment");
-      }
+      // Multi-établissement désactivé temporairement - connexion simple
+      toast.success("Connexion réussie !", {
+        description: "Bienvenue dans votre espace professionnel",
+      });
+      navigate("/dashboard/professional");
     } catch (error: any) {
       console.error("Erreur de connexion:", error);
       toast.error("Erreur de connexion", {

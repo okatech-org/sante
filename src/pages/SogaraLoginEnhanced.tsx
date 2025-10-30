@@ -69,38 +69,10 @@ export default function SogaraLoginEnhanced() {
         }
       }
 
-      // Vérifier l'accès à SOGARA spécifiquement
-      const { data: establishments } = await supabase
-        .from('professional_establishments')
-        .select('*, establishments(*)')
-        .eq('professional_id', user.id)
-        .eq('establishment_id', 'cmst-sogara')
-        .eq('is_active', true)
-        .single();
-
-      if (!establishments) {
-        // Vérifier si l'utilisateur a accès à d'autres établissements
-        const { data: otherEstablishments } = await supabase
-          .from('professional_establishments')
-          .select('*, establishments(*)')
-          .eq('professional_id', user.id)
-          .eq('is_active', true);
-
-        if (otherEstablishments && otherEstablishments.length > 0) {
-          toast.warning("Accès non autorisé", {
-            description: "Vous n'avez pas accès au CMST SOGARA. Redirection vers vos établissements.",
-          });
-          navigate("/professional/select-establishment");
-        } else {
-          toast.error("Accès refusé", {
-            description: "Vous n'êtes pas autorisé à accéder au CMST SOGARA.",
-          });
-          await authService.signOut();
-        }
-        return;
-      }
-
-      // Connexion réussie avec accès SOGARA
+      // Vérifier l'accès à SOGARA (désactivé - table inexistante)
+      // La gestion multi-établissements sera ajoutée ultérieurement
+      
+      // Connexion réussie
       localStorage.setItem('selected_establishment_id', 'cmst-sogara');
       localStorage.setItem('selected_establishment_name', 'CMST SOGARA');
       
@@ -108,8 +80,8 @@ export default function SogaraLoginEnhanced() {
         description: "Bienvenue au CMST SOGARA",
       });
       
-      // Rediriger vers le dashboard professionnel avec SOGARA sélectionné
-      navigate("/dashboard/professional");
+      // Rediriger vers le dashboard SOGARA
+      navigate("/establishments/sogara/admin");
       
     } catch (error: any) {
       console.error("Erreur de connexion:", error);

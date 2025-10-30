@@ -22,21 +22,29 @@ interface StaffRole {
   permissions: string[];
   status: string;
   isAdmin: boolean;
+  department?: string;
+  position?: string;
+  isEstablishmentAdmin?: boolean;
 }
 
 interface MultiEstablishmentContextType {
   // États
   establishments: StaffRole[];
   currentEstablishment: StaffRole | null;
+  workContext: StaffRole | null;
+  loading: boolean;
   isLoading: boolean;
   
   // Actions
   selectEstablishment: (staffRoleId: string) => Promise<void>;
   switchEstablishment: (staffRoleId: string) => Promise<void>;
   refreshEstablishments: () => Promise<void>;
+  hasPermission: (permission: string) => boolean;
+  hasAnyPermission: (permissions: string[]) => boolean;
   
   // Helpers
   isAdmin: boolean;
+  isDirector: boolean;
   canManageStaff: boolean;
 }
 
@@ -164,16 +172,32 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
 
   // Helpers
   const isAdmin = currentEstablishment?.isAdmin || false;
+  const isDirector = isAdmin;
   const canManageStaff = isAdmin;
+
+  const hasPermission = (permission: string): boolean => {
+    if (!currentEstablishment) return false;
+    return currentEstablishment.permissions.includes(permission) || isAdmin;
+  };
+
+  const hasAnyPermission = (permissions: string[]): boolean => {
+    if (!currentEstablishment) return false;
+    return permissions.some(p => currentEstablishment.permissions.includes(p)) || isAdmin;
+  };
 
   const value: MultiEstablishmentContextType = {
     establishments,
     currentEstablishment,
+    workContext: currentEstablishment,
+    loading: isLoading,
     isLoading,
     selectEstablishment,
     switchEstablishment,
     refreshEstablishments,
+    hasPermission,
+    hasAnyPermission,
     isAdmin,
+    isDirector,
     canManageStaff
   };
 

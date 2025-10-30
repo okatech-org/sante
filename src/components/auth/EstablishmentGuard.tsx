@@ -7,9 +7,9 @@ interface EstablishmentGuardProps {
 }
 
 export function EstablishmentGuard({ children }: EstablishmentGuardProps) {
-  const { workContext, loading } = useMultiEstablishment();
+  const { workContext, loading, isLoading, establishments } = useMultiEstablishment();
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -20,13 +20,8 @@ export function EstablishmentGuard({ children }: EstablishmentGuardProps) {
     );
   }
 
-  // Si pas de contexte ou pas d'affiliations, rediriger vers sélection
-  if (!workContext || workContext.allAffiliations.length === 0) {
-    return <Navigate to="/professional/select-establishment" replace />;
-  }
-
-  // Si pas d'établissement sélectionné, rediriger vers sélection
-  if (!workContext.currentEstablishment) {
+  // Si pas d'établissements, rediriger vers sélection
+  if (!workContext || establishments.length === 0) {
     return <Navigate to="/professional/select-establishment" replace />;
   }
 
