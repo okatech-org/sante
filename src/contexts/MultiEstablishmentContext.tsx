@@ -79,10 +79,15 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         .from('professionals')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (profError || !professional) {
+      if (profError) {
         console.error('Erreur lors du chargement du profil professionnel:', profError);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!professional) {
         setIsLoading(false);
         return;
       }

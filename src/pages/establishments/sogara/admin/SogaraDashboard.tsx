@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
 import { ProfessionalEstablishmentLayout } from '@/components/layout/ProfessionalEstablishmentLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,7 +34,6 @@ import {
 export default function SogaraDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { currentEstablishment } = useMultiEstablishment();
   
   const [stats, setStats] = useState({
     employees: 1250,
@@ -99,17 +97,23 @@ export default function SogaraDashboard() {
     }
   ];
 
-  // Obtenir le badge du rôle
+  // Obtenir le badge du rôle basé sur l'email
   const getRoleBadge = () => {
     const roles = [];
     
     // Dr. DJEKI a plusieurs rôles
-    if (currentEstablishment?.role === 'director') {
+    if (user?.email === 'directeur.sogara@sante.ga') {
       roles.push({ label: 'Directeur Médical', variant: 'default' as const });
+      roles.push({ label: 'Médecin Consultant', variant: 'secondary' as const });
+    } else if (user?.email?.includes('dr.')) {
+      roles.push({ label: 'Médecin', variant: 'default' as const });
+    } else if (user?.email?.includes('nurse.')) {
+      roles.push({ label: 'Infirmier(e)', variant: 'default' as const });
+    } else if (user?.email?.includes('admin.')) {
+      roles.push({ label: 'Administrateur', variant: 'default' as const });
+    } else {
+      roles.push({ label: 'Personnel SOGARA', variant: 'secondary' as const });
     }
-    
-    // Il est aussi médecin consultant
-    roles.push({ label: 'Médecin Consultant', variant: 'secondary' as const });
     
     return roles;
   };
