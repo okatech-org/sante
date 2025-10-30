@@ -202,15 +202,9 @@ export default function SogaraPublic() {
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
               </p>
 
-              <div className="flex gap-2 md:gap-3 mb-8 md:mb-10">
-                <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
-                  Prendre RDV
-                </Button>
-                <Button size="lg" variant="ghost" className="text-gray-900 px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-gray-100 text-sm md:text-base flex-1 md:flex-initial">
-                  En savoir plus
-                  <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
-                </Button>
-              </div>
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base mb-8 md:mb-10" onClick={() => navigate("/appointments")}>
+                Prendre RDV
+              </Button>
 
               {/* Stats Inline */}
               <div className="grid grid-cols-3 gap-4 md:gap-6">
