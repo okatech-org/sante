@@ -363,23 +363,27 @@ export default function SogaraPublic() {
                 </p>
                 
                 {/* Boutons alignés */}
-                <div className="flex flex-wrap gap-2 md:gap-3 mb-6">
+                <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-6">
                   {/* Bouton Urgence */}
                   <a 
                     href="tel:+241074521880" 
-                    className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm md:text-base transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base transition-colors whitespace-nowrap"
                   >
                     <Phone className="w-4 h-4" />
                     Urgence : +241 07 45 21 88
                   </a>
                   
-                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base" onClick={() => navigate("/appointments")}>
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-gray-900 hover:bg-gray-100 px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base"
+                    onClick={() => navigate("/appointments")}
+                  >
                     Prendre RDV
                   </Button>
                   
                   <a 
                     href="tel:+241015611280"
-                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base transition-colors border border-white/20"
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 md:px-6 h-12 md:h-14 rounded-full hover:bg-white/10 text-sm md:text-base transition-colors border border-white/20 whitespace-nowrap"
                   >
                     <Phone className="w-4 h-4" />
                     +241 01 56 11 28
