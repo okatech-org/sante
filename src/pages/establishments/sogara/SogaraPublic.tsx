@@ -375,10 +375,13 @@ export default function SogaraPublic() {
                   <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                     Prendre RDV
                   </Button>
-                  <Button size="lg" variant="ghost" className="text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial">
-                    <Phone className="w-4 h-4 mr-1 md:mr-2" />
-                    Appeler
-                  </Button>
+                  <a 
+                    href="tel:+241015611280"
+                    className="inline-flex items-center justify-center gap-2 text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial transition-colors border border-white/20"
+                  >
+                    <Phone className="w-4 h-4" />
+                    +241 01 56 11 28
+                  </a>
                 </div>
               </div>
 
@@ -390,16 +393,11 @@ export default function SogaraPublic() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Téléphone</p>
-                  <p className="text-sm text-white">+241 01 56 11 28</p>
-                </div>
-
-                <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Email</p>
                   <p className="text-sm text-white">contact@cmst-sogara.ga</p>
                 </div>
 
-                <div>
+                <div className="col-span-2">
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Horaires</p>
                   <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h • Sam: 8h - 12h</p>
                 </div>
