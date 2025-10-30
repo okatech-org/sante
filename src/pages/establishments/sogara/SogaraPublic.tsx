@@ -396,7 +396,7 @@ export default function SogaraPublic() {
 
                 <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Email</p>
-                  <p className="text-sm text-white">contact@cmst-sogara.ga</p>
+                  <p className="text-sm text-white">sogara@sante.ga</p>
                 </div>
 
                 <div className="col-span-2">
