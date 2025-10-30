@@ -348,54 +348,56 @@ export default function SogaraPublic() {
       </section>
 
       {/* CTA Section with Contact Info */}
-      <section id="contact" className="bg-gray-900 text-white py-12 md:py-16 lg:py-20">
+      <section id="contact" className="bg-gray-900 text-white py-8 md:py-10 lg:py-12">
         <div className="container mx-auto px-4 lg:px-16">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            <div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-5 lg:mb-6 leading-tight">
-                Prêt à commencer
-                <br />
-                à construire ?
-              </h2>
-              <p className="text-base md:text-lg text-gray-400 mb-6 md:mb-8">
-                Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
-              </p>
-              <div className="flex gap-2 md:gap-3 mb-8">
-                <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
-                  Prendre RDV
-                </Button>
-                <Button size="lg" variant="ghost" className="text-white px-4 py-4 md:px-7 md:py-5 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial">
-                  <Phone className="w-4 h-4 mr-1 md:mr-2" />
-                  Appeler
-                </Button>
+          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6 lg:gap-8 items-stretch">
+            <div className="flex flex-col justify-between">
+              <div>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 leading-tight">
+                  Prêt à commencer
+                  <br />
+                  à construire ?
+                </h2>
+                <p className="text-base md:text-lg text-gray-400 mb-5 md:mb-6">
+                  Prenez rendez-vous dès aujourd'hui et bénéficiez de soins médicaux de qualité
+                </p>
+                <div className="flex gap-2 md:gap-3 mb-6">
+                  <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 px-4 py-3 md:px-6 md:py-4 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
+                    Prendre RDV
+                  </Button>
+                  <Button size="lg" variant="ghost" className="text-white px-4 py-3 md:px-6 md:py-4 rounded-full hover:bg-white/10 text-sm md:text-base flex-1 md:flex-initial">
+                    <Phone className="w-4 h-4 mr-1 md:mr-2" />
+                    Appeler
+                  </Button>
+                </div>
               </div>
 
               {/* Contact Info */}
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/20">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-5 border-t border-white/20">
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-1">Adresse</p>
-                  <p className="text-sm text-white">Route de la Sogara<br />Port-Gentil, Gabon</p>
+                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Adresse</p>
+                  <p className="text-sm text-white leading-tight">Route de la Sogara<br />Port-Gentil, Gabon</p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-1">Téléphone</p>
+                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Téléphone</p>
                   <p className="text-sm text-white">+241 01 56 11 28</p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-1">Email</p>
+                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Email</p>
                   <p className="text-sm text-white">contact@cmst-sogara.ga</p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-400 mb-1">Horaires</p>
-                  <p className="text-sm text-white">Lun - Ven: 8h - 17h<br />Sam: 8h - 12h</p>
+                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Horaires</p>
+                  <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h<br />Sam: 8h - 12h</p>
                 </div>
               </div>
             </div>
             
             {/* Map */}
-            <div className="h-64 lg:h-80 rounded-xl overflow-hidden">
+            <div className="h-80 lg:h-full min-h-[400px] rounded-xl overflow-hidden">
               <SogaraLocationMap accessToken={mapboxToken} />
             </div>
           </div>
