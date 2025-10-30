@@ -201,24 +201,24 @@ export default function SogaraPublic() {
               </p>
 
               {/* Boutons */}
-              <div className="flex gap-2 mb-8 md:mb-10 overflow-x-auto">
-                <Button className="bg-gray-900 hover:bg-gray-800 text-white px-3 md:px-6 h-10 md:h-14 rounded-full text-xs md:text-base whitespace-nowrap flex-shrink-0" onClick={() => navigate("/appointments")}>
+              <div className="flex gap-2 md:gap-3 mb-8 md:mb-10">
+                <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base flex-1" onClick={() => navigate("/appointments")}>
                   Prendre RDV
                 </Button>
                 
                 <a 
                   href="tel:+241074521880" 
-                  className="inline-flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-700 text-white font-semibold px-3 md:px-6 h-10 md:h-14 rounded-full text-xs md:text-base transition-colors whitespace-nowrap flex-shrink-0"
+                  className="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base transition-colors flex-1"
                 >
-                  <Phone className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <Phone className="w-4 h-4" />
                   Urgence
                 </a>
                 
                 <a 
                   href="tel:+241015611280"
-                  className="inline-flex items-center justify-center gap-1.5 text-gray-900 px-3 md:px-6 h-10 md:h-14 rounded-full hover:bg-gray-100 text-xs md:text-base transition-colors border border-gray-300 whitespace-nowrap flex-shrink-0"
+                  className="inline-flex items-center justify-center gap-2 text-gray-900 px-4 md:px-6 h-12 md:h-14 rounded-full hover:bg-gray-100 text-sm md:text-base transition-colors border border-gray-300 flex-1"
                 >
-                  <Phone className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <Phone className="w-4 h-4" />
                   Appel
                 </a>
               </div>
