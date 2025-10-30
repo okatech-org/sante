@@ -294,6 +294,44 @@ export type Database = {
           },
         ]
       }
+      establishment_departments: {
+        Row: {
+          code: string
+          created_at: string | null
+          description: string | null
+          establishment_id: string
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          description?: string | null
+          establishment_id: string
+          id: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          description?: string | null
+          establishment_id?: string
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_departments_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_equipment: {
         Row: {
           annee_installation: number | null
