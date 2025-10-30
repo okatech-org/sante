@@ -13,28 +13,10 @@ import { loginSchema, LoginData } from "@/lib/validation";
 import { authService } from "@/lib/auth";
 import { toast } from "sonner";
 import { sanitizeAuthError, logError } from "@/lib/errorHandler";
-import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
-
-// Liste des comptes SOGARA pour le mode offline
-const SOGARA_ACCOUNTS = [
-  { email: "admin@sogara.com", password: "Admin@SOGARA2024", fullName: "Jean-Pierre Mbadinga", role: "admin" },
-  { email: "directeur@sogara.com", password: "DirecteurSOGARA2024!", fullName: "Dr. François Obiang", role: "admin" },
-  { email: "dr.okemba@sogara.com", password: "Okemba@2024Med", fullName: "Dr. Marie Okemba", role: "doctor" },
-  { email: "dr.nguema@sogara.com", password: "Nguema@Urgence24", fullName: "Dr. Paul Nguema", role: "doctor" },
-  { email: "dr.mbina@sogara.com", password: "Mbina@Cardio2024", fullName: "Dr. Léa Mbina", role: "doctor" },
-  { email: "dr.mezui@sogara.com", password: "Mezui@Pediatrie24", fullName: "Dr. Thomas Mezui", role: "doctor" },
-  { email: "nurse.mba@sogara.com", password: "MbaSI@2024", fullName: "Sylvie Mba", role: "medical_staff" },
-  { email: "nurse.nze@sogara.com", password: "NzeUrg@2024", fullName: "Patricia Nze", role: "medical_staff" },
-  { email: "nurse.andeme@sogara.com", password: "Andeme@Mat2024", fullName: "Claire Andeme", role: "medical_staff" },
-  { email: "lab.tech@sogara.com", password: "LabSOGARA@2024", fullName: "André Moussavou", role: "laboratory" },
-  { email: "pharma@sogara.com", password: "PharmaSOGARA@24", fullName: "Dr. Lydie Kombila", role: "pharmacy" },
-  { email: "accueil@sogara.com", password: "AccueilSOGARA@24", fullName: "Nadège Oyono", role: "medical_staff" }
-];
 
 export default function LoginProfessional() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn: offlineSignIn } = useOfflineAuth();
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -48,41 +30,6 @@ export default function LoginProfessional() {
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
     
-    // D'abord, vérifier si c'est un compte SOGARA (mode offline)
-    const sogaraAccount = SOGARA_ACCOUNTS.find(
-      acc => acc.email.toLowerCase() === data.identifier.toLowerCase() && acc.password === data.password
-    );
-    
-    if (sogaraAccount) {
-      try {
-        // Connexion offline pour SOGARA
-        await offlineSignIn(sogaraAccount.email, [sogaraAccount.role]);
-        
-        // Stocker les informations SOGARA
-        localStorage.setItem('sogara_user_data', JSON.stringify({
-          fullName: sogaraAccount.fullName,
-          establishment: 'CMST SOGARA',
-          role: sogaraAccount.role
-        }));
-        
-        toast.success("Connexion réussie !", {
-          description: `Bienvenue ${sogaraAccount.fullName}`,
-        });
-        
-        // Rediriger vers le dashboard SOGARA
-        if (sogaraAccount.role === 'admin') {
-          navigate("/establishments/sogara/admin");
-        } else {
-          navigate("/establishments/sogara/admin");
-        }
-        setIsLoading(false);
-        return;
-      } catch (error) {
-        console.error("Erreur connexion offline:", error);
-      }
-    }
-    
-    // Si ce n'est pas un compte SOGARA, essayer Supabase
     try {
       const { user } = await authService.signIn(data.identifier, data.password);
       

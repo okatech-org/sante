@@ -7,107 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Building2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
-
-// Liste complète des comptes SOGARA
-const SOGARA_ACCOUNTS = [
-  { 
-    email: "admin@sogara.com", 
-    password: "Admin@SOGARA2024", 
-    fullName: "Jean-Pierre Mbadinga",
-    role: "admin",
-    department: "Administration",
-    matricule: "ADM-001"
-  },
-  { 
-    email: "directeur@sogara.com", 
-    password: "DirecteurSOGARA2024!", 
-    fullName: "Dr. François Obiang",
-    role: "admin",
-    department: "Direction Médicale",
-    matricule: "DIR-001"
-  },
-  { 
-    email: "dr.okemba@sogara.com", 
-    password: "Okemba@2024Med", 
-    fullName: "Dr. Marie Okemba",
-    role: "doctor",
-    department: "Médecine Générale",
-    matricule: "MED-012"
-  },
-  { 
-    email: "dr.nguema@sogara.com", 
-    password: "Nguema@Urgence24", 
-    fullName: "Dr. Paul Nguema",
-    role: "doctor",
-    department: "Urgences",
-    matricule: "MED-015"
-  },
-  { 
-    email: "dr.mbina@sogara.com", 
-    password: "Mbina@Cardio2024", 
-    fullName: "Dr. Léa Mbina",
-    role: "doctor",
-    department: "Cardiologie",
-    matricule: "MED-018"
-  },
-  { 
-    email: "dr.mezui@sogara.com", 
-    password: "Mezui@Pediatrie24", 
-    fullName: "Dr. Thomas Mezui",
-    role: "doctor",
-    department: "Pédiatrie",
-    matricule: "MED-022"
-  },
-  { 
-    email: "nurse.mba@sogara.com", 
-    password: "MbaSI@2024", 
-    fullName: "Sylvie Mba",
-    role: "nurse",
-    department: "Soins Intensifs",
-    matricule: "INF-025"
-  },
-  { 
-    email: "nurse.nze@sogara.com", 
-    password: "NzeUrg@2024", 
-    fullName: "Patricia Nze",
-    role: "nurse",
-    department: "Urgences",
-    matricule: "INF-028"
-  },
-  { 
-    email: "nurse.andeme@sogara.com", 
-    password: "Andeme@Mat2024", 
-    fullName: "Claire Andeme",
-    role: "nurse",
-    department: "Maternité",
-    matricule: "INF-030"
-  },
-  { 
-    email: "lab.tech@sogara.com", 
-    password: "LabSOGARA@2024", 
-    fullName: "André Moussavou",
-    role: "lab_tech",
-    department: "Laboratoire",
-    matricule: "LAB-008"
-  },
-  { 
-    email: "pharma@sogara.com", 
-    password: "PharmaSOGARA@24", 
-    fullName: "Dr. Lydie Kombila",
-    role: "pharmacist",
-    department: "Pharmacie",
-    matricule: "PHAR-004"
-  },
-  { 
-    email: "accueil@sogara.com", 
-    password: "AccueilSOGARA@24", 
-    fullName: "Nadège Oyono",
-    role: "receptionist",
-    department: "Accueil",
-    matricule: "REC-002"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SogaraLogin() {
   const [email, setEmail] = useState("");
@@ -115,54 +15,46 @@ export default function SogaraLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn } = useOfflineAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Vérifier dans les comptes SOGARA
-      const account = SOGARA_ACCOUNTS.find(
-        (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
-      );
+      // Use standard Supabase authentication
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password: password,
+      });
 
-      if (!account) {
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
-        });
-        return;
+      if (error) throw error;
+
+      if (!data.user) {
+        throw new Error("Authentication failed");
       }
 
-      // Connecter l'utilisateur avec ses informations complètes
-      await signIn(email, [account.role]);
-      
-      // Stocker les informations supplémentaires dans localStorage
-      localStorage.setItem('sogara_user_data', JSON.stringify({
-        fullName: account.fullName,
-        department: account.department,
-        matricule: account.matricule,
-        establishment: 'CMST SOGARA'
-      }));
-      
+      // Verify user has SOGARA establishment access
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', data.user.id);
+
+      if (!roles || roles.length === 0) {
+        await supabase.auth.signOut();
+        throw new Error("Accès non autorisé au CMST SOGARA");
+      }
+
       toast({
         title: "Connexion réussie",
-        description: `Bienvenue ${account.fullName}`,
+        description: `Bienvenue au CMST SOGARA`,
       });
       
-      // Rediriger selon le rôle
-      if (account.role === 'admin') {
-        navigate("/establishments/sogara/admin");
-      } else {
-        navigate("/establishments/sogara/admin");
-      }
+      navigate("/establishments/sogara/admin");
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue",
+        title: "Erreur de connexion",
+        description: error.message || "Email ou mot de passe incorrect",
       });
     } finally {
       setLoading(false);
