@@ -373,22 +373,22 @@ export default function SogaraPublic() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="bg-white py-12 md:py-16 lg:py-20">
+      <section id="contact" className="bg-white py-8 md:py-10">
         <div className="container mx-auto px-4 lg:px-16">
-          <div className="grid lg:grid-cols-5 gap-8 md:gap-10 lg:gap-12">
+          <div className="grid md:grid-cols-5 gap-6 md:gap-8">
             {/* Contact Info */}
-            <div className="lg:col-span-2 space-y-6 md:space-y-8">
+            <div className="md:col-span-2 space-y-4">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 md:mb-3">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
                   Contact
                 </p>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">Nous Contacter</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Nous Contacter</h2>
                 <p className="text-sm md:text-base text-gray-600">
                   Notre équipe est à votre disposition
                 </p>
               </div>
 
-              <div className="space-y-4 md:space-y-6">
+              <div className="space-y-3">
                 <div>
                   <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1">Adresse</p>
                   <p className="text-sm md:text-base text-gray-600">Route de la Sogara<br />Port-Gentil, Gabon</p>
@@ -418,7 +418,7 @@ export default function SogaraPublic() {
             </div>
 
             {/* Map */}
-            <div className="lg:col-span-3">
+            <div className="md:col-span-3">
               <SogaraLocationMap accessToken={mapboxToken} />
             </div>
           </div>
