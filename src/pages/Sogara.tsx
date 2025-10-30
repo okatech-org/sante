@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { 
   Building2, Phone, Mail, MapPin, Calendar,
   Heart, Shield, Stethoscope, Activity, AlertTriangle,
@@ -14,6 +15,40 @@ import sogaraEquipment from "@/assets/sogara-equipment.jpg";
 
 export default function Sogara() {
   const navigate = useNavigate();
+
+  // Update Open Graph meta tags for social sharing
+  useEffect(() => {
+    const updateMetaTags = () => {
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      const twitterImage = document.querySelector('meta[name="twitter:image"]');
+
+      if (ogTitle) ogTitle.setAttribute('content', 'CMST SOGARA - Centre de Médecine de Santé au Travail');
+      if (ogDescription) ogDescription.setAttribute('content', 'Excellence médicale au service des employés SOGARA et leurs familles. Des soins de qualité avec des équipements de pointe depuis 1974.');
+      if (ogImage) ogImage.setAttribute('content', 'https://sante.ga/cmst_sogara_logo.png');
+      if (ogUrl) ogUrl.setAttribute('content', 'https://sante.ga/sogara');
+      if (twitterImage) twitterImage.setAttribute('content', 'https://sante.ga/cmst_sogara_logo.png');
+    };
+
+    updateMetaTags();
+
+    // Cleanup: restore original meta tags when component unmounts
+    return () => {
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      const twitterImage = document.querySelector('meta[name="twitter:image"]');
+
+      if (ogTitle) ogTitle.setAttribute('content', 'SANTE.GA - Votre santé digitale au Gabon');
+      if (ogDescription) ogDescription.setAttribute('content', 'Gérez votre santé en ligne facilement : rendez-vous, ordonnances, résultats et remboursements');
+      if (ogImage) ogImage.setAttribute('content', 'https://sante.ga/logo_sante.png');
+      if (ogUrl) ogUrl.setAttribute('content', 'https://sante.ga');
+      if (twitterImage) twitterImage.setAttribute('content', 'https://sante.ga/logo_sante.png');
+    };
+  }, []);
 
   const services = [
     { icon: AlertTriangle, title: "Urgences 24/7", description: "Service d'urgence disponible jour et nuit" },
