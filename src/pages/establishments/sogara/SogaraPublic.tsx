@@ -385,13 +385,18 @@ export default function SogaraPublic() {
                 </div>
 
                 <div>
+                  <p className="text-xs font-semibold text-gray-400 mb-0.5">Urgences</p>
+                  <p className="text-sm text-white font-semibold">+241 07 45 21 88</p>
+                </div>
+
+                <div>
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Email</p>
                   <p className="text-sm text-white">contact@cmst-sogara.ga</p>
                 </div>
 
-                <div>
+                <div className="col-span-2">
                   <p className="text-xs font-semibold text-gray-400 mb-0.5">Horaires</p>
-                  <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h<br />Sam: 8h - 12h</p>
+                  <p className="text-sm text-white leading-tight">Lun - Ven: 8h - 17h • Sam: 8h - 12h</p>
                 </div>
               </div>
             </div>
