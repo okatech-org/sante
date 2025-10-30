@@ -139,6 +139,28 @@ export default function SogaraPublic() {
                     <a href="#contact" className="text-base font-medium text-gray-700 hover:text-blue-600 transition py-2" onClick={() => setMobileMenuOpen(false)}>
                       Contact
                     </a>
+                    
+                    {/* Boutons Téléphone */}
+                    <div className="pt-4 mt-4 border-t space-y-3">
+                      <a 
+                        href="tel:+241074521880" 
+                        className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-3 rounded-full text-sm transition-colors w-full"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Phone className="w-4 h-4" />
+                        Urgence : +241 07 45 21 88
+                      </a>
+                      
+                      <a 
+                        href="tel:+241015611280"
+                        className="flex items-center justify-center gap-2 text-gray-900 px-4 py-3 rounded-full hover:bg-gray-100 text-sm transition-colors border border-gray-300 w-full"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Phone className="w-4 h-4" />
+                        +241 01 56 11 28
+                      </a>
+                    </div>
+                    
                     <div className="pt-4 mt-4 border-t space-y-3">
                       <Button variant="outline" className="w-full justify-start" onClick={() => {
                       setMobileMenuOpen(false);
