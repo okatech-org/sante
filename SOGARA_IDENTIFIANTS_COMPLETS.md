@@ -14,33 +14,33 @@
 
 | Nom | Email | Mot de passe | Matricule |
 |-----|-------|--------------|-----------|
-| Jean-Pierre Mbadinga | admin@sogara.com | Admin@SOGARA2024 | ADM-001 |
-| Dr. François Obiang | directeur@sogara.com | DirecteurSOGARA2024! | DIR-001 |
+| Jean-Pierre Mbadinga | admin.sogara@sante.ga | Admin@SOGARA2024 | ADM-001 |
+| Dr. Jules DJEKI | directeur.sogara@sante.ga | DirecteurSOGARA2024! | DIR-001 |
 
 ### 👨‍⚕️ MÉDECINS (4)
 
 | Nom | Email | Mot de passe | Matricule |
 |-----|-------|--------------|-----------|
-| Dr. Marie Okemba | dr.okemba@sogara.com | Okemba@2024Med | MED-012 |
-| Dr. Paul Nguema | dr.nguema@sogara.com | Nguema@Urgence24 | MED-015 |
-| Dr. Léa Mbina | dr.mbina@sogara.com | Mbina@Cardio2024 | MED-018 |
-| Dr. Thomas Mezui | dr.mezui@sogara.com | Mezui@Pediatrie24 | MED-022 |
+| Dr. Marie Okemba | dr.okemba.sogara@sante.ga | Okemba@2024Med | MED-012 |
+| Dr. Paul Nguema | dr.nguema.sogara@sante.ga | Nguema@Urgence24 | MED-015 |
+| Dr. Léa Mbina | dr.mbina.sogara@sante.ga | Mbina@Cardio2024 | MED-018 |
+| Dr. Thomas Mezui | dr.mezui.sogara@sante.ga | Mezui@Pediatrie24 | MED-022 |
 
 ### 👩‍⚕️ INFIRMIERS (3)
 
 | Nom | Email | Mot de passe | Matricule |
 |-----|-------|--------------|-----------|
-| Sylvie Mba | nurse.mba@sogara.com | MbaSI@2024 | INF-025 |
-| Patricia Nze | nurse.nze@sogara.com | NzeUrg@2024 | INF-028 |
-| Claire Andeme | nurse.andeme@sogara.com | Andeme@Mat2024 | INF-030 |
+| Sylvie Mba | nurse.mba.sogara@sante.ga | MbaSI@2024 | INF-025 |
+| Patricia Nze | nurse.nze.sogara@sante.ga | NzeUrg@2024 | INF-028 |
+| Claire Andeme | nurse.andeme.sogara@sante.ga | Andeme@Mat2024 | INF-030 |
 
 ### 🔬 AUTRES PROFESSIONNELS (3)
 
 | Nom | Email | Mot de passe | Rôle | Matricule |
 |-----|-------|--------------|------|-----------|
-| André Moussavou | lab.tech@sogara.com | LabSOGARA@2024 | Technicien Labo | LAB-008 |
-| Dr. Lydie Kombila | pharma@sogara.com | PharmaSOGARA@24 | Pharmacien | PHAR-004 |
-| Nadège Oyono | accueil@sogara.com | AccueilSOGARA@24 | Réceptionniste | REC-002 |
+| André Moussavou | lab.tech.sogara@sante.ga | LabSOGARA@2024 | Technicien Labo | LAB-008 |
+| Dr. Lydie Kombila | pharma.sogara@sante.ga | PharmaSOGARA@24 | Pharmacien | PHAR-004 |
+| Nadège Oyono | accueil.sogara@sante.ga | AccueilSOGARA@24 | Réceptionniste | REC-002 |
 
 ---
 
@@ -52,11 +52,11 @@ http://localhost:8080/login/professional
 ```
 
 ### Test Admin
-- Email: `admin@sogara.com`
+- Email: `admin.sogara@sante.ga`
 - Password: `Admin@SOGARA2024`
 
 ### Test Médecin
-- Email: `dr.okemba@sogara.com`
+- Email: `dr.okemba.sogara@sante.ga`
 - Password: `Okemba@2024Med`
 
 ---
@@ -65,7 +65,7 @@ http://localhost:8080/login/professional
 
 ### 1. Vérifier l'existence du compte
 ```sql
-SELECT * FROM auth.users WHERE email = 'admin@sogara.com';
+SELECT * FROM auth.users WHERE email = 'admin.sogara@sante.ga';
 ```
 
 ### 2. Créer le compte manuellement

@@ -425,7 +425,7 @@ export default function Sogara() {
                   <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <h3 className="font-semibold mb-2">Email</h3>
-                <p className="text-sm text-muted-foreground">cmst@sogara.ga</p>
+                <p className="text-sm text-muted-foreground">contact.sogara@sante.ga</p>
               </Card>
 
               <Card className="p-6 text-center hover:shadow-lg transition-shadow border-0">
@@ -508,7 +508,7 @@ export default function Sogara() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  cmst@sogara.ga
+                  contact.sogara@sante.ga
                 </li>
                 <li className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />

@@ -58,7 +58,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 🛡️ **Administrateurs** (2 comptes)
 
 #### 1. Jean-Pierre Mbadinga
-- **Email**: `admin@sogara.com`
+- **Email**: `admin.sogara@sante.ga`
 - **Mot de passe**: `Admin@SOGARA2024`
 - **Rôle**: Administrateur
 - **Département**: Administration
@@ -66,8 +66,8 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 - **Accès**: Dashboard admin complet
 
-#### 2. Dr. François Obiang
-- **Email**: `directeur@sogara.com`
+#### 2. Dr. Jules DJEKI
+- **Email**: `directeur.sogara@sante.ga`
 - **Mot de passe**: `DirecteurSOGARA2024!`
 - **Rôle**: Administrateur
 - **Département**: Direction Médicale
@@ -80,7 +80,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 🩺 **Médecins** (4 comptes)
 
 #### 3. Dr. Marie Okemba
-- **Email**: `dr.okemba@sogara.com`
+- **Email**: `dr.okemba.sogara@sante.ga`
 - **Mot de passe**: `Okemba@2024Med`
 - **Rôle**: Médecin
 - **Département**: Médecine Générale
@@ -88,7 +88,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 
 #### 4. Dr. Paul Nguema
-- **Email**: `dr.nguema@sogara.com`
+- **Email**: `dr.nguema.sogara@sante.ga`
 - **Mot de passe**: `Nguema@Urgence24`
 - **Rôle**: Médecin
 - **Département**: Urgences
@@ -96,7 +96,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 
 #### 5. Dr. Léa Mbina
-- **Email**: `dr.mbina@sogara.com`
+- **Email**: `dr.mbina.sogara@sante.ga`
 - **Mot de passe**: `Mbina@Cardio2024`
 - **Rôle**: Médecin
 - **Département**: Cardiologie
@@ -104,7 +104,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 
 #### 6. Dr. Thomas Mezui
-- **Email**: `dr.mezui@sogara.com`
+- **Email**: `dr.mezui.sogara@sante.ga`
 - **Mot de passe**: `Mezui@Pediatrie24`
 - **Rôle**: Médecin
 - **Département**: Pédiatrie
@@ -116,7 +116,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 💉 **Infirmiers** (3 comptes)
 
 #### 7. Sylvie Mba
-- **Email**: `nurse.mba@sogara.com`
+- **Email**: `nurse.mba.sogara@sante.ga`
 - **Mot de passe**: `MbaSI@2024`
 - **Rôle**: Infirmier(e)
 - **Département**: Soins Intensifs
@@ -124,7 +124,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 
 #### 8. Patricia Nze
-- **Email**: `nurse.nze@sogara.com`
+- **Email**: `nurse.nze.sogara@sante.ga`
 - **Mot de passe**: `NzeUrg@2024`
 - **Rôle**: Infirmier(e)
 - **Département**: Urgences
@@ -132,7 +132,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 - **Statut**: ✅ Actif
 
 #### 9. Claire Andeme
-- **Email**: `nurse.andeme@sogara.com`
+- **Email**: `nurse.andeme.sogara@sante.ga`
 - **Mot de passe**: `Andeme@Mat2024`
 - **Rôle**: Infirmier(e)
 - **Département**: Maternité
@@ -144,7 +144,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 🧪 **Technicien de Laboratoire** (1 compte)
 
 #### 10. André Moussavou
-- **Email**: `lab.tech@sogara.com`
+- **Email**: `lab.tech.sogara@sante.ga`
 - **Mot de passe**: `LabSOGARA@2024`
 - **Rôle**: Technicien Laboratoire
 - **Département**: Laboratoire
@@ -156,7 +156,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 💊 **Pharmacien** (1 compte)
 
 #### 11. Dr. Lydie Kombila
-- **Email**: `pharma@sogara.com`
+- **Email**: `pharma.sogara@sante.ga`
 - **Mot de passe**: `PharmaSOGARA@24`
 - **Rôle**: Pharmacien
 - **Département**: Pharmacie
@@ -168,7 +168,7 @@ Ce document liste tous les comptes d'accès au système SANTE.GA pour le Centre 
 ### 📝 **Réceptionniste** (1 compte)
 
 #### 12. Nadège Oyono
-- **Email**: `accueil@sogara.com`
+- **Email**: `accueil.sogara@sante.ga`
 - **Mot de passe**: `AccueilSOGARA@24`
 - **Rôle**: Réceptionniste
 - **Département**: Accueil

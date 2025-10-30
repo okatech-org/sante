@@ -207,7 +207,7 @@ $$ LANGUAGE plpgsql;
 
 -- 1. Administrateurs (2)
 SELECT create_sogara_user(
-  'admin@sogara.com',
+  'admin.sogara@sante.ga',
   'Admin@SOGARA2024',
   'Jean-Pierre Mbadinga',
   'hospital',
@@ -218,9 +218,9 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'directeur@sogara.com',
+  'directeur.sogara@sante.ga',
   'DirecteurSOGARA2024!',
-  'Dr. François Obiang',
+  'Dr. Jules DJEKI',
   'hospital',
   'Direction Médicale',
   'DIR-001',
@@ -230,7 +230,7 @@ SELECT create_sogara_user(
 
 -- 2. Médecins (4)
 SELECT create_sogara_user(
-  'dr.okemba@sogara.com',
+  'dr.okemba.sogara@sante.ga',
   'Okemba@2024Med',
   'Dr. Marie Okemba',
   'doctor',
@@ -239,7 +239,7 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'dr.nguema@sogara.com',
+  'dr.nguema.sogara@sante.ga',
   'Nguema@Urgence24',
   'Dr. Paul Nguema',
   'doctor',
@@ -248,7 +248,7 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'dr.mbina@sogara.com',
+  'dr.mbina.sogara@sante.ga',
   'Mbina@Cardio2024',
   'Dr. Léa Mbina',
   'doctor',
@@ -257,7 +257,7 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'dr.mezui@sogara.com',
+  'dr.mezui.sogara@sante.ga',
   'Mezui@Pediatrie24',
   'Dr. Thomas Mezui',
   'doctor',
@@ -267,7 +267,7 @@ SELECT create_sogara_user(
 
 -- 3. Infirmiers (3)
 SELECT create_sogara_user(
-  'nurse.mba@sogara.com',
+  'nurse.mba.sogara@sante.ga',
   'MbaSI@2024',
   'Sylvie Mba',
   'medical_staff',
@@ -277,7 +277,7 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'nurse.nze@sogara.com',
+  'nurse.nze.sogara@sante.ga',
   'NzeUrg@2024',
   'Patricia Nze',
   'medical_staff',
@@ -287,7 +287,7 @@ SELECT create_sogara_user(
 );
 
 SELECT create_sogara_user(
-  'nurse.andeme@sogara.com',
+  'nurse.andeme.sogara@sante.ga',
   'Andeme@Mat2024',
   'Claire Andeme',
   'medical_staff',
@@ -298,7 +298,7 @@ SELECT create_sogara_user(
 
 -- 4. Technicien Laboratoire (1)
 SELECT create_sogara_user(
-  'lab.tech@sogara.com',
+  'lab.tech.sogara@sante.ga',
   'LabSOGARA@2024',
   'André Moussavou',
   'laboratory',
@@ -308,7 +308,7 @@ SELECT create_sogara_user(
 
 -- 5. Pharmacien (1)
 SELECT create_sogara_user(
-  'pharma@sogara.com',
+  'pharma.sogara@sante.ga',
   'PharmaSOGARA@24',
   'Dr. Lydie Kombila',
   'pharmacy',
@@ -318,7 +318,7 @@ SELECT create_sogara_user(
 
 -- 6. Réceptionniste (1)
 SELECT create_sogara_user(
-  'accueil@sogara.com',
+  'accueil.sogara@sante.ga',
   'AccueilSOGARA@24',
   'Nadège Oyono',
   'medical_staff',
@@ -344,7 +344,7 @@ SELECT
 FROM auth.users au
 JOIN public.profiles p ON p.id = au.id
 LEFT JOIN public.user_roles ur ON ur.user_id = au.id
-WHERE au.email LIKE '%sogara.com%'
+WHERE au.email LIKE '%sogara@sante.ga%'
 ORDER BY 
   CASE ur.role 
     WHEN 'hospital' THEN 1
