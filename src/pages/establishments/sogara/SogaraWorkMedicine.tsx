@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
+import { ProfessionalEstablishmentLayout } from "@/components/layout/ProfessionalEstablishmentLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,7 @@ export default function SogaraWorkMedicine() {
   ];
 
   return (
-    <SogaraDashboardLayout>
+    <ProfessionalEstablishmentLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -325,7 +325,7 @@ export default function SogaraWorkMedicine() {
           </TabsContent>
         </Tabs>
       </div>
-    </SogaraDashboardLayout>
+    </ProfessionalEstablishmentLayout>
   );
 }
 

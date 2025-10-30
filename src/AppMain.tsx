@@ -3,9 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { OfflineAuthProvider } from "./contexts/OfflineAuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { MultiEstablishmentProvider } from "./contexts/MultiEstablishmentContext";
 import { ThemeProvider } from "next-themes";
 import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
 
@@ -28,7 +28,9 @@ import RegisterProfessional from "./pages/RegisterProfessional";
 // Pages de dashboard
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
+import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
+import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
 
 // Pages Patient
 import MedicalRecord from "./pages/patient/MedicalRecord";
@@ -75,7 +77,7 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 // Pages SOGARA
 import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
 import SogaraLogin from "./pages/SogaraLogin";
-import SogaraDashboard from "./pages/establishments/sogara/SogaraDashboard";
+import SogaraDashboard from "./pages/establishments/sogara/admin/SogaraDashboard";
 import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
 import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
 import SogaraEmployees from "./pages/establishments/sogara/SogaraEmployees";
@@ -103,8 +105,8 @@ function AppMain() {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <LanguageProvider>
           <AuthProvider>
-            <OfflineAuthProvider>
-            <TooltipProvider>
+            <MultiEstablishmentProvider>
+              <TooltipProvider>
               <BrowserRouter>
                 <ConsoleSilencer />
                 <div className="min-h-screen bg-background">
@@ -129,6 +131,9 @@ function AppMain() {
                     {/* Routes de dashboard */}
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
+                    <Route path="/professional/dashboard" element={<ProfessionalDashboard />} />
+                    <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
+                    <Route path="/professional/establishments" element={<EstablishmentsManager />} />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
 
                     {/* Routes de profil */}
@@ -198,8 +203,8 @@ function AppMain() {
                 <Toaster />
                 <Sonner />
               </BrowserRouter>
-            </TooltipProvider>
-            </OfflineAuthProvider>
+              </TooltipProvider>
+            </MultiEstablishmentProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>

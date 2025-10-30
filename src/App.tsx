@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { MultiEstablishmentProvider } from "./contexts/MultiEstablishmentContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "next-themes";
 import ConsoleSilencer from "@/components/dev/ConsoleSilencer";
@@ -28,7 +29,10 @@ import RegisterProfessional from "./pages/RegisterProfessional";
 // Pages de dashboard
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
+import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
+import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
+import SogaraDashboard from "./pages/establishments/sogara/admin/SogaraDashboard";
 
 // Pages de profil
 import Profile from "./pages/Profile";
@@ -69,7 +73,8 @@ function App() {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <LanguageProvider>
           <AuthProvider>
-            <TooltipProvider>
+            <MultiEstablishmentProvider>
+              <TooltipProvider>
               <BrowserRouter>
                 <ConsoleSilencer />
                 <div className="min-h-screen bg-background">
@@ -95,7 +100,10 @@ function App() {
                     {/* Routes de dashboard */}
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
+                    <Route path="/professional/dashboard" element={<ProfessionalDashboard />} />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
+                    <Route path="/professional/establishments" element={<EstablishmentsManager />} />
+                    <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />
                     
                     {/* Routes de profil */}
                     <Route path="/profile" element={<Profile />} />
@@ -131,7 +139,8 @@ function App() {
                 <Toaster />
                 <Sonner />
               </BrowserRouter>
-            </TooltipProvider>
+              </TooltipProvider>
+            </MultiEstablishmentProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>

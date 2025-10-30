@@ -9,7 +9,7 @@ import {
   Filter, Download, CheckCircle, XCircle, AlertCircle,
   Stethoscope, FileText, Phone
 } from "lucide-react";
-import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
+import { ProfessionalEstablishmentLayout } from "@/components/layout/ProfessionalEstablishmentLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -136,7 +136,7 @@ export default function SogaraConsultations() {
   };
 
   return (
-    <SogaraDashboardLayout>
+    <ProfessionalEstablishmentLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -375,7 +375,7 @@ export default function SogaraConsultations() {
           </TabsContent>
         </Tabs>
       </div>
-    </SogaraDashboardLayout>
+    </ProfessionalEstablishmentLayout>
   );
 }
 

@@ -1,6 +1,6 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -23,15 +23,98 @@ interface SogaraDashboardLayoutProps {
 }
 
 export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) {
-  const { user, signOut } = useOfflineAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sogaraData, setSogaraData] = useState<any>(null);
 
-  // Récupérer les données utilisateur SOGARA depuis localStorage
-  const sogaraUserData = localStorage.getItem('sogara_user_data');
-  const userData = sogaraUserData ? JSON.parse(sogaraUserData) : null;
-  const fullName = userData?.fullName || user?.user_metadata?.full_name || 'Utilisateur SOGARA';
+  // Mapper les emails aux données correctes
+  const SOGARA_STAFF_DATA: Record<string, any> = {
+    'directeur.sogara@sante.ga': {
+      fullName: 'Dr. Jules DJEKI',
+      role: 'Directeur',
+      department: 'Direction Médicale',
+      matricule: 'DIR-001'
+    },
+    'admin.sogara@sante.ga': {
+      fullName: 'Jean-Pierre Mbadinga',
+      role: 'Administrateur',
+      department: 'Administration',
+      matricule: 'ADM-001'
+    },
+    'dr.okemba.sogara@sante.ga': {
+      fullName: 'Dr. Marie Okemba',
+      role: 'Médecin',
+      department: 'Médecine Générale',
+      matricule: 'MED-012'
+    },
+    'dr.nguema.sogara@sante.ga': {
+      fullName: 'Dr. Paul Nguema',
+      role: 'Médecin',
+      department: 'Urgences',
+      matricule: 'MED-015'
+    },
+    'dr.mbina.sogara@sante.ga': {
+      fullName: 'Dr. Léa Mbina',
+      role: 'Médecin',
+      department: 'Cardiologie',
+      matricule: 'MED-018'
+    },
+    'dr.mezui.sogara@sante.ga': {
+      fullName: 'Dr. Thomas Mezui',
+      role: 'Médecin',
+      department: 'Pédiatrie',
+      matricule: 'MED-022'
+    },
+    'nurse.mba.sogara@sante.ga': {
+      fullName: 'Sylvie Mba',
+      role: 'Infirmier(e)',
+      department: 'Soins Intensifs',
+      matricule: 'INF-025'
+    },
+    'nurse.nze.sogara@sante.ga': {
+      fullName: 'Patricia Nze',
+      role: 'Infirmier(e)',
+      department: 'Urgences',
+      matricule: 'INF-028'
+    },
+    'nurse.andeme.sogara@sante.ga': {
+      fullName: 'Claire Andeme',
+      role: 'Infirmier(e)',
+      department: 'Maternité',
+      matricule: 'INF-030'
+    },
+    'lab.tech.sogara@sante.ga': {
+      fullName: 'André Moussavou',
+      role: 'Technicien Labo',
+      department: 'Laboratoire',
+      matricule: 'LAB-008'
+    },
+    'pharma.sogara@sante.ga': {
+      fullName: 'Dr. Lydie Kombila',
+      role: 'Pharmacien',
+      department: 'Pharmacie',
+      matricule: 'PHAR-004'
+    },
+    'accueil.sogara@sante.ga': {
+      fullName: 'Nadège Oyono',
+      role: 'Réceptionniste',
+      department: 'Accueil',
+      matricule: 'REC-002'
+    }
+  };
+
+  useEffect(() => {
+    if (user?.email && SOGARA_STAFF_DATA[user.email]) {
+      setSogaraData(SOGARA_STAFF_DATA[user.email]);
+    }
+  }, [user]);
+
+  // Utiliser les données mappées ou les métadonnées Supabase
+  const fullName = sogaraData?.fullName || 
+                   user?.user_metadata?.full_name || 
+                   (user?.email ? user.email.split('@')[0] : 'Utilisateur SOGARA');
 
   const handleSignOut = async () => {
     await signOut();
@@ -145,7 +228,7 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
                   </Avatar>
                   <div className="flex-1 text-left min-w-0">
                     <p className="text-sm font-medium truncate">{fullName}</p>
-                    <p className="text-xs text-muted-foreground truncate">{userData?.department || 'SOGARA'}</p>
+                    <p className="text-xs text-muted-foreground truncate">{sogaraData?.department || 'CMST SOGARA'}</p>
                   </div>
                 </Button>
               </DropdownMenuTrigger>
@@ -224,7 +307,7 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{fullName}</p>
-                          <p className="text-xs text-muted-foreground truncate">{userData?.department || 'SOGARA'}</p>
+                          <p className="text-xs text-muted-foreground truncate">{sogaraData?.department || 'SOGARA'}</p>
                         </div>
                       </div>
                       <Button 
@@ -264,7 +347,7 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="px-2 py-1.5">
                       <p className="text-sm font-medium">{fullName}</p>
-                      <p className="text-xs text-muted-foreground">{userData?.department || 'SOGARA'}</p>
+                      <p className="text-xs text-muted-foreground">{sogaraData?.department || 'SOGARA'}</p>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate('/sogara')}>

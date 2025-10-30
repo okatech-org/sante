@@ -12,7 +12,7 @@ import {
   Briefcase, MapPin, Calendar, Loader2, ArrowLeft,
   Download, Filter, X
 } from "lucide-react";
-import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
+import { ProfessionalEstablishmentLayout } from "@/components/layout/ProfessionalEstablishmentLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -287,19 +287,19 @@ export default function SogaraEmployees() {
   // Loading state
   if (loading) {
     return (
-      <SogaraDashboardLayout>
+      <ProfessionalEstablishmentLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center space-y-4">
             <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
             <p className="text-muted-foreground">Chargement des employés...</p>
           </div>
         </div>
-      </SogaraDashboardLayout>
+      </ProfessionalEstablishmentLayout>
     );
   }
 
   return (
-    <SogaraDashboardLayout>
+    <ProfessionalEstablishmentLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between flex-wrap gap-4">
@@ -800,6 +800,6 @@ export default function SogaraEmployees() {
           </DialogContent>
         </Dialog>
       </div>
-    </SogaraDashboardLayout>
+    </ProfessionalEstablishmentLayout>
   );
 }

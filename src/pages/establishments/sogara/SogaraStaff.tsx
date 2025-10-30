@@ -1,4 +1,4 @@
-import { SogaraDashboardLayout } from "@/components/layout/SogaraDashboardLayout";
+import { ProfessionalEstablishmentLayout } from "@/components/layout/ProfessionalEstablishmentLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ export default function SogaraStaff() {
   ];
 
   return (
-    <SogaraDashboardLayout>
+    <ProfessionalEstablishmentLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -214,7 +214,7 @@ export default function SogaraStaff() {
           </Card>
         </div>
       </div>
-    </SogaraDashboardLayout>
+    </ProfessionalEstablishmentLayout>
   );
 }
 
