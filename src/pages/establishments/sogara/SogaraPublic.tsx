@@ -196,7 +196,7 @@ export default function SogaraPublic() {
                 <br />
                 <span className="text-gray-400">Sans contraintes</span>
               </h1>
-              <p className="text-base md:text-lg text-gray-600 mb-5 md:mb-6">
+              <p className="text-sm md:text-base text-gray-600 mb-5 md:mb-6">
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
               </p>
 
