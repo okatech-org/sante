@@ -203,7 +203,7 @@ export default function SogaraPublic() {
               </p>
 
               {/* Boutons */}
-              <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-10">
+              <div className="flex flex-wrap lg:flex-nowrap gap-2 md:gap-3 mb-8 md:mb-10">
                 <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 md:px-6 h-12 md:h-14 rounded-full text-sm md:text-base" onClick={() => navigate("/appointments")}>
                   Prendre RDV
                 </Button>
