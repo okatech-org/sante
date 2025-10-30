@@ -180,7 +180,7 @@ export default function SogaraPublic() {
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
               </p>
 
-              <div className="flex gap-2 md:gap-3">
+              <div className="flex gap-2 md:gap-3 mb-8 md:mb-10">
                 <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-4 md:px-7 md:py-5 rounded-full text-sm md:text-base flex-1 md:flex-initial" onClick={() => navigate("/appointments")}>
                   Prendre RDV
                 </Button>
@@ -188,6 +188,22 @@ export default function SogaraPublic() {
                   En savoir plus
                   <ArrowRight className="w-4 h-4 ml-1 md:ml-2" />
                 </Button>
+              </div>
+
+              {/* Stats Inline */}
+              <div className="grid grid-cols-3 gap-4 md:gap-6">
+                <div>
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">85</div>
+                  <p className="text-xs md:text-sm text-gray-600">Lits disponibles</p>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">12</div>
+                  <p className="text-xs md:text-sm text-gray-600">Médecins qualifiés</p>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1">50+</div>
+                  <p className="text-xs md:text-sm text-gray-600">Années d'excellence</p>
+                </div>
               </div>
             </div>
 
@@ -297,25 +313,6 @@ export default function SogaraPublic() {
       </section>
 
 
-      {/* Stats Section */}
-      <section className="bg-gray-50 py-12 md:py-16 lg:py-20">
-        <div className="container mx-auto px-4 lg:px-16">
-          <div className="grid grid-cols-3 gap-4 md:gap-10 lg:gap-12">
-            <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1.5 md:mb-2 lg:mb-3">85</div>
-              <p className="text-xs md:text-base lg:text-lg text-gray-600">Lits disponibles</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1.5 md:mb-2 lg:mb-3">12</div>
-              <p className="text-xs md:text-base lg:text-lg text-gray-600">Médecins qualifiés</p>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1.5 md:mb-2 lg:mb-3">50+</div>
-              <p className="text-xs md:text-base lg:text-lg text-gray-600">Années d'excellence</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Team Section */}
       <section id="doctors" className="bg-white py-12 md:py-16 lg:py-20">
