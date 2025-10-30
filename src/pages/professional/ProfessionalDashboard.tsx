@@ -78,24 +78,21 @@ export default function ProfessionalDashboard() {
           .from('appointments')
           .select('*', { count: 'exact', head: true })
           .eq('professional_id', professional.id)
-          .eq('establishment_id', currentEstablishment?.establishmentId)
           .gte('appointment_date', today.toISOString())
-          .lt('appointment_date', new Date(today.getTime() + 86400000).toISOString());
+          .lt('appointment_date', new Date(today.getTime() + 86400000).toISOString()) as any;
 
         const { count: weekCount } = await supabase
           .from('appointments')
           .select('*', { count: 'exact', head: true })
           .eq('professional_id', professional.id)
-          .eq('establishment_id', currentEstablishment?.establishmentId)
           .gte('appointment_date', today.toISOString())
-          .lt('appointment_date', weekEnd.toISOString());
+          .lt('appointment_date', weekEnd.toISOString()) as any;
 
         // Nombre total de patients
         const { count: patientCount } = await supabase
           .from('appointments')
           .select('patient_id', { count: 'exact', head: true })
-          .eq('professional_id', professional.id)
-          .eq('establishment_id', currentEstablishment?.establishmentId);
+          .eq('professional_id', professional.id) as any;
 
         // Prochains rendez-vous
         const { data: appointments } = await supabase
@@ -105,10 +102,9 @@ export default function ProfessionalDashboard() {
             patient:profiles!appointments_patient_id_fkey(full_name, avatar_url)
           `)
           .eq('professional_id', professional.id)
-          .eq('establishment_id', currentEstablishment?.establishmentId)
           .gte('appointment_date', today.toISOString())
           .order('appointment_date', { ascending: true })
-          .limit(5);
+          .limit(5) as any;
 
         setStats({
           todayAppointments: todayCount || 0,
@@ -209,7 +205,7 @@ export default function ProfessionalDashboard() {
                 <>
                   <span className="text-sm text-muted-foreground">•</span>
                   <span className="text-sm text-muted-foreground">
-                    {currentEstablishment.department.name}
+                    {currentEstablishment.department}
                   </span>
                 </>
               )}
@@ -236,7 +232,7 @@ export default function ProfessionalDashboard() {
                 Changer
               </Button>
             )}
-            {hasPermission('appointments', 'add') && (
+            {hasPermission('add_appointment') && (
               <Button onClick={() => navigate('/professional/appointments/new')}>
                 <Plus className="h-4 w-4 mr-2" />
                 Nouveau RDV
@@ -259,7 +255,7 @@ export default function ProfessionalDashboard() {
               Administration
             </Badge>
           )}
-          {currentEstablishment?.isDepartmentHead && (
+          {currentEstablishment?.isDepartmentHead && currentEstablishment?.department && (
             <Badge variant="outline" className="gap-1">
               <Users className="h-3 w-3" />
               Chef de Service
@@ -412,7 +408,7 @@ export default function ProfessionalDashboard() {
             </Card>
 
             {/* Actions rapides spécifiques au rôle */}
-            {hasPermission('consultations', 'add') && (
+            {hasPermission('add_consultation') && (
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Actions Rapides</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -484,7 +480,7 @@ export default function ProfessionalDashboard() {
               <Card className="p-6">
                 <h2 className="text-lg font-semibold mb-4">Administration</h2>
                 <div className="space-y-2">
-                  {hasPermission('staff', 'view') && (
+                  {hasPermission('view_staff') && (
                     <Button 
                       variant="ghost" 
                       className="w-full justify-start"
@@ -494,7 +490,7 @@ export default function ProfessionalDashboard() {
                       Gestion du Personnel
                     </Button>
                   )}
-                  {hasPermission('reports', 'view') && (
+                  {hasPermission('view_reports') && (
                     <Button 
                       variant="ghost" 
                       className="w-full justify-start"
@@ -504,7 +500,7 @@ export default function ProfessionalDashboard() {
                       Rapports & Statistiques
                     </Button>
                   )}
-                  {hasPermission('settings', 'edit') && (
+                  {hasPermission('edit_settings') && (
                     <Button 
                       variant="ghost" 
                       className="w-full justify-start"

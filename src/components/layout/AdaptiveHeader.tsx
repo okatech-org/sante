@@ -115,7 +115,7 @@ export function AdaptiveHeader() {
     }
 
     // Admin de l'établissement
-    if (workContext.currentAffiliation?.isEstablishmentAdmin) {
+    if (workContext?.isAdmin) {
       items.push({
         label: 'Administration',
         path: '/admin/establishment',
@@ -150,18 +150,7 @@ export function AdaptiveHeader() {
   };
 
   const getEstablishmentBadgeColor = () => {
-    switch (workContext?.currentEstablishment?.sector) {
-      case 'public':
-        return 'bg-blue-100 text-blue-700';
-      case 'private':
-        return 'bg-green-100 text-green-700';
-      case 'confessional':
-        return 'bg-purple-100 text-purple-700';
-      case 'military':
-        return 'bg-red-100 text-red-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
+    return 'bg-blue-100 text-blue-700';
   };
 
   return (
@@ -172,17 +161,17 @@ export function AdaptiveHeader() {
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2">
               <img
-                src={workContext?.currentEstablishment?.theme?.logo || "/logo-sante-ga.png"}
+                src={workContext?.establishment?.logoUrl || "/logo-sante-ga.png"}
                 alt="Logo"
                 className="h-8 w-auto"
               />
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-gray-900">
-                  {workContext?.currentEstablishment?.name || "SANTE.GA"}
+                  {workContext?.establishment?.name || "SANTE.GA"}
                 </h1>
-                {workContext?.currentEstablishment && (
+                {workContext?.establishment && (
                   <Badge className={`text-xs ${getEstablishmentBadgeColor()}`}>
-                    {workContext.currentEstablishment.sector}
+                    {workContext.establishment.type}
                   </Badge>
                 )}
               </div>
@@ -221,10 +210,10 @@ export function AdaptiveHeader() {
                   </Avatar>
                   <div className="hidden sm:block text-left">
                     <p className="text-sm font-medium">
-                      {workContext?.currentAffiliation?.role || 'Utilisateur'}
+                      {workContext?.role || 'Utilisateur'}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {workContext?.currentAffiliation?.department || 'Général'}
+                      {workContext?.department || 'Général'}
                     </p>
                   </div>
                   <ChevronDown className="h-4 w-4 text-gray-500" />
@@ -244,7 +233,7 @@ export function AdaptiveHeader() {
                   <span>Paramètres</span>
                 </DropdownMenuItem>
 
-                {workContext?.currentAffiliation?.isEstablishmentAdmin && (
+                {workContext?.isAdmin && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate('/admin/establishment')}>

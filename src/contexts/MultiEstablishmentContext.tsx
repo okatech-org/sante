@@ -25,6 +25,8 @@ interface StaffRole {
   department?: string;
   position?: string;
   isEstablishmentAdmin?: boolean;
+  matricule?: string;
+  isDepartmentHead?: boolean;
 }
 
 interface MultiEstablishmentContextType {

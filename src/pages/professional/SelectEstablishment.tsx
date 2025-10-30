@@ -186,7 +186,7 @@ export default function SelectEstablishment() {
                     {staffRole.department && (
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Users className="h-3 w-3" />
-                        <span>{staffRole.department.name}</span>
+                        <span>{staffRole.department}</span>
                       </div>
                     )}
 

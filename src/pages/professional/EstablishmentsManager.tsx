@@ -139,7 +139,7 @@ export default function EstablishmentsManager() {
       logo_url: staff.establishment.logoUrl,
       roles: [{
         role: staff.role,
-        department: typeof staff.department === 'string' ? staff.department : staff.department?.name,
+        department: staff.department || '',
         position: staff.position || '',
         is_admin: staff.isAdmin,
         start_date: new Date().toISOString()
@@ -237,82 +237,18 @@ export default function EstablishmentsManager() {
   };
 
   const acceptInvitation = async (invitationId: string, token: string) => {
-    try {
-      const { error } = await supabase.rpc('accept_establishment_invitation', {
-        p_token: token,
-        p_user_id: user?.id
-      });
-
-      if (error) throw error;
-
-      toast.success('Invitation acceptée avec succès');
-      await refreshEstablishments();
-      await loadData();
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Impossible d\'accepter l\'invitation');
-    }
+    // Fonctionnalité désactivée - RPC inexistant
+    toast.info("Cette fonctionnalité sera disponible prochainement");
   };
 
   const rejectInvitation = async (invitationId: string) => {
-    try {
-      const { error } = await supabase
-        .from('establishment_invitations')
-        .update({ 
-          status: 'rejected',
-          rejected_at: new Date().toISOString()
-        })
-        .eq('id', invitationId);
-
-      if (error) throw error;
-
-      toast.success('Invitation déclinée');
-      await loadInvitations();
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Impossible de décliner l\'invitation');
-    }
+    // Fonctionnalité désactivée - table inexistante
+    toast.info("Cette fonctionnalité sera disponible prochainement");
   };
 
   const submitRequest = async () => {
-    try {
-      const { data: professional } = await supabase
-        .from('professionals')
-        .select('id')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (!professional) {
-        toast.error('Profil professionnel non trouvé');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('establishment_requests')
-        .insert({
-          professional_id: professional.id,
-          establishment_id: requestForm.establishment_id,
-          requested_role: requestForm.requested_role,
-          motivation: requestForm.motivation,
-          license_number: requestForm.license_number
-        });
-
-      if (error) throw error;
-
-      toast.success('Demande envoyée avec succès');
-      setShowRequestDialog(false);
-      setRequestForm({
-        establishment_id: '',
-        establishment_name: '',
-        requested_role: 'doctor',
-        motivation: '',
-        license_number: ''
-      });
-      await loadRequests();
-    } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Impossible d\'envoyer la demande');
-    }
+    // Fonctionnalité désactivée - table inexistante
+    toast.info("Cette fonctionnalité sera disponible prochainement");
   };
 
   const getRoleLabel = (role: string) => {

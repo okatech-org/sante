@@ -111,7 +111,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     // Section Activité Médicale
     const medicalItems: MenuItem[] = [];
     
-    if (hasPermission('appointments', 'view')) {
+    if (hasPermission('view_appointments')) {
       medicalItems.push({
         id: 'appointments',
         label: 'Rendez-vous',
@@ -121,7 +121,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
       });
     }
     
-    if (hasPermission('consultations', 'view')) {
+    if (hasPermission('view_consultations')) {
       medicalItems.push({
         id: 'consultations',
         label: 'Consultations',
@@ -130,7 +130,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
       });
     }
     
-    if (hasPermission('prescriptions', 'view')) {
+    if (hasPermission('view_prescriptions')) {
       medicalItems.push({
         id: 'prescriptions',
         label: 'Prescriptions',
@@ -139,7 +139,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
       });
     }
     
-    if (hasPermission('patients', 'view')) {
+    if (hasPermission('view_patients')) {
       medicalItems.push({
         id: 'patients',
         label: 'Mes Patients',
@@ -160,7 +160,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     
     // Menu spécifique selon le département
     if (currentEstablishment?.department) {
-      const deptCode = currentEstablishment.department.code;
+      const deptCode = currentEstablishment.department;
       
       switch (deptCode) {
         case 'URG':
@@ -207,7 +207,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     }
 
     // Services transversaux
-    if (hasPermission('hospitalization', 'view')) {
+    if (hasPermission('view_hospitalization')) {
       departmentItems.push({
         id: 'hospitalization',
         label: 'Hospitalisation',
@@ -216,7 +216,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
       });
     }
 
-    if (hasPermission('technical', 'view')) {
+    if (hasPermission('view_technical')) {
       departmentItems.push({
         id: 'technical',
         label: 'Plateaux Techniques',
@@ -227,7 +227,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
     if (departmentItems.length > 0) {
       sections.push({
-        title: currentEstablishment?.department?.name || 'Services',
+        title: currentEstablishment?.department || 'Services',
         items: departmentItems
       });
     }
@@ -236,7 +236,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     if (isAdmin || isDirector) {
       const adminItems: MenuItem[] = [];
       
-      if (hasAnyPermission('staff', ['view', 'add', 'edit'])) {
+      if (hasAnyPermission(['manage_staff', 'view_staff'])) {
         adminItems.push({
           id: 'staff',
           label: 'Personnel',
@@ -245,7 +245,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         });
       }
       
-      if (hasPermission('billing', 'view')) {
+      if (hasPermission('view_billing')) {
         adminItems.push({
           id: 'billing',
           label: 'Facturation',
@@ -254,7 +254,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         });
       }
       
-      if (hasPermission('inventory', 'view')) {
+      if (hasPermission('view_inventory')) {
         adminItems.push({
           id: 'inventory',
           label: 'Inventaire',
@@ -263,7 +263,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         });
       }
       
-      if (hasPermission('reports', 'view')) {
+      if (hasPermission('view_reports')) {
         adminItems.push({
           id: 'reports',
           label: 'Rapports',
@@ -383,7 +383,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                           <p className="text-sm truncate">{staffRole.establishment.name}</p>
                           <p className="text-xs text-muted-foreground">
                             {getRoleLabel(staffRole.role)}
-                            {staffRole.department && ` - ${staffRole.department.name}`}
+                            {staffRole.department && ` - ${staffRole.department}`}
                           </p>
                         </div>
                         {staffRole.id === currentEstablishment.id && (
@@ -484,7 +484,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                   <div className="flex-1 text-left min-w-0">
                     <p className="text-sm font-medium truncate">{fullName}</p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {currentEstablishment.department?.name || getRoleLabel(currentEstablishment.role)}
+                      {currentEstablishment.department || getRoleLabel(currentEstablishment.role)}
                     </p>
                   </div>
                 </Button>
@@ -599,7 +599,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{fullName}</p>
                           <p className="text-xs text-muted-foreground truncate">
-                            {currentEstablishment.department?.name || getRoleLabel(currentEstablishment.role)}
+                            {currentEstablishment.department || getRoleLabel(currentEstablishment.role)}
                           </p>
                         </div>
                       </div>
