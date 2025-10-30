@@ -192,11 +192,9 @@ export default function SogaraPublic() {
             {/* Text Content */}
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 leading-[1.1] tracking-tight">
-                Excellence
+                Excellence Médicale
                 <br />
-                <span className="text-gray-400">Médicale sans</span>
-                <br />
-                contraintes
+                <span className="text-gray-400">Sans contraintes</span>
               </h1>
               <p className="text-base md:text-lg text-gray-600 mb-5 md:mb-6">
                 Centre médical moderne au service des employés SOGARA et leurs familles depuis 1974
