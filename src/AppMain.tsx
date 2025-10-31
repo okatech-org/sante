@@ -111,13 +111,13 @@ function AppMain() {
         <LanguageProvider>
           <AuthProvider>
             <OfflineAuthProvider>
-              <MultiEstablishmentProvider>
+            <MultiEstablishmentProvider>
                 <SogaraAuthProvider>
-                  <TooltipProvider>
-                <BrowserRouter>
-                  <ConsoleSilencer />
-                  <div className="min-h-screen bg-background">
-                    <Routes>
+              <TooltipProvider>
+              <BrowserRouter>
+                <ConsoleSilencer />
+                <div className="min-h-screen bg-background">
+                  <Routes>
                     {/* Routes publiques */}
                     <Route path="/" element={<Index />} />
                     <Route path="/landing" element={<Landing />} />
