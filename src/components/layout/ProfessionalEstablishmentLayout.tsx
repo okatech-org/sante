@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
   Building2, Shield, Stethoscope, ChevronRight, ChevronDown, LogOut, Settings,
-  BarChart3, Menu, X, Moon, Sun
+  BarChart3, Menu, X, Moon, Sun, Calendar, Siren, Activity, Clock, FileText, 
+  AlertTriangle, ClipboardList
 } from 'lucide-react';
 import { 
   Accordion,
@@ -46,9 +47,34 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     return saved === 'dark';
   });
   const [isRoleMenuExpanded, setIsRoleMenuExpanded] = useState(true);
+  const [isAccueilHDJExpanded, setIsAccueilHDJExpanded] = useState(false);
+  const [isAccueilUrgencesExpanded, setIsAccueilUrgencesExpanded] = useState(false);
 
-  // Pour l'instant, définir un rôle par défaut si pas de currentRole
-  const activeRole = currentRole || 'director';
+  // Grouper établissements par ID pour afficher rôles multiples (déplacé ici)
+  const establishmentGroups = establishments.reduce((acc, est) => {
+    const key = est.establishment_id;
+    if (!acc[key]) {
+      acc[key] = {
+        id: est.establishment_id,
+        name: est.establishment_name,
+        type: est.establishment_type,
+        roles: []
+      };
+    }
+    acc[key].roles.push({
+      role: est.role_in_establishment,
+      staffId: est.staff_id || est.id,
+      isAdmin: est.is_admin
+    });
+    return acc;
+  }, {} as Record<string, any>);
+
+  const establishmentsList = Object.values(establishmentGroups);
+
+  // Utiliser le rôle actuel ou le premier rôle disponible
+  const activeRole = currentRole || 
+    (establishmentsList.length > 0 && establishmentsList[0].roles && establishmentsList[0].roles[0]?.role) || 
+    'receptionist';
   
   // Récupérer le menu selon le rôle actuel
   const menuSections: MenuSection[] = getMenuForRole(activeRole);
@@ -82,6 +108,15 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         return Shield;
       case 'doctor':
         return Stethoscope;
+      case 'receptionist':
+      case 'reception':
+        return Building2;
+      case 'nurse':
+        return Building2;
+      case 'laborantin':
+        return Building2;
+      case 'pharmacist':
+        return Building2;
       default:
         return Building2;
     }
@@ -120,26 +155,6 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     navigate('/login/professional');
   };
 
-  // Grouper établissements par ID pour afficher rôles multiples
-  const establishmentGroups = establishments.reduce((acc, est) => {
-    const key = est.establishment_id;
-    if (!acc[key]) {
-      acc[key] = {
-        id: est.establishment_id,
-        name: est.establishment_name,
-        type: est.establishment_type,
-        roles: []
-      };
-    }
-    acc[key].roles.push({
-      role: est.role_in_establishment,
-      staffId: est.staff_id || est.id,
-      isAdmin: est.is_admin
-    });
-    return acc;
-  }, {} as Record<string, any>);
-
-  const establishmentsList = Object.values(establishmentGroups);
 
   // Sidebar content (shared between desktop and mobile)
   const SidebarContent = () => (
@@ -203,49 +218,42 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
               <span className="text-sm font-medium">CMST SOGARA</span>
             </div>
             
-            {/* Rôles sous CMST SOGARA */}
+            {/* Rôles de l'utilisateur dans l'établissement */}
             <div className="ml-6 space-y-1">
-              {/* Rôle DIRECTEUR */}
-              <button
-                onClick={() => handleRoleChange('director')}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                  activeRole === 'director'
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                <Shield className="h-4 w-4" />
-                <span className="flex-1 text-left">DIRECTEUR</span>
-                {activeRole === 'director' && (
-                  isRoleMenuExpanded ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )
-                )}
-              </button>
-              
-              {/* Rôle MÉDECIN */}
-              <button
-                onClick={() => handleRoleChange('doctor')}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                  activeRole === 'doctor'
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                <Stethoscope className="h-4 w-4" />
-                <span className="flex-1 text-left">MÉDECIN</span>
-                {activeRole === 'doctor' && (
-                  isRoleMenuExpanded ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )
-                )}
-              </button>
+              {establishmentsList.length > 0 && establishmentsList[0].roles ? (
+                establishmentsList[0].roles.map((roleItem: any) => {
+                  const Icon = getRoleIcon(roleItem.role);
+                  const roleLabel = ROLE_LABELS[roleItem.role] || roleItem.role.toUpperCase();
+                  
+                  // Pour les réceptionnistes, ne pas afficher le rôle mais les menus seront ajoutés séparément
+                  if (roleItem.role === 'receptionist') {
+                    return null;
+                  }
+                  
+                  return (
+                    <button
+                      key={roleItem.role}
+                      onClick={() => handleRoleChange(roleItem.role)}
+                      className={cn(
+                        "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                        activeRole === roleItem.role
+                          ? "bg-primary text-primary-foreground font-medium"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="flex-1 text-left">{roleLabel}</span>
+                      {activeRole === roleItem.role && (
+                        isRoleMenuExpanded ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )
+                      )}
+                    </button>
+                  );
+                })
+              ) : null}
             </div>
           </div>
 
@@ -264,6 +272,151 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
             </Button>
           </div>
         </div>
+
+        {/* Menus spécifiques pour réceptionniste */}
+        {activeRole === 'receptionist' && (
+          <>
+            {/* Accueil Hôpital */}
+            <div className="mb-3">
+              <button
+                onClick={() => setIsAccueilHDJExpanded(!isAccueilHDJExpanded)}
+                className={cn(
+                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                  isAccueilHDJExpanded || location.pathname.includes('/professional/accueil-hdj')
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>Accueil Hôpital</span>
+                </div>
+                {isAccueilHDJExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </button>
+              
+              {isAccueilHDJExpanded && (
+                <div className="ml-6 mt-1 space-y-1">
+                  <button
+                    onClick={() => navigate('/professional/accueil-hdj')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hdj'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Activity className="h-3 w-3" />
+                    <span className="flex-1 text-left">Dashboard HDJ</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hdj/rdv')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hdj/rdv'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Calendar className="h-3 w-3" />
+                    <span className="flex-1 text-left">Rendez-vous</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hdj/files-attente')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hdj/files-attente'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Clock className="h-3 w-3" />
+                    <span className="flex-1 text-left">Files d'attente</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hdj/dossiers')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hdj/dossiers'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <FileText className="h-3 w-3" />
+                    <span className="flex-1 text-left">Dossiers HDJ</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Accueil Urgences */}
+            <div className="mb-3">
+              <button
+                onClick={() => setIsAccueilUrgencesExpanded(!isAccueilUrgencesExpanded)}
+                className={cn(
+                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                  isAccueilUrgencesExpanded || location.pathname.includes('/professional/accueil-urgences')
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Siren className="h-4 w-4" />
+                  <span>Accueil Urgences</span>
+                </div>
+                {isAccueilUrgencesExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </button>
+              
+              {isAccueilUrgencesExpanded && (
+                <div className="ml-6 mt-1 space-y-1">
+                  <button
+                    onClick={() => navigate('/professional/accueil-urgences')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-urgences'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Activity className="h-3 w-3" />
+                    <span className="flex-1 text-left">Dashboard urgences</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-urgences/triage')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-urgences/triage'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <AlertTriangle className="h-3 w-3" />
+                    <span className="flex-1 text-left">Triage rapide</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-urgences/dossiers')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-urgences/dossiers'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <ClipboardList className="h-3 w-3" />
+                    <span className="flex-1 text-left">Dossiers urgences</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
         {/* Paramètres */}
         <div className="p-4 border-t border-border/50">
@@ -345,8 +498,8 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
       {/* Zone principale avec menu accordéon */}
       <div className="flex-1 flex">
-        {/* Menu accordéon contextuel */}
-        {activeRole && isRoleMenuExpanded && (
+        {/* Menu accordéon contextuel - Masqué pour les réceptionnistes */}
+        {activeRole && isRoleMenuExpanded && activeRole !== 'receptionist' && (
           <aside className="hidden lg:block w-64 bg-card border-r border-border">
             <div className="p-4 border-b border-border/50">
               <div className="flex items-center gap-2">

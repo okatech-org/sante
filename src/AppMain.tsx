@@ -32,6 +32,15 @@ import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
 import ProfessionalHub from "./pages/professional/ProfessionalHub";
+import AccueilHDJPage from "./pages/professional/AccueilHDJPage";
+import AccueilUrgencesPage from "./pages/professional/AccueilUrgencesPage";
+import AccueilHDJRdvPage from "./pages/professional/AccueilHDJRdvPage";
+import AccueilHDJFilesAttentePage from "./pages/professional/AccueilHDJFilesAttentePage";
+import AccueilHDJDossiersPage from "./pages/professional/AccueilHDJDossiersPage";
+import AccueilUrgencesTriagePage from "./pages/professional/AccueilUrgencesTriagePage";
+import AccueilUrgencesDossiersPage from "./pages/professional/AccueilUrgencesDossiersPage";
+import DirectorDashboard from "./pages/professional/DirectorDashboard";
+import DoctorDashboard from "./pages/professional/DoctorDashboard";
 import ProfessionalConsultations from "./pages/professional/ProfessionalConsultations";
 import ProfessionalHospitalization from "./pages/professional/ProfessionalHospitalization";
 import ProfessionalTechnicalPlatforms from "./pages/professional/ProfessionalTechnicalPlatforms";
@@ -49,8 +58,6 @@ import ProfessionalSettings from "./pages/professional/ProfessionalSettings";
 import ProfessionalTeleconsultations from "./pages/professional/ProfessionalTeleconsultations";
 import ProfessionalPatients from "./pages/professional/ProfessionalPatients";
 import ProfessionalAppointments from "./pages/professional/ProfessionalAppointments";
-import DirectorDashboard from "./pages/professional/DirectorDashboard";
-import DoctorDashboard from "./pages/professional/DoctorDashboard";
 import { ProfessionalEstablishmentLayout } from "./components/layout/ProfessionalEstablishmentLayout";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
@@ -178,6 +185,13 @@ function AppMain() {
                         <DoctorDashboard />
                       </ProfessionalEstablishmentLayout>
                     } />
+                    <Route path="/professional/accueil-hdj" element={<AccueilHDJPage />} />
+                    <Route path="/professional/accueil-hdj/rdv" element={<AccueilHDJRdvPage />} />
+                    <Route path="/professional/accueil-hdj/files-attente" element={<AccueilHDJFilesAttentePage />} />
+                    <Route path="/professional/accueil-hdj/dossiers" element={<AccueilHDJDossiersPage />} />
+                    <Route path="/professional/accueil-urgences" element={<AccueilUrgencesPage />} />
+                    <Route path="/professional/accueil-urgences/triage" element={<AccueilUrgencesTriagePage />} />
+                    <Route path="/professional/accueil-urgences/dossiers" element={<AccueilUrgencesDossiersPage />} />
                     <Route path="/professional/consultations" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalConsultations />

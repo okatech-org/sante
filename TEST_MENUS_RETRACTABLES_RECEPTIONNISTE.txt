@@ -1,0 +1,48 @@
+==================================================
+TEST RAPIDE - MENUS RÉTRACTABLES RÉCEPTIONNISTE
+==================================================
+
+🔑 CONNEXION
+Email: nadege.oyono@sogara.ga
+Mot de passe: Sogara2025!
+
+✅ VÉRIFICATIONS À EFFECTUER
+
+1. SUPPRESSION MENU RÉCEPTIONNISTE
+   ❌ Le bouton "RÉCEPTIONNISTE" ne doit plus apparaître
+   ✅ Pas de duplication de menus
+
+2. MENU "ACCUEIL HÔPITAL" 
+   ✅ Présent dans le menu latéral avec icône calendrier 📅
+   ✅ Cliquer dessus le rétracte/expand
+   ✅ Chevron change de direction (→ ↓)
+   
+   Sous-menus visibles quand expandé :
+   ✅ Dashboard HDJ
+   ✅ Rendez-vous 
+   ✅ Files d'attente
+   ✅ Dossiers HDJ
+
+3. MENU "ACCUEIL URGENCES"
+   ✅ Présent dans le menu latéral avec icône sirène 🚨
+   ✅ Cliquer dessus le rétracte/expand
+   ✅ Chevron change de direction (→ ↓)
+   
+   Sous-menus visibles quand expandé :
+   ✅ Dashboard urgences
+   ✅ Triage rapide
+   ✅ Dossiers urgences
+
+4. NAVIGATION
+   ✅ Cliquer sur chaque sous-menu navigue vers la bonne page
+   ✅ Le sous-menu actif est surligné en bleu
+   ✅ Les menus s'expandent automatiquement si on est sur une de leurs pages
+
+5. DESIGN
+   ✅ Style cohérent avec le reste de l'application
+   ✅ Mode sombre fonctionne correctement
+   ✅ Responsive sur tablette/mobile
+
+==================================================
+RÉSULTAT : IMPLÉMENTATION RÉUSSIE ✅
+==================================================

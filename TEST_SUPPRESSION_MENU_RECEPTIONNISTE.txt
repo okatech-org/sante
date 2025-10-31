@@ -1,0 +1,43 @@
+==================================================
+TEST - SUPPRESSION MENU LATÉRAL RÉCEPTIONNISTE
+==================================================
+
+🔑 CONNEXION
+Email: nadege.oyono@sogara.ga
+Mot de passe: Sogara2025!
+
+✅ VÉRIFICATIONS
+
+1. MENU LATÉRAL "RÉCEPTIONNISTE, MENU"
+   ❌ Le badge turquoise "Réceptionniste" ne doit plus apparaître
+   ❌ Le texte "Menu" ne doit plus apparaître
+   ❌ Les sections suivantes ne doivent plus être visibles :
+       • TABLEAU DE BORD
+       • ACTIVITÉ MÉDICALE
+       • COMMUNICATION
+
+2. MENUS CONSERVÉS
+   ✅ Menu latéral principal (gauche) présent
+   ✅ Tableau de bord → Vue d'ensemble
+   ✅ CMST SOGARA
+   ✅ Accueil Hôpital (rétractable)
+       ├── Dashboard HDJ
+       ├── Rendez-vous
+       ├── Files d'attente
+       └── Dossiers HDJ
+   ✅ Accueil Urgences (rétractable)
+       ├── Dashboard urgences
+       ├── Triage rapide
+       └── Dossiers urgences
+   ✅ PARAMÈTRES
+       ├── Mode Sombre
+       └── Paramètres
+
+3. INTERFACE
+   ✅ Interface épurée et simplifiée
+   ✅ Pas de duplication de menus
+   ✅ Tous les liens fonctionnent correctement
+
+==================================================
+RÉSULTAT ATTENDU : MENU "RÉCEPTIONNISTE" SUPPRIMÉ ✅
+==================================================

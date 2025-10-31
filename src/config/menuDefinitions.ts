@@ -35,6 +35,31 @@ export type ProfessionalRole =
   | 'laborantin' 
   | 'receptionist';
 
+// ============= MENU RÉCEPTIONNISTE =============
+const receptionistMenu: MenuSection[] = [
+  {
+    label: "Tableau de bord",
+    items: [
+      { icon: Home, label: "Vue d'ensemble", href: "/dashboard/professional" }
+    ]
+  },
+  {
+    label: "Activité Médicale", 
+    items: [
+      { icon: Calendar, label: "Agenda & RDV", href: "/professional/agenda", badge: 8 },
+      { icon: Users, label: "Patients", href: "/professional/patients" },
+      { icon: ClipboardList, label: "Consultations", href: "/professional/consultations" }
+    ]
+  },
+  {
+    label: "Communication",
+    items: [
+      { icon: Mail, label: "Messages", href: "/professional/messages", badge: 3 },
+      { icon: Settings, label: "Paramètres", href: "/professional/settings" }
+    ]
+  }
+];
+
 // ============= MENUS ADMIN =============
 
 // Menu Admin pour Hôpital/Clinique
@@ -265,7 +290,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: doctorHospitalMenu, // Similaire au médecin mais avec permissions réduites
     pharmacist: doctorPharmacieMenu,
     laborantin: doctorHospitalMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   },
   clinique: {
     admin: adminHospitalMenu,
@@ -274,7 +299,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: doctorHospitalMenu,
     pharmacist: doctorPharmacieMenu,
     laborantin: doctorHospitalMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   },
   centre_medical: {
     admin: adminHospitalMenu,
@@ -283,7 +308,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: doctorHospitalMenu,
     pharmacist: doctorPharmacieMenu,
     laborantin: doctorHospitalMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   },
   cabinet_medical: {
     admin: adminCabinetMenu,
@@ -292,7 +317,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: doctorCabinetMenu,
     pharmacist: doctorCabinetMenu,
     laborantin: doctorCabinetMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   },
   pharmacie: {
     admin: adminPharmacieMenu,
@@ -301,7 +326,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: [],
     pharmacist: doctorPharmacieMenu,
     laborantin: [],
-    receptionist: []
+    receptionist: receptionistMenu
   },
   laboratoire: {
     admin: adminHospitalMenu,
@@ -310,7 +335,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: [],
     pharmacist: [],
     laborantin: doctorHospitalMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   },
   centre_sante: {
     admin: adminHospitalMenu,
@@ -319,7 +344,7 @@ export const MENU_DEFINITIONS: Record<EstablishmentType, Record<ProfessionalRole
     nurse: doctorHospitalMenu,
     pharmacist: doctorPharmacieMenu,
     laborantin: doctorHospitalMenu,
-    receptionist: []
+    receptionist: receptionistMenu
   }
 };
 
@@ -423,6 +448,14 @@ export const getMenuForRole = (role: string): MenuSection[] => {
       return DOCTOR_MENU;
     case 'admin':
       return DIRECTOR_MENU; // Admin a les mêmes accès que directeur
+    case 'receptionist':
+      return receptionistMenu; // Menu spécifique pour réceptionniste
+    case 'nurse':
+      return DOCTOR_MENU; // Pour l'instant, utilise le menu médecin
+    case 'laborantin':
+      return DOCTOR_MENU; // Pour l'instant, utilise le menu médecin
+    case 'pharmacist':
+      return DOCTOR_MENU; // Pour l'instant, utilise le menu médecin
     default:
       return DOCTOR_MENU; // Par défaut, menu médecin
   }

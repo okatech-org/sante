@@ -1,0 +1,134 @@
+═══════════════════════════════════════════════════════════════
+        IMPLÉMENTATION DOUBLE RÔLE RÉCEPTIONNISTE
+═══════════════════════════════════════════════════════════════
+
+✅ COMPTE NADÈGE OYONO - RÉCEPTIONNISTE CMST SOGARA
+═══════════════════════════════════════════════════════════════
+
+📧 Email     : nadege.oyono@sogara.ga
+🔐 Password  : Sogara2025!
+🏥 Établiss. : CMST SOGARA
+💼 Fonction  : Réceptionniste avec 2 sous-rôles
+
+═══════════════════════════════════════════════════════════════
+        NOUVEAUX RÔLES IMPLÉMENTÉS
+═══════════════════════════════════════════════════════════════
+
+1️⃣ ACCUEIL HÔPITAL DU JOUR (HDJ)
+──────────────────────────────────
+• Gestion des RDV programmés
+• Vérification droits CNAMGS
+• Calcul automatique reste à charge
+• Files d'attente par service
+• Génération dossiers HDJ-YYYYMMDD-XXX
+
+2️⃣ ACCUEIL URGENCES
+──────────────────────────────────
+• Triage 5 niveaux (1=vital → 5=non urgent)
+• Bouton URGENCE VITALE (rouge pulse)
+• Saisie constantes vitales
+• Dashboard Kanban 6 colonnes
+• Alertes délais dépassés automatiques
+
+═══════════════════════════════════════════════════════════════
+        NAVIGATION DANS L'INTERFACE
+═══════════════════════════════════════════════════════════════
+
+Menu Latéral :
+┌──────────────────────┐
+│ TABLEAU DE BORD      │
+│ └─ Vue d'ensemble    │
+│                      │
+│ CMST SOGARA          │
+│ ├─ 📅 Accueil Hôpital│ ← Mode HDJ
+│ └─ 🚨 Accueil Urgences│ ← Mode Urgences
+│                      │
+│ PARAMÈTRES           │
+│ ├─ 🌙 Mode Sombre    │
+│ └─ ⚙️ Paramètres     │
+└──────────────────────┘
+
+Switch Rapide : Bouton "Changer de mode" en haut
+
+═══════════════════════════════════════════════════════════════
+        FICHIERS CRÉÉS
+═══════════════════════════════════════════════════════════════
+
+src/types/accueil.types.ts              // Types TypeScript
+src/components/hospital/
+├── AccueilHDJ.tsx                      // Interface HDJ
+├── AccueilUrgences.tsx                 // Interface Urgences
+├── PatientCheckInModal.tsx             // Modal CNAMGS
+├── TriageForm.tsx                      // Formulaire triage
+├── UrgenceDashboard.tsx                // Kanban urgences
+├── FileAttenteWidget.tsx               // Widget files
+└── ReceptionistSubRoleLayout.tsx       // Layout principal
+src/hooks/useCNAMGSVerification.ts      // Hook vérification
+
+═══════════════════════════════════════════════════════════════
+        VÉRIFICATION CNAMGS (MOCK)
+═══════════════════════════════════════════════════════════════
+
+Tarifs Conventionnés :
+• Consultation générale  : 15,000 FCFA
+• Consultation spécialisée : 25,000 FCFA
+
+Taux Prise en Charge :
+• Secteur public : 80%
+• Secteur privé : 80%
+• GEF : 80%
+• Femmes enceintes : 100% (tiers-payant intégral)
+• ALD : 90%
+
+Calcul Reste à Charge :
+GAP + Ticket Modérateur = Total Patient
+
+═══════════════════════════════════════════════════════════════
+        FLUX DE TRAVAIL HDJ
+═══════════════════════════════════════════════════════════════
+
+1. Patient arrive avec RDV
+2. Recherche dans liste du jour
+3. Clic "Enregistrer arrivée"
+4. Vérification automatique CNAMGS
+5. Affichage transparent reste à charge
+6. Confirmation enregistrement
+7. Génération dossier HDJ
+8. Patient en file d'attente
+
+═══════════════════════════════════════════════════════════════
+        FLUX DE TRAVAIL URGENCES
+═══════════════════════════════════════════════════════════════
+
+URGENCE VITALE (Niveau 1) :
+1. Clic bouton rouge "URGENCE VITALE"
+2. Saisie rapide nom + motif
+3. Création immédiate < 30 secondes
+4. Alerte équipe médicale
+5. Box réanimation automatique
+
+TRIAGE NORMAL (Niveaux 2-5) :
+1. "Nouveau patient"
+2. Infos + motif consultation
+3. Sélection niveau gravité
+4. Constantes vitales si niveau 1-3
+5. Placement file attente prioritaire
+6. Suivi dashboard Kanban
+
+═══════════════════════════════════════════════════════════════
+        DÉLAIS MAXIMAUX URGENCES
+═══════════════════════════════════════════════════════════════
+
+Niveau 1 (🔴) : 0 min - Immédiat
+Niveau 2 (🟠) : 10 min maximum
+Niveau 3 (🟡) : 60 min maximum
+Niveau 4 (🟢) : 120 min maximum
+Niveau 5 (🔵) : 240 min ou réorientation
+
+⚠️ Alertes automatiques si dépassement
+
+═══════════════════════════════════════════════════════════════
+✅ STATUS : IMPLÉMENTATION COMPLÈTE ET FONCTIONNELLE
+📅 DATE   : 31 octobre 2025
+👤 COMPTE : Nadège Oyono - Réceptionniste CMST SOGARA
+═══════════════════════════════════════════════════════════════

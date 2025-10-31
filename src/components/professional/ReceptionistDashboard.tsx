@@ -6,11 +6,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
 import { 
   Users, Calendar, Phone, Clock,
   Mail, MapPin, CheckCircle, AlertCircle, Edit,
-  Building2, Briefcase, ArrowUpRight, Plus
+  Building2, Briefcase, ArrowUpRight, Plus,
+  Siren, Activity, ChevronRight
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -18,9 +18,7 @@ export function ReceptionistDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { currentEstablishment } = useMultiEstablishment();
-
   const [professionalData, setProfessionalData] = useState<any>(null);
-  const [todayAppointments, setTodayAppointments] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -50,15 +48,6 @@ export function ReceptionistDashboard() {
     numeroOrdre: professionalData?.license_number || 'REC-002',
     verified: professionalData?.is_verified || true,
   };
-
-  // RDV du jour
-  const appointments = [
-    { id: 1, time: '09:00', patient: 'Marie MOUSSAVOU', type: 'Consultation', status: 'confirmed', doctor: 'Dr. OKEMBA' },
-    { id: 2, time: '10:30', patient: 'Jean NZENGUE', type: 'Suivi', status: 'confirmed', doctor: 'Dr. NGUEMA' },
-    { id: 3, time: '14:00', patient: 'Sophie KOMBILA', type: 'Consultation', status: 'pending', doctor: 'Dr. MBINA' },
-    { id: 4, time: '15:30', patient: 'Pierre OBAME', type: 'Consultation', status: 'confirmed', doctor: 'Dr. MEZUI' },
-    { id: 5, time: '16:30', patient: 'André NGUEMA', type: 'Urgence', status: 'pending', doctor: 'Dr. NGUEMA' }
-  ];
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -134,245 +123,167 @@ export function ReceptionistDashboard() {
         </div>
       </Card>
 
-      {/* Stats Cards - Spécifique réceptionniste */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1 - Patients aujourd'hui */}
-        <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center">
-                <Users className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+      {/* Actions rapides pour naviguer vers les deux modes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Card Accueil Hôpital */}
+        <Card 
+          className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+          onClick={() => navigate('/professional/accueil-hdj')}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50" />
+          <div className="relative p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Calendar className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 gap-1">
-                <ArrowUpRight className="h-3 w-3" />
-                +12%
-              </Badge>
+              <ChevronRight className="h-6 w-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">
-                Patients aujourd'hui
-              </p>
-              <h3 className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">12</h3>
-              <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-2">
-                +2 vs hier
-              </p>
+            <h3 className="text-2xl font-bold mb-2">Accueil Hôpital du Jour</h3>
+            <p className="text-muted-foreground mb-6">
+              Gestion des rendez-vous programmés et vérification des droits CNAMGS
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Fonctionnalités</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Enregistrement RDV
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Vérification CNAMGS
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Files d'attente
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Actions rapides</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-blue-500" />
+                    Calcul reste à charge
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-blue-500" />
+                    Dossiers HDJ
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-blue-500" />
+                    Impression fiches
+                  </li>
+                </ul>
+              </div>
             </div>
+            
+            <Button className="w-full mt-6">
+              Accéder à l'Accueil HDJ
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-emerald-200/30 dark:bg-emerald-800/20"></div>
         </Card>
 
-        {/* Card 2 - Rendez-vous */}
-        <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+        {/* Card Accueil Urgences */}
+        <Card 
+          className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+          onClick={() => navigate('/professional/accueil-urgences')}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/50 dark:to-orange-950/50" />
+          <div className="relative p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-red-500/10 dark:bg-red-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Siren className="h-8 w-8 text-red-600 dark:text-red-400" />
               </div>
-              <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 gap-1">
-                <Clock className="h-3 w-3" />
-                5 à venir
-              </Badge>
+              <ChevronRight className="h-6 w-6 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-blue-700 dark:text-blue-400 mb-1">
-                Rendez-vous
-              </p>
-              <h3 className="text-3xl font-bold text-blue-900 dark:text-blue-100">8</h3>
-              <p className="text-xs text-blue-600 dark:text-blue-500 mt-2">
-                3 confirmés
-              </p>
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-blue-200/30 dark:bg-blue-800/20"></div>
-        </Card>
-
-        {/* Card 3 - En attente */}
-        <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
-                <Clock className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+            <h3 className="text-2xl font-bold mb-2">Accueil Service d'Urgences</h3>
+            <p className="text-muted-foreground mb-6">
+              Triage rapide et gestion des urgences médicales avec niveaux de gravité
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Fonctionnalités</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 text-red-500" />
+                    Triage 5 niveaux
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 text-red-500" />
+                    Urgence vitale
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 text-red-500" />
+                    Constantes vitales
+                  </li>
+                </ul>
               </div>
-              <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
-                Urgent
-              </Badge>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-orange-700 dark:text-orange-400 mb-1">
-                En attente
-              </p>
-              <h3 className="text-3xl font-bold text-orange-900 dark:text-orange-100">2</h3>
-              <p className="text-xs text-orange-600 dark:text-orange-500 mt-2">
-                À confirmer
-              </p>
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-orange-200/30 dark:bg-orange-800/20"></div>
-        </Card>
-
-        {/* Card 4 - Patients enregistrés */}
-        <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div>
+                <p className="text-muted-foreground">Dashboard</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-orange-500" />
+                    Kanban 6 colonnes
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-orange-500" />
+                    Alertes délais
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-orange-500" />
+                    Tri par gravité
+                  </li>
+                </ul>
               </div>
-              <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
-                OK
-              </Badge>
             </div>
-            <div>
-              <p className="text-sm font-medium text-purple-700 dark:text-purple-400 mb-1">
-                Enregistrements
-              </p>
-              <h3 className="text-3xl font-bold text-purple-900 dark:text-purple-100">15</h3>
-              <p className="text-xs text-purple-600 dark:text-purple-500 mt-2">
-                Ce matin
-              </p>
-            </div>
+            
+            <Button variant="destructive" className="w-full mt-6">
+              Accéder aux Urgences
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-purple-200/30 dark:bg-purple-800/20"></div>
         </Card>
       </div>
 
-      {/* Planning du jour - Vue réceptionniste */}
-      <Card className="border-0 shadow-lg">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <Calendar className="h-6 w-6 text-primary" />
-              Planning du jour - Tous les rendez-vous
-            </h3>
-            <div className="flex items-center gap-2">
-              <Badge variant="default">{appointments.length} RDV</Badge>
-              <Button size="sm" className="gap-1" onClick={() => navigate('/professional/appointments')}>
-                <Plus className="h-4 w-4" />
-                Nouveau RDV
-              </Button>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            {appointments.map((apt) => (
-              <div
-                key={apt.id}
-                className={`p-4 rounded-xl flex items-center justify-between ${
-                  apt.status === 'confirmed' 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/30 border-l-4 border-l-emerald-500' 
-                    : 'bg-orange-50 dark:bg-orange-950/30 border-l-4 border-l-orange-500'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-center min-w-[60px]">
-                    <div className="text-2xl font-bold">{apt.time.split(':')[0]}</div>
-                    <div className="text-xs text-muted-foreground">{apt.time.split(':')[1]}</div>
-                  </div>
-                  <Separator orientation="vertical" className="h-12" />
-                  <div>
-                    <p className="font-semibold">{apt.patient}</p>
-                    <p className="text-sm text-muted-foreground">{apt.type}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Avec {apt.doctor}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant={apt.status === 'confirmed' ? 'secondary' : 'default'}>
-                    {apt.status === 'confirmed' ? 'Confirmé' : 'En attente'}
-                  </Badge>
-                  <Button variant="outline" size="sm">
-                    Voir détails
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Card>
-
-      {/* Actions rapides - Réceptionniste */}
-      <Card className="border-0 shadow-lg bg-white dark:bg-slate-900">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold">Actions rapides</h3>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <button 
-              onClick={() => navigate('/professional/appointments/new')}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 hover:shadow-xl transition-all duration-300 border-0"
-            >
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Calendar className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">Nouveau RDV</p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">Planifier</p>
-            </button>
-            
-            <button 
-              onClick={() => navigate('/professional/patients')}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 hover:shadow-xl transition-all duration-300 border-0"
-            >
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Users className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100">Patients</p>
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Rechercher</p>
-            </button>
-            
-            <button 
-              onClick={() => navigate('/professional/appointments')}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/50 dark:to-purple-950/50 hover:shadow-xl transition-all duration-300 border-0"
-            >
-              <div className="w-12 h-12 rounded-xl bg-violet-500/10 dark:bg-violet-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Clock className="h-6 w-6 text-violet-600 dark:text-violet-400" />
-              </div>
-              <p className="text-sm font-semibold text-violet-900 dark:text-violet-100">Planning</p>
-              <p className="text-xs text-violet-600 dark:text-violet-400 mt-1">Gérer</p>
-            </button>
-            
-            <button 
-              onClick={() => navigate('/professional/consultations')}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/50 dark:to-amber-950/50 hover:shadow-xl transition-all duration-300 border-0"
-            >
-              <div className="w-12 h-12 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <AlertCircle className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-              </div>
-              <p className="text-sm font-semibold text-orange-900 dark:text-orange-100">Consultations</p>
-              <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">Voir</p>
-            </button>
-          </div>
-        </div>
-      </Card>
-
-      {/* Instructions pour la réception */}
+      {/* Instructions rapides */}
       <Card className="border-0 shadow-lg bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30">
         <div className="p-6">
-          <h3 className="text-lg font-bold mb-4">Tâches de la réception</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-white dark:bg-slate-800/50 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="h-5 w-5 text-emerald-600" />
-                <h4 className="font-semibold">Accueil</h4>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Accueillir les patients, vérifier les identités, orienter vers les services
-              </p>
-            </div>
+          <h3 className="text-lg font-bold mb-4">Guide Rapide - Réceptionniste</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 bg-white dark:bg-slate-800/50 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
-                <h4 className="font-semibold">Rendez-vous</h4>
+                <h4 className="font-semibold">Mode HDJ</h4>
               </div>
               <p className="text-sm text-muted-foreground">
-                Créer, modifier, annuler les rendez-vous selon les disponibilités
+                Pour les patients avec rendez-vous programmés. Vérification CNAMGS, calcul reste à charge, génération dossiers HDJ.
               </p>
             </div>
             <div className="p-4 bg-white dark:bg-slate-800/50 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
-                <Phone className="h-5 w-5 text-purple-600" />
-                <h4 className="font-semibold">Coordination</h4>
+                <Siren className="h-5 w-5 text-red-600" />
+                <h4 className="font-semibold">Mode Urgences</h4>
               </div>
               <p className="text-sm text-muted-foreground">
-                Coordonner avec les médecins, gérer les urgences, informer les patients
+                Pour les urgences médicales. Triage rapide selon gravité, constantes vitales, suivi temps réel.
               </p>
+            </div>
+          </div>
+          
+          <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-semibold text-amber-900 dark:text-amber-300">Rappel important</p>
+                <p className="text-amber-700 dark:text-amber-400 mt-1">
+                  En cas d'urgence vitale (niveau 1), utilisez immédiatement le bouton URGENCE VITALE dans le mode Urgences pour alerter l'équipe médicale.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -380,4 +291,3 @@ export function ReceptionistDashboard() {
     </div>
   );
 }
-
