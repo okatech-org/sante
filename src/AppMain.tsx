@@ -49,6 +49,7 @@ import ProfessionalIntegrations from "./pages/professional/ProfessionalIntegrati
 import ProfessionalSettings from "./pages/professional/ProfessionalSettings";
 import ProfessionalTeleconsultations from "./pages/professional/ProfessionalTeleconsultations";
 import ProfessionalPatients from "./pages/professional/ProfessionalPatients";
+import ProfessionalAppointments from "./pages/professional/ProfessionalAppointments";
 import { ProfessionalEstablishmentLayout } from "./components/layout/ProfessionalEstablishmentLayout";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
@@ -249,6 +250,11 @@ function AppMain() {
                     <Route path="/professional/patients" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalPatients />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/appointments" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalAppointments />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
