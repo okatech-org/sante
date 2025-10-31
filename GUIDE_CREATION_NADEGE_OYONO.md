@@ -43,8 +43,8 @@ Après l'exécution, vous devriez voir un tableau avec ces informations :
 1. Ouvrez votre navigateur
 2. Allez sur : `http://localhost:8080/login/professional`
 3. Entrez les identifiants :
-   - **Email** : `accueil.sogara@sante.ga`
-   - **Mot de passe** : `AccueilSOGARA@24`
+   - **Email** : `nadege.oyono@sogara.ga`
+   - **Mot de passe** : `Sogara2025!`
 4. Cliquez sur **"Se connecter"**
 
 ### Résultat Attendu
@@ -61,8 +61,8 @@ Après l'exécution, vous devriez voir un tableau avec ces informations :
 ┌─────────────────────────────────────────────────┐
 │  NADÈGE OYONO - RÉCEPTIONNISTE SOGARA          │
 ├─────────────────────────────────────────────────┤
-│  📧 Email      : accueil.sogara@sante.ga       │
-│  🔐 Password   : AccueilSOGARA@24              │
+│  📧 Email      : nadege.oyono@sogara.ga        │
+│  🔐 Password   : Sogara2025!                   │
 │  👤 Nom        : Nadège Oyono                   │
 │  💼 Rôle       : Réceptionniste / Accueil      │
 │  🏥 Hôpital    : Centre Médical SOGARA         │
@@ -94,8 +94,8 @@ Après l'exécution, vous devriez voir un tableau avec ces informations :
 **Solution** : L'utilisateur existe déjà. Utilisez la requête SQL suivante pour réinitialiser le mot de passe :
 ```sql
 UPDATE auth.users
-SET encrypted_password = crypt('AccueilSOGARA@24', gen_salt('bf'))
-WHERE email = 'accueil.sogara@sante.ga';
+SET encrypted_password = crypt('Sogara2025!', gen_salt('bf'))
+WHERE email = 'nadege.oyono@sogara.ga';
 ```
 
 ### Problème 2 : "Cannot login"
@@ -103,7 +103,7 @@ WHERE email = 'accueil.sogara@sante.ga';
 ```sql
 UPDATE auth.users
 SET email_confirmed_at = NOW()
-WHERE email = 'accueil.sogara@sante.ga';
+WHERE email = 'nadege.oyono@sogara.ga';
 ```
 
 ### Problème 3 : "Access denied to dashboard"
@@ -116,7 +116,7 @@ SELECT
 FROM auth.users u
 LEFT JOIN professionals p ON p.user_id = u.id
 LEFT JOIN establishment_staff es ON es.professional_id = p.id
-WHERE u.email = 'accueil.sogara@sante.ga';
+WHERE u.email = 'nadege.oyono@sogara.ga';
 ```
 
 ---

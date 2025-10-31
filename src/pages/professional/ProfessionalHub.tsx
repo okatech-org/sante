@@ -16,6 +16,10 @@ import {
 } from 'lucide-react';
 import { ROLE_LABELS } from '@/config/menuDefinitions';
 import { supabase } from '@/integrations/supabase/client';
+import { ReceptionistDashboard } from '@/components/professional/ReceptionistDashboard';
+import { NurseDashboard } from '@/components/professional/NurseDashboard';
+import { LaborantinDashboard } from '@/components/professional/LaborantinDashboard';
+import { PharmacistDashboard } from '@/components/professional/PharmacistDashboard';
 
 export default function ProfessionalHub() {
   const { user } = useAuth();
@@ -75,6 +79,23 @@ export default function ProfessionalHub() {
 
   const fullName = user?.user_metadata?.full_name || professionalData?.full_name || 'Professionnel';
   const activeRole = currentRole || 'doctor';
+  
+  // Afficher l'interface appropriée selon le rôle
+  if (activeRole === 'receptionist') {
+    return <ReceptionistDashboard />;
+  }
+  
+  if (activeRole === 'nurse') {
+    return <NurseDashboard />;
+  }
+  
+  if (activeRole === 'laborantin') {
+    return <LaborantinDashboard />;
+  }
+  
+  if (activeRole === 'pharmacist') {
+    return <PharmacistDashboard />;
+  }
   
   // Données fictives pour le profil
   const profile = {

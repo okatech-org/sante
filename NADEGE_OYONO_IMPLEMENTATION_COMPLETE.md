@@ -62,8 +62,8 @@ Ce guide contient :
 ```yaml
 Identité:
   nom_complet: "Nadège Oyono"
-  email: "accueil.sogara@sante.ga"
-  mot_de_passe: "AccueilSOGARA@24"
+  email: "nadege.oyono@sogara.ga"
+  mot_de_passe: "Sogara2025!"
 
 Professionnel:
   categorie: "receptionist"
@@ -169,16 +169,17 @@ WHERE u.email = 'accueil.sogara@sante.ga';
 ### Test 2 : Connexion Interface Web
 ```
 URL: http://localhost:8080/login/professional
-Email: accueil.sogara@sante.ga
-Password: AccueilSOGARA@24
+Email: nadege.oyono@sogara.ga
+Password: Sogara2025!
 ```
 
 **Résultat Attendu** :
 ```
 ✅ Connexion réussie
-✅ Redirection vers /establishments/sogara-cmst-001/professional/dashboard
+✅ Redirection vers dashboard réceptionniste
 ✅ Affichage du nom "Nadège Oyono"
-✅ Menu visible avec Rendez-vous, Patients, Consultations
+✅ Interface simplifiée : Planning RDV, Patients, Accueil
+✅ PAS de diplômes, PAS de revenus, PAS de prescriptions
 ```
 
 ### Test 3 : Vérification des Permissions

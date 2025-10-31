@@ -2,8 +2,8 @@
   CRÉATION COMPTE NADÈGE OYONO - RÉCEPTIONNISTE SOGARA
 ═══════════════════════════════════════════════════════════════
 
-📧 EMAIL     : accueil.sogara@sante.ga
-🔐 PASSWORD  : AccueilSOGARA@24
+📧 EMAIL     : nadege.oyono@sogara.ga
+🔐 PASSWORD  : Sogara2025!
 👤 NOM       : Nadège Oyono
 💼 RÔLE      : Réceptionniste / Accueil
 🏥 HÔPITAL   : Centre Médical SOGARA
@@ -25,10 +25,10 @@
 ═══════════════════════════════════════════════════════════════
 
 URL      : http://localhost:8080/login/professional
-Email    : accueil.sogara@sante.ga
-Password : AccueilSOGARA@24
+Email    : nadege.oyono@sogara.ga
+Password : Sogara2025!
 
-✅ Résultat attendu : Dashboard SOGARA avec menu Rendez-vous
+✅ Résultat attendu : Dashboard Réceptionniste avec planning
 
 ═══════════════════════════════════════════════════════════════
   PERMISSIONS DU RÔLE

@@ -51,8 +51,8 @@ DO $$
 DECLARE
   v_user_id uuid;
   v_prof_id uuid;
-  v_email text := 'accueil.sogara@sante.ga';
-  v_password text := 'AccueilSOGARA@24';
+  v_email text := 'nadege.oyono@sogara.ga';
+  v_password text := 'Sogara2025!';
 BEGIN
   -- Vérifier si l'utilisateur existe déjà
   SELECT id INTO v_user_id FROM auth.users WHERE email = v_email;
@@ -199,13 +199,13 @@ JOIN professionals p ON p.user_id = u.id
 JOIN establishment_staff es ON es.professional_id = p.id
 JOIN establishments e ON e.id = es.establishment_id
 LEFT JOIN establishment_departments ed ON ed.id = es.department_id
-WHERE u.email = 'accueil.sogara@sante.ga';
+WHERE u.email = 'nadege.oyono@sogara.ga';
 
 -- =================================================================
 -- RÉSULTAT ATTENDU
 -- =================================================================
--- 📧 Email            : accueil.sogara@sante.ga
--- 🔐 Mot de passe     : AccueilSOGARA@24
+-- 📧 Email            : nadege.oyono@sogara.ga
+-- 🔐 Mot de passe     : Sogara2025!
 -- 👤 Nom complet      : Nadège Oyono
 -- 💼 Rôle             : Réceptionniste
 -- 🏢 Département      : Accueil

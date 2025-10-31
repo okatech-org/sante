@@ -9,8 +9,8 @@ Implémentation complète du compte professionnel pour **Nadège Oyono**, Récep
 ## 👤 Informations du Compte
 
 ### Identifiants de Connexion
-- **Email**: `accueil.sogara@sante.ga`
-- **Mot de passe**: `AccueilSOGARA@24`
+- **Email**: `nadege.oyono@sogara.ga`
+- **Mot de passe**: `Sogara2025!`
 - **URL de connexion**: `http://localhost:8080/login/professional`
 
 ### Informations Professionnelles
