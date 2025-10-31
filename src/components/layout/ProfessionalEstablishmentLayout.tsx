@@ -6,9 +6,9 @@ import { getMenuForRole, ROLE_LABELS, type MenuSection } from '@/config/menuDefi
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { 
+import {
   Building2, Shield, Stethoscope, ChevronRight, LogOut, Settings,
-  BarChart3, Menu, X
+  BarChart3, Menu, X, Moon, Sun
 } from 'lucide-react';
 import { 
   Accordion,
@@ -41,6 +41,10 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   } = useMultiEstablishment();
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('professional_theme');
+    return saved === 'dark';
+  });
 
   // Pour l'instant, définir un rôle par défaut si pas de currentRole
   const activeRole = currentRole || 'director';
@@ -49,6 +53,26 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const menuSections: MenuSection[] = getMenuForRole(activeRole);
 
   const fullName = user?.user_metadata?.full_name || 'Professionnel';
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('professional_theme', newTheme ? 'dark' : 'light');
+    
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const getRoleIcon = (role: string) => {
     switch (role.toLowerCase()) {
@@ -224,6 +248,23 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
           <h3 className="text-xs font-semibold text-muted-foreground uppercase mb-2">
             Paramètres
           </h3>
+          <Button
+            variant="ghost"
+            className="w-full justify-start mb-2"
+            onClick={toggleTheme}
+          >
+            {isDarkMode ? (
+              <>
+                <Sun className="h-4 w-4 mr-2" />
+                Mode Clair
+              </>
+            ) : (
+              <>
+                <Moon className="h-4 w-4 mr-2" />
+                Mode Sombre
+              </>
+            )}
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start"
