@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect, useMemo } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
@@ -13,46 +13,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from '@/components/ui/badge';
 import { 
-  Building2, Menu, LogOut, Settings, Home,
-  BarChart3, Stethoscope, AlertTriangle, Users,
-  Briefcase, Bed, Activity, UserCheck, Calendar,
-  FileText, Package, FlaskConical, DollarSign,
-  MessageSquare, ChevronDown, Shield, Pill,
-  HeartPulse, Baby, Brain, Eye, Bone, Heart
+  Building2, Menu, LogOut, Settings, ChevronDown, Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { RoleAndEstablishmentSwitcher } from './RoleAndEstablishmentSwitcher';
 import { useIsSogara } from '@/contexts/SogaraAuthContext';
 import { SogaraDashboardLayout } from '@/components/layout/SogaraDashboardLayout';
+import { getMenuForContext, ROLE_LABELS, type MenuSection } from '@/config/menuDefinitions';
 
 interface ProfessionalEstablishmentLayoutProps {
   children: ReactNode;
-}
-
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: any;
-  path: string;
-  permission?: {
-    module: string;
-    action: string;
-  };
-  badge?: {
-    label: string;
-    variant: 'default' | 'secondary' | 'destructive' | 'outline';
-  };
-}
-
-interface MenuSection {
-  title: string;
-  items: MenuItem[];
-  permission?: {
-    module: string;
-    actions: string[];
-  };
 }
 
 export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstablishmentLayoutProps) {
@@ -64,6 +42,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const {
     establishments,
     currentEstablishment,
+    currentRole,
     switchEstablishment,
     hasPermission,
     hasAnyPermission,
@@ -95,225 +74,10 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const fullName = profileData?.full_name || user?.user_metadata?.full_name || 'Professionnel';
   const avatarUrl = profileData?.avatar_url;
 
-  // Générer le menu dynamiquement selon les permissions
-  const menuSections = useMemo(() => {
-    const sections: MenuSection[] = [];
-    
-    // Section Tableau de bord - toujours visible
-    sections.push({
-      title: 'Général',
-      items: [
-        { 
-          id: 'overview', 
-          label: 'Vue d\'ensemble', 
-          icon: BarChart3, 
-          path: '/professional/dashboard'
-        }
-      ]
-    });
-
-    // Section Activité Médicale
-    const medicalItems: MenuItem[] = [];
-    
-    if (hasPermission('view_appointments')) {
-      medicalItems.push({
-        id: 'appointments',
-        label: 'Rendez-vous',
-        icon: Calendar,
-        path: '/professional/appointments',
-        badge: { label: 'Nouveau', variant: 'destructive' }
-      });
-    }
-    
-    if (hasPermission('view_consultations')) {
-      medicalItems.push({
-        id: 'consultations',
-        label: 'Consultations',
-        icon: Stethoscope,
-        path: '/professional/consultations'
-      });
-    }
-    
-    if (hasPermission('view_prescriptions')) {
-      medicalItems.push({
-        id: 'prescriptions',
-        label: 'Prescriptions',
-        icon: FileText,
-        path: '/professional/prescriptions'
-      });
-    }
-    
-    if (hasPermission('view_patients')) {
-      medicalItems.push({
-        id: 'patients',
-        label: 'Mes Patients',
-        icon: Users,
-        path: '/professional/patients'
-      });
-    }
-
-    if (medicalItems.length > 0) {
-      sections.push({
-        title: 'Activité Médicale',
-        items: medicalItems
-      });
-    }
-
-    // Section Départements/Services spécifiques
-    const departmentItems: MenuItem[] = [];
-    
-    // Menu spécifique selon le département
-    if (currentEstablishment?.department) {
-      const deptCode = currentEstablishment.department;
-      
-      switch (deptCode) {
-        case 'URG':
-          departmentItems.push({
-            id: 'emergency',
-            label: 'Urgences',
-            icon: AlertTriangle,
-            path: '/professional/emergency'
-          });
-          break;
-        case 'PED':
-          departmentItems.push({
-            id: 'pediatrics',
-            label: 'Pédiatrie',
-            icon: Baby,
-            path: '/professional/pediatrics'
-          });
-          break;
-        case 'CARD':
-          departmentItems.push({
-            id: 'cardiology',
-            label: 'Cardiologie',
-            icon: Heart,
-            path: '/professional/cardiology'
-          });
-          break;
-        case 'LAB':
-          departmentItems.push({
-            id: 'laboratory',
-            label: 'Laboratoire',
-            icon: FlaskConical,
-            path: '/professional/laboratory'
-          });
-          break;
-        case 'PHAR':
-          departmentItems.push({
-            id: 'pharmacy',
-            label: 'Pharmacie',
-            icon: Pill,
-            path: '/professional/pharmacy'
-          });
-          break;
-      }
-    }
-
-    // Services transversaux
-    if (hasPermission('view_hospitalization')) {
-      departmentItems.push({
-        id: 'hospitalization',
-        label: 'Hospitalisation',
-        icon: Bed,
-        path: '/professional/hospitalization'
-      });
-    }
-
-    if (hasPermission('view_technical')) {
-      departmentItems.push({
-        id: 'technical',
-        label: 'Plateaux Techniques',
-        icon: Activity,
-        path: '/professional/technical'
-      });
-    }
-
-    if (departmentItems.length > 0) {
-      sections.push({
-        title: currentEstablishment?.department || 'Services',
-        items: departmentItems
-      });
-    }
-
-    // Section Administration (pour admin et directeur)
-    if (isAdmin || isDirector) {
-      const adminItems: MenuItem[] = [];
-      
-      if (hasAnyPermission(['manage_staff', 'view_staff'])) {
-        adminItems.push({
-          id: 'staff',
-          label: 'Personnel',
-          icon: UserCheck,
-          path: '/professional/staff'
-        });
-      }
-      
-      if (hasPermission('view_billing')) {
-        adminItems.push({
-          id: 'billing',
-          label: 'Facturation',
-          icon: DollarSign,
-          path: '/professional/billing'
-        });
-      }
-      
-      if (hasPermission('view_inventory')) {
-        adminItems.push({
-          id: 'inventory',
-          label: 'Inventaire',
-          icon: Package,
-          path: '/professional/inventory'
-        });
-      }
-      
-      if (hasPermission('view_reports')) {
-        adminItems.push({
-          id: 'reports',
-          label: 'Rapports',
-          icon: FileText,
-          path: '/professional/reports'
-        });
-      }
-      
-      if (adminItems.length > 0) {
-        sections.push({
-          title: 'Administration',
-          items: adminItems
-        });
-      }
-    }
-
-    // Section Communication
-    sections.push({
-      title: 'Communication',
-      items: [
-        {
-          id: 'messages',
-          label: 'Messages',
-          icon: MessageSquare,
-          path: '/professional/messages',
-          badge: { label: '3', variant: 'secondary' }
-        }
-      ]
-    });
-    
-    // Section Établissements
-    sections.push({
-      title: 'Établissements',
-      items: [
-        {
-          id: 'establishments',
-          label: 'Mes Établissements',
-          icon: Building2,
-          path: '/professional/establishments',
-          badge: establishments.length > 1 ? { label: String(establishments.length), variant: 'outline' } : undefined
-        }
-      ]
-    });
-
-    return sections;
-  }, [currentEstablishment, hasPermission, hasAnyPermission, isAdmin, isDirector]);
+  // ⭐ NOUVEAU: Récupérer le menu selon le type d'établissement et le rôle
+  const establishmentType = currentEstablishment?.establishment?.type || 'hopital';
+  const role = currentRole || currentEstablishment?.role || 'doctor';
+  const menuSections: MenuSection[] = getMenuForContext(establishmentType, role);
 
   const handleSignOut = async () => {
     await signOut();
@@ -327,17 +91,8 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   };
 
   // Fonction pour obtenir le label du rôle
-  const getRoleLabel = (role: string) => {
-    const labels: Record<string, string> = {
-      'director': 'Directeur',
-      'admin': 'Administrateur',
-      'doctor': 'Médecin',
-      'nurse': 'Infirmier(e)',
-      'pharmacist': 'Pharmacien(ne)',
-      'laborantin': 'Laborantin(e)',
-      'receptionist': 'Réceptionniste'
-    };
-    return labels[role] || role;
+  const getRoleLabel = (roleKey: string) => {
+    return ROLE_LABELS[roleKey] || roleKey;
   };
 
   if (!currentEstablishment) {
@@ -439,47 +194,58 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-6">
-            {menuSections.map((section) => (
-              <div key={section.title}>
-                <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  {section.title}
-                </h3>
-                <div className="space-y-1">
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path;
-                    
-                    return (
-                      <Link
-                        key={item.id}
-                        to={item.path}
-                        className={`
-                          flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group
-                          ${isActive
-                            ? 'bg-primary text-primary-foreground shadow-md'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                          }
-                        `}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className={`h-4 w-4 ${isActive ? 'text-primary-foreground' : ''}`} />
-                          <span>{item.label}</span>
-                        </div>
-                        {item.badge && (
-                          <Badge 
-                            variant={item.badge.variant} 
-                            className="ml-auto text-xs px-1.5 py-0 h-5"
+          <nav className="flex-1 px-4 py-6">
+            <Accordion type="multiple" defaultValue={menuSections.map(s => s.label)} className="space-y-2">
+              {menuSections.map((section) => (
+                <AccordionItem key={section.label} value={section.label} className="border-none">
+                  <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      {section.label}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-1 mt-1">
+                      {section.items.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = location.pathname === item.href;
+                        
+                        // Vérifier la permission si définie
+                        if (item.permission && !hasPermission(item.permission)) {
+                          return null;
+                        }
+                        
+                        return (
+                          <Link
+                            key={item.href}
+                            to={item.href}
+                            className={`
+                              flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group
+                              ${isActive
+                                ? 'bg-primary text-primary-foreground shadow-md'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                              }
+                            `}
                           >
-                            {item.badge.label}
-                          </Badge>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+                            <div className="flex items-center gap-3">
+                              <Icon className={`h-4 w-4 ${isActive ? 'text-primary-foreground' : ''}`} />
+                              <span>{item.label}</span>
+                            </div>
+                            {item.badge && typeof item.badge === 'number' && (
+                              <Badge 
+                                variant="secondary" 
+                                className="ml-auto text-xs px-1.5 py-0 h-5"
+                              >
+                                {item.badge}
+                              </Badge>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </nav>
 
           {/* User profile dans la sidebar */}
@@ -558,45 +324,56 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                     </div>
 
                     {/* Navigation mobile */}
-                    <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-                      {menuSections.map((section) => (
-                        <div key={section.title}>
-                          <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                            {section.title}
-                          </h3>
-                          <div className="space-y-1">
-                            {section.items.map((item) => {
-                              const Icon = item.icon;
-                              const isActive = location.pathname === item.path;
-                              
-                              return (
-                                <Link
-                                  key={item.id}
-                                  to={item.path}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  className={`
-                                    flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium
-                                    ${isActive
-                                      ? 'bg-primary text-primary-foreground'
-                                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                                    }
-                                  `}
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <Icon className="h-4 w-4" />
-                                    <span>{item.label}</span>
-                                  </div>
-                                  {item.badge && (
-                                    <Badge variant={item.badge.variant} className="text-xs">
-                                      {item.badge.label}
-                                    </Badge>
-                                  )}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
+                    <nav className="flex-1 px-4 py-6 overflow-y-auto">
+                      <Accordion type="multiple" defaultValue={menuSections.map(s => s.label)} className="space-y-2">
+                        {menuSections.map((section) => (
+                          <AccordionItem key={section.label} value={section.label} className="border-none">
+                            <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg">
+                              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                {section.label}
+                              </span>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="space-y-1 mt-1">
+                                {section.items.map((item) => {
+                                  const Icon = item.icon;
+                                  const isActive = location.pathname === item.href;
+                                  
+                                  // Vérifier la permission si définie
+                                  if (item.permission && !hasPermission(item.permission)) {
+                                    return null;
+                                  }
+                                  
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      to={item.href}
+                                      onClick={() => setMobileMenuOpen(false)}
+                                      className={`
+                                        flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium
+                                        ${isActive
+                                          ? 'bg-primary text-primary-foreground'
+                                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                        }
+                                      `}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <Icon className="h-4 w-4" />
+                                        <span>{item.label}</span>
+                                      </div>
+                                      {item.badge && typeof item.badge === 'number' && (
+                                        <Badge variant="secondary" className="text-xs">
+                                          {item.badge}
+                                        </Badge>
+                                      )}
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
                     </nav>
 
                     {/* User profile mobile */}
