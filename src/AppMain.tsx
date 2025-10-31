@@ -95,9 +95,6 @@ import SogaraManagement from "./pages/admin/establishments/SogaraManagement";
 // Pages d'authentification admin
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 
-// Pages de hub professionnel
-import ProfessionalHub from "./pages/professional/ProfessionalHub";
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
