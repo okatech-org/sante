@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration vers Nouvelle Interface - SANTE.GA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        
+        h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #718096;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .countdown {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏥</div>
+        <h1>Migration vers la Nouvelle Interface</h1>
+        <p>
+            Nous avons amélioré l'interface professionnelle de SANTE.GA !<br>
+            Cliquez sur le bouton ci-dessous pour nettoyer votre cache et accéder à la nouvelle interface.
+        </p>
+        
+        <button class="button" onclick="clearAndRedirect()">
+            Accéder à la Nouvelle Interface
+        </button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function clearAndRedirect() {
+            const statusDiv = document.getElementById('status');
+            
+            // Étape 1: Afficher le chargement
+            statusDiv.className = 'status info';
+            statusDiv.innerHTML = '<span class="loading"></span> Nettoyage en cours...';
+            
+            // Étape 2: Nettoyer tout
+            setTimeout(() => {
+                try {
+                    // Nettoyer localStorage
+                    localStorage.clear();
+                    
+                    // Nettoyer sessionStorage
+                    sessionStorage.clear();
+                    
+                    // Nettoyer les cookies (si possible)
+                    document.cookie.split(";").forEach(function(c) { 
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                    });
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ Cache nettoyé avec succès !';
+                    
+                    // Étape 3: Afficher le compte à rebours
+                    let countdown = 3;
+                    statusDiv.innerHTML = '<div class="countdown">' + countdown + '</div>Redirection dans...';
+                    
+                    const timer = setInterval(() => {
+                        countdown--;
+                        if (countdown > 0) {
+                            statusDiv.innerHTML = '<div class="countdown">' + countdown + '</div>Redirection dans...';
+                        } else {
+                            clearInterval(timer);
+                            // Rediriger
+                            window.location.href = '/professional';
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    statusDiv.className = 'status';
+                    statusDiv.style.background = '#f8d7da';
+                    statusDiv.style.color = '#721c24';
+                    statusDiv.innerHTML = '❌ Erreur: ' + error.message;
+                }
+            }, 500);
+        }
+        
+        // Auto-exécution après 3 secondes si pas d'interaction
+        setTimeout(() => {
+            const statusDiv = document.getElementById('status');
+            if (statusDiv.innerHTML === '') {
+                statusDiv.className = 'status info';
+                statusDiv.innerHTML = 'Auto-nettoyage dans 3 secondes... Cliquez sur le bouton pour l\'exécuter maintenant.';
+                
+                setTimeout(() => {
+                    clearAndRedirect();
+                }, 3000);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
+
