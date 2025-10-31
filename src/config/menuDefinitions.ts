@@ -355,7 +355,7 @@ export const DIRECTOR_MENU: MenuSection[] = [
     id: 'general',
     label: 'GÉNÉRAL',
     items: [
-      { label: 'Tableau de bord', href: '/professional/dashboard', icon: LayoutDashboard },
+      { label: 'Tableau de bord', href: '/professional/director-dashboard', icon: LayoutDashboard },
       { label: 'Statistiques', href: '/professional/statistics', icon: BarChart3 },
       { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 5 }
     ]
@@ -396,7 +396,7 @@ export const DOCTOR_MENU: MenuSection[] = [
     id: 'medical-activity',
     label: 'ACTIVITÉ MÉDICALE', 
     items: [
-      { label: 'Tableau de bord', href: '/professional/dashboard', icon: LayoutDashboard },
+      { label: 'Tableau de bord', href: '/professional/doctor-dashboard', icon: LayoutDashboard },
       { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 8 },
       { label: 'Patients', href: '/professional/patients', icon: Users },
       { label: 'Consultations', href: '/professional/consultations', icon: Stethoscope },

@@ -51,6 +51,8 @@ import ProfessionalPatients from "./pages/professional/ProfessionalPatients";
 import ProfessionalAppointments from "./pages/professional/ProfessionalAppointments";
 import JoinEstablishment from "./pages/professional/JoinEstablishment";
 import ManageAdmissions from "./pages/professional/ManageAdmissions";
+import DirectorDashboard from "./pages/professional/DirectorDashboard";
+import DoctorDashboard from "./pages/professional/DoctorDashboard";
 import { ProfessionalEstablishmentLayout } from "./components/layout/ProfessionalEstablishmentLayout";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
@@ -166,6 +168,16 @@ function AppMain() {
                     <Route path="/professional/dashboard" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalHub />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/director-dashboard" element={
+                      <ProfessionalEstablishmentLayout>
+                        <DirectorDashboard />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/doctor-dashboard" element={
+                      <ProfessionalEstablishmentLayout>
+                        <DoctorDashboard />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/consultations" element={
