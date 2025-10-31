@@ -30,6 +30,7 @@ import RegisterProfessional from "./pages/RegisterProfessional";
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
+import ProfessionalHub from "./pages/professional/ProfessionalHub";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
 import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
@@ -134,6 +135,7 @@ function AppMain() {
                     {/* Routes de dashboard */}
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
+                    <Route path="/professional" element={<ProfessionalHub />} />
                     <Route path="/professional/dashboard" element={<ProfessionalDashboard />} />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
                     <Route path="/professional/select-role/:establishmentId" element={<SelectRole />} />
