@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ProfessionalEstablishmentLayout } from '@/components/layout/ProfessionalEstablishmentLayout';
 import { 
   Users, Calendar, FileText, Activity, 
   TrendingUp, ClipboardList, Stethoscope, Building2 
@@ -43,7 +42,6 @@ export default function ProfessionalHub() {
   const activeRole = currentRole || 'doctor';
 
   return (
-    <ProfessionalEstablishmentLayout>
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -251,6 +249,5 @@ export default function ProfessionalHub() {
           </div>
         </Card>
       </div>
-    </ProfessionalEstablishmentLayout>
   );
 }

@@ -148,10 +148,14 @@ function AppMain() {
                     {/* Routes de dashboard */}
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
-                    <Route path="/professional" element={<ProfessionalHub />} />
+                    <Route path="/professional" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalHub />
+                      </ProfessionalEstablishmentLayout>
+                    } />
                     <Route path="/professional/dashboard" element={
                       <ProfessionalEstablishmentLayout>
-                        <ProfessionalDashboard />
+                        <ProfessionalHub />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/consultations" element={
