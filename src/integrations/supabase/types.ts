@@ -445,10 +445,15 @@ export type Database = {
         Row: {
           created_at: string | null
           created_by: string | null
+          department: string | null
+          department_id: string | null
           end_date: string | null
           establishment_id: string
           id: string
           is_admin: boolean | null
+          is_department_head: boolean | null
+          job_position: string | null
+          matricule: string | null
           permissions: string[] | null
           professional_id: string
           role_in_establishment: string
@@ -460,10 +465,15 @@ export type Database = {
         Insert: {
           created_at?: string | null
           created_by?: string | null
+          department?: string | null
+          department_id?: string | null
           end_date?: string | null
           establishment_id: string
           id?: string
           is_admin?: boolean | null
+          is_department_head?: boolean | null
+          job_position?: string | null
+          matricule?: string | null
           permissions?: string[] | null
           professional_id: string
           role_in_establishment: string
@@ -475,10 +485,15 @@ export type Database = {
         Update: {
           created_at?: string | null
           created_by?: string | null
+          department?: string | null
+          department_id?: string | null
           end_date?: string | null
           establishment_id?: string
           id?: string
           is_admin?: boolean | null
+          is_department_head?: boolean | null
+          job_position?: string | null
+          matricule?: string | null
           permissions?: string[] | null
           professional_id?: string
           role_in_establishment?: string
@@ -1587,8 +1602,11 @@ export type Database = {
       }
       professionals: {
         Row: {
+          bio: string | null
           birth_date: string | null
+          consultation_fee: number | null
           created_at: string
+          diplomas: Json | null
           documents_verified: boolean | null
           email: string
           emergency_phone: string | null
@@ -1599,9 +1617,12 @@ export type Database = {
           missing_documents: string[] | null
           nationality: string | null
           numero_ordre: string | null
+          ordre_verified: boolean | null
           phone: string
           photo_url: string | null
+          profession_type: string | null
           professional_type: Database["public"]["Enums"]["professional_type"]
+          specialization: string | null
           status: Database["public"]["Enums"]["professional_status"]
           title: string | null
           updated_at: string
@@ -1609,10 +1630,14 @@ export type Database = {
           verification_date: string | null
           verified: boolean | null
           whatsapp_phone: string | null
+          years_experience: number | null
         }
         Insert: {
+          bio?: string | null
           birth_date?: string | null
+          consultation_fee?: number | null
           created_at?: string
+          diplomas?: Json | null
           documents_verified?: boolean | null
           email: string
           emergency_phone?: string | null
@@ -1623,9 +1648,12 @@ export type Database = {
           missing_documents?: string[] | null
           nationality?: string | null
           numero_ordre?: string | null
+          ordre_verified?: boolean | null
           phone: string
           photo_url?: string | null
+          profession_type?: string | null
           professional_type: Database["public"]["Enums"]["professional_type"]
+          specialization?: string | null
           status?: Database["public"]["Enums"]["professional_status"]
           title?: string | null
           updated_at?: string
@@ -1633,10 +1661,14 @@ export type Database = {
           verification_date?: string | null
           verified?: boolean | null
           whatsapp_phone?: string | null
+          years_experience?: number | null
         }
         Update: {
+          bio?: string | null
           birth_date?: string | null
+          consultation_fee?: number | null
           created_at?: string
+          diplomas?: Json | null
           documents_verified?: boolean | null
           email?: string
           emergency_phone?: string | null
@@ -1647,9 +1679,12 @@ export type Database = {
           missing_documents?: string[] | null
           nationality?: string | null
           numero_ordre?: string | null
+          ordre_verified?: boolean | null
           phone?: string
           photo_url?: string | null
+          profession_type?: string | null
           professional_type?: Database["public"]["Enums"]["professional_type"]
+          specialization?: string | null
           status?: Database["public"]["Enums"]["professional_status"]
           title?: string | null
           updated_at?: string
@@ -1657,6 +1692,7 @@ export type Database = {
           verification_date?: string | null
           verified?: boolean | null
           whatsapp_phone?: string | null
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -2042,6 +2078,27 @@ export type Database = {
         | "centre_medical"
         | "hopital_departemental"
         | "hopital_confessionnel"
+      permission_type:
+        | "view_dmp"
+        | "edit_dmp"
+        | "consultation"
+        | "prescription"
+        | "order_lab_test"
+        | "view_lab_results"
+        | "validate_lab_results"
+        | "admit_patient"
+        | "discharge_patient"
+        | "emergency_access"
+        | "triage"
+        | "manage_appointments"
+        | "manage_staff"
+        | "view_analytics"
+        | "manage_billing"
+        | "dispense_medication"
+        | "manage_stock"
+        | "manage_services"
+        | "manage_schedule"
+        | "all"
       practice_location_type:
         | "cabinet_prive"
         | "hopital_public"
@@ -2237,6 +2294,28 @@ export const Constants = {
         "centre_medical",
         "hopital_departemental",
         "hopital_confessionnel",
+      ],
+      permission_type: [
+        "view_dmp",
+        "edit_dmp",
+        "consultation",
+        "prescription",
+        "order_lab_test",
+        "view_lab_results",
+        "validate_lab_results",
+        "admit_patient",
+        "discharge_patient",
+        "emergency_access",
+        "triage",
+        "manage_appointments",
+        "manage_staff",
+        "view_analytics",
+        "manage_billing",
+        "dispense_medication",
+        "manage_stock",
+        "manage_services",
+        "manage_schedule",
+        "all",
       ],
       practice_location_type: [
         "cabinet_prive",
