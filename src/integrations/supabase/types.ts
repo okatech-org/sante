@@ -521,7 +521,7 @@ export type Database = {
             foreignKeyName: "establishment_staff_professional_id_fkey"
             columns: ["professional_id"]
             isOneToOne: false
-            referencedRelation: "professional_profiles"
+            referencedRelation: "professionals"
             referencedColumns: ["id"]
           },
         ]
