@@ -230,15 +230,18 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
             </div>
           </div>
 
-          {/* Autres établissements (désactivés) */}
-          <div className="space-y-2 mt-4">
-            <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
+          {/* Rejoindre un établissement */}
+          <div className="mt-4">
+            <Button
+              variant="outline"
+              className="w-full justify-start border-dashed border-2 hover:bg-primary/5"
+              onClick={() => {
+                navigate('/professional/join-establishment');
+                setMobileOpen(false);
+              }}
+            >
               <Building2 className="h-4 w-4 mr-2" />
-              Etablissement 2
-            </Button>
-            <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
-              <Building2 className="h-4 w-4 mr-2" />
-              Etablissement X
+              + Rejoindre un établissement
             </Button>
           </div>
         </div>

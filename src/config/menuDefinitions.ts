@@ -1,4 +1,4 @@
-import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench } from "lucide-react";
+import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench, Link } from "lucide-react";
 
 export interface MenuSection {
   id?: string; // Optional for backward compatibility
@@ -75,7 +75,7 @@ const adminHospitalMenu: MenuSection[] = [
     label: "Communication",
     items: [
       { icon: Mail, label: "Messages", href: "/professional/messages", badge: 5 },
-      { icon: Link2, label: "Intégrations", href: "/professional/integrations" },
+      { icon: Link, label: "Intégrations", href: "/professional/integrations" },
       { icon: Settings, label: "Paramètres", href: "/professional/settings", permission: "edit_settings" }
     ]
   }
@@ -374,6 +374,7 @@ export const DIRECTOR_MENU: MenuSection[] = [
     label: 'ADMINISTRATION',
     items: [
       { label: 'Personnel', href: '/professional/staff', icon: UserCog, permission: 'manage_staff' },
+      { label: 'Gestion Admissions', href: '/professional/manage-admissions', icon: UserPlus, permission: 'manage_staff', description: 'Demandes et invitations' },
       { label: 'Finances & CNAMGS', href: '/professional/billing', icon: DollarSign, permission: 'manage_billing' },
       { label: 'Infrastructure', href: '/professional/infrastructure', icon: Building2 },
       { label: 'Stocks & Pharmacie', href: '/professional/inventory', icon: Package }
