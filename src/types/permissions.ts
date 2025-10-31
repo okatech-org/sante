@@ -21,6 +21,7 @@ export type Permission =
   // Rendez-vous
   | 'manage_appointments'
   | 'view_appointments'
+  | 'add_appointment'
   // Personnel & Administration
   | 'manage_staff'
   | 'view_staff'
@@ -43,6 +44,9 @@ export type Permission =
   | 'view_patients'
   | 'view_consultations'
   | 'view_prescriptions'
+  | 'add_consultation'
+  // Configuration
+  | 'edit_settings'
   // Admin total
   | 'all';
 
@@ -84,10 +88,15 @@ export interface ProfessionalContext {
   // Computed properties pour compatibilité legacy
   id?: string;
   role?: string;
+  establishmentId?: string;
+  isDepartmentHead?: boolean;
   establishment?: {
     id: string;
     name: string;
     type?: string;
+    subType?: string;
+    city?: string;
+    logoUrl?: string;
   };
   isAdmin?: boolean;
 }
@@ -110,10 +119,16 @@ export interface EstablishmentAffiliation {
   role?: string;
   isAdmin?: boolean;
   position?: string;
+  matricule?: string;
+  isDepartmentHead?: boolean;
+  isEstablishmentAdmin?: boolean;
   establishment?: {
     id: string;
     name: string;
     type?: string;
+    subType?: string;
+    city?: string;
+    logoUrl?: string;
   };
 }
 

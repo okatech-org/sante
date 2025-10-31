@@ -69,17 +69,23 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       }
 
       // Ajouter les propriétés legacy pour compatibilité
-      const establishmentsWithLegacy = data.map(e => ({
+      const establishmentsWithLegacy = data.map((e: any) => ({
         ...e,
         id: e.staff_id,
         establishmentId: e.establishment_id,
         role: e.role_in_establishment,
         isAdmin: e.is_admin,
         position: e.job_position,
+        matricule: e.matricule || null,
+        isDepartmentHead: e.is_department_head || false,
+        isEstablishmentAdmin: e.is_admin,
         establishment: {
           id: e.establishment_id,
           name: e.establishment_name,
-          type: e.establishment_type
+          type: e.establishment_type,
+          subType: undefined, // À charger si nécessaire
+          city: undefined, // À charger si nécessaire
+          logoUrl: undefined // À charger si nécessaire
         }
       }));
       
@@ -119,22 +125,26 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       }
 
       if (data && data.length > 0) {
+        // Récupérer l'établissement complet pour les infos additionnelles
+        const establishment = establishments.find(e => e.establishment_id === establishmentId);
+        
         // Ajouter les propriétés legacy pour compatibilité
         const contextWithLegacy = {
           ...data[0],
           id: data[0].establishment_id,
           role: data[0].role_in_establishment,
           isAdmin: data[0].is_admin,
-          establishment: {
+          establishmentId: data[0].establishment_id,
+          isDepartmentHead: data[0].is_department_head,
+          establishment: establishment?.establishment || {
             id: data[0].establishment_id,
-            name: data[0].establishment_name
+            name: data[0].establishment_name,
+            type: establishment?.establishment_type
           }
         };
         
         setCurrentEstablishment(contextWithLegacy);
         
-        // Trouver l'établissement correspondant pour avoir toutes les infos
-        const establishment = establishments.find(e => e.establishment_id === establishmentId);
         if (establishment) {
           toast.success(`Connecté à ${establishment.establishment_name}`);
         }

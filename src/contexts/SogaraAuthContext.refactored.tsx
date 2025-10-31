@@ -20,7 +20,7 @@ interface SogaraUser {
   role: string;
   department: string;
   matricule: string;
-  permissions: Permission[];
+  permissions: string[]; // Utilise string[] comme dans DB
 }
 
 interface SogaraAuthContextType {
@@ -30,7 +30,7 @@ interface SogaraAuthContextType {
   isAdmin: boolean;
   isDoctor: boolean;
   isNurse: boolean;
-  hasPermission: (permission: Permission) => boolean;
+  hasPermission: (permission: string) => boolean;
 }
 
 const SogaraAuthContext = createContext<SogaraAuthContextType | undefined>(undefined);
