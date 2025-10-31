@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
-  Building2, Shield, Stethoscope, ChevronRight, LogOut, Settings,
+  Building2, Shield, Stethoscope, ChevronRight, ChevronDown, LogOut, Settings,
   BarChart3, Menu, X, Moon, Sun
 } from 'lucide-react';
 import { 
@@ -45,6 +45,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     const saved = localStorage.getItem('professional_theme');
     return saved === 'dark';
   });
+  const [isRoleMenuExpanded, setIsRoleMenuExpanded] = useState(true);
 
   // Pour l'instant, définir un rôle par défaut si pas de currentRole
   const activeRole = currentRole || 'director';
@@ -88,8 +89,14 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
   const handleRoleChange = async (newRole: string) => {
     try {
-      // Si le rôle est déjà actif, ne rien faire
-      if (newRole === activeRole) return;
+      // Si le rôle est déjà actif, toggle l'expansion du menu
+      if (newRole === activeRole) {
+        setIsRoleMenuExpanded(!isRoleMenuExpanded);
+        return;
+      }
+      
+      // Si on change de rôle, l'activer et ouvrir le menu
+      setIsRoleMenuExpanded(true);
       
       // Utiliser directement switchRole du contexte
       if (switchRole) {
@@ -210,7 +217,13 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
               >
                 <Shield className="h-4 w-4" />
                 <span className="flex-1 text-left">DIRECTEUR</span>
-                {activeRole === 'director' && <ChevronRight className="h-4 w-4" />}
+                {activeRole === 'director' && (
+                  isRoleMenuExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )
+                )}
               </button>
               
               {/* Rôle MÉDECIN */}
@@ -225,7 +238,13 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
               >
                 <Stethoscope className="h-4 w-4" />
                 <span className="flex-1 text-left">MÉDECIN</span>
-                {activeRole === 'doctor' && <ChevronRight className="h-4 w-4" />}
+                {activeRole === 'doctor' && (
+                  isRoleMenuExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )
+                )}
               </button>
             </div>
           </div>
@@ -327,7 +346,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
       {/* Zone principale avec menu accordéon */}
       <div className="flex-1 flex">
         {/* Menu accordéon contextuel */}
-        {activeRole && (
+        {activeRole && isRoleMenuExpanded && (
           <aside className="hidden lg:block w-64 bg-card border-r border-border">
             <div className="p-4 border-b border-border/50">
               <div className="flex items-center gap-2">
