@@ -25,6 +25,7 @@ interface MultiEstablishmentContextType {
   // Helpers
   isAdmin: boolean;
   isDirector: boolean;
+  isDoctor: boolean;
   canManageStaff: boolean;
 }
 
@@ -255,7 +256,8 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
     hasAnyPermission,
     isAdmin,
     isDirector,
-    isDoctor
+    isDoctor,
+    canManageStaff
   };
 
   return (

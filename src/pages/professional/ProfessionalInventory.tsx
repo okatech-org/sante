@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Package, Search, AlertTriangle, CheckCircle, TrendingDown,
-  Pill, Syringe, Bandage, Plus
+  Pill, Syringe, Plus
 } from 'lucide-react';
 
 export default function ProfessionalInventory() {

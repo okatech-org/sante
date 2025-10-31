@@ -12,6 +12,7 @@ export interface MenuItem {
   href: string;
   badge?: number;
   permission?: string;
+  description?: string;
 }
 
 // Types d'établissements

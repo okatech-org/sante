@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   FileText, Download, Calendar, BarChart3, Activity,
-  Users, DollarSign, Stethoscope, TrendingUp
+  Users, DollarSign, Stethoscope, TrendingUp, Plus
 } from 'lucide-react';
 
 export default function ProfessionalReports() {
