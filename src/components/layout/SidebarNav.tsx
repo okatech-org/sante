@@ -3,6 +3,9 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useMultiEstablishment } from "@/contexts/MultiEstablishmentContext";
+import { getMenuForContext, MenuSection } from "@/config/menuDefinitions";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface SidebarNavProps {
   mobile?: boolean;
@@ -13,12 +16,14 @@ interface NavItem {
   label: string;
   href: string;
   badge?: number;
+  permission?: string;
 }
 
 export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   const { user } = useOfflineAuth();
   const userRoles = user?.user_metadata?.roles || [];
   const { t } = useLanguage();
+  const { currentEstablishment, currentRole, hasPermission } = useMultiEstablishment();
   
   const publicNavItems: NavItem[] = [
     { icon: Home, label: t('nav.home'), href: "/" },
@@ -69,42 +74,116 @@ export const SidebarNav = ({ mobile = false }: SidebarNavProps) => {
   ];
   
   // Détermine le menu à afficher selon l'état de connexion et les rôles
-  let navItems: NavItem[];
+  let menuSections: MenuSection[] = [];
+  
   if (!user) {
-    navItems = publicNavItems;
+    // Utilisateur non connecté: menu public
+    menuSections = [{
+      label: "Navigation",
+      items: publicNavItems
+    }];
   } else if (userRoles.includes('super_admin')) {
-    navItems = superAdminNavItems;
+    // Super admin: menu admin
+    menuSections = [{
+      label: "Administration",
+      items: superAdminNavItems
+    }];
+  } else if (currentEstablishment && currentRole) {
+    // Professionnel: menu dynamique selon établissement et rôle
+    const establishmentType = currentEstablishment.establishment?.type || 'cabinet_medical';
+    menuSections = getMenuForContext(establishmentType, currentRole);
   } else if (userRoles.includes('doctor') || userRoles.includes('medical_staff')) {
-    navItems = doctorNavItems;
+    // Fallback: menu médecin par défaut
+    menuSections = [{
+      label: "Professionnel",
+      items: doctorNavItems
+    }];
   } else {
-    navItems = patientNavItems;
+    // Fallback: menu patient
+    menuSections = [{
+      label: "Patient",
+      items: patientNavItems
+    }];
   }
+
+  // Filtrer les items selon les permissions
+  const filterByPermissions = (items: NavItem[]) => {
+    if (!currentEstablishment) return items;
+    
+    return items.filter(item => {
+      if (!item.permission) return true;
+      return hasPermission(item.permission);
+    });
+  };
 
   return (
     <nav className={cn("flex flex-col gap-1 p-4", mobile && "pt-6")}>
-      {navItems.map((item) => (
-        <NavLink
-          key={item.href}
-          to={item.href}
-          className={({ isActive }) =>
-            cn(
-              "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
-              "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-              isActive
-                ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                : "text-sidebar-foreground"
-            )
-          }
-        >
-          <item.icon className="h-5 w-5" />
-          <span className="flex-1">{item.label}</span>
-          {item.badge && (
-            <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-destructive text-destructive-foreground rounded-full">
-              {item.badge}
-            </span>
-          )}
-        </NavLink>
-      ))}
+      {menuSections.length === 1 ? (
+        // Menu simple sans sections
+        <div className="space-y-1">
+          {filterByPermissions(menuSections[0].items).map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
+                  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground"
+                )
+              }
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="flex-1">{item.label}</span>
+              {item.badge && (
+                <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-destructive text-destructive-foreground rounded-full">
+                  {item.badge}
+                </span>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      ) : (
+        // Menu avec sections accordéon
+        <Accordion type="multiple" defaultValue={menuSections.map((_, i) => `section-${i}`)} className="space-y-2">
+          {menuSections.map((section, sectionIndex) => (
+            <AccordionItem key={`section-${sectionIndex}`} value={`section-${sectionIndex}`} className="border-0">
+              <AccordionTrigger className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:no-underline">
+                {section.label}
+              </AccordionTrigger>
+              <AccordionContent className="pb-0 pt-1">
+                <div className="space-y-1">
+                  {filterByPermissions(section.items).map((item) => (
+                    <NavLink
+                      key={item.href}
+                      to={item.href}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all",
+                          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          isActive
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground"
+                        )
+                      }
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span className="flex-1">{item.label}</span>
+                      {item.badge && (
+                        <span className="ml-auto px-2 py-0.5 text-xs font-bold bg-destructive text-destructive-foreground rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </NavLink>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
     </nav>
   );
 };

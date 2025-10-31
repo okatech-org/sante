@@ -8,16 +8,19 @@ interface MultiEstablishmentContextType {
   // États
   establishments: EstablishmentAffiliation[];
   currentEstablishment: ProfessionalContext | null;
+  currentRole: string | null;
+  availableRoles: string[];
   workContext: ProfessionalContext | null;
   loading: boolean;
   isLoading: boolean;
   
   // Actions
-  selectEstablishment: (staffRoleId: string) => Promise<void>;
-  switchEstablishment: (staffRoleId: string) => Promise<void>;
+  selectEstablishment: (staffRoleId: string, role?: string) => Promise<void>;
+  switchEstablishment: (staffRoleId: string, role?: string) => Promise<void>;
+  switchRole: (role: string) => Promise<void>;
   refreshEstablishments: () => Promise<void>;
-  hasPermission: (permission: Permission) => boolean;
-  hasAnyPermission: (permissions: Permission[]) => boolean;
+  hasPermission: (permission: string) => boolean;
+  hasAnyPermission: (permissions: string[]) => boolean;
   
   // Helpers
   isAdmin: boolean;
@@ -31,6 +34,8 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   const { user } = useAuth();
   const [establishments, setEstablishments] = useState<EstablishmentAffiliation[]>([]);
   const [currentEstablishment, setCurrentEstablishment] = useState<ProfessionalContext | null>(null);
+  const [currentRole, setCurrentRole] = useState<string | null>(null);
+  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Charger tous les établissements du professionnel via RPC
@@ -155,7 +160,7 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   }, [user?.id, establishments]);
 
   // Sélectionner un établissement par son staff_id
-  const selectEstablishment = useCallback(async (staffRoleId: string) => {
+  const selectEstablishment = useCallback(async (staffRoleId: string, role?: string) => {
     const selectedEstablishment = establishments.find(e => e.staff_id === staffRoleId);
     
     if (!selectedEstablishment) {
@@ -164,12 +169,25 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
     }
 
     await loadEstablishmentContext(selectedEstablishment.establishment_id);
+    
+    // Définir le rôle
+    const selectedRole = role || selectedEstablishment.role_in_establishment;
+    setCurrentRole(selectedRole);
+    localStorage.setItem('current_role', selectedRole);
   }, [establishments, loadEstablishmentContext]);
 
   // Changer d'établissement (alias de selectEstablishment)
-  const switchEstablishment = useCallback(async (staffRoleId: string) => {
-    await selectEstablishment(staffRoleId);
+  const switchEstablishment = useCallback(async (staffRoleId: string, role?: string) => {
+    await selectEstablishment(staffRoleId, role);
   }, [selectEstablishment]);
+
+  // Changer de rôle dans le même établissement
+  const switchRole = useCallback(async (role: string) => {
+    setCurrentRole(role);
+    localStorage.setItem('current_role', role);
+    toast.success(`Basculé vers le rôle: ${role}`);
+    window.location.reload();
+  }, []);
 
   // Rafraîchir la liste des établissements
   const refreshEstablishments = useCallback(async () => {
@@ -182,17 +200,17 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   }, [loadEstablishments]);
 
   // Vérifier une permission spécifique
-  const hasPermission = useCallback((permission: Permission): boolean => {
+  const hasPermission = useCallback((permission: string): boolean => {
     if (!currentEstablishment) return false;
-    if (currentEstablishment.permissions.includes('all')) return true;
-    return currentEstablishment.permissions.includes(permission);
+    if (currentEstablishment.permissions.includes('all' as any)) return true;
+    return currentEstablishment.permissions.includes(permission as any);
   }, [currentEstablishment]);
 
   // Vérifier si l'utilisateur a au moins une des permissions listées
-  const hasAnyPermission = useCallback((permissions: Permission[]): boolean => {
+  const hasAnyPermission = useCallback((permissions: string[]): boolean => {
     if (!currentEstablishment) return false;
-    if (currentEstablishment.permissions.includes('all')) return true;
-    return permissions.some(p => currentEstablishment.permissions.includes(p));
+    if (currentEstablishment.permissions.includes('all' as any)) return true;
+    return permissions.some(p => currentEstablishment.permissions.includes(p as any));
   }, [currentEstablishment]);
 
   // Helpers pour les rôles courants
@@ -203,11 +221,14 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   const value: MultiEstablishmentContextType = {
     establishments,
     currentEstablishment,
+    currentRole,
+    availableRoles,
     workContext: currentEstablishment,
     loading: isLoading,
     isLoading,
     selectEstablishment,
     switchEstablishment,
+    switchRole,
     refreshEstablishments,
     hasPermission,
     hasAnyPermission,

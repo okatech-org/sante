@@ -30,6 +30,11 @@ export default function SelectEstablishment() {
   }, [establishments, isLoading, navigate]);
 
   const handleSelect = async (staffRoleId: string) => {
+    const establishment = establishments.find(e => e.staff_id === staffRoleId);
+    if (!establishment) return;
+    
+    // TODO: Vérifier s'il y a plusieurs rôles pour cet établissement
+    // Pour l'instant, on suppose un seul rôle par établissement
     await selectEstablishment(staffRoleId);
     navigate('/professional/dashboard');
   };

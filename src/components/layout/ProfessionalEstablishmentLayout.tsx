@@ -23,6 +23,7 @@ import {
   HeartPulse, Baby, Brain, Eye, Bone, Heart
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { RoleAndEstablishmentSwitcher } from './RoleAndEstablishmentSwitcher';
 
 interface ProfessionalEstablishmentLayoutProps {
   children: ReactNode;
@@ -621,9 +622,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
               {/* Titre et avatar mobile */}
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold">
-                  {currentEstablishment.establishment.name}
-                </h2>
+                <RoleAndEstablishmentSwitcher />
                 <Avatar className="h-8 w-8">
                   {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName} />}
                   <AvatarFallback className="text-xs">
@@ -637,6 +636,10 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
         {/* Main Content Area */}
         <main className="flex-1 p-6 overflow-y-auto">
+          {/* Header desktop avec switcher */}
+          <div className="hidden lg:flex justify-between items-center mb-6">
+            <RoleAndEstablishmentSwitcher />
+          </div>
           {children}
         </main>
       </div>
