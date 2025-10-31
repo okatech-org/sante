@@ -1,4 +1,4 @@
-import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard } from "lucide-react";
+import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare } from "lucide-react";
 
 export interface MenuSection {
   label: string;
@@ -346,4 +346,101 @@ export const ROLE_LABELS: Record<string, string> = {
   'pharmacist': 'Pharmacien(ne)',
   'laborantin': 'Laborantin(e)',
   'receptionist': 'Réceptionniste'
+};
+
+// ============= MENU DIRECTEUR (5 sections) =============
+export const DIRECTOR_MENU: MenuSection[] = [
+  {
+    id: 'general',
+    label: 'GÉNÉRAL',
+    items: [
+      { label: "Vue d'ensemble", href: '/professional/dashboard', icon: LayoutDashboard },
+      { label: 'Statistiques', href: '/professional/statistics', icon: BarChart3 }
+    ]
+  },
+  {
+    id: 'medical-activity', 
+    label: 'ACTIVITÉ MÉDICALE',
+    items: [
+      { label: 'Rendez-vous', href: '/professional/appointments', icon: Calendar, badge: 8 },
+      { label: 'Consultations', href: '/professional/consultations', icon: Stethoscope },
+      { label: 'Prescriptions', href: '/professional/prescriptions', icon: FileText },
+      { label: 'Mes Patients', href: '/professional/patients', icon: Users }
+    ]
+  },
+  {
+    id: 'medical-direction',
+    label: 'DIRECTION MÉDICALE', 
+    items: [
+      { label: 'Hospitalisation', href: '/professional/hospitalization', icon: Building2 },
+      { label: 'Plateaux Techniques', href: '/professional/technical', icon: Activity }
+    ]
+  },
+  {
+    id: 'administration',
+    label: 'ADMINISTRATION',
+    items: [
+      { label: 'Personnel', href: '/professional/staff', icon: UserCog, permission: 'manage_staff' },
+      { label: 'Facturation', href: '/professional/billing', icon: DollarSign, permission: 'manage_billing' },
+      { label: 'Inventaire', href: '/professional/inventory', icon: Package },
+      { label: 'Rapports', href: '/professional/reports', icon: FileText }
+    ]
+  },
+  {
+    id: 'communication',
+    label: 'COMMUNICATION',
+    items: [
+      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 }
+    ]
+  }
+];
+
+// ============= MENU MÉDECIN (4 sections) =============
+export const DOCTOR_MENU: MenuSection[] = [
+  {
+    id: 'general',
+    label: 'GÉNÉRAL',
+    items: [
+      { label: "Vue d'ensemble", href: '/professional/dashboard', icon: LayoutDashboard }
+    ]
+  },
+  {
+    id: 'medical-activity',
+    label: 'ACTIVITÉ MÉDICALE', 
+    items: [
+      { label: 'Rendez-vous', href: '/professional/appointments', icon: Calendar, badge: 'Nouveau' },
+      { label: 'Consultations', href: '/professional/consultations', icon: Stethoscope },
+      { label: 'Prescriptions', href: '/professional/prescriptions', icon: FileText },
+      { label: 'Mes Patients', href: '/professional/patients', icon: Users }
+    ]
+  },
+  {
+    id: 'medical-direction',
+    label: 'DIRECTION MÉDICALE',
+    items: [
+      { label: 'Hospitalisation', href: '/professional/hospitalization', icon: Building2 },
+      { label: 'Plateaux Techniques', href: '/professional/technical', icon: Activity }
+    ]
+  },
+  {
+    id: 'communication',
+    label: 'COMMUNICATION',
+    items: [
+      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 }
+    ]
+  }
+];
+
+// Fonction pour obtenir le menu selon le rôle
+export const getMenuForRole = (role: string): MenuSection[] => {
+  switch (role) {
+    case 'director':
+      return DIRECTOR_MENU;
+    case 'doctor':
+      return DOCTOR_MENU;
+    case 'admin':
+      return DIRECTOR_MENU; // Admin a les mêmes accès que directeur
+    default:
+      return DOCTOR_MENU; // Par défaut, menu médecin
+  }
 };

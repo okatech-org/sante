@@ -99,11 +99,22 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       // Auto-sélection si un seul établissement
       if (data.length === 1) {
         await loadEstablishmentContext(data[0].establishment_id);
+        // Charger les rôles disponibles
+        const roles = data.map(e => e.role_in_establishment);
+        setAvailableRoles(roles);
+        setCurrentRole(roles[0] || 'doctor');
       } else if (data.length > 1) {
         // Sélectionner le premier admin ou le premier de la liste
         const adminEstablishment = data.find(e => e.is_admin);
         const firstEstablishment = adminEstablishment || data[0];
         await loadEstablishmentContext(firstEstablishment.establishment_id);
+        
+        // Charger les rôles pour cet établissement
+        const rolesForEstablishment = data
+          .filter(e => e.establishment_id === firstEstablishment.establishment_id)
+          .map(e => e.role_in_establishment);
+        setAvailableRoles(rolesForEstablishment);
+        setCurrentRole(firstEstablishment.role_in_establishment);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des établissements:', error);
@@ -185,9 +196,18 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   const switchRole = useCallback(async (role: string) => {
     setCurrentRole(role);
     localStorage.setItem('current_role', role);
+    
+    // Charger les rôles disponibles pour l'établissement actuel
+    if (currentEstablishment) {
+      const rolesForEstablishment = establishments
+        .filter(e => e.establishment_id === currentEstablishment.establishment_id)
+        .map(e => e.role_in_establishment);
+      setAvailableRoles(rolesForEstablishment);
+    }
+    
     toast.success(`Basculé vers le rôle: ${role}`);
-    window.location.reload();
-  }, []);
+    // Ne pas recharger la page pour une transition instantanée
+  }, [currentEstablishment, establishments]);
 
   // Rafraîchir la liste des établissements
   const refreshEstablishments = useCallback(async () => {
@@ -216,6 +236,7 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
   // Helpers pour les rôles courants
   const isAdmin = currentEstablishment?.is_admin || false;
   const isDirector = currentEstablishment?.role_in_establishment === 'director';
+  const isDoctor = currentEstablishment?.role_in_establishment === 'doctor';
   const canManageStaff = hasPermission('manage_staff');
 
   const value: MultiEstablishmentContextType = {
@@ -234,7 +255,7 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
     hasAnyPermission,
     isAdmin,
     isDirector,
-    canManageStaff
+    isDoctor
   };
 
   return (
