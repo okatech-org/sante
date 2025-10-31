@@ -2002,6 +2002,43 @@ export type Database = {
         Returns: string
       }
       generate_prescription_number: { Args: never; Returns: string }
+      get_professional_context: {
+        Args: { _establishment_id: string; _user_id: string }
+        Returns: {
+          department: string
+          establishment_id: string
+          establishment_name: string
+          is_admin: boolean
+          is_department_head: boolean
+          job_position: string
+          matricule: string
+          permissions: string[]
+          professional_email: string
+          professional_id: string
+          professional_matricule: string
+          professional_name: string
+          professional_phone: string
+          professional_photo_url: string
+          professional_specialization: string
+          role_in_establishment: string
+          status: string
+        }[]
+      }
+      get_professional_establishments: {
+        Args: { _user_id: string }
+        Returns: {
+          department: string
+          establishment_id: string
+          establishment_name: string
+          establishment_type: string
+          is_admin: boolean
+          job_position: string
+          permissions: string[]
+          role_in_establishment: string
+          staff_id: string
+          status: string
+        }[]
+      }
       get_user_establishments: {
         Args: { _user_id: string }
         Returns: {
@@ -2020,6 +2057,14 @@ export type Database = {
       has_any_role: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_permission: {
+        Args: {
+          _establishment_id: string
+          _permission: string
           _user_id: string
         }
         Returns: boolean
