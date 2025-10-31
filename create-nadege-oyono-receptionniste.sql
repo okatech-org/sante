@@ -96,14 +96,33 @@ BEGIN
     
     RAISE NOTICE '✅ Utilisateur créé avec l''ID: %', v_user_id;
   ELSE
-    RAISE NOTICE '⚠️  L''utilisateur existe déjà avec l''email: %', v_email;
+    -- Mettre à jour le mot de passe et les métadonnées si l'utilisateur existe
+    UPDATE auth.users
+    SET 
+      encrypted_password = crypt(v_password, gen_salt('bf')),
+      raw_user_meta_data = jsonb_build_object(
+        'full_name', 'Nadège Oyono',
+        'role', 'receptionist'
+      ),
+      updated_at = NOW()
+    WHERE id = v_user_id;
+    
+    RAISE NOTICE '⚠️  L''utilisateur existe déjà, mise à jour effectuée pour: %', v_email;
   END IF;
 
-  -- Créer le profil professionnel
+  -- Supprimer les anciens rôles/profils incorrects
+  DELETE FROM establishment_staff 
+  WHERE professional_id IN (
+    SELECT id FROM professionals WHERE user_id = v_user_id
+  );
+  
+  DELETE FROM professionals WHERE user_id = v_user_id;
+
+  -- Créer le profil professionnel RÉCEPTIONNISTE
   INSERT INTO professionals (
     id, 
     user_id, 
-    category, 
+    category,  -- IMPORTANT: réceptionniste et non doctor
     full_name, 
     is_verified,
     license_number,
@@ -114,30 +133,25 @@ BEGIN
   VALUES (
     gen_random_uuid(), 
     v_user_id, 
-    'receptionist', 
+    'receptionist',  -- CATÉGORIE RÉCEPTIONNISTE
     'Nadège Oyono',
     true,
-    'REC-002',
-    '+241 07 XX XX XX',
+    'REC-SOGARA-2025-001', 
+    '+241 01 55 26 21',
     'Port-Gentil',
     NOW()
   )
-  ON CONFLICT (user_id) DO UPDATE SET 
-    full_name = EXCLUDED.full_name,
-    category = EXCLUDED.category,
-    license_number = EXCLUDED.license_number,
-    is_verified = EXCLUDED.is_verified
   RETURNING id INTO v_prof_id;
 
-  RAISE NOTICE '✅ Profil professionnel créé avec l''ID: %', v_prof_id;
+  RAISE NOTICE '✅ Profil professionnel RÉCEPTIONNISTE créé avec l''ID: %', v_prof_id;
 
-  -- Ajouter à establishment_staff
+  -- Ajouter à establishment_staff avec le rôle RÉCEPTIONNISTE
   INSERT INTO establishment_staff (
     id, 
     professional_id, 
     establishment_id, 
     department_id, 
-    role, 
+    role,  -- IMPORTANT: receptionist et non doctor
     position,
     is_department_head, 
     is_establishment_admin, 
@@ -151,28 +165,21 @@ BEGIN
     v_prof_id, 
     'sogara-cmst-001', 
     'sogara-dept-acc',
-    'receptionist', 
+    'receptionist',  -- RÔLE RÉCEPTIONNISTE
     'Réceptionniste',
     false, 
     false, 
     'active', 
-    'REC-002',
+    'REC-SOGARA-2025-001',
     jsonb_build_object(
       'appointments', jsonb_build_array('view', 'add', 'edit'),
       'patients', jsonb_build_array('view'),
       'consultations', jsonb_build_array('view')
     ),
     NOW()
-  )
-  ON CONFLICT (professional_id, establishment_id) DO UPDATE SET
-    role = EXCLUDED.role,
-    position = EXCLUDED.position,
-    department_id = EXCLUDED.department_id,
-    matricule = EXCLUDED.matricule,
-    permissions = EXCLUDED.permissions,
-    status = 'active';
+  );
 
-  RAISE NOTICE '✅ Ajouté au staff de l''établissement SOGARA';
+  RAISE NOTICE '✅ Ajouté au staff de l''établissement SOGARA en tant que RÉCEPTIONNISTE';
 
 EXCEPTION
   WHEN OTHERS THEN
@@ -183,11 +190,12 @@ END $$;
 SELECT 
   u.email,
   u.id as user_id,
+  u.raw_user_meta_data->>'role' as user_role,
   p.id as professional_id,
   p.full_name,
-  p.category,
+  p.category as professional_category,
   p.license_number as matricule,
-  es.role,
+  es.role as staff_role,
   es.position,
   ed.name as department,
   e.name as establishment,
@@ -209,8 +217,11 @@ WHERE u.email = 'nadege.oyono@sogara.ga';
 -- 👤 Nom complet      : Nadège Oyono
 -- 💼 Rôle             : Réceptionniste
 -- 🏢 Département      : Accueil
--- 🔢 Matricule        : REC-002
+-- 🔢 Matricule        : REC-SOGARA-2025-001
 -- 🏥 Établissement    : Centre Médical de Santé au Travail SOGARA
+-- 
+-- ⚠️ CATÉGORIE        : receptionist (PAS doctor!)
+-- ⚠️ RÔLE             : receptionist (PAS doctor!)
 -- 
 -- 📱 Permissions:
 --    • Gestion des rendez-vous (voir, ajouter, modifier)
@@ -219,4 +230,3 @@ WHERE u.email = 'nadege.oyono@sogara.ga';
 --
 -- 🌐 URL de connexion : http://localhost:8080/login/professional
 -- =================================================================
-
