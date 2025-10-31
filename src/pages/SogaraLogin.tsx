@@ -49,7 +49,7 @@ export default function SogaraLogin() {
         description: `Bienvenue au CMST SOGARA`,
       });
       
-      navigate("/establishments/sogara/admin");
+      navigate("/professional");
     } catch (error: any) {
       toast({
         variant: "destructive",

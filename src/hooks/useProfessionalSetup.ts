@@ -19,9 +19,9 @@ export function useProfessionalSetup() {
     if (establishments.length === 1) {
       // Cas spécial pour SOGARA avec le dashboard dédié
       if (establishments[0].establishmentId === 'a1b2c3d4-e5f6-7890-abcd-ef1234567890') {
-        navigate('/establishments/sogara/admin');
+        navigate('/professional');
       } else {
-        navigate('/professional/dashboard');
+        navigate('/professional');
       }
     } else if (establishments.length > 1) {
       // Plusieurs établissements : page de sélection

@@ -81,7 +81,7 @@ export default function SogaraLoginEnhanced() {
       });
       
       // Rediriger vers le dashboard SOGARA
-      navigate("/establishments/sogara/admin");
+      navigate("/professional");
       
     } catch (error: any) {
       console.error("Erreur de connexion:", error);

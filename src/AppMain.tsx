@@ -81,6 +81,7 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
 import SogaraLogin from "./pages/SogaraLogin";
 import SogaraDashboard from "./pages/establishments/sogara/admin/SogaraDashboard";
+import SogaraRedirect from "./pages/establishments/sogara/admin/SogaraRedirect";
 import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
 import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
 import SogaraEmployees from "./pages/establishments/sogara/SogaraEmployees";
@@ -188,8 +189,8 @@ function AppMain() {
                     {/* Connexion Personnel SOGARA */}
                     <Route path="/login/sogara" element={<SogaraLogin />} />
                     
-                    {/* Dashboard Admin SOGARA (pour l'admin de l'établissement) */}
-                    <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />
+                    {/* Dashboard Admin SOGARA - Redirection vers nouvelle interface */}
+                    <Route path="/establishments/sogara/admin" element={<SogaraRedirect />} />
                     <Route path="/establishments/sogara/admin/consultations" element={<SogaraConsultations />} />
                     <Route path="/establishments/sogara/admin/emergency" element={<SogaraEmergency />} />
                     <Route path="/establishments/sogara/admin/employees" element={<SogaraEmployees />} />

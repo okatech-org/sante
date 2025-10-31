@@ -214,15 +214,6 @@ export default function ProfessionalDashboard() {
 
           {/* Actions rapides */}
           <div className="flex gap-2">
-            {currentEstablishment?.establishmentId === 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' && isDirector && (
-              <Button 
-                variant="default"
-                onClick={() => navigate('/establishments/sogara/admin')}
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Dashboard SOGARA
-              </Button>
-            )}
             {establishments.length > 1 && (
               <Button 
                 variant="outline"
