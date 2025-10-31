@@ -45,7 +45,6 @@ import ProfessionalMedicalStaff from "./pages/professional/ProfessionalMedicalSt
 import ProfessionalServices from "./pages/professional/ProfessionalServices";
 import ProfessionalProtocols from "./pages/professional/ProfessionalProtocols";
 import ProfessionalInfrastructure from "./pages/professional/ProfessionalInfrastructure";
-import ProfessionalIntegrations from "./pages/professional/ProfessionalIntegrations";
 import ProfessionalSettings from "./pages/professional/ProfessionalSettings";
 import ProfessionalTeleconsultations from "./pages/professional/ProfessionalTeleconsultations";
 import ProfessionalPatients from "./pages/professional/ProfessionalPatients";
@@ -230,11 +229,6 @@ function AppMain() {
                     <Route path="/professional/infrastructure" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalInfrastructure />
-                      </ProfessionalEstablishmentLayout>
-                    } />
-                    <Route path="/professional/integrations" element={
-                      <ProfessionalEstablishmentLayout>
-                        <ProfessionalIntegrations />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/settings" element={

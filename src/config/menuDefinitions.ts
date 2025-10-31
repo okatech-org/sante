@@ -1,4 +1,4 @@
-import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench } from "lucide-react";
+import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench } from "lucide-react";
 
 export interface MenuSection {
   id?: string; // Optional for backward compatibility
@@ -384,7 +384,6 @@ export const DIRECTOR_MENU: MenuSection[] = [
     label: 'COMMUNICATION',
     items: [
       { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 },
-      { label: 'Intégrations', href: '/professional/integrations', icon: Link2 },
       { label: 'Paramètres', href: '/professional/settings', icon: Settings }
     ]
   }
@@ -408,7 +407,6 @@ export const DOCTOR_MENU: MenuSection[] = [
     label: 'COMMUNICATION',
     items: [
       { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 },
-      { label: 'Intégrations', href: '/professional/integrations', icon: Link2 },
       { label: 'Paramètres', href: '/professional/settings', icon: Settings }
     ]
   }
