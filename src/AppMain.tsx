@@ -207,7 +207,7 @@ function AppMain() {
                 <Sonner />
               </BrowserRouter>
               </TooltipProvider>
-            </SogaraAuthProvider>
+              </SogaraAuthProvider>
             </MultiEstablishmentProvider>
           </AuthProvider>
         </LanguageProvider>

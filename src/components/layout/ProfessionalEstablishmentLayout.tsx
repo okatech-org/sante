@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { RoleAndEstablishmentSwitcher } from './RoleAndEstablishmentSwitcher';
+import { useIsSogara } from '@/contexts/SogaraAuthContext';
+import { SogaraDashboardLayout } from '@/components/layout/SogaraDashboardLayout';
 
 interface ProfessionalEstablishmentLayoutProps {
   children: ReactNode;
@@ -68,6 +70,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     isDirector,
     isAdmin
   } = useMultiEstablishment();
+  const isSogara = useIsSogara();
 
   // Récupérer les informations du profil
   const [profileData, setProfileData] = useState<any>(null);
@@ -338,6 +341,14 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   };
 
   if (!currentEstablishment) {
+    // Fallback SOGARA: afficher le layout spécifique si aucun établissement n'est lié
+    if (isSogara) {
+      return (
+        <SogaraDashboardLayout>
+          {children}
+        </SogaraDashboardLayout>
+      );
+    }
     return <div>Chargement...</div>;
   }
 
