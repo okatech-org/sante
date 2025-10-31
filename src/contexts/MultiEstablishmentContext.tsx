@@ -1,39 +1,14 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
-
-interface Establishment {
-  id: string;
-  name: string;
-  type: string;
-  subType?: string;
-  address?: string;
-  city?: string;
-  logoUrl?: string;
-  isActive: boolean;
-}
-
-interface StaffRole {
-  id: string;
-  establishmentId: string;
-  establishment: Establishment;
-  role: string;
-  permissions: string[];
-  status: string;
-  isAdmin: boolean;
-  department?: string;
-  position?: string;
-  isEstablishmentAdmin?: boolean;
-  matricule?: string;
-  isDepartmentHead?: boolean;
-}
+import type { ProfessionalContext, EstablishmentAffiliation, Permission } from '@/types/permissions';
 
 interface MultiEstablishmentContextType {
   // États
-  establishments: StaffRole[];
-  currentEstablishment: StaffRole | null;
-  workContext: StaffRole | null;
+  establishments: EstablishmentAffiliation[];
+  currentEstablishment: ProfessionalContext | null;
+  workContext: ProfessionalContext | null;
   loading: boolean;
   isLoading: boolean;
   
@@ -41,8 +16,8 @@ interface MultiEstablishmentContextType {
   selectEstablishment: (staffRoleId: string) => Promise<void>;
   switchEstablishment: (staffRoleId: string) => Promise<void>;
   refreshEstablishments: () => Promise<void>;
-  hasPermission: (permission: string) => boolean;
-  hasAnyPermission: (permissions: string[]) => boolean;
+  hasPermission: (permission: Permission) => boolean;
+  hasAnyPermission: (permissions: Permission[]) => boolean;
   
   // Helpers
   isAdmin: boolean;
@@ -54,90 +29,70 @@ const MultiEstablishmentContext = createContext<MultiEstablishmentContextType | 
 
 export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
-  const [establishments, setEstablishments] = useState<StaffRole[]>([]);
-  const [currentEstablishment, setCurrentEstablishment] = useState<StaffRole | null>(null);
+  const [establishments, setEstablishments] = useState<EstablishmentAffiliation[]>([]);
+  const [currentEstablishment, setCurrentEstablishment] = useState<ProfessionalContext | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Charger les établissements du professionnel
-  const loadEstablishments = async () => {
+  // Charger tous les établissements du professionnel via RPC
+  const loadEstablishments = useCallback(async () => {
     if (!user?.id) {
       setIsLoading(false);
       return;
     }
 
     try {
-      // 1. Récupérer le profil professionnel
-      const { data: professional, error: profError } = await supabase
-        .from('professionals')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // Utilise la fonction RPC optimisée
+      const { data, error } = await supabase.rpc('get_professional_establishments', {
+        _user_id: user.id
+      });
 
-      // Si pas de profil professionnel, c'est OK (patient, admin, etc.)
-      if (profError || !professional) {
-        // Ne pas afficher d'erreur pour les non-professionnels
-        if (profError?.code !== 'PGRST116') { // PGRST116 = table doesn't exist
-          console.debug('Utilisateur non-professionnel ou table professionals manquante');
+      if (error) {
+        // Si l'erreur indique que l'utilisateur n'est pas un professionnel, c'est OK
+        if (error.message?.includes('function') || error.code === 'PGRST116') {
+          console.debug('Utilisateur non-professionnel');
+          setIsLoading(false);
+          return;
         }
-        setIsLoading(false);
-        return;
-      }
-
-      // 2. Récupérer les rôles dans les établissements
-      const { data: staffRoles, error: staffError } = await supabase
-        .from('establishment_staff')
-        .select(`
-          id,
-          establishment_id,
-          role_in_establishment,
-          permissions,
-          is_admin,
-          status,
-          establishments (
-            id,
-            name,
-            type,
-            sub_type,
-            address,
-            city,
-            logo_url,
-            is_active
-          )
-        `)
-        .eq('professional_id', professional.id);
-
-      if (staffError) {
-        console.error('Erreur de chargement des établissements:', staffError);
+        
+        console.error('Erreur de chargement des établissements:', error);
         toast.error('Impossible de charger vos établissements');
         setIsLoading(false);
         return;
       }
 
-      // 3. Transformer les données
-      const formattedStaffRoles: StaffRole[] = (staffRoles || []).map((role: any) => ({
-        id: role.id,
-        establishmentId: role.establishment_id,
+      if (!data || data.length === 0) {
+        console.debug('Aucun établissement trouvé pour cet utilisateur');
+        setEstablishments([]);
+        setCurrentEstablishment(null);
+        setIsLoading(false);
+        return;
+      }
+
+      // Ajouter les propriétés legacy pour compatibilité
+      const establishmentsWithLegacy = data.map(e => ({
+        ...e,
+        id: e.staff_id,
+        establishmentId: e.establishment_id,
+        role: e.role_in_establishment,
+        isAdmin: e.is_admin,
+        position: e.job_position,
         establishment: {
-          id: role.establishments.id,
-          name: role.establishments.name,
-          type: role.establishments.type,
-          subType: role.establishments.sub_type,
-          address: role.establishments.address,
-          city: role.establishments.city,
-          logoUrl: role.establishments.logo_url,
-          isActive: role.establishments.is_active
-        },
-        role: role.role_in_establishment,
-        permissions: role.permissions || [],
-        status: role.status || 'active',
-        isAdmin: role.is_admin || false
+          id: e.establishment_id,
+          name: e.establishment_name,
+          type: e.establishment_type
+        }
       }));
+      
+      setEstablishments(establishmentsWithLegacy);
 
-      setEstablishments(formattedStaffRoles);
-
-      // 4. Sélectionner le premier établissement par défaut
-      if (formattedStaffRoles.length > 0) {
-        await selectEstablishment(formattedStaffRoles[0].id, formattedStaffRoles);
+      // Auto-sélection si un seul établissement
+      if (data.length === 1) {
+        await loadEstablishmentContext(data[0].establishment_id);
+      } else if (data.length > 1) {
+        // Sélectionner le premier admin ou le premier de la liste
+        const adminEstablishment = data.find(e => e.is_admin);
+        const firstEstablishment = adminEstablishment || data[0];
+        await loadEstablishmentContext(firstEstablishment.establishment_id);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des établissements:', error);
@@ -145,51 +100,95 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.id]);
 
-  // Sélectionner un établissement
-  const selectEstablishment = async (staffRoleId: string, roles?: StaffRole[]) => {
-    const availableRoles = roles || establishments;
-    const selectedRole = availableRoles.find(r => r.id === staffRoleId);
+  // Charger le contexte complet d'un établissement spécifique via RPC
+  const loadEstablishmentContext = useCallback(async (establishmentId: string) => {
+    if (!user?.id) return;
+
+    try {
+      const { data, error } = await supabase.rpc('get_professional_context', {
+        _user_id: user.id,
+        _establishment_id: establishmentId
+      });
+
+      if (error) {
+        console.error('Erreur chargement contexte:', error);
+        toast.error('Impossible de charger le contexte de l\'établissement');
+        return;
+      }
+
+      if (data && data.length > 0) {
+        // Ajouter les propriétés legacy pour compatibilité
+        const contextWithLegacy = {
+          ...data[0],
+          id: data[0].establishment_id,
+          role: data[0].role_in_establishment,
+          isAdmin: data[0].is_admin,
+          establishment: {
+            id: data[0].establishment_id,
+            name: data[0].establishment_name
+          }
+        };
+        
+        setCurrentEstablishment(contextWithLegacy);
+        
+        // Trouver l'établissement correspondant pour avoir toutes les infos
+        const establishment = establishments.find(e => e.establishment_id === establishmentId);
+        if (establishment) {
+          toast.success(`Connecté à ${establishment.establishment_name}`);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur chargement contexte établissement:', error);
+    }
+  }, [user?.id, establishments]);
+
+  // Sélectionner un établissement par son staff_id
+  const selectEstablishment = useCallback(async (staffRoleId: string) => {
+    const selectedEstablishment = establishments.find(e => e.staff_id === staffRoleId);
     
-    if (!selectedRole) {
+    if (!selectedEstablishment) {
       toast.error('Établissement non trouvé');
       return;
     }
 
-    setCurrentEstablishment(selectedRole);
-    toast.success(`Connecté à ${selectedRole.establishment.name}`);
-  };
+    await loadEstablishmentContext(selectedEstablishment.establishment_id);
+  }, [establishments, loadEstablishmentContext]);
 
-  // Changer d'établissement
-  const switchEstablishment = async (staffRoleId: string) => {
+  // Changer d'établissement (alias de selectEstablishment)
+  const switchEstablishment = useCallback(async (staffRoleId: string) => {
     await selectEstablishment(staffRoleId);
-  };
+  }, [selectEstablishment]);
 
-  // Rafraîchir les établissements
-  const refreshEstablishments = async () => {
+  // Rafraîchir la liste des établissements
+  const refreshEstablishments = useCallback(async () => {
     await loadEstablishments();
-  };
+  }, [loadEstablishments]);
 
   // Charger au montage et à chaque changement d'utilisateur
   useEffect(() => {
     loadEstablishments();
-  }, [user?.id]);
+  }, [loadEstablishments]);
 
-  // Helpers
-  const isAdmin = currentEstablishment?.isAdmin || false;
-  const isDirector = isAdmin;
-  const canManageStaff = isAdmin;
-
-  const hasPermission = (permission: string): boolean => {
+  // Vérifier une permission spécifique
+  const hasPermission = useCallback((permission: Permission): boolean => {
     if (!currentEstablishment) return false;
-    return currentEstablishment.permissions.includes(permission) || isAdmin;
-  };
+    if (currentEstablishment.permissions.includes('all')) return true;
+    return currentEstablishment.permissions.includes(permission);
+  }, [currentEstablishment]);
 
-  const hasAnyPermission = (permissions: string[]): boolean => {
+  // Vérifier si l'utilisateur a au moins une des permissions listées
+  const hasAnyPermission = useCallback((permissions: Permission[]): boolean => {
     if (!currentEstablishment) return false;
-    return permissions.some(p => currentEstablishment.permissions.includes(p)) || isAdmin;
-  };
+    if (currentEstablishment.permissions.includes('all')) return true;
+    return permissions.some(p => currentEstablishment.permissions.includes(p));
+  }, [currentEstablishment]);
+
+  // Helpers pour les rôles courants
+  const isAdmin = currentEstablishment?.is_admin || false;
+  const isDirector = currentEstablishment?.role_in_establishment === 'director';
+  const canManageStaff = hasPermission('manage_staff');
 
   const value: MultiEstablishmentContextType = {
     establishments,
