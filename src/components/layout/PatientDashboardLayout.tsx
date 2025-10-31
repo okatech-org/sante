@@ -1,4 +1,4 @@
-import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Calendar, Video, Stethoscope, Shield, Activity, Pill, FileHeart, AlertCircle, Home, Bell, Settings, Heart, Menu, LogOut, Sun, Moon, Globe, Laptop, Users, ClipboardList, DollarSign, TrendingUp, Mail, Link2 } from "lucide-react";
 import { useState, ReactNode, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -20,7 +20,7 @@ interface PatientDashboardLayoutProps {
 }
 
 export function PatientDashboardLayout({ children }: PatientDashboardLayoutProps) {
-  const { user, hasRole, signOut } = useOfflineAuth();
+  const { user, hasRole, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { OfflineAuthProvider } from "./contexts/OfflineAuthContext";
 import { MultiEstablishmentProvider } from "./contexts/MultiEstablishmentContext";
 import { SogaraAuthProvider } from "./contexts/SogaraAuthContext";
 import { ThemeProvider } from "next-themes";
@@ -109,9 +110,10 @@ function AppMain() {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <LanguageProvider>
           <AuthProvider>
-            <MultiEstablishmentProvider>
-              <SogaraAuthProvider>
-                <TooltipProvider>
+            <OfflineAuthProvider>
+              <MultiEstablishmentProvider>
+                <SogaraAuthProvider>
+                  <TooltipProvider>
                 <BrowserRouter>
                   <ConsoleSilencer />
                   <div className="min-h-screen bg-background">
@@ -212,6 +214,7 @@ function AppMain() {
               </TooltipProvider>
               </SogaraAuthProvider>
             </MultiEstablishmentProvider>
+            </OfflineAuthProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
