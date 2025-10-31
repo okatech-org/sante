@@ -1,0 +1,417 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║  🔄 SYSTÈME D'ADMISSION BIDIRECTIONNEL - 100% IMPLÉMENTÉ        ║
+║                                                                   ║
+║  Professionnel ↔ Établissement                                   ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+🎯 DOUBLE FLUX IMPLÉMENTÉ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣ PROFESSIONNEL → ÉTABLISSEMENT (Demande à rejoindre)
+   ┌──────────────┐                    ┌───────────────────┐
+   │ Professionnel │ ──[Demande]──────> │  Établissement    │
+   │              │                    │  (Admin valide)   │
+   │              │ <─[Validation]──── │                   │
+   └──────────────┘                    └───────────────────┘
+   
+   • Professionnel cherche établissements
+   • Envoie demande avec motivation
+   • Admin établissement approuve/rejette
+   • Si approuvé → Ajout automatique à establishment_staff
+
+2️⃣ ÉTABLISSEMENT → PROFESSIONNEL (Invitation)
+   ┌───────────────┐                    ┌──────────────┐
+   │ Établissement │ ──[Invitation]───> │ Professionnel │
+   │ (Admin invite)│                    │              │
+   │               │ <─[Acceptation]─── │              │
+   └───────────────┘                    └──────────────┘
+   
+   • Admin établissement invite par email
+   • Professionnel reçoit invitation
+   • Professionnel accepte/refuse
+   • Si accepté → Ajout automatique à establishment_staff
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💾 BASE DE DONNÉES (Migration SQL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 TABLE: establishment_admission_requests
+──────────────────────────────────────────────────────────────────
+• id                  - UUID primary key
+• request_type        - 'professional_to_establishment' | 'establishment_to_professional'
+• professional_id     - UUID → professionals
+• establishment_id    - UUID → establishments
+• requested_role      - doctor, nurse, admin, etc.
+• department          - Département souhaité
+• job_position        - Poste souhaité
+• message             - Message de motivation
+• status              - pending, approved, rejected, cancelled
+• created_at          - Date création
+• expires_at          - Expiration (30 jours)
+• reviewed_by         - Qui a validé
+• reviewed_at         - Date validation
+• rejection_reason    - Raison du rejet
+
+🔐 RLS POLICIES (6 policies)
+──────────────────────────────────────────────────────────────────
+✅ Professionnels voient leurs demandes
+✅ Professionnels créent demandes sortantes
+✅ Professionnels annulent/acceptent
+✅ Admins voient demandes de leur établissement
+✅ Admins créent invitations
+✅ Admins approuvent/rejettent
+
+⚡ FONCTIONS RPC (7 fonctions)
+──────────────────────────────────────────────────────────────────
+1. create_admission_request          - Créer demande (pro → étab)
+2. approve_admission_request         - Approuver + créer affiliation auto
+3. reject_admission_request          - Rejeter avec raison
+4. cancel_admission_request          - Annuler sa demande
+5. get_my_admission_requests         - Mes demandes + invitations
+6. get_establishment_admission_requests - Demandes de l'établissement
+7. invite_professional_to_establishment - Inviter un pro
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💻 INTERFACES UTILISATEUR (2 pages)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📄 Page 1: JoinEstablishment.tsx (340 lignes)
+──────────────────────────────────────────────────────────────────
+Route: /professional/join-establishment
+Accès: Sidebar → "+ Rejoindre un établissement"
+
+Fonctionnalités:
+✅ Recherche d'établissements (nom, ville, type)
+✅ Grid des établissements disponibles
+✅ Formulaire de demande:
+   - Rôle souhaité
+   - Département souhaité
+   - Poste souhaité
+   - Message de motivation
+✅ Mes demandes en cours:
+   - Demandes sortantes (avec bouton Annuler)
+   - Invitations reçues (avec boutons Accepter/Refuser)
+   - Badges statuts colorés
+✅ Détection doublons (badge "Demande en attente")
+
+📄 Page 2: ManageAdmissions.tsx (320 lignes)
+──────────────────────────────────────────────────────────────────
+Route: /professional/manage-admissions
+Accès: Menu DIRECTEUR → ADMINISTRATION → Gestion Admissions
+
+Fonctionnalités:
+✅ 2 Tabs:
+   - Demandes reçues (pro → établissement)
+   - Invitations envoyées (établissement → pro)
+✅ 3 Stats cards:
+   - Demandes reçues (count)
+   - Invitations envoyées (count)
+   - Total en attente
+✅ Dialog invitation:
+   - Email professionnel
+   - Rôle proposé
+   - Département/Poste
+   - Message personnalisé
+✅ Actions sur demandes:
+   - Approuver → Création auto affiliation
+   - Rejeter → Avec raison
+✅ Profils complets des demandeurs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 MODIFICATIONS UI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ SIDEBAR - SECTION ÉTABLISSEMENTS
+   AVANT:
+   ├─ CMST SOGARA
+   ├─ Etablissement 2 (grisé) ❌
+   └─ Etablissement X (grisé) ❌
+
+   APRÈS:
+   ├─ CMST SOGARA
+   │  ├─ DIRECTEUR
+   │  └─ MÉDECIN
+   │
+   └─ + Rejoindre un établissement ⭐ (bouton dashed)
+
+✅ MENU DIRECTEUR - ADMINISTRATION
+   AVANT: 4 pages
+   ├─ Personnel
+   ├─ Finances & CNAMGS
+   ├─ Infrastructure
+   └─ Stocks & Pharmacie
+
+   APRÈS: 5 pages
+   ├─ Personnel
+   ├─ Gestion Admissions ⭐ NOUVEAU
+   ├─ Finances & CNAMGS
+   ├─ Infrastructure
+   └─ Stocks & Pharmacie
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔄 WORKFLOW COMPLET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCÉNARIO A: Professionnel demande à rejoindre
+──────────────────────────────────────────────────────────────────
+1. Dr. OKEMBA se connecte
+2. Sidebar → "+ Rejoindre un établissement"
+3. Recherche "CMST" → Trouve CMST SOGARA
+4. Clic "Demander à rejoindre"
+5. Remplit formulaire (rôle, département, message)
+6. Envoie demande
+7. Voit "Demande en attente" dans "Mes demandes"
+
+8. Dr. DJEKI (Directeur CMST) se connecte
+9. Menu → ADMINISTRATION → Gestion Admissions
+10. Onglet "Demandes reçues" → Voit demande Dr. OKEMBA
+11. Examine profil (nom, spécialité, message)
+12. Clic "Approuver"
+13. ✅ Dr. OKEMBA ajouté automatiquement à establishment_staff
+14. Dr. OKEMBA voit "CMST SOGARA" dans sa liste d'établissements
+
+SCÉNARIO B: Établissement invite professionnel
+──────────────────────────────────────────────────────────────────
+1. Dr. DJEKI (Directeur CMST) se connecte
+2. Menu → ADMINISTRATION → Gestion Admissions
+3. Clic "Inviter un professionnel"
+4. Entre email: dr.nguema@gmail.com
+5. Sélectionne rôle: Médecin
+6. Département: Urgences
+7. Message: "Nous recherchons médecin urgentiste..."
+8. Envoie invitation
+9. Voit invitation dans "Invitations envoyées"
+
+10. Dr. NGUEMA se connecte
+11. Sidebar → "+ Rejoindre un établissement"
+12. Voit invitation dans "Mes demandes"
+13. Badge "Invitation reçue" + infos complètes
+14. Clic "Accepter"
+15. ✅ Dr. NGUEMA ajouté automatiquement à establishment_staff
+16. Dr. NGUEMA voit "CMST SOGARA" dans sa liste d'établissements
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 TESTS RAPIDES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. VÉRIFIER SUPPRESSION ÉTABLISSEMENTS GRISÉS
+   ✓ Rafraîchir : Ctrl + Shift + R
+   ✓ URL : http://localhost:8080/professional/
+   ✓ Sidebar → Section ÉTABLISSEMENTS
+   ✓ Vérifier : SEULEMENT CMST SOGARA visible
+   ✓ "Etablissement 2" et "Etablissement X" supprimés ✅
+   ✓ Voir bouton "+ Rejoindre un établissement" ⭐
+
+2. TEST DEMANDE À REJOINDRE
+   ✓ Clic "+ Rejoindre un établissement"
+   ✓ Voir liste d'établissements
+   ✓ Recherche fonctionne
+   ✓ Formulaire de demande s'affiche
+   ✓ Envoi demande → Notification ✅
+
+3. TEST GESTION ADMISSIONS (ADMIN)
+   ✓ Se connecter : directeur.sogara@sante.ga
+   ✓ Menu DIRECTEUR → ADMINISTRATION
+   ✓ Voir "Gestion Admissions" ⭐ NOUVEAU
+   ✓ 2 tabs (Demandes reçues / Invitations envoyées)
+   ✓ Bouton "Inviter un professionnel"
+   ✓ Dialog invitation fonctionne
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ IMPLÉMENTATION COMPLÈTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 FICHIERS CRÉÉS/MODIFIÉS (6 fichiers)
+──────────────────────────────────────────────────────────────────
+1. 20250131_establishment_admission_system.sql  (300+ lignes)
+   • Table establishment_admission_requests
+   • 7 fonctions RPC
+   • 6 RLS policies
+   • Indexes optimisés
+
+2. JoinEstablishment.tsx                        (340 lignes)
+   • Page recherche établissements
+   • Formulaire demande
+   • Gestion invitations reçues
+
+3. ManageAdmissions.tsx                         (320 lignes)
+   • Gestion demandes reçues
+   • Envoi invitations
+   • Approbation/Rejet
+
+4. ProfessionalEstablishmentLayout.tsx          (Modifié)
+   • Suppression établissements grisés
+   • Bouton "+ Rejoindre un établissement"
+
+5. menuDefinitions.ts                           (Modifié)
+   • Ajout "Gestion Admissions" dans ADMINISTRATION
+
+6. AppMain.tsx                                  (Modifié)
+   • 2 nouvelles routes
+
+TOTAL: 960+ lignes nouvelles
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 SÉCURITÉ ET VALIDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Anti-doublons:
+   • 1 seule demande en attente par professionnel/établissement
+   • Impossible de demander si déjà membre
+   
+✅ Permissions:
+   • Seuls les admins peuvent approuver/inviter
+   • Professionnels ne voient que leurs demandes
+   • Admins ne voient que demandes de leurs établissements
+   
+✅ Validation automatique:
+   • Vérification profil professionnel existe
+   • Vérification établissement actif et vérifié
+   • Contrôle des droits d'administration
+   
+✅ Expiration:
+   • Demandes expirent après 30 jours
+   • Nettoyage automatique (à implémenter cron)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 MENU DIRECTEUR - ADMINISTRATION (5 pages)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ADMINISTRATION
+├─ Personnel                  /professional/staff
+├─ Gestion Admissions ⭐      /professional/manage-admissions  NOUVEAU
+│  • Demandes reçues (pro → établissement)
+│  • Invitations envoyées (établissement → pro)
+│  • Approbation en 1 clic
+│  • Dialog invitation
+│
+├─ Finances & CNAMGS          /professional/billing
+├─ Infrastructure             /professional/infrastructure
+└─ Stocks & Pharmacie         /professional/inventory
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 GUIDE DE TEST COMPLET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TEST 1: Suppression établissements grisés
+──────────────────────────────────────────────────────────────────
+1. Rafraîchir : Ctrl + Shift + R
+2. URL : http://localhost:8080/professional/
+3. Login : directeur.sogara@sante.ga
+4. Sidebar → Section ÉTABLISSEMENTS
+5. Vérifier :
+   ✓ CMST SOGARA visible ✅
+   ✓ "Etablissement 2" supprimé ✅
+   ✓ "Etablissement X" supprimé ✅
+   ✓ Bouton "+ Rejoindre un établissement" visible ✅
+
+TEST 2: Demande à rejoindre (Professionnel → Établissement)
+──────────────────────────────────────────────────────────────────
+1. Clic "+ Rejoindre un établissement"
+2. Voir liste d'établissements
+3. Rechercher "CMST" → Voir CMST SOGARA
+4. Clic "Demander à rejoindre"
+5. Formulaire s'affiche
+6. Remplir :
+   - Rôle: Médecin
+   - Département: Cardiologie
+   - Poste: Cardiologue
+   - Message: "Je souhaite rejoindre votre équipe..."
+7. Clic "Envoyer la demande"
+8. Vérifier :
+   ✓ Toast "Demande envoyée !" ✅
+   ✓ Apparaît dans "Mes demandes" avec statut "En attente" ⏳
+   ✓ Badge "En attente" sur établissement
+
+TEST 3: Admin approuve demande
+──────────────────────────────────────────────────────────────────
+1. Se connecter : directeur.sogara@sante.ga
+2. Menu DIRECTEUR → ADMINISTRATION → Gestion Admissions
+3. Onglet "Demandes reçues"
+4. Voir demande du professionnel
+5. Examiner informations (nom, email, rôle, message)
+6. Clic "Approuver"
+7. Vérifier :
+   ✓ Toast "Demande approuvée !" ✅
+   ✓ Professionnel ajouté à Personnel
+   ✓ Demande disparaît de la liste
+
+TEST 4: Admin invite professionnel
+──────────────────────────────────────────────────────────────────
+1. Page Gestion Admissions
+2. Clic "Inviter un professionnel"
+3. Dialog s'ouvre
+4. Remplir :
+   - Email: email.professionnel@gmail.com
+   - Rôle: Médecin
+   - Département: Urgences
+   - Message: "Nous recherchons..."
+5. Clic "Envoyer l'invitation"
+6. Vérifier :
+   ✓ Toast "Invitation envoyée !" ✅
+   ✓ Apparaît dans onglet "Invitations envoyées"
+
+TEST 5: Professionnel reçoit invitation
+──────────────────────────────────────────────────────────────────
+1. Se connecter avec compte invité
+2. Sidebar → "+ Rejoindre un établissement"
+3. Section "Mes demandes"
+4. Voir invitation avec :
+   ✓ Badge "Invitation reçue" 📨
+   ✓ Nom établissement
+   ✓ Rôle proposé
+   ✓ Boutons "Accepter" / "Refuser"
+5. Clic "Accepter"
+6. Vérifier :
+   ✓ Toast "Invitation acceptée !" ✅
+   ✓ Redirection vers /professional
+   ✓ Établissement apparaît dans sidebar ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STATUT FINAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+╔════════════════════════════════════════════════════════╗
+║                                                        ║
+║  ✅ SYSTÈME D'ADMISSION BIDIRECTIONNEL COMPLET        ║
+║                                                        ║
+║  📋 Base de données                                   ║
+║  • Table admission_requests créée                     ║
+║  • 7 fonctions RPC                                    ║
+║  • 6 RLS policies sécurisées                          ║
+║                                                        ║
+║  💻 Interfaces                                        ║
+║  • Page recherche/demande (340 lignes)                ║
+║  • Page gestion admin (320 lignes)                    ║
+║  • 2 routes configurées                               ║
+║                                                        ║
+║  🎯 Flux bidirectionnel                               ║
+║  • Pro → Établissement (demande)                      ║
+║  • Établissement → Pro (invitation)                   ║
+║  • Validation automatique des 2 côtés                 ║
+║  • Création affiliation automatique                   ║
+║                                                        ║
+║  🎨 UI améliorée                                      ║
+║  • Établissements grisés supprimés                    ║
+║  • Bouton "+ Rejoindre" dans sidebar                  ║
+║  • Menu "Gestion Admissions" pour admins              ║
+║                                                        ║
+║  🌐 Routes                                            ║
+║  • /professional/join-establishment                   ║
+║  • /professional/manage-admissions                    ║
+║                                                        ║
+╚════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════════════
