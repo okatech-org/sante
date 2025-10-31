@@ -19,6 +19,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { RoleSwitcher } from '@/components/professional/RoleSwitcher';
 
 interface ProfessionalEstablishmentLayoutProps {
   children: ReactNode;
@@ -61,24 +62,21 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     }
   };
 
-  const handleRoleChange = async (establishmentId: string, newRole: string) => {
+  const handleRoleChange = async (newRole: string) => {
     try {
-      // Chercher le staff_id correspondant à ce rôle
-      const staffEntry = establishments.find(
-        e => e.establishment_id === establishmentId && e.role_in_establishment === newRole
-      );
+      // Si le rôle est déjà actif, ne rien faire
+      if (newRole === activeRole) return;
       
-      if (staffEntry) {
-        await selectEstablishment(staffEntry.id || staffEntry.staff_id, newRole);
+      // Utiliser directement switchRole du contexte
+      if (switchRole) {
+        await switchRole(newRole);
         
-        // Forcer la mise à jour du rôle dans le contexte
-        if (switchRole) {
-          await switchRole(newRole);
-        }
-        
-        toast.success(`Basculé vers ${ROLE_LABELS[newRole] || newRole}`, {
-          description: 'Votre menu a été mis à jour'
+        toast.success(`Rôle changé`, {
+          description: `Vous êtes maintenant en mode ${ROLE_LABELS[newRole] || newRole}`
         });
+        
+        // Pas de rechargement pour garder l'expérience fluide
+        // Le menu se met à jour automatiquement grâce au state
       }
     } catch (error) {
       toast.error('Erreur lors du changement de rôle');
@@ -167,56 +165,58 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
             Établissements
           </h3>
           
-          {establishmentsList.map((establishment) => (
-            <div key={establishment.id} className="mb-4">
-              {/* Nom établissement */}
-              <div className="px-3 py-2 text-sm font-medium text-foreground">
-                {establishment.name}
-              </div>
-
-              {/* Rôles dans cet établissement */}
-              <div className="ml-2 space-y-1">
-                {establishment.roles.map((roleData: any) => {
-                  const RoleIcon = getRoleIcon(roleData.role);
-                  const isSelected = 
-                    currentEstablishment?.establishment_id === establishment.id && 
-                    activeRole === roleData.role;
-
-                  return (
-                    <button
-                      key={`${establishment.id}-${roleData.role}`}
-                      onClick={() => {
-                        handleRoleChange(establishment.id, roleData.role);
-                        setMobileOpen(false);
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                        isSelected
-                          ? "bg-primary text-primary-foreground font-medium"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                      )}
-                    >
-                      <RoleIcon className="h-4 w-4" />
-                      <span className="flex-1 text-left uppercase">
-                        {ROLE_LABELS[roleData.role] || roleData.role}
-                      </span>
-                      {isSelected && <ChevronRight className="h-4 w-4" />}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* CMST SOGARA avec hiérarchie */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 px-3 py-2">
+              <Building2 className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">CMST SOGARA</span>
             </div>
-          ))}
+            
+            {/* Rôles sous CMST SOGARA */}
+            <div className="ml-6 space-y-1">
+              {/* Rôle ADMIN/DIRECTEUR */}
+              <button
+                onClick={() => handleRoleChange('director')}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                  activeRole === 'director'
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <Shield className="h-4 w-4" />
+                <span className="flex-1 text-left">ADMIN</span>
+                {activeRole === 'director' && <ChevronRight className="h-4 w-4" />}
+              </button>
+              
+              {/* Rôle MÉDECIN */}
+              <button
+                onClick={() => handleRoleChange('doctor')}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                  activeRole === 'doctor'
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <Stethoscope className="h-4 w-4" />
+                <span className="flex-1 text-left">MÉDECIN</span>
+                {activeRole === 'doctor' && <ChevronRight className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
 
-          {/* Placeholders pour autres établissements */}
-          <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
-            <Building2 className="h-4 w-4 mr-2" />
-            Etablissement 2
-          </Button>
-          <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
-            <Building2 className="h-4 w-4 mr-2" />
-            Etablissement X
-          </Button>
+          {/* Autres établissements (désactivés) */}
+          <div className="space-y-2 mt-4">
+            <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
+              <Building2 className="h-4 w-4 mr-2" />
+              Etablissement 2
+            </Button>
+            <Button variant="ghost" className="w-full justify-start opacity-50" disabled>
+              <Building2 className="h-4 w-4 mr-2" />
+              Etablissement X
+            </Button>
+          </div>
         </div>
 
         {/* Paramètres */}
@@ -237,6 +237,11 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
           </Button>
         </div>
       </div>
+
+      {/* Role Switcher */}
+      {availableRoles && availableRoles.length > 1 && (
+        <RoleSwitcher />
+      )}
 
       {/* Footer avec déconnexion */}
       <div className="p-4 border-t border-border/50">
