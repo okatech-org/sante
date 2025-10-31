@@ -96,9 +96,9 @@ Pierrette NOMSI a aussi un accès professionnel en tant que Chef QUALITÉ chez S
 ### Autres Services
 | Nom | Email | Mot de passe | Service |
 |-----|-------|--------------|---------|
-| André Moussavou | lab.tech@sogara.com | LabSOGARA@2024 | Laboratoire |
-| Dr. Lydie Kombila | pharma@sogara.com | PharmaSOGARA@24 | Pharmacie |
-| Nadège Oyono | accueil@sogara.com | AccueilSOGARA@24 | Accueil |
+| André Moussavou | lab.tech.sogara@sante.ga | LabSOGARA@2024 | Laboratoire |
+| Dr. Lydie Kombila | pharma.sogara@sante.ga | PharmaSOGARA@24 | Pharmacie |
+| Nadège Oyono | nadege.oyono@sogara.ga | Sogara2025! | Réceptionniste ✅ |
 
 ---
 
@@ -216,5 +216,5 @@ Password: SuperAdmin@2024!
 
 ---
 
-**Dernière mise à jour** : 2024-10-29
-**Status** : ✅ Tous les comptes sont fonctionnels et prêts
+**Dernière mise à jour** : 2025-10-31
+**Status** : ✅ Tous les comptes sont fonctionnels et prêts (Nadège Oyono corrigée)
