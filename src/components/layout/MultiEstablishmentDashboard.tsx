@@ -334,15 +334,18 @@ export function MultiEstablishmentDashboard({ children }: MultiEstablishmentDash
                         </div>
                       </div>
                       <div className="space-y-1">
-                        {establishment.roles.map((roleData: any) => (
-                          <div
-                            key={roleData.role}
-                            className="text-sm text-muted-foreground flex items-center gap-2"
-                          >
-                            {getRoleIcon(roleData.role)({ className: "h-3 w-3" })}
-                            <span>{ROLE_LABELS[roleData.role] || roleData.role}</span>
-                          </div>
-                        ))}
+                        {establishment.roles.map((roleData: any) => {
+                          const Icon = getRoleIcon(roleData.role);
+                          return (
+                            <div
+                              key={roleData.role}
+                              className="text-sm text-muted-foreground flex items-center gap-2"
+                            >
+                              <Icon className="h-3 w-3" />
+                              <span>{ROLE_LABELS[roleData.role] || roleData.role}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     </Card>
                   ))}
