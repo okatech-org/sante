@@ -41,6 +41,14 @@ import ProfessionalStaff from "./pages/professional/ProfessionalStaff";
 import ProfessionalBilling from "./pages/professional/ProfessionalBilling";
 import ProfessionalInventory from "./pages/professional/ProfessionalInventory";
 import ProfessionalReports from "./pages/professional/ProfessionalReports";
+import ProfessionalMedicalStaff from "./pages/professional/ProfessionalMedicalStaff";
+import ProfessionalServices from "./pages/professional/ProfessionalServices";
+import ProfessionalProtocols from "./pages/professional/ProfessionalProtocols";
+import ProfessionalInfrastructure from "./pages/professional/ProfessionalInfrastructure";
+import ProfessionalIntegrations from "./pages/professional/ProfessionalIntegrations";
+import ProfessionalSettings from "./pages/professional/ProfessionalSettings";
+import ProfessionalTeleconsultations from "./pages/professional/ProfessionalTeleconsultations";
+import ProfessionalPatients from "./pages/professional/ProfessionalPatients";
 import { ProfessionalEstablishmentLayout } from "./components/layout/ProfessionalEstablishmentLayout";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
@@ -201,6 +209,46 @@ function AppMain() {
                     <Route path="/professional/reports" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalReports />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/medical-staff" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalMedicalStaff />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/services" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalServices />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/protocols" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalProtocols />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/infrastructure" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalInfrastructure />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/integrations" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalIntegrations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/settings" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalSettings />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/teleconsultations" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalTeleconsultations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/patients" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalPatients />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />

@@ -174,7 +174,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
             
             {/* Rôles sous CMST SOGARA */}
             <div className="ml-6 space-y-1">
-              {/* Rôle ADMIN/DIRECTEUR */}
+              {/* Rôle DIRECTEUR */}
               <button
                 onClick={() => handleRoleChange('director')}
                 className={cn(
@@ -185,7 +185,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                 )}
               >
                 <Shield className="h-4 w-4" />
-                <span className="flex-1 text-left">ADMIN</span>
+                <span className="flex-1 text-left">DIRECTEUR</span>
                 {activeRole === 'director' && <ChevronRight className="h-4 w-4" />}
               </button>
               

@@ -1,6 +1,7 @@
-import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare } from "lucide-react";
+import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Link2, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench } from "lucide-react";
 
 export interface MenuSection {
+  id?: string; // Optional for backward compatibility
   label: string;
   items: MenuItem[];
 }
@@ -339,41 +340,33 @@ export function getMenuForContext(
 
 // Labels pour les rôles
 export const ROLE_LABELS: Record<string, string> = {
-  'director': 'Directeur',
+  'director': 'Directeur Général CMST',
   'admin': 'Administrateur',
-  'doctor': 'Médecin',
+  'doctor': 'Médecin Généraliste',
   'nurse': 'Infirmier(e)',
   'pharmacist': 'Pharmacien(ne)',
   'laborantin': 'Laborantin(e)',
   'receptionist': 'Réceptionniste'
 };
 
-// ============= MENU DIRECTEUR (5 sections) =============
+// ============= MENU DIRECTEUR (Directeur Général CMST) =============
 export const DIRECTOR_MENU: MenuSection[] = [
   {
     id: 'general',
     label: 'GÉNÉRAL',
     items: [
-      { label: "Vue d'ensemble", href: '/professional/dashboard', icon: LayoutDashboard },
-      { label: 'Statistiques', href: '/professional/statistics', icon: BarChart3 }
-    ]
-  },
-  {
-    id: 'medical-activity', 
-    label: 'ACTIVITÉ MÉDICALE',
-    items: [
-      { label: 'Rendez-vous', href: '/professional/appointments', icon: Calendar, badge: 8 },
-      { label: 'Consultations', href: '/professional/consultations', icon: Stethoscope },
-      { label: 'Prescriptions', href: '/professional/prescriptions', icon: FileText },
-      { label: 'Mes Patients', href: '/professional/patients', icon: Users }
+      { label: 'Tableau de bord', href: '/professional/dashboard', icon: LayoutDashboard },
+      { label: 'Statistiques', href: '/professional/statistics', icon: BarChart3 },
+      { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 5 }
     ]
   },
   {
     id: 'medical-direction',
     label: 'DIRECTION MÉDICALE', 
     items: [
-      { label: 'Hospitalisation', href: '/professional/hospitalization', icon: Building2 },
-      { label: 'Plateaux Techniques', href: '/professional/technical', icon: Activity }
+      { label: 'Corps médical', href: '/professional/medical-staff', icon: Stethoscope },
+      { label: 'Services', href: '/professional/services', icon: Building2 },
+      { label: 'Protocoles', href: '/professional/protocols', icon: ClipboardList }
     ]
   },
   {
@@ -381,52 +374,42 @@ export const DIRECTOR_MENU: MenuSection[] = [
     label: 'ADMINISTRATION',
     items: [
       { label: 'Personnel', href: '/professional/staff', icon: UserCog, permission: 'manage_staff' },
-      { label: 'Facturation', href: '/professional/billing', icon: DollarSign, permission: 'manage_billing' },
-      { label: 'Inventaire', href: '/professional/inventory', icon: Package },
-      { label: 'Rapports', href: '/professional/reports', icon: FileText }
+      { label: 'Finances & CNAMGS', href: '/professional/billing', icon: DollarSign, permission: 'manage_billing' },
+      { label: 'Infrastructure', href: '/professional/infrastructure', icon: Building2 },
+      { label: 'Stocks & Pharmacie', href: '/professional/inventory', icon: Package }
     ]
   },
   {
     id: 'communication',
     label: 'COMMUNICATION',
     items: [
-      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 }
+      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 },
+      { label: 'Intégrations', href: '/professional/integrations', icon: Link2 },
+      { label: 'Paramètres', href: '/professional/settings', icon: Settings }
     ]
   }
 ];
 
-// ============= MENU MÉDECIN (4 sections) =============
+// ============= MENU MÉDECIN (Médecin Généraliste) =============
 export const DOCTOR_MENU: MenuSection[] = [
-  {
-    id: 'general',
-    label: 'GÉNÉRAL',
-    items: [
-      { label: "Vue d'ensemble", href: '/professional/dashboard', icon: LayoutDashboard }
-    ]
-  },
   {
     id: 'medical-activity',
     label: 'ACTIVITÉ MÉDICALE', 
     items: [
-      { label: 'Rendez-vous', href: '/professional/appointments', icon: Calendar, badge: 'Nouveau' },
+      { label: 'Tableau de bord', href: '/professional/dashboard', icon: LayoutDashboard },
+      { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 8 },
+      { label: 'Patients', href: '/professional/patients', icon: Users },
       { label: 'Consultations', href: '/professional/consultations', icon: Stethoscope },
-      { label: 'Prescriptions', href: '/professional/prescriptions', icon: FileText },
-      { label: 'Mes Patients', href: '/professional/patients', icon: Users }
-    ]
-  },
-  {
-    id: 'medical-direction',
-    label: 'DIRECTION MÉDICALE',
-    items: [
-      { label: 'Hospitalisation', href: '/professional/hospitalization', icon: Building2 },
-      { label: 'Plateaux Techniques', href: '/professional/technical', icon: Activity }
+      { label: 'Téléconsultations', href: '/professional/teleconsultations', icon: Video, badge: 2 }
     ]
   },
   {
     id: 'communication',
     label: 'COMMUNICATION',
     items: [
-      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 }
+      { label: 'Messages', href: '/professional/messages', icon: MessageSquare, badge: 3 },
+      { label: 'Intégrations', href: '/professional/integrations', icon: Link2 },
+      { label: 'Paramètres', href: '/professional/settings', icon: Settings }
     ]
   }
 ];
