@@ -32,6 +32,16 @@ import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
 import ProfessionalHub from "./pages/professional/ProfessionalHub";
+import ProfessionalConsultations from "./pages/professional/ProfessionalConsultations";
+import ProfessionalHospitalization from "./pages/professional/ProfessionalHospitalization";
+import ProfessionalTechnicalPlatforms from "./pages/professional/ProfessionalTechnicalPlatforms";
+import ProfessionalStatistics from "./pages/professional/ProfessionalStatistics";
+import ProfessionalMessages from "./pages/professional/ProfessionalMessages";
+import ProfessionalStaff from "./pages/professional/ProfessionalStaff";
+import ProfessionalBilling from "./pages/professional/ProfessionalBilling";
+import ProfessionalInventory from "./pages/professional/ProfessionalInventory";
+import ProfessionalReports from "./pages/professional/ProfessionalReports";
+import { ProfessionalEstablishmentLayout } from "./components/layout/ProfessionalEstablishmentLayout";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
 import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
@@ -139,7 +149,56 @@ function AppMain() {
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
                     <Route path="/professional" element={<ProfessionalHub />} />
-                    <Route path="/professional/dashboard" element={<ProfessionalDashboard />} />
+                    <Route path="/professional/dashboard" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalDashboard />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/consultations" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalConsultations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/hospitalization" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalHospitalization />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/technical" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalTechnicalPlatforms />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/statistics" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalStatistics />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/messages" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalMessages />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/staff" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalStaff />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/billing" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalBilling />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/inventory" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalInventory />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/reports" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalReports />
+                      </ProfessionalEstablishmentLayout>
+                    } />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
                     <Route path="/professional/select-role/:establishmentId" element={<SelectRole />} />
                     <Route path="/professional/establishments" element={<EstablishmentsManager />} />
