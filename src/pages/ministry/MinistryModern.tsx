@@ -277,7 +277,7 @@ const MinistryModern = () => {
                 transition={{ delay: 1.5, duration: 0.8 }}
               >
                 <div className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-2xl p-6 shadow-2xl">
-                  <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-4">
                     {[
                       { icon: Users, value: "1.8M", label: "Population", color: "text-blue-500" },
                       { icon: HeartHandshake, value: "78%", label: "Couverture", color: "text-green-500" },
