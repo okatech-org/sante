@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Building2, Shield, Stethoscope, ChevronRight, ChevronDown, LogOut, Settings,
   BarChart3, Menu, X, Moon, Sun, Calendar, Siren, Activity, Clock, FileText, 
-  AlertTriangle, ClipboardList
+  AlertTriangle, ClipboardList, Bed, UserPlus, Home
 } from 'lucide-react';
 import { 
   Accordion,
@@ -49,6 +49,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const [isRoleMenuExpanded, setIsRoleMenuExpanded] = useState(true);
   const [isAccueilHDJExpanded, setIsAccueilHDJExpanded] = useState(false);
   const [isAccueilUrgencesExpanded, setIsAccueilUrgencesExpanded] = useState(false);
+  const [isAccueilHospitalisationExpanded, setIsAccueilHospitalisationExpanded] = useState(false);
 
   // Grouper établissements par ID pour afficher rôles multiples (déplacé ici)
   const establishmentGroups = establishments.reduce((acc, est) => {
@@ -411,6 +412,82 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                   >
                     <ClipboardList className="h-3 w-3" />
                     <span className="flex-1 text-left">Dossiers urgences</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Accueil Hospitalisation */}
+            <div className="mb-3">
+              <button
+                onClick={() => setIsAccueilHospitalisationExpanded(!isAccueilHospitalisationExpanded)}
+                className={cn(
+                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all",
+                  isAccueilHospitalisationExpanded || location.pathname.includes('/professional/accueil-hospitalisation')
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Bed className="h-4 w-4" />
+                  <span>Accueil Hospitalisation</span>
+                </div>
+                {isAccueilHospitalisationExpanded ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </button>
+              
+              {isAccueilHospitalisationExpanded && (
+                <div className="ml-6 mt-1 space-y-1">
+                  <button
+                    onClick={() => navigate('/professional/accueil-hospitalisation')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hospitalisation'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Activity className="h-3 w-3" />
+                    <span className="flex-1 text-left">Dashboard admissions</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hospitalisation/admissions')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hospitalisation/admissions'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <UserPlus className="h-3 w-3" />
+                    <span className="flex-1 text-left">Nouvelles admissions</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hospitalisation/chambres')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hospitalisation/chambres'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <Home className="h-3 w-3" />
+                    <span className="flex-1 text-left">Gestion chambres</span>
+                  </button>
+                  <button
+                    onClick={() => navigate('/professional/accueil-hospitalisation/sorties')}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                      location.pathname === '/professional/accueil-hospitalisation/sorties'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <ClipboardList className="h-3 w-3" />
+                    <span className="flex-1 text-left">Sorties du jour</span>
                   </button>
                 </div>
               )}

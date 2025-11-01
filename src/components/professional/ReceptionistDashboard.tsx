@@ -10,7 +10,7 @@ import {
   Users, Calendar, Phone, Clock,
   Mail, MapPin, CheckCircle, AlertCircle, Edit,
   Building2, Briefcase, ArrowUpRight, Plus,
-  Siren, Activity, ChevronRight
+  Siren, Activity, ChevronRight, Bed
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -123,8 +123,8 @@ export function ReceptionistDashboard() {
         </div>
       </Card>
 
-      {/* Actions rapides pour naviguer vers les deux modes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Actions rapides pour naviguer vers les trois modes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Card Accueil Hôpital */}
         <Card 
           className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
@@ -248,13 +248,78 @@ export function ReceptionistDashboard() {
             </Button>
           </div>
         </Card>
+
+        {/* Card Accueil Hospitalisation */}
+        <Card 
+          className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+          onClick={() => navigate('/professional/accueil-hospitalisation')}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50" />
+          <div className="relative p-8">
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Bed className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 border-0">
+                NOUVEAU
+              </Badge>
+            </div>
+            
+            <h3 className="text-2xl font-bold mb-3">Accueil Hospitalisation</h3>
+            <p className="text-muted-foreground mb-6">
+              Gestion des admissions, chambres et sorties d'hospitalisation
+            </p>
+            
+            <div className="grid grid-cols-2 gap-6 mb-4">
+              <div>
+                <p className="text-muted-foreground">Fonctions principales</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Admissions
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Attribution chambres
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Gestion sorties
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Actions rapides</p>
+                <ul className="mt-2 space-y-1">
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-purple-500" />
+                    Plan des chambres
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-purple-500" />
+                    Transferts internes
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Activity className="h-3 w-3 text-purple-500" />
+                    Facturation séjour
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <Button className="w-full mt-6 bg-purple-600 hover:bg-purple-700">
+              Accéder à l'Hospitalisation
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </Card>
       </div>
 
       {/* Instructions rapides */}
       <Card className="border-0 shadow-lg bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30">
         <div className="p-6">
           <h3 className="text-lg font-bold mb-4">Guide Rapide - Réceptionniste</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-white dark:bg-slate-800/50 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
@@ -271,6 +336,15 @@ export function ReceptionistDashboard() {
               </div>
               <p className="text-sm text-muted-foreground">
                 Pour les urgences médicales. Triage rapide selon gravité, constantes vitales, suivi temps réel.
+              </p>
+            </div>
+            <div className="p-4 bg-white dark:bg-slate-800/50 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Bed className="h-5 w-5 text-purple-600" />
+                <h4 className="font-semibold">Mode Hospitalisation</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Pour les admissions hospitalières. Gestion chambres, documents admission, suivi sorties.
               </p>
             </div>
           </div>
