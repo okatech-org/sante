@@ -235,11 +235,8 @@ const MinistryModern = () => {
           <img 
             src={heroImage} 
             alt="Ministère de la Santé - Gabon" 
-            className="w-full h-full object-cover brightness-105"
+            className="w-full h-full object-cover brightness-110"
           />
-          {/* Overlay plus léger pour une image plus claire */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/30 to-background/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10" />
         </motion.div>
         
         <div className="relative h-full flex items-center justify-center">
