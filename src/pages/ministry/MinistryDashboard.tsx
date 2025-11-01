@@ -10,6 +10,7 @@ import { BarChart3, FileText, Building2, Users, Settings } from "lucide-react";
 import { MinistryDashboard as MinistryDashboardType, MinistryContact } from "@/types/ministry";
 
 const MinistryDashboard = () => {
+  // Pas de vérification d'authentification ici - page publique
   const [dashboardData, setDashboardData] = useState<MinistryDashboardType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

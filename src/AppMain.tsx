@@ -110,6 +110,12 @@ import AdminCredentials from "./pages/admin/AdminCredentials";
 // Pages de démonstration
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
+// Pages du Ministère de la Santé
+import MinistryPublic from "./pages/ministry/MinistryPublic";
+import MinistryDashboard from "./pages/ministry/MinistryDashboard";
+import MinistryLogin from "./pages/ministry/MinistryLogin";
+import MinistryTest from "./pages/ministry/MinistryTest";
+
 // Pages SOGARA
 import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
 import SogaraLogin from "./pages/SogaraLogin";
@@ -333,6 +339,20 @@ function AppMain() {
                     {/* Routes SOGARA */}
                     {/* Page publique SOGARA */}
                     <Route path="/sogara" element={<SogaraPublic />} />
+                    
+                    {/* Routes Ministère de la Santé - Pages publiques (sans auth) */}
+                    <Route path="/ministry" element={<MinistryPublic />} />
+                    <Route path="/Ministry" element={<MinistryPublic />} />
+                    <Route path="/ministry/public" element={<MinistryPublic />} />
+                    <Route path="/ministry/test" element={<MinistryTest />} />
+                    <Route path="/ministere" element={<MinistryPublic />} />
+                    <Route path="/Ministere" element={<MinistryPublic />} />
+                    
+                    {/* Routes Ministère protégées (avec auth) */}
+                    <Route path="/ministry/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/ministry/login" element={<MinistryLogin />} />
+                    <Route path="/ministere/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/ministere/connexion" element={<MinistryLogin />} />
                     
                     {/* Connexion Personnel SOGARA */}
                     <Route path="/login/sogara" element={<SogaraLogin />} />
