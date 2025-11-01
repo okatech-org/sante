@@ -250,17 +250,6 @@ const MinistryModern = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-              >
-                <Badge className="mb-6 px-6 py-2 text-base bg-gradient-to-r from-primary to-secondary text-white border-0">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  République Gabonaise
-                </Badge>
-              </motion.div>
-              
               <motion.h1 
                 className="text-5xl lg:text-7xl font-bold mb-6 text-foreground"
                 style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)' }}
