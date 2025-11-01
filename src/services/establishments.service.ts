@@ -414,46 +414,11 @@ export class EstablishmentsService {
    */
   public async getHomePage(establishmentId: string, establishmentName?: string): Promise<EstablishmentHomePage | null> {
     try {
-      const { data, error } = await supabase
-        .from('establishment_homepages')
-        .select('*')
-        .eq('establishment_id', establishmentId)
-        .single();
-
-      if (error || !data) {
-        // Si pas de données en base, créer avec URL personnalisée si applicable
-        if (establishmentName && CUSTOM_ESTABLISHMENT_URLS[establishmentName]) {
-          return {
-            establishmentId,
-            hasHomePage: false,
-            homePageUrl: CUSTOM_ESTABLISHMENT_URLS[establishmentName],
-            customUrl: CUSTOM_ESTABLISHMENT_URLS[establishmentName],
-            customContent: {}
-          };
-        }
-        return null;
-      }
-
-      const customUrl = data.custom_url || (establishmentName && CUSTOM_ESTABLISHMENT_URLS[establishmentName]);
-      const homePageUrl = customUrl || data.homepage_url || `/establishment/${data.establishment_id}`;
-
-      const homePageInfo: EstablishmentHomePage = {
-        establishmentId: data.establishment_id,
-        hasHomePage: data.has_homepage,
-        homePageUrl,
-        customUrl,
-        customContent: data.custom_content,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at
-      };
-
-      // Mettre à jour le cache
-      this.homePageSettings.set(establishmentId, homePageInfo);
-
-      return homePageInfo;
-    } catch (error) {
-      console.error('Erreur lors de la récupération de la page d\'accueil:', error);
-      // Retourner au moins l'URL personnalisée si elle existe
+      // NOTE: Table establishment_homepages non créée - retourner depuis cache ou URL par défaut
+      const cached = this.homePageSettings.get(establishmentId);
+      if (cached) return cached;
+      
+      // Si pas de données en cache, créer avec URL personnalisée si applicable
       if (establishmentName && CUSTOM_ESTABLISHMENT_URLS[establishmentName]) {
         return {
           establishmentId,
@@ -463,6 +428,9 @@ export class EstablishmentsService {
           customContent: {}
         };
       }
+      return null;
+    } catch (error) {
+      console.error('Erreur lors de la récupération de la page d\'accueil:', error);
       return null;
     }
   }
