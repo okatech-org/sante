@@ -14,6 +14,7 @@ import {
   Phone, 
   Mail, 
   Clock,
+  FileText,
   Target,
   TrendingUp,
   CheckCircle2,
@@ -23,8 +24,6 @@ import {
 import heroImage from "@/assets/ministry-hero.jpg";
 import consultationImage from "@/assets/ministry-consultation.jpg";
 import maternalImage from "@/assets/ministry-maternal.jpg";
-import strategyImage from "@/assets/ministry-strategy.jpg";
-import { GabonHealthMap } from "@/components/ministry/GabonHealthMap";
 
 const MinistryPublic = () => {
   return (
@@ -103,90 +102,67 @@ const MinistryPublic = () => {
             </p>
           </div>
 
-          {/* Strategic Axes - Image & Cards Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image */}
-            <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
-              <img 
-                src={strategyImage} 
-                alt="Stratégie de santé au Gabon" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-            </div>
+          {/* Strategic Axes */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+              <CardContent className="p-6">
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
+                  <Target className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                </div>
+                <h3 className="font-semibold mb-2">Gouvernance & Leadership</h3>
+                <p className="text-sm text-muted-foreground">
+                  Renforcement du secteur santé
+                </p>
+              </CardContent>
+            </Card>
 
-            {/* Strategic Axes Cards */}
-            <div className="space-y-4">
-              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-                    <Target className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Gouvernance & Leadership</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Renforcement du secteur santé
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
+              <CardContent className="p-6">
+                <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-secondary group-hover:scale-110 transition-all">
+                  <Building2 className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
+                </div>
+                <h3 className="font-semibold mb-2">Offre de Soins</h3>
+                <p className="text-sm text-muted-foreground">
+                  Infrastructures & qualité
+                </p>
+              </CardContent>
+            </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:scale-110 transition-all">
-                    <Building2 className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Offre de Soins</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Infrastructures & qualité
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+              <CardContent className="p-6">
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
+                  <Users className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                </div>
+                <h3 className="font-semibold mb-2">Ressources Humaines</h3>
+                <p className="text-sm text-muted-foreground">
+                  Formation & gestion
+                </p>
+              </CardContent>
+            </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-                    <Users className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Ressources Humaines</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Formation & gestion
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
+              <CardContent className="p-6">
+                <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-secondary group-hover:scale-110 transition-all">
+                  <TrendingUp className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
+                </div>
+                <h3 className="font-semibold mb-2">Financement</h3>
+                <p className="text-sm text-muted-foreground">
+                  Couverture Universelle
+                </p>
+              </CardContent>
+            </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:scale-110 transition-all">
-                    <TrendingUp className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Financement</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Couverture Universelle
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
-                    <Shield className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Promotion & Prévention</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Santé publique
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+              <CardContent className="p-6">
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
+                  <Shield className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                </div>
+                <h3 className="font-semibold mb-2">Promotion & Prévention</h3>
+                <p className="text-sm text-muted-foreground">
+                  Santé publique
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -267,42 +243,73 @@ const MinistryPublic = () => {
         </div>
       </section>
 
-
-      {/* Cartographie du Réseau de Santé */}
-      <section className="py-20 bg-muted/30">
+      {/* Network Section */}
+      <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <Badge className="mb-4 bg-primary/10 text-primary border-0">
-                Cartographie Nationale
-              </Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
-                Réseau de Santé au Gabon
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez la répartition des établissements de santé sur l'ensemble du territoire gabonais
-              </p>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
+              Notre Réseau de Soins
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Un maillage territorial pour garantir l'accès aux soins partout au Gabon
+            </p>
+          </div>
 
-            <Card className="border-2 overflow-hidden">
-              <CardContent className="p-0">
-                <GabonHealthMap />
-              </CardContent>
-            </Card>
-
-            <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Cliquez sur les marqueurs pour plus d'informations sur chaque établissement
-              </p>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { count: "4", label: "CHU", icon: Building2, color: "secondary" },
+              { count: "9", label: "CHR", icon: Building2, color: "primary" },
+              { count: "52", label: "Centres", icon: Heart, color: "accent" },
+              { count: "147", label: "Cliniques", icon: Stethoscope, color: "secondary" },
+              { count: "114", label: "Pharmacies", icon: Activity, color: "primary" },
+              { count: "18", label: "Laboratoires", icon: Users, color: "accent" }
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
+                  <Icon className={`h-10 w-10 mx-auto mb-3 text-${item.color}`} />
+                  <div className="text-3xl font-bold text-foreground mb-1">{item.count}</div>
+                  <div className="text-sm text-muted-foreground">{item.label}</div>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20">
+      {/* Publications Section */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <Card className="border-2">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-secondary/10 p-3 rounded-lg">
+                    <FileText className="h-6 w-6 text-secondary" />
+                  </div>
+                  <h3 className="text-2xl font-bold">Publications Récentes</h3>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    { title: "Rapport Annuel 2024", date: "15 octobre 2025" },
+                    { title: "Bulletin Épidémiologique", date: "Semaine 44 - 2025" },
+                    { title: "PNDS 2024-2028", date: "Document stratégique" }
+                  ].map((pub, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors group">
+                      <div className="flex items-center gap-3 flex-1">
+                        <FileText className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <div className="font-medium group-hover:text-secondary transition-colors">{pub.title}</div>
+                          <div className="text-sm text-muted-foreground">{pub.date}</div>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-secondary transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             <Card className="border-2 bg-gradient-to-br from-secondary/5 to-primary/5">
               <CardContent className="p-6">
