@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { VoirDossierHDJModal } from '@/components/hospital/VoirDossierHDJModal';
+import { ModifierDossierHDJModal } from '@/components/hospital/ModifierDossierHDJModal';
+import { TelechargerDossierModal } from '@/components/hospital/TelechargerDossierModal';
 
 interface DossierHDJ {
   id: string;
@@ -35,6 +38,12 @@ export default function AccueilHDJDossiersPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('tous');
+  
+  // États des modals
+  const [showVoirModal, setShowVoirModal] = useState(false);
+  const [showModifierModal, setShowModifierModal] = useState(false);
+  const [showTelechargerModal, setShowTelechargerModal] = useState(false);
+  const [selectedDossier, setSelectedDossier] = useState<DossierHDJ | null>(null);
 
   // Données initiales
   const initialDossiers: DossierHDJ[] = [
@@ -154,61 +163,41 @@ export default function AccueilHDJDossiersPage() {
   }, [dossiers, searchQuery, activeTab, serviceFilter]);
 
   // Gestionnaires
-  const handleVoirDossier = async (dossier: DossierHDJ) => {
-    const actionKey = `view_${dossier.id}`;
-    setLoadingActions(prev => ({...prev, [actionKey]: 'viewing'}));
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      toast.info(`Affichage du dossier ${dossier.id}`);
-      // TODO: Ouvrir modal détaillé du dossier
-    } catch (err) {
-      toast.error('Erreur lors de l\'affichage');
-    } finally {
-      setLoadingActions(prev => {
-        const newState = {...prev};
-        delete newState[actionKey];
-        return newState;
-      });
-    }
+  const handleVoirDossier = (dossier: DossierHDJ) => {
+    setSelectedDossier(dossier);
+    setShowVoirModal(true);
   };
 
-  const handleModifierDossier = async (dossier: DossierHDJ) => {
-    const actionKey = `edit_${dossier.id}`;
-    setLoadingActions(prev => ({...prev, [actionKey]: 'editing'}));
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.info(`Modification du dossier ${dossier.id}`);
-      // TODO: Ouvrir modal d'édition
-    } catch (err) {
-      toast.error('Erreur lors de la modification');
-    } finally {
-      setLoadingActions(prev => {
-        const newState = {...prev};
-        delete newState[actionKey];
-        return newState;
-      });
-    }
+  const handleModifierDossier = (dossier: DossierHDJ) => {
+    setSelectedDossier(dossier);
+    setShowModifierModal(true);
   };
 
-  const handleTelechargerDossier = async (dossier: DossierHDJ) => {
-    const actionKey = `download_${dossier.id}`;
-    setLoadingActions(prev => ({...prev, [actionKey]: 'downloading'}));
+  const handleTelechargerDossier = (dossier: DossierHDJ) => {
+    setSelectedDossier(dossier);
+    setShowTelechargerModal(true);
+  };
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success(`Dossier ${dossier.id} téléchargé`);
-      // TODO: Générer et télécharger le PDF
-    } catch (err) {
-      toast.error('Erreur lors du téléchargement');
-    } finally {
-      setLoadingActions(prev => {
-        const newState = {...prev};
-        delete newState[actionKey];
-        return newState;
-      });
-    }
+  const handleUpdateDossier = (updatedDossier: DossierHDJ) => {
+    setDossiers(prev =>
+      prev.map(d => d.id === updatedDossier.id ? updatedDossier : d)
+    );
+    
+    setSuccess(`Dossier ${updatedDossier.id} modifié avec succès`);
+    setTimeout(() => setSuccess(null), 3000);
+    
+    setShowModifierModal(false);
+    setSelectedDossier(null);
+  };
+
+  const handleEditFromView = () => {
+    setShowVoirModal(false);
+    setShowModifierModal(true);
+  };
+
+  const handleDownloadFromView = () => {
+    setShowVoirModal(false);
+    setShowTelechargerModal(true);
   };
 
   const handleExporterTous = () => {
@@ -486,37 +475,29 @@ export default function AccueilHDJDossiersPage() {
                               size="sm" 
                               variant="outline"
                               onClick={() => handleVoirDossier(dossier)}
-                              disabled={loadingActions[`view_${dossier.id}`] === 'viewing'}
+                              aria-label={`Afficher le dossier ${dossier.id}`}
+                              title="Afficher le dossier complet"
                             >
-                              {loadingActions[`view_${dossier.id}`] === 'viewing' ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Eye className="h-4 w-4" />
-                              )}
+                              <Eye className="h-4 w-4" />
                             </Button>
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => handleModifierDossier(dossier)}
-                              disabled={loadingActions[`edit_${dossier.id}`] === 'editing'}
+                              disabled={dossier.status === 'termine'}
+                              aria-label={`Modifier le dossier ${dossier.id}`}
+                              title="Modifier le dossier"
                             >
-                              {loadingActions[`edit_${dossier.id}`] === 'editing' ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Edit className="h-4 w-4" />
-                              )}
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button 
                               size="sm" 
                               variant="outline"
                               onClick={() => handleTelechargerDossier(dossier)}
-                              disabled={loadingActions[`download_${dossier.id}`] === 'downloading'}
+                              aria-label={`Télécharger le dossier ${dossier.id}`}
+                              title="Télécharger en PDF"
                             >
-                              {loadingActions[`download_${dossier.id}`] === 'downloading' ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Download className="h-4 w-4" />
-                              )}
+                              <Download className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
@@ -528,6 +509,41 @@ export default function AccueilHDJDossiersPage() {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Modals */}
+        {selectedDossier && (
+          <>
+            <VoirDossierHDJModal
+              open={showVoirModal}
+              onClose={() => {
+                setShowVoirModal(false);
+                setSelectedDossier(null);
+              }}
+              dossier={selectedDossier}
+              onEdit={handleEditFromView}
+              onDownload={handleDownloadFromView}
+            />
+
+            <ModifierDossierHDJModal
+              open={showModifierModal}
+              onClose={() => {
+                setShowModifierModal(false);
+                setSelectedDossier(null);
+              }}
+              dossier={selectedDossier}
+              onUpdate={handleUpdateDossier}
+            />
+
+            <TelechargerDossierModal
+              open={showTelechargerModal}
+              onClose={() => {
+                setShowTelechargerModal(false);
+                setSelectedDossier(null);
+              }}
+              dossier={selectedDossier}
+            />
+          </>
+        )}
       </div>
     </ProfessionalEstablishmentLayout>
   );

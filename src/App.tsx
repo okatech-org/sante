@@ -58,6 +58,10 @@ import Support from "./pages/Support";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import Sogara from "./pages/Sogara";
 
+// Pages du Ministère de la Santé
+import MinistryDashboard from "./pages/ministry/MinistryDashboard";
+import MinistryLogin from "./pages/ministry/MinistryLogin";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -131,6 +135,14 @@ function App() {
                     
                     {/* Route Sogara */}
                     <Route path="/sogara" element={<Sogara />} />
+                    
+                    {/* Routes Ministère de la Santé */}
+                    <Route path="/ministry" element={<MinistryDashboard />} />
+                    <Route path="/ministry/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/ministry/login" element={<MinistryLogin />} />
+                    <Route path="/ministere" element={<MinistryDashboard />} />
+                    <Route path="/ministere/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/ministere/connexion" element={<MinistryLogin />} />
                     
                     {/* Redirection par défaut */}
                     <Route path="*" element={<Navigate to="/" replace />} />
