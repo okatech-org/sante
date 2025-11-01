@@ -62,6 +62,7 @@ import Sogara from "./pages/Sogara";
 // Pages du Ministère de la Santé
 import MinistryDashboard from "./pages/ministry/MinistryDashboard";
 import MinistryPublic from "./pages/ministry/MinistryPublic";
+import MinistryGouvPublic from "./pages/ministry/MinistryGouvPublic";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 import MinistryTest from "./pages/ministry/MinistryTest";
 
@@ -144,6 +145,8 @@ function App() {
                     <Route path="/sogara" element={<Sogara />} />
                     
                     {/* Routes Ministère de la Santé - Pages publiques (sans auth) */}
+                    <Route path="/gouv" element={<MinistryGouvPublic />} />
+                    <Route path="/Gouv" element={<MinistryGouvPublic />} />
                     <Route path="/ministry" element={<MinistryPublic />} />
                     <Route path="/Ministry" element={<MinistryPublic />} />
                     <Route path="/ministry/public" element={<MinistryPublic />} />
