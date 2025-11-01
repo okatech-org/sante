@@ -27,8 +27,24 @@ import consultationImage from "@/assets/ministry-consultation.jpg";
 import maternalImage from "@/assets/ministry-maternal.jpg";
 import strategyImage from "@/assets/ministry-strategy.jpg";
 import { GabonHealthMap } from "@/components/ministry/GabonHealthMap";
+import { NationalStatisticsCard } from "@/components/ministry/NationalStatisticsCard";
+import { NationalStatistics } from "@/types/ministry";
 
 const MinistryPublic = () => {
+  // Statistiques nationales du système de santé
+  const nationalStats: NationalStatistics = {
+    population_couverte_cnamgs: 1800000,
+    taux_couverture: "78%",
+    etablissements_operationnels: 238,
+    professionnels_actifs: {
+      medecins: 2159,
+      infirmiers: 5847,
+      pharmaciens: 423
+    },
+    consultations_mensuelles: 145000,
+    teleconsultations_mensuelles: 12000
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section - Modern & Clean */}
@@ -69,24 +85,7 @@ const MinistryPublic = () => {
       {/* Stats Section */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-secondary mb-2">1.8M</div>
-              <div className="text-sm text-muted-foreground">Bénéficiaires CNAMGS</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-secondary mb-2">238</div>
-              <div className="text-sm text-muted-foreground">Établissements</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-secondary mb-2">2,159</div>
-              <div className="text-sm text-muted-foreground">Médecins actifs</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-secondary mb-2">78%</div>
-              <div className="text-sm text-muted-foreground">Taux de couverture</div>
-            </div>
-          </div>
+          <NationalStatisticsCard statistics={nationalStats} />
         </div>
       </section>
 
