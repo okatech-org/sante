@@ -24,10 +24,13 @@ const mapTypeToCategory = (type: string): EstablishmentCategory => {
 };
 
 const mapTypeToLevel = (type: string, nom: string): EstablishmentLevel => {
-  if (nom.includes('CHU') || nom.includes('Universitaire')) return 'national';
-  if (nom.includes('CHR') || nom.includes('Régional') || type === 'hopital') return 'regional';
-  if (nom.includes('CHD') || nom.includes('Départemental')) return 'departemental';
-  if (nom.includes('Ministère') || nom.includes('CNAMGS') || nom.includes('Direction Générale')) return 'national';
+  // Vérifier que nom existe avant d'utiliser includes
+  const nomSafe = nom || '';
+  
+  if (nomSafe.includes('CHU') || nomSafe.includes('Universitaire')) return 'national';
+  if (nomSafe.includes('CHR') || nomSafe.includes('Régional') || type === 'hopital') return 'regional';
+  if (nomSafe.includes('CHD') || nomSafe.includes('Départemental')) return 'departemental';
+  if (nomSafe.includes('Ministère') || nomSafe.includes('CNAMGS') || nomSafe.includes('Direction Générale')) return 'national';
   return 'local';
 };
 
