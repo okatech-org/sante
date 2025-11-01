@@ -132,8 +132,8 @@ const MinistryModern = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                <Shield className="h-7 w-7 text-white" />
+              <div className="w-12 h-12 bg-primary rounded-sm flex items-center justify-center">
+                <Shield className="h-7 w-7 text-primary-foreground" />
               </div>
               <div className="block">
                 <div className="font-bold text-sm md:text-lg text-foreground">Ministère de la Santé</div>
@@ -247,15 +247,30 @@ const MinistryModern = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
+              {/* Hero Title */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="mb-8"
+              >
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+                  Ministère de la Santé Publique
+                </h1>
+                <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                  Pour une couverture sanitaire universelle au Gabon
+                </p>
+              </motion.div>
+
               <motion.div
                 className="flex flex-wrap gap-4 justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.3, duration: 0.8 }}
+                transition={{ delay: 1.0, duration: 0.8 }}
               >
                 <Button 
                   size="lg" 
-                  className="group bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-8 py-6 text-lg"
+                  className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-sm"
                 >
                   Explorer nos Services
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -263,7 +278,7 @@ const MinistryModern = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="backdrop-blur-sm border-2 px-8 py-6 text-lg hover:bg-background/50"
+                  className="backdrop-blur-sm bg-white/90 text-foreground border-2 border-white px-8 py-6 text-lg rounded-sm hover:bg-white"
                 >
                   En savoir plus
                 </Button>
@@ -324,7 +339,7 @@ const MinistryModern = () => {
             transition={{ duration: 0.6 }}
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 mb-4">
-              <Badge className="mb-2 md:mb-0 self-center bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
+              <Badge className="mb-2 md:mb-0 self-center bg-primary/10 text-primary border-primary/20">
                 <Target className="w-4 h-4 mr-2" />
                 PNDS 2024-2028
               </Badge>
@@ -393,7 +408,7 @@ const MinistryModern = () => {
       </section>
 
       {/* Programmes Prioritaires - Bento Grid Moderne */}
-      <section id="programmes" className="py-20 bg-gradient-to-b from-muted/20 to-background">
+      <section id="programmes" className="py-20 bg-muted/20">
         <div className="container mx-auto px-4">
           <motion.div 
             className="text-center mb-16"
@@ -402,7 +417,7 @@ const MinistryModern = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Badge className="mb-4 bg-gradient-to-r from-success/10 to-success/20 text-success border-success/20">
+            <Badge className="mb-4 bg-success/10 text-success border-success/20">
               <Award className="w-4 h-4 mr-2" />
               Programmes Prioritaires
             </Badge>
@@ -439,7 +454,7 @@ const MinistryModern = () => {
                   </div>
                   <CardContent className="p-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-success/20 to-success/10 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-success/20 rounded-sm flex items-center justify-center">
                         <Shield className="h-6 w-6 text-success" />
                       </div>
                       <div>
@@ -506,7 +521,7 @@ const MinistryModern = () => {
                   </div>
                   <CardContent className="p-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent/20 to-accent/10 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-accent/20 rounded-sm flex items-center justify-center">
                         <Heart className="h-6 w-6 text-accent" />
                       </div>
                       <div>
@@ -554,7 +569,7 @@ const MinistryModern = () => {
 
       {/* Cartographie Interactive Modernisée */}
       <section id="cartographie" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+        <div className="absolute inset-0 bg-primary/5" />
         
         <div className="container mx-auto px-4 relative">
           <div className="grid lg:grid-cols-3 gap-12 items-start">
@@ -567,7 +582,7 @@ const MinistryModern = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="mb-8">
-                <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
+                <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
                   <MapPin className="w-4 h-4 mr-2" />
                   Cartographie Nationale
                 </Badge>
@@ -593,7 +608,7 @@ const MinistryModern = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="mb-8">
-                <Badge className="mb-4 bg-gradient-to-r from-secondary/10 to-primary/10 text-secondary border-secondary/20">
+                <Badge className="mb-4 bg-secondary/10 text-secondary border-secondary/20">
                   <Phone className="w-4 h-4 mr-2" />
                   Contact Direct
                 </Badge>
@@ -607,7 +622,7 @@ const MinistryModern = () => {
                   <div className="flex-1 space-y-6">
                     {/* Adresse */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl text-white flex-shrink-0">
+                      <div className="bg-primary p-3 rounded-sm text-primary-foreground flex-shrink-0">
                         <MapPin className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -621,7 +636,7 @@ const MinistryModern = () => {
 
                     {/* Téléphone */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl text-white flex-shrink-0">
+                      <div className="bg-success p-3 rounded-sm text-success-foreground flex-shrink-0">
                         <Phone className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -635,7 +650,7 @@ const MinistryModern = () => {
 
                     {/* Email */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl text-white flex-shrink-0">
+                      <div className="bg-secondary p-3 rounded-sm text-secondary-foreground flex-shrink-0">
                         <Mail className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -648,7 +663,7 @@ const MinistryModern = () => {
 
                     {/* Horaires */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-xl text-white flex-shrink-0">
+                      <div className="bg-accent p-3 rounded-sm text-accent-foreground flex-shrink-0">
                         <Clock className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -668,7 +683,7 @@ const MinistryModern = () => {
       </section>
 
       {/* Publications avec Carousel Moderne */}
-      <section id="publications" className="py-20 bg-gradient-to-b from-muted/20 to-background">
+      <section id="publications" className="py-20 bg-muted/20">
         <div className="container mx-auto px-4">
           <motion.div 
             className="text-center mb-16"
@@ -677,7 +692,7 @@ const MinistryModern = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
               <FileText className="w-4 h-4 mr-2" />
               Documentation
             </Badge>
@@ -745,8 +760,8 @@ const MinistryModern = () => {
                               
                               {/* Icône en overlay */}
                               <div className="absolute bottom-4 right-4">
-                                <div className={`bg-gradient-to-br from-${pub.color}/90 to-${pub.color}/80 backdrop-blur-sm w-12 h-12 rounded-xl flex items-center justify-center shadow-lg`}>
-                                  <Icon className="h-6 w-6 text-white" />
+                                <div className="bg-primary/90 backdrop-blur-sm w-12 h-12 rounded-sm flex items-center justify-center">
+                                  <Icon className="h-6 w-6 text-primary-foreground" />
                                 </div>
                               </div>
                             </div>
@@ -810,7 +825,7 @@ const MinistryModern = () => {
 
       {/* CTA Final Section */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10" />
+        <div className="absolute inset-0 bg-primary/5" />
         
         <motion.div 
           className="container mx-auto px-4 relative"
@@ -826,13 +841,13 @@ const MinistryModern = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <Badge className="mb-6 px-6 py-2 text-base bg-gradient-to-r from-primary to-secondary text-white border-0">
+              <Badge className="mb-6 px-6 py-2 text-base bg-primary text-primary-foreground border-0 rounded-sm">
                 <Zap className="w-4 h-4 mr-2" />
                 Ensemble pour la santé
               </Badge>
             </motion.div>
             
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
               Rejoignez la Transformation Digitale
             </h2>
             
@@ -849,7 +864,7 @@ const MinistryModern = () => {
             >
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-10 py-6 text-lg transition-all group"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-6 text-lg rounded-sm transition-all group"
               >
                 Découvrir SANTE.GA
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -857,7 +872,7 @@ const MinistryModern = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="px-10 py-6 text-lg border-2 hover:bg-primary hover:text-primary-foreground transition-all"
+                className="px-10 py-6 text-lg border-2 rounded-sm hover:bg-primary hover:text-primary-foreground transition-all"
                 onClick={() => window.location.href = '/ministry'}
               >
                 <Shield className="mr-2 h-5 w-5" />
@@ -869,7 +884,7 @@ const MinistryModern = () => {
       </section>
 
       {/* Footer Moderne */}
-      <footer className="bg-gradient-to-br from-secondary via-secondary/95 to-secondary text-secondary-foreground py-16">
+      <footer className="bg-secondary text-secondary-foreground py-16">
         <div className="container mx-auto px-4">
           <motion.div 
             className="text-center space-y-6"
