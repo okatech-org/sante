@@ -13,7 +13,6 @@ import {
   Building2,
   GraduationCap,
   Activity,
-  AlertCircle,
   CheckCircle,
   Target,
   TrendingUp,
@@ -22,50 +21,69 @@ import {
   Twitter,
   Linkedin,
   Menu,
-  X
+  X,
+  Stethoscope,
+  Truck,
+  Building
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const MinistryGouvPublic = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
       {/* En-tête et Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
+      <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
+        scrolled ? 'bg-background/95 backdrop-blur-xl shadow-sm' : 'bg-background'
+      }`}>
+        <div className="container flex h-20 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success">
-              <Shield className="h-6 w-6 text-success-foreground" />
+          <Link to="/gouv" className="flex items-center gap-3 group">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-lg group-hover:shadow-xl transition-all">
+              <Shield className="h-7 w-7 text-primary-foreground" />
             </div>
             <div className="hidden md:block">
-              <div className="text-sm font-semibold text-foreground">République Gabonaise</div>
-              <div className="text-xs text-muted-foreground">Ministère de la Santé</div>
+              <div className="text-sm font-bold text-foreground tracking-tight">République Gabonaise</div>
+              <div className="text-xs text-muted-foreground font-medium">Ministère de la Santé</div>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Desktop */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#missions" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <nav className="hidden lg:flex items-center gap-8">
+            <a href="#missions" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Nos Missions
             </a>
-            <a href="#vision" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#vision" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Notre Vision
             </a>
-            <a href="#actualites" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#actualites" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Actualités
             </a>
-            <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Contact
             </a>
           </nav>
 
           {/* CTA Header */}
           <div className="hidden md:flex items-center gap-3">
+            <Link to="/login/patient">
+              <Button variant="ghost" size="sm" className="hover:bg-primary/10">
+                Services en Ligne
+              </Button>
+            </Link>
             <Link to="/ministry/login">
-              <Button variant="outline" size="sm">
+              <Button size="sm" className="bg-primary hover:bg-primary/90 shadow-md">
                 Espace Administration
               </Button>
             </Link>
@@ -73,7 +91,7 @@ const MinistryGouvPublic = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="lg:hidden p-2 rounded-lg hover:bg-muted"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -82,87 +100,125 @@ const MinistryGouvPublic = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-background p-4">
-            <nav className="flex flex-col gap-4">
-              <a href="#missions" className="text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileMenuOpen(false)}>
+          <div className="lg:hidden border-t bg-background/95 backdrop-blur-xl animate-slide-up">
+            <nav className="container flex flex-col gap-4 py-6">
+              <a href="#missions" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
                 Nos Missions
               </a>
-              <a href="#vision" className="text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#vision" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
                 Notre Vision
               </a>
-              <a href="#actualites" className="text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#actualites" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
                 Actualités
               </a>
-              <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileMenuOpen(false)}>
+              <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
                 Contact
               </a>
-              <Link to="/ministry/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">
-                  Espace Administration
-                </Button>
-              </Link>
+              <div className="flex flex-col gap-2 pt-4 border-t">
+                <Link to="/login/patient" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">
+                    Services en Ligne
+                  </Button>
+                </Link>
+                <Link to="/ministry/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button size="sm" className="w-full bg-primary hover:bg-primary/90">
+                    Espace Administration
+                  </Button>
+                </Link>
+              </div>
             </nav>
           </div>
         )}
       </header>
 
       {/* Section Héro */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-success/5 via-warning/5 to-secondary/5">
-        <div className="container py-16 md:py-24 lg:py-32">
-          <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
-            <div className="space-y-6">
-              <Badge className="bg-success/10 text-success hover:bg-success/20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="container relative py-20 md:py-32 lg:py-40">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
+            {/* Content */}
+            <div className="space-y-8 animate-slide-up">
+              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 text-sm px-4 py-1.5">
+                <Shield className="h-3.5 w-3.5 mr-2" />
                 République Gabonaise
               </Badge>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                La Santé pour Tous,{" "}
-                <span className="text-success">Notre Priorité</span>
-              </h1>
-              <p className="text-lg text-muted-foreground md:text-xl">
-                Mettre en œuvre la politique de santé pour garantir le bien-être physique, mental et social de la population gabonaise.
-              </p>
+              
+              <div className="space-y-6">
+                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+                  La Santé pour Tous,{" "}
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-accent">
+                    Notre Priorité
+                  </span>
+                </h1>
+                
+                <p className="text-lg text-muted-foreground md:text-xl max-w-2xl leading-relaxed">
+                  Mettre en œuvre la politique de santé pour garantir le bien-être physique, mental et social de la population gabonaise.
+                </p>
+              </div>
+              
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-success hover:bg-success/90 text-success-foreground">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all text-base px-8">
                   Découvrir nos Programmes
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="border-2 hover:bg-primary/5 text-base px-8">
                   Services en Ligne
                 </Button>
               </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-4 pt-8">
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold text-primary">238</div>
+                  <div className="text-xs text-muted-foreground">Établissements</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold text-secondary">78%</div>
+                  <div className="text-xs text-muted-foreground">Couverture</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold text-accent">1.8M</div>
+                  <div className="text-xs text-muted-foreground">Population</div>
+                </div>
+              </div>
             </div>
 
-            {/* Statistiques visuelles */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
-                <CardContent className="pt-6">
-                  <div className="text-3xl font-bold text-success">78%</div>
-                  <div className="text-sm text-muted-foreground mt-2">
+            {/* Visual Cards */}
+            <div className="grid grid-cols-2 gap-4 animate-fade-in">
+              <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-lg transition-all hover:-translate-y-1">
+                <CardContent className="pt-6 space-y-2">
+                  <div className="text-4xl font-bold text-primary">78%</div>
+                  <div className="text-sm text-muted-foreground">
                     Taux de couverture CNAMGS
                   </div>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-                <CardContent className="pt-6">
-                  <div className="text-3xl font-bold text-warning">238</div>
-                  <div className="text-sm text-muted-foreground mt-2">
+              
+              <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20 hover:shadow-lg transition-all hover:-translate-y-1">
+                <CardContent className="pt-6 space-y-2">
+                  <div className="text-4xl font-bold text-accent">238</div>
+                  <div className="text-sm text-muted-foreground">
                     Établissements opérationnels
                   </div>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20">
-                <CardContent className="pt-6">
-                  <div className="text-3xl font-bold text-secondary">1.8M</div>
-                  <div className="text-sm text-muted-foreground mt-2">
+              
+              <Card className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20 hover:shadow-lg transition-all hover:-translate-y-1">
+                <CardContent className="pt-6 space-y-2">
+                  <div className="text-4xl font-bold text-secondary">1.8M</div>
+                  <div className="text-sm text-muted-foreground">
                     Population couverte
                   </div>
                 </CardContent>
               </Card>
-              <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
-                <CardContent className="pt-6">
-                  <div className="text-3xl font-bold text-accent">2,450</div>
-                  <div className="text-sm text-muted-foreground mt-2">
-                    Professionnels de santé
+              
+              <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20 hover:shadow-lg transition-all hover:-translate-y-1">
+                <CardContent className="pt-6 space-y-2">
+                  <div className="text-4xl font-bold text-warning">2.4K</div>
+                  <div className="text-sm text-muted-foreground">
+                    Professionnels actifs
                   </div>
                 </CardContent>
               </Card>
@@ -170,20 +226,20 @@ const MinistryGouvPublic = () => {
           </div>
         </div>
 
-        {/* Vague décorative */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-background">
-          <svg className="absolute bottom-0 w-full h-16" preserveAspectRatio="none" viewBox="0 0 1440 54">
+        {/* Wave Divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-24" preserveAspectRatio="none" viewBox="0 0 1440 54">
             <path fill="currentColor" className="text-background" d="M0,0 C480,54 960,54 1440,0 L1440,54 L0,54 Z" />
           </svg>
         </div>
       </section>
 
       {/* Section Missions Fondamentales */}
-      <section id="missions" className="py-16 md:py-24">
+      <section id="missions" className="py-24 md:py-32">
         <div className="container">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Nos Attributions</Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
+          <div className="text-center mb-16 space-y-4">
+            <Badge className="mb-2">Nos Attributions</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               Nos Missions Fondamentales
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -191,62 +247,66 @@ const MinistryGouvPublic = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Mission 1 */}
-            <Card className="group hover:shadow-lg transition-all hover:-translate-y-1">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-success/10 flex items-center justify-center mb-4 group-hover:bg-success/20 transition-colors">
-                  <Building2 className="h-6 w-6 text-success" />
+            <Card className="group relative overflow-hidden border-2 hover:border-primary/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-[100px] transition-all group-hover:scale-150" />
+              <CardHeader className="relative">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <Building2 className="h-7 w-7 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-xl">Gouvernance et Régulation</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
                   Élaborer et coordonner la politique nationale de santé en garantissant une gouvernance transparente et efficace.
                 </p>
               </CardContent>
             </Card>
 
             {/* Mission 2 */}
-            <Card className="group hover:shadow-lg transition-all hover:-translate-y-1">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-warning/10 flex items-center justify-center mb-4 group-hover:bg-warning/20 transition-colors">
-                  <Heart className="h-6 w-6 text-warning" />
+            <Card className="group relative overflow-hidden border-2 hover:border-accent/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/10 to-transparent rounded-bl-[100px] transition-all group-hover:scale-150" />
+              <CardHeader className="relative">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <Heart className="h-7 w-7 text-accent-foreground" />
                 </div>
-                <CardTitle className="text-xl">Offre de Soins et Infrastructures</CardTitle>
+                <CardTitle className="text-xl">Offre de Soins</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
                   Veiller à la qualité des prestations sanitaires et définir les normes d'équipement des structures de santé.
                 </p>
               </CardContent>
             </Card>
 
             {/* Mission 3 */}
-            <Card className="group hover:shadow-lg transition-all hover:-translate-y-1">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
-                  <GraduationCap className="h-6 w-6 text-secondary" />
+            <Card className="group relative overflow-hidden border-2 hover:border-secondary/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-transparent rounded-bl-[100px] transition-all group-hover:scale-150" />
+              <CardHeader className="relative">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <GraduationCap className="h-7 w-7 text-secondary-foreground" />
                 </div>
-                <CardTitle className="text-xl">Formation et Ressources Humaines</CardTitle>
+                <CardTitle className="text-xl">Formation</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
                   Gérer les carrières et contrôler la formation des personnels de santé pour garantir l'excellence.
                 </p>
               </CardContent>
             </Card>
 
             {/* Mission 4 */}
-            <Card className="group hover:shadow-lg transition-all hover:-translate-y-1">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
-                  <Shield className="h-6 w-6 text-accent" />
+            <Card className="group relative overflow-hidden border-2 hover:border-warning/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-warning/10 to-transparent rounded-bl-[100px] transition-all group-hover:scale-150" />
+              <CardHeader className="relative">
+                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-warning to-warning/80 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <Shield className="h-7 w-7 text-warning-foreground" />
                 </div>
-                <CardTitle className="text-xl">Prévention et Santé Publique</CardTitle>
+                <CardTitle className="text-xl">Prévention</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
                   Concevoir les actions de santé prioritaires et les programmes de prévention des maladies.
                 </p>
               </CardContent>
@@ -256,23 +316,32 @@ const MinistryGouvPublic = () => {
       </section>
 
       {/* Section Vision et Politique Nationale */}
-      <section id="vision" className="py-16 md:py-24 bg-gradient-to-br from-success/5 to-secondary/5">
-        <div className="container">
-          <div className="grid gap-12 lg:grid-cols-2 items-center">
-            <div className="space-y-6">
-              <Badge className="bg-success/10 text-success">PNDS 2024-2028</Badge>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                Notre Vision : La Couverture Sanitaire Universelle
-              </h2>
-              <div className="prose prose-lg">
-                <blockquote className="text-xl italic text-muted-foreground border-l-4 border-success pl-4">
-                  "Accélérer les progrès vers la Couverture Sanitaire Universelle (CSU) pour garantir l'accès à des soins de santé de qualité pour tous les Gabonais."
-                </blockquote>
+      <section id="vision" className="py-24 md:py-32 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="container relative">
+          <div className="grid gap-16 lg:grid-cols-2 items-center">
+            {/* Content */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Badge className="bg-primary/10 text-primary hover:bg-primary/20">PNDS 2024-2028</Badge>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                  Notre Vision : La Couverture Sanitaire Universelle
+                </h2>
               </div>
-              <p className="text-lg text-muted-foreground">
+              
+              <blockquote className="border-l-4 border-primary pl-6 py-2 space-y-2">
+                <p className="text-xl italic text-foreground">
+                  "Accélérer les progrès vers la Couverture Sanitaire Universelle (CSU) pour garantir l'accès à des soins de santé de qualité pour tous les Gabonais."
+                </p>
+              </blockquote>
+              
+              <p className="text-lg text-muted-foreground leading-relaxed">
                 Découvrez les axes stratégiques de notre Plan National de Développement Sanitaire (PNDS) 2024-2028, feuille de route pour un système de santé plus équitable et performant.
               </p>
-              <Button size="lg" className="bg-success hover:bg-success/90 text-success-foreground">
+              
+              <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg">
                 Consulter le PNDS 2024-2028
                 <FileText className="ml-2 h-5 w-5" />
               </Button>
@@ -280,96 +349,38 @@ const MinistryGouvPublic = () => {
 
             {/* Axes stratégiques */}
             <div className="space-y-4">
-              <Card className="border-l-4 border-l-success">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                      <Target className="h-5 w-5 text-success" />
+              {[
+                { icon: Target, color: "primary", title: "Gouvernance et Leadership", desc: "Renforcement de la gouvernance du secteur de la santé" },
+                { icon: Heart, color: "accent", title: "Offre de Soins", desc: "Amélioration de l'offre de soins et des services de santé" },
+                { icon: Users, color: "secondary", title: "Ressources Humaines", desc: "Développement des ressources humaines en santé" },
+                { icon: TrendingUp, color: "warning", title: "Financement", desc: "Financement durable de la santé" },
+                { icon: Activity, color: "primary", title: "Promotion", desc: "Promotion de la santé et prévention des maladies" }
+              ].map((axe, index) => (
+                <Card key={index} className={`border-l-4 border-l-${axe.color} hover:shadow-lg transition-all hover:-translate-x-2`}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className={`h-12 w-12 rounded-xl bg-${axe.color}/10 flex items-center justify-center flex-shrink-0`}>
+                        <axe.icon className={`h-6 w-6 text-${axe.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-2">{axe.title}</h3>
+                        <p className="text-sm text-muted-foreground">{axe.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Gouvernance et Leadership</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Renforcement de la gouvernance du secteur de la santé
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-l-4 border-l-warning">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center flex-shrink-0">
-                      <Heart className="h-5 w-5 text-warning" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Offre de Soins</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Amélioration de l'offre de soins et des services de santé
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-l-4 border-l-secondary">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Users className="h-5 w-5 text-secondary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Ressources Humaines</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Développement des ressources humaines en santé
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-l-4 border-l-accent">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                      <TrendingUp className="h-5 w-5 text-accent" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Financement de la Santé</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Financement durable de la santé
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-l-4 border-l-success">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                      <Activity className="h-5 w-5 text-success" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Promotion et Prévention</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Promotion de la santé et prévention des maladies
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section Actualités et Événements */}
-      <section id="actualites" className="py-16 md:py-24">
+      {/* Section Actualités */}
+      <section id="actualites" className="py-24 md:py-32">
         <div className="container">
-          <div className="text-center mb-12">
-            <Badge className="mb-4">Informations</Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
+          <div className="text-center mb-16 space-y-4">
+            <Badge className="mb-2">Informations</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               Actualités et Communiqués
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -377,76 +388,63 @@ const MinistryGouvPublic = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Actualité 1 */}
-            <Card className="group hover:shadow-lg transition-all">
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">15 Octobre 2025</span>
-                </div>
-                <Badge className="w-fit mb-3 bg-accent/10 text-accent">Campagne</Badge>
-                <CardTitle className="text-xl group-hover:text-success transition-colors">
-                  Octobre Rose 2025 : Appel au dépistage
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Campagne nationale de sensibilisation et de dépistage gratuit du cancer du sein dans tous les centres de santé du pays.
-                </p>
-                <Button variant="link" className="p-0 text-success">
-                  En savoir plus <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Actualité 2 */}
-            <Card className="group hover:shadow-lg transition-all">
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">8 Octobre 2025</span>
-                </div>
-                <Badge className="w-fit mb-3 bg-warning/10 text-warning">Inauguration</Badge>
-                <CardTitle className="text-xl group-hover:text-success transition-colors">
-                  Réhabilitation du CHR de Mouila
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Réception officielle des travaux de réhabilitation et modernisation du Centre Hospitalier Régional de Mouila.
-                </p>
-                <Button variant="link" className="p-0 text-success">
-                  En savoir plus <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Actualité 3 */}
-            <Card className="group hover:shadow-lg transition-all">
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">21 Juillet 2024</span>
-                </div>
-                <Badge className="w-fit mb-3 bg-secondary/10 text-secondary">Législation</Badge>
-                <CardTitle className="text-xl group-hover:text-success transition-colors">
-                  Nouveau décret ministériel
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Décret N° 0292/PR/MS du 21/07/2024 portant attributions et organisation du Ministère de la Santé.
-                </p>
-                <Button variant="link" className="p-0 text-success">
-                  Télécharger <FileText className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { 
+                date: "15 Octobre 2025", 
+                badge: "Campagne", 
+                badgeColor: "bg-accent/10 text-accent", 
+                title: "Octobre Rose 2025 : Appel au dépistage",
+                desc: "Campagne nationale de sensibilisation et de dépistage gratuit du cancer du sein dans tous les centres de santé du pays.",
+                icon: Heart
+              },
+              { 
+                date: "8 Octobre 2025", 
+                badge: "Inauguration", 
+                badgeColor: "bg-warning/10 text-warning", 
+                title: "Réhabilitation du CHR de Mouila",
+                desc: "Réception officielle des travaux de réhabilitation et modernisation du Centre Hospitalier Régional de Mouila.",
+                icon: Building
+              },
+              { 
+                date: "21 Juillet 2024", 
+                badge: "Législation", 
+                badgeColor: "bg-secondary/10 text-secondary", 
+                title: "Nouveau décret ministériel",
+                desc: "Décret N° 0292/PR/MS du 21/07/2024 portant attributions et organisation du Ministère de la Santé.",
+                icon: FileText
+              }
+            ].map((news, index) => (
+              <Card key={index} className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border-2 hover:border-primary/50">
+                <div className="h-2 bg-gradient-to-r from-primary via-accent to-secondary"></div>
+                <CardHeader>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">{news.date}</span>
+                  </div>
+                  <Badge className={`w-fit mb-4 ${news.badgeColor}`}>{news.badge}</Badge>
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <news.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                      {news.title}
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">{news.desc}</p>
+                  <Button variant="link" className="p-0 text-primary group-hover:gap-2 transition-all">
+                    En savoir plus 
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg">
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg" className="border-2 hover:bg-primary/5">
               Voir toutes les Actualités
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -454,15 +452,17 @@ const MinistryGouvPublic = () => {
         </div>
       </section>
 
-      {/* Section Contact et Localisation */}
-      <section id="contact" className="py-16 md:py-24 bg-gradient-to-br from-muted/30 to-muted/10">
-        <div className="container">
-          <div className="grid gap-12 lg:grid-cols-2">
-            {/* Informations de contact */}
+      {/* Section Contact */}
+      <section id="contact" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-muted/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="container relative">
+          <div className="grid gap-16 lg:grid-cols-2">
+            {/* Informations */}
             <div className="space-y-8">
-              <div>
-                <Badge className="mb-4">Nous contacter</Badge>
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+              <div className="space-y-4">
+                <Badge>Nous contacter</Badge>
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                   Restons en Contact
                 </h2>
                 <p className="text-lg text-muted-foreground">
@@ -470,103 +470,60 @@ const MinistryGouvPublic = () => {
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-6 w-6 text-success" />
+              <div className="space-y-4">
+                {[
+                  { icon: MapPin, color: "primary", title: "Adresse", content: "Immeuble Alu-Suisse\nLibreville, Gabon" },
+                  { icon: Phone, color: "accent", title: "Téléphone", content: "Standard : (+241) 01-72-26-61\nUrgences : (+241) 1730" },
+                  { icon: Mail, color: "secondary", title: "Email", content: "contact@sante.gouv.ga\ninfo@sante.gouv.ga" },
+                  { icon: Activity, color: "warning", title: "Horaires", content: "Lun - Ven : 08h00 - 16h00\nSam - Dim : Fermé" }
+                ].map((item, index) => (
+                  <Card key={index} className="hover:shadow-lg transition-all hover:-translate-y-1">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4">
+                        <div className={`h-14 w-14 rounded-xl bg-${item.color}/10 flex items-center justify-center flex-shrink-0`}>
+                          <item.icon className={`h-7 w-7 text-${item.color}`} />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold mb-2">{item.title}</h3>
+                          <p className="text-sm text-muted-foreground whitespace-pre-line">{item.content}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Adresse</h3>
-                        <p className="text-muted-foreground">
-                          Immeuble Alu-Suisse<br />
-                          Libreville, Gabon
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-lg bg-warning/10 flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-6 w-6 text-warning" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Téléphone</h3>
-                        <p className="text-muted-foreground">
-                          Standard : (+241) 01-72-26-61<br />
-                          Urgences : (+241) 1730
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-6 w-6 text-secondary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Email</h3>
-                        <p className="text-muted-foreground">
-                          contact@sante.gouv.ga<br />
-                          info@sante.gouv.ga
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                        <AlertCircle className="h-6 w-6 text-accent" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-1">Horaires</h3>
-                        <p className="text-muted-foreground">
-                          Lun - Ven : 08h00 - 16h00<br />
-                          Sam - Dim : Fermé
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
 
-            {/* Carte ou visuel */}
+            {/* Réseau de Santé */}
             <div className="space-y-6">
-              <Card className="h-full">
-                <CardContent className="pt-6 h-full flex flex-col justify-center items-center bg-gradient-to-br from-success/5 to-secondary/5">
-                  <div className="text-center space-y-4">
-                    <div className="h-20 w-20 rounded-full bg-success/10 flex items-center justify-center mx-auto">
-                      <MapPin className="h-10 w-10 text-success" />
-                    </div>
-                    <h3 className="text-2xl font-bold">Réseau de Santé National</h3>
-                    <p className="text-muted-foreground">
+              <Card className="h-full bg-gradient-to-br from-primary/5 to-secondary/5 border-2">
+                <CardContent className="pt-12 pb-12 h-full flex flex-col justify-center items-center text-center space-y-8">
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary to-secondary/80 flex items-center justify-center shadow-2xl">
+                    <MapPin className="h-12 w-12 text-primary-foreground" />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h3 className="text-3xl font-bold">Réseau de Santé National</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto">
                       238 établissements de santé répartis sur l'ensemble du territoire gabonais
                     </p>
-                    <div className="grid grid-cols-2 gap-4 pt-4">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-success">9</div>
-                        <div className="text-sm text-muted-foreground">Provinces</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-warning">238</div>
-                        <div className="text-sm text-muted-foreground">Établissements</div>
-                      </div>
-                    </div>
-                    <Button className="mt-6 bg-success hover:bg-success/90 text-success-foreground">
-                      Voir la Cartographie
-                    </Button>
                   </div>
+                  
+                  <div className="grid grid-cols-2 gap-8 w-full max-w-md">
+                    <div className="text-center space-y-2">
+                      <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">9</div>
+                      <div className="text-sm text-muted-foreground font-medium">Provinces</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary">238</div>
+                      <div className="text-sm text-muted-foreground font-medium">Établissements</div>
+                    </div>
+                  </div>
+                  
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg mt-4">
+                    Voir la Cartographie
+                    <MapPin className="ml-2 h-5 w-5" />
+                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -576,30 +533,30 @@ const MinistryGouvPublic = () => {
 
       {/* Pied de Page */}
       <footer className="border-t bg-muted/30">
-        <div className="container py-12 md:py-16">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="container py-16 md:py-20">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
             {/* À propos */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success">
-                  <Shield className="h-6 w-6 text-success-foreground" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-lg">
+                  <Shield className="h-7 w-7 text-primary-foreground" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold">République Gabonaise</div>
+                  <div className="text-sm font-bold">République Gabonaise</div>
                   <div className="text-xs text-muted-foreground">Ministère de la Santé</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Garantir l'accès à des soins de santé de qualité pour tous les Gabonais dans le cadre de la Couverture Sanitaire Universelle.
               </p>
               <div className="flex gap-2">
-                <Button size="icon" variant="outline" className="h-8 w-8">
+                <Button size="icon" variant="outline" className="h-10 w-10 hover:bg-primary/10 hover:text-primary">
                   <Facebook className="h-4 w-4" />
                 </Button>
-                <Button size="icon" variant="outline" className="h-8 w-8">
+                <Button size="icon" variant="outline" className="h-10 w-10 hover:bg-primary/10 hover:text-primary">
                   <Twitter className="h-4 w-4" />
                 </Button>
-                <Button size="icon" variant="outline" className="h-8 w-8">
+                <Button size="icon" variant="outline" className="h-10 w-10 hover:bg-primary/10 hover:text-primary">
                   <Linkedin className="h-4 w-4" />
                 </Button>
               </div>
@@ -607,72 +564,40 @@ const MinistryGouvPublic = () => {
 
             {/* Liens rapides */}
             <div className="space-y-4">
-              <h3 className="font-semibold">Liens Rapides</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Organisation du Ministère
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Textes Législatifs
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Marchés Publics
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Carrières
-                  </a>
-                </li>
+              <h3 className="font-semibold text-lg">Liens Rapides</h3>
+              <ul className="space-y-3 text-sm">
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Organisation du Ministère</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Textes Législatifs</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Marchés Publics</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Carrières</a></li>
               </ul>
             </div>
 
             {/* Services */}
             <div className="space-y-4">
-              <h3 className="font-semibold">Services</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link to="/login/patient" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Services en Ligne
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/login/professional" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Espace Professionnel
-                  </Link>
-                </li>
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    FAQ
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Documentation
-                  </a>
-                </li>
+              <h3 className="font-semibold text-lg">Services</h3>
+              <ul className="space-y-3 text-sm">
+                <li><Link to="/login/patient" className="text-muted-foreground hover:text-primary transition-colors">Services en Ligne</Link></li>
+                <li><Link to="/login/professional" className="text-muted-foreground hover:text-primary transition-colors">Espace Professionnel</Link></li>
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a></li>
+                <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Documentation</a></li>
               </ul>
             </div>
 
             {/* Contact */}
             <div className="space-y-4">
-              <h3 className="font-semibold">Contact</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <h3 className="font-semibold text-lg">Contact</h3>
+              <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                   <span>Immeuble Alu-Suisse, Libreville</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Phone className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <Phone className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                   <span>(+241) 01-72-26-61</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Mail className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <Mail className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                   <span>contact@sante.gouv.ga</span>
                 </li>
               </ul>
@@ -684,15 +609,9 @@ const MinistryGouvPublic = () => {
               © 2025 Ministère de la Santé de la République Gabonaise. Tous droits réservés.
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Mentions Légales
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Confidentialité
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                Cookies
-              </a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Mentions Légales</a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Confidentialité</a>
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Cookies</a>
             </div>
           </div>
         </div>
