@@ -270,32 +270,100 @@ const MinistryPublic = () => {
       </section>
 
 
-      {/* Cartographie du Réseau de Santé */}
+      {/* Cartographie et Contact */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <Badge className="mb-4 bg-primary/10 text-primary border-0">
-                Cartographie Nationale
-              </Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
-                Réseau de Santé au Gabon
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez la répartition des établissements de santé sur l'ensemble du territoire gabonais
-              </p>
+          <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            
+            {/* Carte du Réseau de Santé */}
+            <div>
+              <div className="mb-8">
+                <Badge className="mb-4 bg-primary/10 text-primary border-0">
+                  Cartographie Nationale
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
+                  Réseau de Santé au Gabon
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Découvrez la répartition des établissements de santé
+                </p>
+              </div>
+
+              <Card className="border-2 overflow-hidden">
+                <CardContent className="p-0">
+                  <GabonHealthMap />
+                </CardContent>
+              </Card>
+
+              <div className="mt-4 text-center">
+                <p className="text-sm text-muted-foreground">
+                  Cliquez sur les marqueurs pour plus d'informations
+                </p>
+              </div>
             </div>
 
-            <Card className="border-2 overflow-hidden">
-              <CardContent className="p-0">
-                <GabonHealthMap />
-              </CardContent>
-            </Card>
+            {/* Nous Contacter */}
+            <div>
+              <div className="mb-8">
+                <Badge className="mb-4 bg-secondary/10 text-secondary border-0">
+                  Contact
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
+                  Nous Contacter
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Pour toute question ou demande d'information
+                </p>
+              </div>
 
-            <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Cliquez sur les marqueurs pour plus d'informations sur chaque établissement
-              </p>
+              <Card className="border-2 bg-gradient-to-br from-secondary/5 to-primary/5">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-secondary mt-0.5" />
+                      <div>
+                        <div className="font-medium mb-1">Adresse</div>
+                        <div className="text-sm text-muted-foreground">
+                          À côté de l'immeuble Alu-Suisse<br />
+                          Libreville, Gabon
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Phone className="h-5 w-5 text-secondary mt-0.5" />
+                      <div>
+                        <div className="font-medium mb-1">Téléphone</div>
+                        <div className="text-sm text-muted-foreground">
+                          +241 01-72-26-61<br />
+                          +241 06 47 74 83
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Mail className="h-5 w-5 text-secondary mt-0.5" />
+                      <div>
+                        <div className="font-medium mb-1">Email</div>
+                        <div className="text-sm text-muted-foreground">
+                          contact@sante.gouv.ga
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 text-secondary mt-0.5" />
+                      <div>
+                        <div className="font-medium mb-1">Horaires</div>
+                        <div className="text-sm text-muted-foreground">
+                          Lun - Ven: 08h00 - 17h00<br />
+                          Weekend: Fermé
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -390,69 +458,6 @@ const MinistryPublic = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-
-            <Card className="border-2 bg-gradient-to-br from-secondary/5 to-primary/5">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <MapPin className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Nous Contacter</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-secondary mt-0.5" />
-                    <div>
-                      <div className="font-medium mb-1">Adresse</div>
-                      <div className="text-sm text-muted-foreground">
-                        À côté de l'immeuble Alu-Suisse<br />
-                        Libreville, Gabon
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-secondary mt-0.5" />
-                    <div>
-                      <div className="font-medium mb-1">Téléphone</div>
-                      <div className="text-sm text-muted-foreground">
-                        +241 01-72-26-61<br />
-                        +241 06 47 74 83
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-secondary mt-0.5" />
-                    <div>
-                      <div className="font-medium mb-1">Email</div>
-                      <div className="text-sm text-muted-foreground">
-                        contact@sante.gouv.ga
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-5 w-5 text-secondary mt-0.5" />
-                    <div>
-                      <div className="font-medium mb-1">Horaires</div>
-                      <div className="text-sm text-muted-foreground">
-                        Lun - Ven: 08h00 - 17h00<br />
-                        Weekend: Fermé
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-secondary text-secondary-foreground py-12">
