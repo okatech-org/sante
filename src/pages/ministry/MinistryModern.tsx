@@ -271,17 +271,7 @@ const MinistryModern = () => {
                 Ministère de la Santé
               </motion.h1>
               
-              <motion.p 
-                className="text-2xl lg:text-3xl mb-8 text-foreground/90 font-light"
-                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
-              >
-                Publique et de la Population
-              </motion.p>
-              
-              <motion.p 
+              <motion.p
                 className="text-lg lg:text-xl mb-10 text-foreground/80 max-w-2xl mx-auto font-medium"
                 style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
                 initial={{ y: 20, opacity: 0 }}
