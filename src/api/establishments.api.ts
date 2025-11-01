@@ -909,9 +909,15 @@ function updateMockEstablishment(id: string, data: Partial<EstablishmentFormData
   const existing = getMockEstablishments().find(e => e.id === id);
   if (!existing) throw new Error('Establishment not found');
   
+  const updatedData = { ...data };
+  // Ensure services is properly typed
+  if (data.services && Array.isArray(data.services)) {
+    updatedData.services = data.services as any;
+  }
+  
   return {
     ...existing,
-    ...data,
+    ...updatedData,
     updatedAt: new Date().toISOString()
-  };
+  } as Establishment;
 }
