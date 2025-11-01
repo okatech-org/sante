@@ -352,7 +352,7 @@ const MinistryModern = () => {
             {/* Bloc unique avec toutes les informations */}
             <div className="absolute bottom-6 left-6 right-6">
               <motion.div 
-                className="bg-background/95 backdrop-blur-xl rounded-xl p-6 shadow-2xl"
+                className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-2xl p-6 shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
