@@ -429,7 +429,7 @@ const MinistryModern = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Programme Paludisme */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
