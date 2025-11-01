@@ -271,7 +271,7 @@ const MinistryModern = () => {
 
               {/* Stats intégrées dans le Hero - Design Compact avec Glass Morphism */}
               <motion.div
-                className="mt-32 md:mt-16 max-w-5xl mx-auto"
+                className="mt-40 md:mt-24 max-w-5xl mx-auto"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1.5, duration: 0.8 }}
