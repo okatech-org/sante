@@ -9,7 +9,7 @@ interface NationalStatisticsCardProps {
 export const NationalStatisticsCard = ({ statistics }: NationalStatisticsCardProps) => {
   if (!statistics) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="animate-pulse">
             <CardHeader className="space-y-2">
@@ -57,7 +57,7 @@ export const NationalStatisticsCard = ({ statistics }: NationalStatisticsCardPro
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
         <Card key={index} className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
