@@ -315,20 +315,22 @@ const MinistryModern = () => {
       <section id="vision" className="py-20 relative">
         <div className="container mx-auto px-4">
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
-              <Target className="w-4 h-4 mr-2" />
-              PNDS 2024-2028
-            </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-              Notre Vision Stratégique
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 mb-4">
+              <Badge className="mb-2 md:mb-0 self-center bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
+                <Target className="w-4 h-4 mr-2" />
+                PNDS 2024-2028
+              </Badge>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+                Notre Vision Stratégique
+              </h2>
+            </div>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               Améliorer l'état de santé et le bien-être de la population gabonaise en assurant l'accès universel à des services de santé de qualité
             </p>
           </motion.div>
