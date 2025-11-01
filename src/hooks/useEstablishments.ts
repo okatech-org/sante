@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Establishment, EstablishmentFormData } from '@/types/establishment';
+import { establishmentsAPI } from '@/api/establishments.api';
 
 export const useEstablishments = () => {
   const [loading, setLoading] = useState(false);
@@ -10,10 +11,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
-      // TODO: Remplacer par un vrai appel API
-      const response = await fetch('/api/admin/establishments');
-      if (!response.ok) throw new Error('Erreur lors de la récupération');
-      const data = await response.json();
+      const data = await establishmentsAPI.getAll();
       return data;
     } catch (err) {
       setError('Erreur lors du chargement des établissements');
@@ -28,17 +26,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
-      // TODO: Remplacer par un vrai appel API
-      const response = await fetch('/api/admin/establishments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (!response.ok) throw new Error('Erreur lors de la création');
-      const result = await response.json();
+      const result = await establishmentsAPI.create(data);
       return result;
     } catch (err) {
       setError('Erreur lors de la création de l\'établissement');
@@ -53,17 +41,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
-      // TODO: Remplacer par un vrai appel API
-      const response = await fetch(`/api/admin/establishments/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (!response.ok) throw new Error('Erreur lors de la mise à jour');
-      const result = await response.json();
+      const result = await establishmentsAPI.update(id, data);
       return result;
     } catch (err) {
       setError('Erreur lors de la mise à jour de l\'établissement');
@@ -78,13 +56,8 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
-      // TODO: Remplacer par un vrai appel API
-      const response = await fetch(`/api/admin/establishments/${id}`, {
-        method: 'DELETE',
-      });
-      
-      if (!response.ok) throw new Error('Erreur lors de la suppression');
-      return true;
+      const result = await establishmentsAPI.delete(id);
+      return result;
     } catch (err) {
       setError('Erreur lors de la suppression de l\'établissement');
       throw err;

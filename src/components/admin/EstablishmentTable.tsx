@@ -29,7 +29,8 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Clock
+  Clock,
+  Building2
 } from "lucide-react";
 
 interface EstablishmentTableProps {

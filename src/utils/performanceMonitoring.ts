@@ -178,9 +178,9 @@ class PerformanceMonitor {
    */
   private async sendReport(report: PerformanceReport) {
     // In production, send to monitoring service
-    if (process.env.NODE_ENV === 'production' && process.env.VITE_MONITORING_ENDPOINT) {
+    if (import.meta.env.MODE === 'production' && import.meta.env.VITE_MONITORING_ENDPOINT) {
       try {
-        await fetch(process.env.VITE_MONITORING_ENDPOINT, {
+        await fetch(import.meta.env.VITE_MONITORING_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(report)

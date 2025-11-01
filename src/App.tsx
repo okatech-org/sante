@@ -48,6 +48,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminHealthActors from "./pages/AdminHealthActors";
 import AdminApprovals from "./pages/AdminApprovals";
+import AdminEstablishments from "./pages/admin/AdminEstablishments";
 import SuperAdminLogin from "./pages/SuperAdminLogin";
 // import SuperAdminDashboard from "./pages/SuperAdminDashboard"; // Temporarily disabled
 
@@ -124,6 +125,7 @@ function App() {
                     <Route path="/admin/users" element={<AdminUsers />} />
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
+                    <Route path="/admin/establishments" element={<AdminEstablishments />} />
                     {/* <Route path="/superadmin" element={<SuperAdminDashboard />} /> */}
                     {/* <Route path="/dashboard/superadmin" element={<SuperAdminDashboard />} /> */}
                     
