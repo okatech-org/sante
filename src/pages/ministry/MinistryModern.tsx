@@ -482,14 +482,20 @@ const MinistryModern = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted/50 rounded-sm p-4">
-                        <div className="text-2xl font-bold text-primary">15 Mds</div>
-                        <div className="text-xs text-muted-foreground">Budget FCFA</div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <TrendingUp className="h-6 w-6 text-success" />
+                          <div className="text-2xl font-bold text-foreground">15 Mds</div>
+                          <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
+                        </div>
                       </div>
-                      <div className="bg-muted/50 rounded-sm p-4">
-                        <div className="text-2xl font-bold text-primary">9/9</div>
-                        <div className="text-xs text-muted-foreground">Provinces</div>
+                      <div className="text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <MapPin className="h-6 w-6 text-primary" />
+                          <div className="text-2xl font-bold text-foreground">9/9</div>
+                          <div className="text-xs text-muted-foreground font-medium">Provinces</div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -549,14 +555,20 @@ const MinistryModern = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted/50 rounded-sm p-4">
-                        <div className="text-2xl font-bold text-primary">25 Mds</div>
-                        <div className="text-xs text-muted-foreground">Budget FCFA</div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <TrendingUp className="h-6 w-6 text-accent" />
+                          <div className="text-2xl font-bold text-foreground">25 Mds</div>
+                          <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
+                        </div>
                       </div>
-                      <div className="bg-muted/50 rounded-sm p-4">
-                        <div className="text-2xl font-bold text-primary">-50%</div>
-                        <div className="text-xs text-muted-foreground">Objectif 2028</div>
+                      <div className="text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <Target className="h-6 w-6 text-secondary" />
+                          <div className="text-2xl font-bold text-foreground">-50%</div>
+                          <div className="text-xs text-muted-foreground font-medium">Objectif 2028</div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
