@@ -490,34 +490,6 @@ const MinistryPublic = () => {
               <CardContent className="p-8 h-full flex flex-col justify-center">
                 <h3 className="text-2xl font-bold mb-2">Santé Infantile</h3>
                 <p className="text-white/90 text-sm mb-4">Suivi pédiatrique</p>
-                </div>
-                <Button size="sm" variant="outline" className="w-full">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Consulter
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                  <Stethoscope className="h-6 w-6 text-primary" />
-                </div>
-                <Badge className="mb-3 bg-primary/10 text-primary border-0">
-                  Spécial
-                </Badge>
-                <h3 className="font-bold mb-2">Télémédecine SANTE.GA</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Bilan du déploiement de la plateforme de télémédecine
-                </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                  <Clock className="h-3 w-3" />
-                  <span>15 Sep 2025</span>
-                </div>
-                <Button size="sm" variant="outline" className="w-full">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Consulter
-                </Button>
               </CardContent>
             </Card>
           </div>
