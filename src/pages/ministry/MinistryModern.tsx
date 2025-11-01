@@ -425,7 +425,7 @@ const MinistryModern = () => {
                   {strategicAxes.map((axis, index) => (
                     <motion.div
                       key={index}
-                      className="group flex flex-col items-center text-center p-3 rounded-lg hover:bg-primary/10 transition-all cursor-pointer"
+                      className="group flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-all cursor-pointer"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -433,16 +433,18 @@ const MinistryModern = () => {
                       whileHover={{ scale: 1.05, y: -5 }}
                     >
                       <motion.div 
-                        className="bg-gradient-to-br from-primary to-secondary w-12 h-12 rounded-lg flex items-center justify-center mb-2 shadow-lg"
+                        className="bg-gradient-to-br from-primary to-secondary w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.6 }}
                       >
-                        <axis.icon className="h-6 w-6 text-white" />
+                        <axis.icon className="h-5 w-5 text-white" />
                       </motion.div>
-                      <h4 className="font-bold text-xs mb-1.5 group-hover:text-primary transition-colors leading-tight">
-                        {axis.title}
-                      </h4>
-                      <p className="text-[11px] text-muted-foreground leading-snug">{axis.desc}</p>
+                      <div className="flex-1 text-left">
+                        <h4 className="font-bold text-xs mb-1 group-hover:text-primary transition-colors leading-tight">
+                          {axis.title}
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground leading-snug">{axis.desc}</p>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
