@@ -353,17 +353,6 @@ const MinistryModern = () => {
             </motion.div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 border-2 border-foreground/40 rounded-full p-1 bg-background/20 backdrop-blur-sm">
-            <div className="w-1 h-3 bg-foreground/60 rounded-full mx-auto animate-pulse" />
-          </div>
-        </motion.div>
       </motion.section>
 
       {/* Vision & Mission avec Layout Split Moderne */}
