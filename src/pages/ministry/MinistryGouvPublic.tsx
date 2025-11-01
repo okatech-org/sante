@@ -349,27 +349,75 @@ const MinistryGouvPublic = () => {
 
             {/* Axes stratégiques */}
             <div className="space-y-4">
-              {[
-                { icon: Target, color: "primary", title: "Gouvernance et Leadership", desc: "Renforcement de la gouvernance du secteur de la santé" },
-                { icon: Heart, color: "accent", title: "Offre de Soins", desc: "Amélioration de l'offre de soins et des services de santé" },
-                { icon: Users, color: "secondary", title: "Ressources Humaines", desc: "Développement des ressources humaines en santé" },
-                { icon: TrendingUp, color: "warning", title: "Financement", desc: "Financement durable de la santé" },
-                { icon: Activity, color: "primary", title: "Promotion", desc: "Promotion de la santé et prévention des maladies" }
-              ].map((axe, index) => (
-                <Card key={index} className={`border-l-4 border-l-${axe.color} hover:shadow-lg transition-all hover:-translate-x-2`}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className={`h-12 w-12 rounded-xl bg-${axe.color}/10 flex items-center justify-center flex-shrink-0`}>
-                        <axe.icon className={`h-6 w-6 text-${axe.color}`} />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-2">{axe.title}</h3>
-                        <p className="text-sm text-muted-foreground">{axe.desc}</p>
-                      </div>
+              <Card className="border-l-4 border-l-primary hover:shadow-lg transition-all hover:-translate-x-2">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Target className="h-6 w-6 text-primary" />
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <div>
+                      <h3 className="font-semibold mb-2">Gouvernance et Leadership</h3>
+                      <p className="text-sm text-muted-foreground">Renforcement de la gouvernance du secteur de la santé</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-accent hover:shadow-lg transition-all hover:-translate-x-2">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <Heart className="h-6 w-6 text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Offre de Soins</h3>
+                      <p className="text-sm text-muted-foreground">Amélioration de l'offre de soins et des services de santé</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-secondary hover:shadow-lg transition-all hover:-translate-x-2">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                      <Users className="h-6 w-6 text-secondary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Ressources Humaines</h3>
+                      <p className="text-sm text-muted-foreground">Développement des ressources humaines en santé</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-warning hover:shadow-lg transition-all hover:-translate-x-2">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="h-6 w-6 text-warning" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Financement</h3>
+                      <p className="text-sm text-muted-foreground">Financement durable de la santé</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-l-4 border-l-primary hover:shadow-lg transition-all hover:-translate-x-2">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Activity className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Promotion</h3>
+                      <p className="text-sm text-muted-foreground">Promotion de la santé et prévention des maladies</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -452,6 +500,243 @@ const MinistryGouvPublic = () => {
         </div>
       </section>
 
+      {/* Section Indicateurs Stratégiques */}
+      <section className="py-24 md:py-32 bg-gradient-to-br from-secondary/5 via-primary/5 to-accent/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="container relative">
+          <div className="text-center mb-16 space-y-4">
+            <Badge className="mb-2">Performance</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              Indicateurs Stratégiques PNDS 2024-2028
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Nos objectifs chiffrés pour une transformation durable du système de santé
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="border-2 hover:border-primary/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Target className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">Couverture Universelle</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">78%</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">95%</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Population couverte par l'assurance maladie
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-accent/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                    <Heart className="h-6 w-6 text-accent" />
+                  </div>
+                  <CardTitle className="text-lg">Mortalité Maternelle</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">252</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">180</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Pour 100 000 naissances vivantes
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-secondary/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-secondary" />
+                  </div>
+                  <CardTitle className="text-lg">Médecins pour 10k hab.</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">5.2</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">8.5</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Densité de médecins qualifiés
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-warning/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center">
+                    <Building className="h-6 w-6 text-warning" />
+                  </div>
+                  <CardTitle className="text-lg">Établissements Modernes</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">42%</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">75%</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Établissements aux normes internationales
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-primary/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Truck className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">EVASAN Réduites</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">850</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">-60%</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Évacuations sanitaires par an
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:border-accent/50 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-accent" />
+                  </div>
+                  <CardTitle className="text-lg">Budget Santé</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Actuel</div>
+                    <div className="text-3xl font-bold text-primary">8.5%</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-muted-foreground" />
+                  <div>
+                    <div className="text-xs text-muted-foreground mb-1">Cible 2028</div>
+                    <div className="text-3xl font-bold text-accent">12%</div>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Part du budget national
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Section CTA */}
+      <section className="py-24 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-secondary"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        
+        <div className="container relative text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <Badge className="bg-white/20 text-white hover:bg-white/30 border-white/30">
+              Rejoignez-nous
+            </Badge>
+            
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-white">
+              Ensemble pour une Santé Meilleure
+            </h2>
+            
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
+              Découvrez nos services en ligne, consultez nos programmes nationaux ou accédez à votre espace professionnel.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Link to="/login/patient">
+                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90 shadow-xl text-base px-8">
+                  Services Patients
+                  <Heart className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/login/professional">
+                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm text-base px-8">
+                  Espace Professionnel
+                  <Stethoscope className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-white/20">
+              <div className="text-white">
+                <div className="text-4xl font-bold mb-2">238</div>
+                <div className="text-sm text-white/80">Établissements</div>
+              </div>
+              <div className="text-white">
+                <div className="text-4xl font-bold mb-2">2.4K</div>
+                <div className="text-sm text-white/80">Professionnels</div>
+              </div>
+              <div className="text-white">
+                <div className="text-4xl font-bold mb-2">1.8M</div>
+                <div className="text-sm text-white/80">Bénéficiaires</div>
+              </div>
+              <div className="text-white">
+                <div className="text-4xl font-bold mb-2">9</div>
+                <div className="text-sm text-white/80">Provinces</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Section Contact */}
       <section id="contact" className="py-24 md:py-32 bg-gradient-to-br from-muted/30 to-muted/10 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -471,26 +756,61 @@ const MinistryGouvPublic = () => {
               </div>
 
               <div className="space-y-4">
-                {[
-                  { icon: MapPin, color: "primary", title: "Adresse", content: "Immeuble Alu-Suisse\nLibreville, Gabon" },
-                  { icon: Phone, color: "accent", title: "Téléphone", content: "Standard : (+241) 01-72-26-61\nUrgences : (+241) 1730" },
-                  { icon: Mail, color: "secondary", title: "Email", content: "contact@sante.gouv.ga\ninfo@sante.gouv.ga" },
-                  { icon: Activity, color: "warning", title: "Horaires", content: "Lun - Ven : 08h00 - 16h00\nSam - Dim : Fermé" }
-                ].map((item, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-all hover:-translate-y-1">
-                    <CardContent className="pt-6">
-                      <div className="flex items-start gap-4">
-                        <div className={`h-14 w-14 rounded-xl bg-${item.color}/10 flex items-center justify-center flex-shrink-0`}>
-                          <item.icon className={`h-7 w-7 text-${item.color}`} />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold mb-2">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground whitespace-pre-line">{item.content}</p>
-                        </div>
+                <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-7 w-7 text-primary" />
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <div>
+                        <h3 className="font-semibold mb-2">Adresse</h3>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">Immeuble Alu-Suisse{'\n'}Libreville, Gabon</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="h-14 w-14 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-7 w-7 text-accent" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-2">Téléphone</h3>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">Standard : (+241) 01-72-26-61{'\n'}Urgences : (+241) 1730</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="h-14 w-14 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                        <Mail className="h-7 w-7 text-secondary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-2">Email</h3>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">contact@sante.gouv.ga{'\n'}info@sante.gouv.ga</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="hover:shadow-lg transition-all hover:-translate-y-1">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="h-14 w-14 rounded-xl bg-warning/10 flex items-center justify-center flex-shrink-0">
+                        <Activity className="h-7 w-7 text-warning" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-2">Horaires</h3>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">Lun - Ven : 08h00 - 16h00{'\n'}Sam - Dim : Fermé</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
