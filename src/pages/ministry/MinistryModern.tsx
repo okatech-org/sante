@@ -572,10 +572,10 @@ const MinistryModern = () => {
         <div className="absolute inset-0 bg-primary/5" />
         
         <div className="container mx-auto px-4 relative">
-          <div className="grid lg:grid-cols-3 gap-12 items-start">
+          <div className="grid md:grid-cols-3 gap-12 items-start">
             {/* Map Section - 2/3 de l'espace */}
             <motion.div
-              className="lg:col-span-2"
+              className="md:col-span-2"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -600,7 +600,7 @@ const MinistryModern = () => {
 
             {/* Contact Section avec Glass Effect - 1/3 de l'espace */}
             <motion.div
-              className="lg:col-span-1"
+              className="md:col-span-1"
               id="contact"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
