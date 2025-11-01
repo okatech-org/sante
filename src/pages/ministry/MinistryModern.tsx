@@ -247,16 +247,6 @@ const MinistryModern = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <motion.h1 
-                className="text-5xl lg:text-7xl font-bold mb-6 text-foreground"
-                style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2)' }}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.7, duration: 0.8 }}
-              >
-                Ministère de la Santé
-              </motion.h1>
-              
               <motion.div
                 className="flex flex-wrap gap-4 justify-center"
                 initial={{ y: 20, opacity: 0 }}
