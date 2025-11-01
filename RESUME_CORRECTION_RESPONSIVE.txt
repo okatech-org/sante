@@ -1,0 +1,45 @@
+==================================================
+CORRECTION RESPONSIVE URGENCES - TERMINÉE ✅
+==================================================
+
+🔑 PROBLÈME RÉSOLU
+Débordement de contenu dans la colonne "En consultation" 
+du tableau Kanban des urgences
+
+✅ CORRECTIONS APPLIQUÉES
+
+1. CARTES PATIENTS
+   • w-full overflow-hidden
+   • min-w-0 sur tous les conteneurs
+   • CardContent avec contraintes de largeur
+
+2. TEXTE RESPONSIVE
+   • Noms patients : truncate
+   • Motifs : line-clamp-2 break-words  
+   • Constantes vitales : font-mono truncate
+   • Médecins : truncate
+
+3. LAYOUT KANBAN
+   • overflow-x-auto sur conteneur principal
+   • min-w-[300px] pour mobile
+   • Headers avec truncate
+   • Zones cartes avec overflow-hidden
+
+4. ICÔNES ET BADGES
+   • flex-shrink-0 sur toutes les icônes
+   • Badges avec flex-shrink-0
+   • Contraintes de largeur respectées
+
+5. CONSTANTES VITALES
+   • Grid responsive avec min-w-0
+   • Police monospace tronquée
+   • Icônes non réductibles
+
+📱 RESPONSIVE
+✅ Mobile : 1 colonne avec scroll horizontal
+✅ Tablette : 2-3 colonnes optimisées
+✅ Desktop : 6 colonnes parfaites
+
+==================================================
+RÉSULTAT : KANBAN PARFAITEMENT RESPONSIVE ✅
+==================================================

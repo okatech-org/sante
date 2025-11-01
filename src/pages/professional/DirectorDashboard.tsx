@@ -9,19 +9,19 @@ export default function DirectorDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
+      <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Shield className="h-8 w-8 text-primary" />
             Tableau de Bord Direction
           </h1>
-          <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1">
             Vue d'ensemble de l'établissement
-          </p>
-        </div>
+        </p>
+      </div>
         <Badge className="px-4 py-2 text-lg">
           Directeur Général
-        </Badge>
-      </div>
+              </Badge>
+            </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">

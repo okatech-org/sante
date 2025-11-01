@@ -231,26 +231,26 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                   }
                   
                   return (
-                    <button
+              <button
                       key={roleItem.role}
                       onClick={() => handleRoleChange(roleItem.role)}
-                      className={cn(
-                        "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
                         activeRole === roleItem.role
-                          ? "bg-primary text-primary-foreground font-medium"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                      )}
-                    >
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                )}
+              >
                       <Icon className="h-4 w-4" />
                       <span className="flex-1 text-left">{roleLabel}</span>
                       {activeRole === roleItem.role && (
-                        isRoleMenuExpanded ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )
-                      )}
-                    </button>
+                  isRoleMenuExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )
+                )}
+              </button>
                   );
                 })
               ) : null}

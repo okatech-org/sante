@@ -219,129 +219,200 @@ export function AccueilUrgences() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Alertes délais dépassés - Plus visible */}
+    <div className="space-y-6">
+      {/* Header avec titre et bouton urgence vitale */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Siren className="h-6 w-6 text-red-600 animate-pulse" />
+            <h1 className="text-3xl font-bold tracking-tight">Accueil Service d'Urgences</h1>
+          </div>
+          <p className="text-muted-foreground">Service d'urgences - Triage et prise en charge</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-950/50 px-3 py-1">
+            Mode URGENCES
+          </Badge>
+          <Button 
+            size="lg"
+            className="bg-red-600 hover:bg-red-700 text-white animate-pulse shadow-lg"
+            onClick={handleUrgenceVitale}
+          >
+            <AlertTriangle className="mr-2 h-5 w-5" />
+            URGENCE VITALE
+          </Button>
+        </div>
+      </div>
+
+      {/* Alertes délais dépassés */}
       {alertesDelais.length > 0 && (
-        <Alert variant="destructive" className="animate-pulse border-2 border-red-500 shadow-lg">
-          <AlertCircle className="h-5 w-5" />
-          <AlertDescription className="ml-2">
-            <strong className="text-base font-bold">⚠️ Délais dépassés :</strong>
-            <ul className="mt-2 space-y-1">
+        <Alert variant="destructive" className="border-red-300 bg-red-50 dark:bg-red-950/20">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="font-semibold mb-1">⚠️ Délais dépassés - Action requise</div>
+            <ul className="list-disc list-inside space-y-1">
               {alertesDelais.map((alerte, index) => (
-                <li key={index} className="text-sm font-medium">• {alerte}</li>
+                <li key={index} className="text-sm">{alerte}</li>
               ))}
             </ul>
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Statistiques - Améliorées */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">
-          Patients actuels par niveau de gravité
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <Card className="bg-red-50 dark:bg-red-950/30 border-2 border-red-300 dark:border-red-700 hover:shadow-lg transition-shadow">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Zap className="h-10 w-10 text-red-600" />
-                <p className="text-sm font-semibold text-red-700 dark:text-red-400">Niveau 1</p>
-                <p className="text-4xl font-bold text-red-700 dark:text-red-500">{stats.niveau1}</p>
-                <p className="text-xs text-red-600 dark:text-red-400">Urgence vitale</p>
+      {/* Statistiques */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* Niveau 1 */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-red-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-red-100 dark:bg-red-950/50">
+                <Zap className="h-6 w-6 text-red-600" />
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Niveau 1</p>
+              <p className="text-3xl font-bold text-red-700 dark:text-red-400">{stats.niveau1}</p>
+              <p className="text-xs text-red-600 mt-1">Urgence vitale</p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-orange-50 dark:bg-orange-950/30 border-2 border-orange-300 dark:border-orange-700 hover:shadow-lg transition-shadow">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <AlertTriangle className="h-10 w-10 text-orange-600" />
-                <p className="text-sm font-semibold text-orange-700 dark:text-orange-400">Niveau 2</p>
-                <p className="text-4xl font-bold text-orange-700 dark:text-orange-500">{stats.niveau2}</p>
-                <p className="text-xs text-orange-600 dark:text-orange-400">Très urgent</p>
+        {/* Niveau 2 */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-orange-100 dark:bg-orange-950/50">
+                <AlertTriangle className="h-6 w-6 text-orange-600" />
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Niveau 2</p>
+              <p className="text-3xl font-bold text-orange-700 dark:text-orange-400">{stats.niveau2}</p>
+              <p className="text-xs text-orange-600 mt-1">Très urgent</p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-yellow-50 dark:bg-yellow-950/30 border-2 border-yellow-300 dark:border-yellow-700 hover:shadow-lg transition-shadow">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Clock className="h-10 w-10 text-yellow-700" />
-                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-400">Niveau 3</p>
-                <p className="text-4xl font-bold text-yellow-800 dark:text-yellow-500">{stats.niveau3}</p>
-                <p className="text-xs text-yellow-700 dark:text-yellow-400">Urgent</p>
+        {/* Niveau 3 */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-yellow-100 dark:bg-yellow-950/50">
+                <Clock className="h-6 w-6 text-yellow-600" />
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Niveau 3</p>
+              <p className="text-3xl font-bold text-yellow-700 dark:text-yellow-400">{stats.niveau3}</p>
+              <p className="text-xs text-yellow-600 mt-1">Urgent</p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border-2 hover:shadow-lg transition-shadow">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Users className="h-10 w-10 text-primary" />
-                <p className="text-sm font-semibold text-muted-foreground">Total</p>
-                <p className="text-4xl font-bold text-primary">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Patients présents</p>
+        {/* Total */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-blue-100 dark:bg-blue-950/50">
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-xs font-medium text-muted-foreground mb-1">Total</p>
+              <p className="text-3xl font-bold text-blue-700 dark:text-blue-400">{stats.total}</p>
+              <p className="text-xs text-blue-600 mt-1">Patients actifs</p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border-2 hover:shadow-lg transition-shadow bg-orange-50/50 dark:bg-orange-950/10">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Clock className="h-10 w-10 text-orange-600" />
-                <p className="text-sm font-semibold text-muted-foreground">En attente</p>
-                <p className="text-4xl font-bold text-orange-600">{stats.enAttente}</p>
-                <p className="text-xs text-muted-foreground">consultation</p>
+        {/* En attente */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-cyan-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-cyan-100 dark:bg-cyan-950/50">
+                <Clock className="h-6 w-6 text-cyan-600" />
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-xs font-medium text-muted-foreground mb-1">En attente</p>
+              <p className="text-3xl font-bold text-cyan-700 dark:text-cyan-400">{stats.enAttente}</p>
+              <p className="text-xs text-cyan-600 mt-1">À voir</p>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border-2 hover:shadow-lg transition-shadow bg-blue-50/50 dark:bg-blue-950/10">
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Activity className="h-10 w-10 text-blue-600" />
-                <p className="text-sm font-semibold text-muted-foreground">En consultation</p>
-                <p className="text-4xl font-bold text-blue-600">{stats.enConsultation}</p>
-                <p className="text-xs text-muted-foreground">Avec médecin</p>
+        {/* En consultation */}
+        <Card className="relative overflow-hidden border-0 shadow-md">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/5" />
+          <CardContent className="relative p-4">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-2 p-3 rounded-full bg-purple-100 dark:bg-purple-950/50">
+                <Activity className="h-6 w-6 text-purple-600" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <p className="text-xs font-medium text-muted-foreground mb-1">En consultation</p>
+              <p className="text-3xl font-bold text-purple-700 dark:text-purple-400">{stats.enConsultation}</p>
+              <p className="text-xs text-purple-600 mt-1">En cours</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Actions rapides - Améliorées */}
-      <div className="flex gap-4">
+      {/* Actions et filtres */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <Button 
           onClick={() => setShowTriageForm(true)}
           size="lg"
-          className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-lg py-6"
+          className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
         >
-          <Plus className="mr-2 h-5 w-5" />
+          <Plus className="mr-2 h-4 w-4" />
           Nouveau patient
         </Button>
-        <Button variant="outline" size="lg" className="text-lg py-6">
-          <Filter className="mr-2 h-5 w-5" />
-          Filtres
-        </Button>
+        <div className="flex gap-2 flex-1">
+          <Input 
+            placeholder="Rechercher un patient..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1"
+          />
+          <Button variant="outline" size="icon" className="shrink-0">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Dashboard principal */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">
-          Suivi des patients en temps réel
-        </h2>
-        <UrgenceDashboard 
-          dossiers={filteredDossiers}
-          onUpdateStatut={(dossierId, newStatut) => {
-            setDossiersUrgence(prev => prev.map(d => 
-              d.id === dossierId 
-                ? { ...d, statut: newStatut, updatedAt: new Date().toISOString() }
-                : d
-            ));
-            toast.success('Statut mis à jour');
-          }}
-        />
-      </div>
+      {/* Dashboard Kanban */}
+      <Card className="border-0 shadow-xl">
+        <CardHeader className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-red-950/30 border-b border-red-100 dark:border-red-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/50">
+                <Activity className="h-5 w-5 text-red-600" />
+              </div>
+              <div>
+                <CardTitle className="text-xl">Tableau de bord des urgences</CardTitle>
+                <p className="text-sm text-muted-foreground">Suivi temps réel des patients</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-white dark:bg-gray-950">
+                {filteredDossiers.length} patients
+              </Badge>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-muted-foreground">Temps réel</span>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4">
+          <UrgenceDashboard 
+            dossiers={filteredDossiers}
+            onUpdateStatut={(dossierId, newStatut) => {
+              setDossiersUrgence(prev => prev.map(d => 
+                d.id === dossierId 
+                  ? { ...d, statut: newStatut, updatedAt: new Date().toISOString() }
+                  : d
+              ));
+              toast.success('Statut mis à jour');
+            }}
+          />
+        </CardContent>
+      </Card>
 
       {/* Modal de triage */}
       {showTriageForm && (

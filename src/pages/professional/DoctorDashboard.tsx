@@ -9,19 +9,19 @@ export default function DoctorDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
+      <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Stethoscope className="h-8 w-8 text-primary" />
             Tableau de Bord Médecin
           </h1>
-          <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1">
             Activité médicale et consultations
-          </p>
-        </div>
+        </p>
+      </div>
         <Badge className="px-4 py-2 text-lg">
           Médecin Généraliste
-        </Badge>
-      </div>
+              </Badge>
+            </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900">
