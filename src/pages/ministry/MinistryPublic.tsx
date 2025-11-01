@@ -106,7 +106,7 @@ const MinistryPublic = () => {
           </div>
 
           {/* Strategic Axes - Image & Cards Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Image */}
             <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
               <img 
