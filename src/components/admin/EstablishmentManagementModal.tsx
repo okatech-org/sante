@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -280,6 +281,9 @@ export const EstablishmentManagementModal = ({
             <Building2 className="h-6 w-6" />
             Gestion de l'Établissement - {establishment.name}
           </DialogTitle>
+          <DialogDescription>
+            Configuration complète et gestion des utilisateurs, dashboards, facturation et paramètres de l'établissement
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

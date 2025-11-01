@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -137,6 +138,9 @@ export function TransfertPatientModal({
             <ArrowRight className="h-5 w-5 text-blue-600" />
             Transfert de patient
           </DialogTitle>
+          <DialogDescription>
+            Choisissez le service de destination, la priorité et le motif.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">

@@ -21,7 +21,7 @@ export const EstablishmentRedirect = ({ establishment, children }: Establishment
   const handleRedirect = async () => {
     // Cas spécial 1: Ministère de la Santé → Page ministère
     if (establishment.name.includes('Ministère de la Santé')) {
-      window.location.href = '/ministry';
+      window.location.href = '/gouv';
       return;
     }
 
@@ -64,7 +64,7 @@ export const EstablishmentRedirect = ({ establishment, children }: Establishment
 export const useEstablishmentUrl = (establishment: Establishment): string => {
   // Cas spéciaux avec pages dédiées
   if (establishment.name.includes('Ministère de la Santé')) {
-    return '/ministry';
+    return '/gouv';
   }
   
   if (establishment.name === 'Clinique SOGARA') {

@@ -1,343 +1,366 @@
 // Page publique du Ministère de la Santé (sans authentification)
 // SANTE.GA - Plateforme E-Santé Gabon
 
-import { useState, useEffect } from "react";
-import { MinistryHeroSection } from "@/components/ministry/MinistryHeroSection";
-import { NationalStatisticsCard } from "@/components/ministry/NationalStatisticsCard";
-import { AlertsPanel } from "@/components/ministry/AlertsPanel";
-import { ProvincialPerformanceTable } from "@/components/ministry/ProvincialPerformanceTable";
-import { MinistryFinancesCard } from "@/components/ministry/MinistryFinancesCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, FileText, Building2, Users, Settings } from "lucide-react";
-import { MinistryDashboard as MinistryDashboardType, MinistryContact } from "@/types/ministry";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Heart, 
+  Shield, 
+  Users, 
+  Activity, 
+  TrendingUp, 
+  Building2, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  Clock,
+  AlertCircle,
+  FileText,
+  Stethoscope,
+  Syringe,
+  Baby,
+  ArrowRight,
+  CheckCircle
+} from "lucide-react";
 
-/**
- * Version publique du dashboard du Ministère
- * Pas de vérification d'authentification
- */
 const MinistryPublic = () => {
-  const [dashboardData, setDashboardData] = useState<MinistryDashboardType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const ministryContact: MinistryContact = {
-    adresse_physique: "À côté de l'immeuble Alu-Suisse, Libreville, Gabon",
-    boite_postale: "BP 50",
-    telephone_principal: "+241 01-72-26-61",
-    telephone_secretariat: "+241 06 47 74 83",
-    email_officiel: "contact@sante.gouv.ga",
-    site_web: "https://sante.gouv.ga",
-    horaires: {
-      lundi_vendredi: "08h00 - 17h00",
-      weekend: "Fermé",
-      jours_feries: "Fermé"
-    }
-  };
-
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
-    setIsLoading(true);
-    
-    const mockData: MinistryDashboardType = {
-      statistiques_nationales: {
-        population_couverte_cnamgs: 1800000,
-        taux_couverture: "78%",
-        etablissements_operationnels: 238,
-        professionnels_actifs: {
-          medecins: 2159,
-          infirmiers: 15000,
-          pharmaciens: 150
-        },
-        consultations_mensuelles: 85000,
-        teleconsultations_mensuelles: 12500
-      },
-      alertes_prioritaires: {
-        ruptures_medicaments: [
-          {
-            id: "alert-1",
-            type: "rupture_medicament",
-            titre: "Rupture d'insuline",
-            description: "Stock critique dans 3 établissements",
-            province: "Haut-Ogooué",
-            niveau_priorite: "critique",
-            date_signalement: "2025-10-28",
-            status: "active"
-          },
-          {
-            id: "alert-2",
-            type: "rupture_medicament",
-            titre: "Rupture antipaludéens",
-            description: "Rupture partielle",
-            province: "Ogooué-Ivindo",
-            niveau_priorite: "haute",
-            date_signalement: "2025-10-30",
-            status: "active"
-          }
-        ],
-        equipements_panne: [
-          {
-            id: "alert-3",
-            type: "equipement_panne",
-            titre: "Scanner en panne - CHR Franceville",
-            description: "Maintenance requise d'urgence",
-            province: "Haut-Ogooué",
-            niveau_priorite: "haute",
-            date_signalement: "2025-10-25",
-            status: "en_cours"
-          }
-        ],
-        epidemies_signalees: [
-          {
-            id: "alert-4",
-            type: "epidemie",
-            titre: "Paludisme - Hausse des cas",
-            description: "Augmentation de 15% des cas",
-            province: "Nyanga",
-            niveau_priorite: "moyenne",
-            date_signalement: "2025-10-20",
-            status: "active"
-          }
-        ],
-        evasan_hebdomadaires: 12
-      },
-      performance_provinces: [
-        {
-          province: "Estuaire",
-          taux_occupation: 78,
-          satisfaction_patients: 4.2,
-          delai_attente_moyen: "45 min",
-          taux_mortalite: 1.2,
-          budget_utilise: 85,
-          couleur_statut: "success"
-        },
-        {
-          province: "Haut-Ogooué",
-          taux_occupation: 85,
-          satisfaction_patients: 3.8,
-          delai_attente_moyen: "1h15",
-          taux_mortalite: 1.8,
-          budget_utilise: 92,
-          couleur_statut: "warning"
-        },
-        {
-          province: "Ogooué-Maritime",
-          taux_occupation: 72,
-          satisfaction_patients: 4.0,
-          delai_attente_moyen: "55 min",
-          taux_mortalite: 1.5,
-          budget_utilise: 78,
-          couleur_statut: "success"
-        },
-        {
-          province: "Woleu-Ntem",
-          taux_occupation: 65,
-          satisfaction_patients: 3.9,
-          delai_attente_moyen: "50 min",
-          taux_mortalite: 1.6,
-          budget_utilise: 70,
-          couleur_statut: "success"
-        },
-        {
-          province: "Moyen-Ogooué",
-          taux_occupation: 68,
-          satisfaction_patients: 3.7,
-          delai_attente_moyen: "1h05",
-          taux_mortalite: 2.0,
-          budget_utilise: 75,
-          couleur_statut: "warning"
-        }
-      ],
-      finances_sante: {
-        budget_total: 450000000000,
-        budget_execute: 382500000000,
-        taux_execution: 85,
-        repartition: {
-          infrastructures: 35,
-          personnels: 40,
-          medicaments: 15,
-          equipements: 10
-        }
-      }
-    };
-    
-    setDashboardData(mockData);
-    setTimeout(() => setIsLoading(false), 1000);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!dashboardData) return null;
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <MinistryHeroSection contact={ministryContact} />
-      
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-6">Tableau de Bord National</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Hero Section - Moderne et épuré */}
+      <div className="relative bg-gradient-to-r from-blue-600 to-green-600 text-white overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
+          }}></div>
+        </div>
         
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-4 max-w-2xl">
-            <TabsTrigger value="overview" className="flex items-center gap-2 text-xs md:text-sm">
-              <BarChart3 className="h-4 w-4" />
-              <span className="hidden md:inline">Vue d'ensemble</span>
-              <span className="md:hidden">Général</span>
-            </TabsTrigger>
-            <TabsTrigger value="programs" className="flex items-center gap-2 text-xs md:text-sm">
-              <FileText className="h-4 w-4" />
-              <span className="hidden md:inline">Programmes</span>
-              <span className="md:hidden">Prog.</span>
-            </TabsTrigger>
-            <TabsTrigger value="establishments" className="flex items-center gap-2 text-xs md:text-sm">
-              <Building2 className="h-4 w-4" />
-              <span className="hidden md:inline">Établissements</span>
-              <span className="md:hidden">Étab.</span>
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-2 text-xs md:text-sm">
-              <Users className="h-4 w-4" />
-              <span className="hidden md:inline">Rapports</span>
-              <span className="md:hidden">Rap.</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <NationalStatisticsCard stats={dashboardData.statistiques_nationales} />
-              <MinistryFinancesCard finances={dashboardData.finances_sante} />
-              <AlertsPanel alerts={dashboardData.alertes_prioritaires} />
-            </div>
+        <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-4 bg-white/20 text-white border-white/30 hover:bg-white/30">
+              République Gabonaise
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Ministère de la Santé
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-blue-50 font-light">
+              Œuvrer pour un Gabon en meilleure santé
+            </p>
             
-            <ProvincialPerformanceTable performances={dashboardData.performance_provinces} />
-          </TabsContent>
-
-          <TabsContent value="programs">
-            <Card>
-              <CardHeader>
-                <CardTitle>Programmes Nationaux de Santé</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-semibold mb-2">Programme National de Lutte contre le Paludisme</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      Distribution de 500,000 moustiquaires imprégnées dans 5 provinces
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Progression</span>
-                      <span className="font-semibold">72%</span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-semibold mb-2">Programme de Vaccination Élargi (PEV)</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      Campagne de vaccination contre la rougeole et la rubéole
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Couverture vaccinale</span>
-                      <span className="font-semibold">89%</span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="font-semibold mb-2">Programme de Santé Maternelle et Infantile</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      Réduction de la mortalité maternelle et néonatale
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Objectif atteint</span>
-                      <span className="font-semibold">65%</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="establishments">
-            <Card>
-              <CardHeader>
-                <CardTitle>Réseau National des Établissements de Santé</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">CHU</h4>
-                    <p className="text-2xl font-bold">4</p>
-                    <p className="text-sm text-gray-600">Centres Hospitaliers Universitaires</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">CHR</h4>
-                    <p className="text-2xl font-bold">9</p>
-                    <p className="text-sm text-gray-600">Centres Hospitaliers Régionaux</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Centres de Santé</h4>
-                    <p className="text-2xl font-bold">52</p>
-                    <p className="text-sm text-gray-600">Centres médicaux et dispensaires</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Cliniques Privées</h4>
-                    <p className="text-2xl font-bold">147</p>
-                    <p className="text-sm text-gray-600">Établissements privés conventionnés</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Pharmacies</h4>
-                    <p className="text-2xl font-bold">114</p>
-                    <p className="text-sm text-gray-600">Officines agréées</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <h4 className="font-medium mb-2">Laboratoires</h4>
-                    <p className="text-2xl font-bold">18</p>
-                    <p className="text-sm text-gray-600">Laboratoires d'analyses médicales</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="reports">
-            <Card>
-              <CardHeader>
-                <CardTitle>Rapports et Publications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                    <div>
-                      <h4 className="font-medium">Rapport Annuel de Santé Publique 2024</h4>
-                      <p className="text-sm text-gray-600">Publié le 15 octobre 2025</p>
-                    </div>
-                    <button className="text-primary hover:underline text-sm">Télécharger</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                    <div>
-                      <h4 className="font-medium">Bulletin Épidémiologique Hebdomadaire</h4>
-                      <p className="text-sm text-gray-600">Semaine 44 - 2025</p>
-                    </div>
-                    <button className="text-primary hover:underline text-sm">Télécharger</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                    <div>
-                      <h4 className="font-medium">Plan National de Développement Sanitaire 2024-2028</h4>
-                      <p className="text-sm text-gray-600">Document stratégique</p>
-                    </div>
-                    <button className="text-primary hover:underline text-sm">Télécharger</button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            {/* Stats rapides */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="text-3xl font-bold">1.8M</div>
+                <div className="text-sm text-blue-100">Bénéficiaires CNAMGS</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="text-3xl font-bold">238</div>
+                <div className="text-sm text-blue-100">Établissements</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="text-3xl font-bold">2,159</div>
+                <div className="text-sm text-blue-100">Médecins</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="text-3xl font-bold">78%</div>
+                <div className="text-sm text-blue-100">Couverture</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Wave separator */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z" fill="white"/>
+          </svg>
+        </div>
       </div>
+
+      {/* Programmes Prioritaires */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Nos Programmes Prioritaires
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Des actions concrètes pour améliorer l'accès aux soins et la santé des Gabonais
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {/* Programme Paludisme */}
+          <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-green-400">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-green-100 p-3 rounded-lg group-hover:bg-green-500 transition-colors">
+                  <Shield className="h-6 w-6 text-green-600 group-hover:text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-2">Lutte contre le Paludisme</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Distribution de 500,000 moustiquaires imprégnées dans toutes les provinces
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-green-600 border-green-300">
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      72% accompli
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Programme Vaccination */}
+          <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-400">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-3 rounded-lg group-hover:bg-blue-500 transition-colors">
+                  <Syringe className="h-6 w-6 text-blue-600 group-hover:text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-2">Vaccination Élargie (PEV)</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Campagne nationale contre la rougeole et la rubéole
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-blue-600 border-blue-300">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      89% couverture
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Programme Santé Maternelle */}
+          <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-pink-400">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-pink-100 p-3 rounded-lg group-hover:bg-pink-500 transition-colors">
+                  <Baby className="h-6 w-6 text-pink-600 group-hover:text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-2">Santé Maternelle</h3>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Réduction de la mortalité maternelle et néonatale
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-pink-600 border-pink-300">
+                      <Activity className="h-3 w-3 mr-1" />
+                      65% objectif
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Réseau de Soins */}
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8 md:p-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Notre Réseau de Soins
+            </h2>
+            <p className="text-gray-600">
+              Un maillage territorial pour garantir l'accès aux soins partout au Gabon
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Building2 className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">4</div>
+              <div className="text-sm text-gray-600">CHU</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Building2 className="h-8 w-8 mx-auto mb-3 text-green-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">9</div>
+              <div className="text-sm text-gray-600">CHR</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Heart className="h-8 w-8 mx-auto mb-3 text-red-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">52</div>
+              <div className="text-sm text-gray-600">Centres</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Stethoscope className="h-8 w-8 mx-auto mb-3 text-purple-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">147</div>
+              <div className="text-sm text-gray-600">Cliniques</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Activity className="h-8 w-8 mx-auto mb-3 text-orange-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">114</div>
+              <div className="text-sm text-gray-600">Pharmacies</div>
+            </div>
+            <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+              <Users className="h-8 w-8 mx-auto mb-3 text-teal-600" />
+              <div className="text-3xl font-bold text-gray-900 mb-1">18</div>
+              <div className="text-sm text-gray-600">Laboratoires</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Alertes et Actualités */}
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Alertes Sanitaires */}
+            <Card className="border-2">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-orange-100 p-2 rounded-lg">
+                    <AlertCircle className="h-5 w-5 text-orange-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Alertes Sanitaires</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                    <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+                      URGENT
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">Rupture d'insuline</div>
+                      <div className="text-sm text-gray-600">Haut-Ogooué - 3 établissements</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">
+                      INFO
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">Paludisme en hausse</div>
+                      <div className="text-sm text-gray-600">Nyanga - +15% de cas</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Publications */}
+            <Card className="border-2">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Publications Récentes</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border">
+                    <FileText className="h-5 w-5 text-gray-400 mt-1" />
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">Rapport Annuel 2024</div>
+                      <div className="text-sm text-gray-600">15 octobre 2025</div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border">
+                    <FileText className="h-5 w-5 text-gray-400 mt-1" />
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">Bulletin Épidémiologique</div>
+                      <div className="text-sm text-gray-600">Semaine 44 - 2025</div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border">
+                    <FileText className="h-5 w-5 text-gray-400 mt-1" />
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">PNDS 2024-2028</div>
+                      <div className="text-sm text-gray-600">Document stratégique</div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Section */}
+      <div className="container mx-auto px-4 py-16">
+        <Card className="border-2 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-8">
+            <h2 className="text-3xl font-bold mb-2">Nous Contacter</h2>
+            <p className="text-blue-100">Ministère de la Santé publique et de la Population</p>
+          </div>
+          <CardContent className="p-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <MapPin className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Adresse</div>
+                  <div className="text-sm text-gray-600">
+                    À côté de l'immeuble Alu-Suisse<br />
+                    Libreville, Gabon
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-green-100 p-2 rounded-lg">
+                  <Phone className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Téléphone</div>
+                  <div className="text-sm text-gray-600">
+                    +241 01-72-26-61<br />
+                    +241 06 47 74 83
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-purple-100 p-2 rounded-lg">
+                  <Mail className="h-5 w-5 text-purple-600" />
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Email</div>
+                  <div className="text-sm text-gray-600">
+                    contact@sante.gouv.ga
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-orange-100 p-2 rounded-lg">
+                  <Clock className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <div className="font-semibold mb-1">Horaires</div>
+                  <div className="text-sm text-gray-600">
+                    Lun - Ven: 08h00 - 17h00<br />
+                    Weekend: Fermé
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-300 py-8">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm">
+            © 2025 Ministère de la Santé publique et de la Population - République Gabonaise
+          </p>
+          <p className="text-xs mt-2 text-gray-500">
+            Propulsé par SANTE.GA - Plateforme Nationale de Santé Numérique
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

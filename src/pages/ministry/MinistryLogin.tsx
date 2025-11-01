@@ -28,7 +28,7 @@ const MinistryLogin = () => {
           title: "Connexion réussie",
           description: "Bienvenue au Ministère de la Santé",
         });
-        navigate("/ministry/dashboard");
+        navigate("/gouv/dashboard");
       } else {
         toast({
           title: "Erreur de connexion",

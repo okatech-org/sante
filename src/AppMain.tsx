@@ -341,16 +341,16 @@ function AppMain() {
                     <Route path="/sogara" element={<SogaraPublic />} />
                     
                     {/* Routes Ministère de la Santé - Pages publiques (sans auth) */}
-                    <Route path="/ministry" element={<MinistryPublic />} />
-                    <Route path="/Ministry" element={<MinistryPublic />} />
-                    <Route path="/ministry/public" element={<MinistryPublic />} />
-                    <Route path="/ministry/test" element={<MinistryTest />} />
+                    <Route path="/gouv" element={<MinistryPublic />} />
+                    <Route path="/Gouv" element={<MinistryPublic />} />
+                    <Route path="/gouv/public" element={<MinistryPublic />} />
+                    <Route path="/gouv/test" element={<MinistryTest />} />
                     <Route path="/ministere" element={<MinistryPublic />} />
                     <Route path="/Ministere" element={<MinistryPublic />} />
                     
                     {/* Routes Ministère protégées (avec auth) */}
-                    <Route path="/ministry/dashboard" element={<MinistryDashboard />} />
-                    <Route path="/ministry/login" element={<MinistryLogin />} />
+                    <Route path="/gouv/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/gouv/login" element={<MinistryLogin />} />
                     <Route path="/ministere/dashboard" element={<MinistryDashboard />} />
                     <Route path="/ministere/connexion" element={<MinistryLogin />} />
                     

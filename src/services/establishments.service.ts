@@ -35,8 +35,8 @@ export interface EstablishmentHomePage {
  */
 const CUSTOM_ESTABLISHMENT_URLS: Record<string, string> = {
   // Ministère et institutions
-  'Ministère de la Santé': '/ministry',
-  'Ministère de la Santé publique et de la Population': '/ministry',
+  'Ministère de la Santé': '/gouv',
+  'Ministère de la Santé publique et de la Population': '/gouv',
   
   // CHU - Centres Hospitaliers Universitaires
   'CHU de Libreville': '/chu-libreville',
@@ -344,7 +344,7 @@ export class EstablishmentsService {
   public getEstablishmentHomeUrl(establishment: Establishment): string {
     // Cas spécial : Ministère de la Santé
     if (establishment.name.includes('Ministère de la Santé')) {
-      return '/ministry';
+      return '/gouv';
     }
     
     // Vérifier si l'établissement a une URL personnalisée prédéfinie

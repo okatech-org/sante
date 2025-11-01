@@ -218,17 +218,48 @@ export default function AdminHealthActors() {
 
       setEstablishments(combined);
 
-      // Load professionals with profiles
-      const { data: profData, error: profError } = await supabase
-        .from('professional_profiles')
-        .select(`
-          *,
-          profile:profiles(full_name, email, phone)
-        `)
-        .order('created_at', { ascending: false });
+      // Option complète: utiliser la RPC sécurisée côté DB (jointure complète + contrôle super-admin)
+      const { data: profRpc, error: profRpcError } = await supabase
+        .rpc('admin_get_professionals_with_profiles');
 
-      if (profError) throw profError;
-      setProfessionals(profData || []);
+      if (!profRpcError && profRpc) {
+        // Remap vers la forme attendue dans l'UI (profile.full_name/email/phone)
+        const normalized: Professional[] = (profRpc as any[]).map((row) => ({
+          id: row.id,
+          user_id: row.user_id,
+          profession_type: row.profession_type,
+          specialization: row.specialization,
+          ordre_number: row.ordre_number,
+          ordre_verified: row.ordre_verified,
+          created_at: row.created_at,
+          profile: {
+            full_name: row.full_name,
+            email: row.email,
+            phone: row.phone,
+          },
+        }));
+        setProfessionals(normalized);
+      } else {
+        // Fallback si la RPC refuse l'accès: requêtes standards (avec jointure, sinon simple)
+        const { data: profData, error: profError } = await supabase
+          .from('professional_profiles')
+          .select(`
+            *,
+            profile:profiles(full_name, email, phone)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (profError) {
+          // Fallback ultime: sans jointure (encore des données au moins partielles)
+          const { data: profDataFallback } = await supabase
+            .from('professional_profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+          setProfessionals((profDataFallback as any) || []);
+        } else {
+          setProfessionals(profData || []);
+        }
+      }
 
     } catch (error: any) {
       toast.error("Erreur lors du chargement des données");

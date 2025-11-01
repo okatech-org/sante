@@ -111,11 +111,9 @@ export const EstablishmentDetailModal = ({
                 <DialogTitle className="text-2xl">
                   {establishment.name}
                 </DialogTitle>
-                {establishment.fullName && (
-                  <DialogDescription className="text-base mt-1">
-                    {establishment.fullName}
-                  </DialogDescription>
-                )}
+                <DialogDescription className="text-base mt-1">
+                  {establishment.fullName || "Informations de l'établissement"}
+                </DialogDescription>
                 <div className="flex items-center gap-2 mt-2">
                   {getStatusIcon(establishment.status)}
                   <Badge variant={establishment.status === 'operationnel' ? 'default' : 'secondary'}>

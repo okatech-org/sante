@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -120,6 +121,9 @@ export function TelechargerDossierModal({
             <Download className="h-5 w-5 text-blue-600" />
             Télécharger le dossier {dossier.id}
           </DialogTitle>
+          <DialogDescription>
+            Choisissez le format et les sections à inclure dans l'export.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">

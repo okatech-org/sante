@@ -61,17 +61,6 @@ const AdminEstablishments = () => {
   const navigate = useNavigate();
   const { user, isSuperAdmin, isAdmin } = useOfflineAuth();
   
-  // Vérification des permissions
-  useEffect(() => {
-    if (!user || (!isSuperAdmin && !isAdmin)) {
-      navigate("/login/admin");
-    }
-  }, [user, isSuperAdmin, isAdmin, navigate]);
-
-  if (!user || (!isSuperAdmin && !isAdmin)) {
-    return null;
-  }
-  
   // États principaux
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [filteredEstablishments, setFilteredEstablishments] = useState<Establishment[]>([]);
@@ -94,6 +83,17 @@ const AdminEstablishments = () => {
   
   // Hook personnalisé pour les API calls
   const { fetchEstablishments, createEstablishment, updateEstablishment, deleteEstablishment } = useEstablishments();
+  
+  // Vérification des permissions
+  useEffect(() => {
+    if (!user || (!isSuperAdmin && !isAdmin)) {
+      navigate("/login/admin");
+    }
+  }, [user, isSuperAdmin, isAdmin, navigate]);
+
+  if (!user || (!isSuperAdmin && !isAdmin)) {
+    return null;
+  }
 
   // Chargement initial des données
   useEffect(() => {
@@ -426,7 +426,7 @@ const AdminEstablishments = () => {
               <Button 
                 variant="default" 
                 size="sm"
-                onClick={() => window.location.href = '/ministry/dashboard'}
+                onClick={() => window.location.href = '/gouv/dashboard'}
               >
                 Accéder au Dashboard
               </Button>

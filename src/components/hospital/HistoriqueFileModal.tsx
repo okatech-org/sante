@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -186,6 +187,9 @@ export function HistoriqueFileModal({
             <History className="h-5 w-5 text-purple-600" />
             Historique - {service}
           </DialogTitle>
+          <DialogDescription>
+            Consultez les événements récents et les statistiques de la file.
+          </DialogDescription>
         </DialogHeader>
 
         {isLoading ? (

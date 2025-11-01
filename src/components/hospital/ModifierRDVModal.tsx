@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -203,6 +204,9 @@ export function ModifierRDVModal({
               {formData.status}
             </Badge>
           </DialogTitle>
+          <DialogDescription>
+            Mettez à jour les informations du patient, du service et de l'horaire.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">

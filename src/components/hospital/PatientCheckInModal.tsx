@@ -4,6 +4,7 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle,
+  DialogDescription,
   DialogFooter 
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -205,6 +206,9 @@ export function PatientCheckInModal({
           <DialogTitle className="text-xl">
             Enregistrement arrivée patient
           </DialogTitle>
+          <DialogDescription>
+            Vérification des droits CNAMGS et création du dossier d'accueil.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">

@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -164,6 +165,9 @@ export function ModifierDossierHDJModal({
             <Edit className="h-5 w-5 text-blue-600" />
             Modifier le dossier {dossier.id}
           </DialogTitle>
+          <DialogDescription>
+            Éditez les informations médicales et administratives du dossier.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
