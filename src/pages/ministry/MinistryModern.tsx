@@ -613,22 +613,22 @@ const MinistryModern = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
         
         <div className="container mx-auto px-4 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Map Section */}
+          <div className="grid lg:grid-cols-3 gap-12 items-start">
+            {/* Map Section - 2/3 de l'espace */}
             <motion.div
+              className="lg:col-span-2"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
-                <MapPin className="w-4 h-4 mr-2" />
-                Cartographie Nationale
-              </Badge>
-              <h2 className="text-4xl font-bold mb-4">Réseau de Santé National</h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                Explorez la répartition des établissements de santé à travers le Gabon
-              </p>
+              <div className="mb-8">
+                <Badge className="mb-4 bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border-primary/20">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Cartographie Nationale
+                </Badge>
+                <h2 className="text-4xl font-bold">Réseau de Santé National</h2>
+              </div>
               
               <Card className="border-0 shadow-2xl overflow-hidden">
                 <CardContent className="p-0">
@@ -657,93 +657,85 @@ const MinistryModern = () => {
               </Card>
             </motion.div>
 
-            {/* Contact Section avec Glass Effect */}
+            {/* Contact Section avec Glass Effect - 1/3 de l'espace */}
             <motion.div
+              className="lg:col-span-1"
               id="contact"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-4 bg-gradient-to-r from-secondary/10 to-primary/10 text-secondary border-secondary/20">
-                <Phone className="w-4 h-4 mr-2" />
-                Contact Direct
-              </Badge>
-              <h2 className="text-4xl font-bold mb-4">Nous Contacter</h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                Notre équipe est à votre disposition pour toute question
-              </p>
-
-              <div className="space-y-6">
-                {/* Contact Cards with Hover Effects */}
-                {[
-                  {
-                    icon: MapPin,
-                    title: "Adresse",
-                    content: ["À côté de l'immeuble Alu-Suisse", "Libreville, Gabon"],
-                    color: "from-blue-500 to-blue-600"
-                  },
-                  {
-                    icon: Phone,
-                    title: "Téléphone",
-                    content: ["+241 01-72-26-61", "+241 06 47 74 83"],
-                    color: "from-green-500 to-green-600"
-                  },
-                  {
-                    icon: Mail,
-                    title: "Email",
-                    content: ["contact@sante.gouv.ga"],
-                    color: "from-purple-500 to-purple-600"
-                  },
-                  {
-                    icon: Clock,
-                    title: "Horaires",
-                    content: ["Lundi - Vendredi: 08h00 - 17h00", "Weekend: Fermé"],
-                    color: "from-orange-500 to-orange-600"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                          <div className={`bg-gradient-to-br ${item.color} p-3 rounded-xl text-white group-hover:scale-110 transition-transform`}>
-                            <item.icon className="h-5 w-5" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-semibold mb-2 text-lg">{item.title}</div>
-                            {item.content.map((line, i) => (
-                              <div key={i} className="text-muted-foreground">
-                                {line}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+              <div className="mb-8">
+                <Badge className="mb-4 bg-gradient-to-r from-secondary/10 to-primary/10 text-secondary border-secondary/20">
+                  <Phone className="w-4 h-4 mr-2" />
+                  Contact Direct
+                </Badge>
+                <h2 className="text-4xl font-bold">Nous Contacter</h2>
               </div>
 
-              {/* Quick Action Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-                className="mt-8"
-              >
-                <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white py-6 text-lg group">
-                  <Mail className="mr-2 h-5 w-5" />
-                  Envoyer un Message
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </motion.div>
+              {/* Bloc unique de contact avec même hauteur que la carte */}
+              <Card className="border-0 shadow-2xl overflow-hidden h-[500px] bg-gradient-to-br from-background to-muted/20">
+                <CardContent className="p-8 h-full flex flex-col">
+                  {/* Informations de contact */}
+                  <div className="flex-1 space-y-6">
+                    {/* Adresse */}
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl text-white flex-shrink-0">
+                        <MapPin className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg mb-2">Adresse</div>
+                        <div className="text-muted-foreground leading-relaxed">
+                          À côté de l'immeuble Alu-Suisse<br />
+                          Libreville, Gabon
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Téléphone */}
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl text-white flex-shrink-0">
+                        <Phone className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg mb-2">Téléphone</div>
+                        <div className="text-muted-foreground leading-relaxed">
+                          +241 01-72-26-61<br />
+                          +241 06 47 74 83
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl text-white flex-shrink-0">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg mb-2">Email</div>
+                        <div className="text-muted-foreground leading-relaxed">
+                          contact@sante.gouv.ga
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Horaires */}
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-xl text-white flex-shrink-0">
+                        <Clock className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-lg mb-2">Horaires</div>
+                        <div className="text-muted-foreground leading-relaxed">
+                          Lundi - Vendredi: 08h00 - 17h00<br />
+                          Weekend: Fermé
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
           </div>
         </div>
@@ -808,16 +800,35 @@ const MinistryModern = () => {
                             !isActive && "opacity-60 scale-95"
                           )}
                         >
-                          <Card className="border-2 hover:border-primary/30 hover:shadow-xl transition-all h-full">
-                            <CardContent className="p-6">
-                              <div className={`bg-gradient-to-br from-${pub.color}/20 to-${pub.color}/10 w-14 h-14 rounded-xl flex items-center justify-center mb-4`}>
-                                <Icon className={`h-7 w-7 text-${pub.color}`} />
+                          <Card className="border-0 shadow-xl hover:shadow-2xl transition-all h-full overflow-hidden group">
+                            {/* Image de couverture */}
+                            <div className="relative h-48 overflow-hidden">
+                              <img 
+                                src={pub.image} 
+                                alt={pub.title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                              
+                              {/* Badge type en overlay */}
+                              <div className="absolute top-4 left-4">
+                                <Badge className="bg-background/90 backdrop-blur-sm border-0">
+                                  {pub.type}
+                                </Badge>
                               </div>
-                              <Badge className="mb-3" variant="outline">
-                                {pub.type}
-                              </Badge>
-                              <h3 className="font-bold text-lg mb-2">{pub.title}</h3>
-                              <p className="text-sm text-muted-foreground mb-4">
+                              
+                              {/* Icône en overlay */}
+                              <div className="absolute bottom-4 right-4">
+                                <div className={`bg-gradient-to-br from-${pub.color}/90 to-${pub.color}/80 backdrop-blur-sm w-12 h-12 rounded-xl flex items-center justify-center shadow-lg`}>
+                                  <Icon className="h-6 w-6 text-white" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Contenu */}
+                            <CardContent className="p-6">
+                              <h3 className="font-bold text-lg mb-2 line-clamp-2">{pub.title}</h3>
+                              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                                 {pub.description}
                               </p>
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
