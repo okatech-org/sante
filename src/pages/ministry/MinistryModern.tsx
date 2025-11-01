@@ -96,11 +96,11 @@ const MinistryModern = () => {
   ];
 
   const strategicAxes = [
-    { icon: Target, title: "Gouvernance & Leadership", desc: "Renforcement du secteur santé", delay: 0.1 },
-    { icon: Building2, title: "Offre de Soins", desc: "Infrastructures & qualité", delay: 0.2 },
-    { icon: Users, title: "Ressources Humaines", desc: "Formation & gestion", delay: 0.3 },
-    { icon: TrendingUp, title: "Financement", desc: "Couverture Universelle", delay: 0.4 },
-    { icon: Shield, title: "Promotion & Prévention", desc: "Santé publique", delay: 0.5 }
+    { icon: Target, title: "Gouvernance & Leadership", desc: "Renforcement du secteur santé", delay: 0.1, color: "text-blue-500" },
+    { icon: Building2, title: "Offre de Soins", desc: "Infrastructures & qualité", delay: 0.2, color: "text-green-500" },
+    { icon: Users, title: "Ressources Humaines", desc: "Formation & gestion", delay: 0.3, color: "text-purple-500" },
+    { icon: TrendingUp, title: "Financement", desc: "Couverture Universelle", delay: 0.4, color: "text-orange-500" },
+    { icon: Shield, title: "Promotion & Prévention", desc: "Santé publique", delay: 0.5, color: "text-pink-500" }
   ];
 
   const menuItems = [
@@ -364,29 +364,22 @@ const MinistryModern = () => {
                 </div>
 
                 {/* Axes stratégiques */}
-                <div className="flex lg:grid lg:grid-cols-5 gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-primary/20">
+                <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-4">
                   {strategicAxes.map((axis, index) => (
                     <motion.div
                       key={index}
-                      className="group flex items-center gap-2 p-2.5 rounded-lg hover:bg-primary/10 transition-all cursor-pointer min-w-[200px] lg:min-w-0"
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + (index * 0.1), duration: 0.5 }}
-                      whileHover={{ scale: 1.05, y: -5 }}
+                      className="text-center group"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
+                      whileHover={{ scale: 1.05 }}
                     >
-                      <motion.div 
-                        className="bg-gradient-to-br from-primary to-secondary w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <axis.icon className="h-4 w-4 text-white" />
-                      </motion.div>
-                      <div className="flex-1 text-left">
-                        <h4 className="font-bold text-[11px] mb-0.5 group-hover:text-primary transition-colors leading-tight">
+                      <div className="flex flex-col items-center gap-2">
+                        <axis.icon className={cn("h-6 w-6", axis.color)} />
+                        <div className="font-bold text-sm text-foreground" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                           {axis.title}
-                        </h4>
-                        <p className="text-[10px] text-muted-foreground leading-snug">{axis.desc}</p>
+                        </div>
+                        <div className="text-xs text-foreground/70 font-medium">{axis.desc}</div>
                       </div>
                     </motion.div>
                   ))}
