@@ -308,7 +308,6 @@ export function GestionChambres({ open, onClose, onSelectChambre }: GestionChamb
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
-              icon={<Search className="h-4 w-4 text-muted-foreground" />}
             />
           </div>
           

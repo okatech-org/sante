@@ -353,7 +353,6 @@ export function SortiesDuJour() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="flex-1"
-          icon={<Search className="h-4 w-4 text-muted-foreground" />}
         />
         <Button variant="outline">
           <Filter className="mr-2 h-4 w-4" />

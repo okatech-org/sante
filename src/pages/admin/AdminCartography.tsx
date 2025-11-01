@@ -132,8 +132,8 @@ export default function AdminCartography() {
       setEstablishmentProviders(estabProviders);
 
       // Combiner et calculer les statistiques (exclure les institutions OSM)
-      const filteredOSMData = dedupeProviders(osmData).filter(p => p.type !== 'institution');
-      const combined = [...filteredOSMData, ...gabonInstitutions];
+      const filteredOSMData = dedupeProviders(otherProviders).filter(p => p.type !== 'institution');
+      const combined = [...filteredOSMData, ...institutions];
       const seenIds = new Set();
       const unique = combined.filter(p => {
         if (seenIds.has(p.id)) return false;
@@ -170,7 +170,7 @@ export default function AdminCartography() {
         cabinets,
         laboratoires,
         imagerie,
-        institutions: gabonInstitutions.length
+        institutions: institutions.length
       });
     } catch (error: any) {
       console.error("Erreur:", error);

@@ -413,7 +413,6 @@ export function AccueilHospitalisation() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1"
-            icon={<Search className="h-4 w-4 text-muted-foreground" />}
           />
           <Button variant="outline" size="icon" className="shrink-0">
             <Filter className="h-4 w-4" />
