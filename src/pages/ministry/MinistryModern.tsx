@@ -135,9 +135,9 @@ const MinistryModern = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
                 <Shield className="h-7 w-7 text-white" />
               </div>
-              <div className="hidden md:block">
-                <div className="font-bold text-lg text-foreground">Ministère de la Santé</div>
-                <div className="text-xs text-muted-foreground">République Gabonaise</div>
+              <div className="block">
+                <div className="font-bold text-sm md:text-lg text-foreground">Ministère de la Santé</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground">République Gabonaise</div>
               </div>
             </motion.div>
 
