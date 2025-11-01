@@ -1986,6 +1986,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_get_professionals_with_profiles: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          ordre_number: string
+          ordre_verified: boolean
+          phone: string
+          profession_type: string
+          specialization: string
+          user_id: string
+        }[]
+      }
       assign_user_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]
@@ -2080,6 +2095,7 @@ export type Database = {
         Args: { _establishment_id: string; _user_id: string }
         Returns: boolean
       }
+      is_super_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role:
