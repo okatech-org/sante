@@ -430,7 +430,6 @@ const MinistryModern = () => {
                       alt="Lutte contre le paludisme" 
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-success text-white border-0">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
@@ -498,7 +497,6 @@ const MinistryModern = () => {
                       alt="Santé maternelle et infantile" 
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-accent text-white border-0">
                         <Activity className="h-3 w-3 mr-1" />
