@@ -18,7 +18,9 @@ import {
   TrendingUp,
   CheckCircle2,
   ArrowRight,
-  Stethoscope
+  Stethoscope,
+  FileText,
+  Eye
 } from "lucide-react";
 import heroImage from "@/assets/ministry-hero.jpg";
 import consultationImage from "@/assets/ministry-consultation.jpg";
@@ -295,6 +297,95 @@ const MinistryPublic = () => {
                 Cliquez sur les marqueurs pour plus d'informations sur chaque établissement
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Publications Récentes */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Badge className="mb-4 bg-primary/10 text-primary border-0">
+              <FileText className="h-3 w-3 mr-1" />
+              Documentation
+            </Badge>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
+              Publications Récentes
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Accédez aux derniers rapports et documents officiels du Ministère
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Card className="border-2 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                <Badge className="mb-3 bg-success/10 text-success border-0">
+                  Annuel
+                </Badge>
+                <h3 className="font-bold mb-2">Rapport Performance 2024</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Analyse complète de la performance du système de santé gabonais
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                  <Clock className="h-3 w-3" />
+                  <span>15 Jan 2025</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Consulter
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                  <Activity className="h-6 w-6 text-secondary" />
+                </div>
+                <Badge className="mb-3 bg-accent/10 text-accent border-0">
+                  Trimestriel
+                </Badge>
+                <h3 className="font-bold mb-2">Bulletin Épidémiologique T3</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Surveillance des maladies prioritaires au 3ème trimestre 2025
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                  <Clock className="h-3 w-3" />
+                  <span>05 Oct 2025</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Consulter
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:shadow-xl transition-shadow">
+              <CardContent className="p-6">
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                  <Stethoscope className="h-6 w-6 text-primary" />
+                </div>
+                <Badge className="mb-3 bg-primary/10 text-primary border-0">
+                  Spécial
+                </Badge>
+                <h3 className="font-bold mb-2">Télémédecine SANTE.GA</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Bilan du déploiement de la plateforme de télémédecine
+                </p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+                  <Clock className="h-3 w-3" />
+                  <span>15 Sep 2025</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Consulter
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
