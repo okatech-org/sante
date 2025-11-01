@@ -37,7 +37,7 @@ export function FileAttenteWidget({ serviceId, serviceName }: FileAttenteWidgetP
             heureArrivee: new Date(Date.now() - 45 * 60000).toISOString(), // Il y a 45 min
             position: 1,
             tempsAttenteEstime: 10,
-            priorite: 'normal' as const
+            priorite: 'normal'
           },
           {
             id: 'pat-' + Math.random(),
@@ -46,7 +46,7 @@ export function FileAttenteWidget({ serviceId, serviceName }: FileAttenteWidgetP
             heureArrivee: new Date(Date.now() - 30 * 60000).toISOString(), // Il y a 30 min
             position: 2,
             tempsAttenteEstime: 25,
-            priorite: 'normal' as const
+            priorite: 'normal'
           },
           {
             id: 'pat-' + Math.random(),
@@ -55,7 +55,7 @@ export function FileAttenteWidget({ serviceId, serviceName }: FileAttenteWidgetP
             heureArrivee: new Date(Date.now() - 15 * 60000).toISOString(), // Il y a 15 min
             position: 3,
             tempsAttenteEstime: 40,
-            priorite: 'urgent' as const
+            priorite: 'urgent'
           }
         ].slice(0, Math.floor(Math.random() * 4)), // 0 à 3 patients
         tempsAttenteMoyen: 25,

@@ -69,9 +69,7 @@ export default function AccueilUrgencesTriagePage() {
   useEffect(() => {
     const hasChanged = Object.values(formData).some(value => {
       if (typeof value === 'string') return value.trim() !== '';
-      if (typeof value === 'object' && value !== null) {
-        return Object.values(value).some(v => typeof v === 'string' && v.trim() !== '');
-      }
+      if (typeof value === 'object') return Object.values(value).some(v => v.trim() !== '');
       return false;
     });
     setIsDirty(hasChanged);

@@ -17,24 +17,24 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 20% 15%;
 
-    /* Vert gabonais - Couleur principale du drapeau */
-    --primary: 142 76% 36%;
+    /* Turquoise moderne - Couleur principale #17CCB9 */
+    --primary: 173 78% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 142 50% 85%;
+    --primary-light: 173 70% 85%;
 
-    /* Bleu gabonais - Couleur secondaire du drapeau */
-    --secondary: 210 100% 45%;
+    /* Bleu électrique - Couleur secondaire #00A1FE */
+    --secondary: 202 100% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    /* Jaune gabonais - Couleur accent du drapeau #FDAD00 */
-    --accent: 41 100% 50%;
-    --accent-foreground: 0 0% 15%;
+    /* Rose vibrant - Couleur accent #E63B7A */
+    --accent: 338 80% 57%;
+    --accent-foreground: 0 0% 100%;
     
-    /* Orange pour highlights */
-    --warning: 28 95% 55%;
+    /* Jaune doré - Couleur warning/highlight #FDAD00 */
+    --warning: 41 100% 50%;
     --warning-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -73,21 +73,21 @@ All colors MUST be HSL.
     --popover: 210 30% 10%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 142 76% 40%;
+    --primary: 173 78% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 142 50% 30%;
+    --primary-light: 173 70% 30%;
 
-    --secondary: 210 100% 50%;
+    --secondary: 202 100% 55%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 30% 15%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 41 100% 55%;
-    --accent-foreground: 210 30% 8%;
+    --accent: 338 80% 62%;
+    --accent-foreground: 0 0% 100%;
     
-    --warning: 28 95% 60%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 41 100% 55%;
+    --warning-foreground: 210 30% 8%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -252,37 +252,6 @@ All colors MUST be HSL.
   }
 }
 
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .animate-aurora {
   animation: aurora 8s ease infinite;
   background-size: 200% 200%;
@@ -298,24 +267,6 @@ All colors MUST be HSL.
 
 .animate-aurora-pulse {
   animation: aurora-pulse 2s ease-in-out infinite;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.6s ease-out;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.8s ease-out;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.5s ease-out;
-}
-
-.bg-grid-pattern {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
 @keyframes twinkle {

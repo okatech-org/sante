@@ -7,7 +7,7 @@ import { CartographyProvider } from "@/types/cartography";
 import { supabase } from "@/integrations/supabase/client";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
-import { convertCartographyToEstablishment, convertAllEstablishments } from "@/utils/convert-establishments";
+import { convertCartographyToEstablishment } from "@/utils/convert-establishments";
 import GABON_COMPLETE_ESTABLISHMENTS from "@/data/gabon-complete-establishments";
 
 /**
@@ -135,7 +135,7 @@ export class EstablishmentsService {
 
     try {
       // 1. Charger les données depuis real-establishments (397 établissements)
-      const realEstablishments = convertAllEstablishments(REAL_ESTABLISHMENTS);
+      const realEstablishments = convertCartographyToEstablishment(REAL_ESTABLISHMENTS);
       
       // 2. Ajouter les établissements principaux détaillés (14)
       const detailedEstablishments = GABON_COMPLETE_ESTABLISHMENTS;
@@ -159,7 +159,7 @@ export class EstablishmentsService {
         .select('*');
       
       // 6. Fusionner et dédupliquer (utiliser code comme clé unique)
-      const allEstablishments: Establishment[] = [
+      const allEstablishments = [
         ...detailedEstablishments, // Priorité aux données détaillées
         ...realEstablishments,
         ...osmEstablishments,
@@ -235,6 +235,7 @@ export class EstablishmentsService {
       type: this.mapCategoryToProviderType(est.category),
       province: est.location.province,
       ville: est.location.city,
+      adresse: est.location.address,
       adresse_descriptive: est.location.address,
       coordonnees: est.location.coordinates ? {
         lat: est.location.coordinates.latitude,
@@ -254,7 +255,9 @@ export class EstablishmentsService {
       has_account: true,
       source: 'Plateforme',
       statut_operationnel: est.status === 'operationnel' ? 'operationnel' : 'inconnu',
-      nombre_lits: est.metrics.totalBeds
+      nombre_lits: est.metrics.totalBeds,
+      hasHomePage: (est as any).hasHomePage,
+      homePageUrl: (est as any).homePageUrl
     };
   }
 
@@ -368,13 +371,27 @@ export class EstablishmentsService {
     establishmentName: string,
     hasHomePage: boolean,
     customContent?: EstablishmentHomePage['customContent']
-  ): Promise<{ hasHomePage: boolean; homePageUrl: string; customUrl?: string }> {
+  ): Promise<void> {
     try {
       // Déterminer l'URL (personnalisée ou générique)
       const customUrl = CUSTOM_ESTABLISHMENT_URLS[establishmentName];
       const homePageUrl = customUrl || `/establishment/${establishmentId}`;
       
-      // Stocker localement (pas de table Supabase pour cela)
+      // Sauvegarder dans Supabase
+      const { error } = await supabase
+        .from('establishment_homepages')
+        .upsert({
+          establishment_id: establishmentId,
+          has_homepage: hasHomePage,
+          custom_url: customUrl,
+          homepage_url: homePageUrl,
+          custom_content: customContent,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      // Mettre à jour le cache local
       this.homePageSettings.set(establishmentId, {
         establishmentId,
         hasHomePage,
@@ -384,11 +401,8 @@ export class EstablishmentsService {
         updatedAt: new Date().toISOString()
       });
 
-      return {
-        hasHomePage,
-        homePageUrl,
-        customUrl
-      };
+      // Invalider le cache des établissements
+      this.lastSync = null;
     } catch (error) {
       console.error('Erreur lors de la configuration de la page d\'accueil:', error);
       throw error;
@@ -500,14 +514,24 @@ export class EstablishmentsService {
         updated_at: new Date().toISOString()
       }));
 
-      // Note: Synchronisation désactivée car la table establishments_sync n'existe pas
-      // Les données sont gérées en mémoire localement
-      console.log('Données préparées pour synchronisation:', dataToSync.length);
+      // Synchroniser par lots de 100
+      const batchSize = 100;
+      let synced = 0;
 
-      return { success: true, synced: dataToSync.length };
+      for (let i = 0; i < dataToSync.length; i += batchSize) {
+        const batch = dataToSync.slice(i, i + batchSize);
+        const { error } = await supabase
+          .from('establishments_sync')
+          .upsert(batch);
+        
+        if (error) throw error;
+        synced += batch.length;
+      }
+
+      return { success: true, synced };
     } catch (error) {
       console.error('Erreur lors de la synchronisation:', error);
-      return {
+      return { 
         success: false, 
         synced: 0, 
         error: error instanceof Error ? error.message : 'Erreur inconnue' 
