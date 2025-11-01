@@ -25,7 +25,7 @@ export function useCNAMGSVerification() {
           fond: 'public',
           plafondAnnuel: 0,
           consomme: 0,
-          tauxPriseEnCharge: 0,
+          tauxPriseEnCharge: 80,
           droitsSpeciaux: {},
           dateVerification: new Date().toISOString()
         };

@@ -909,9 +909,21 @@ function updateMockEstablishment(id: string, data: Partial<EstablishmentFormData
   const existing = getMockEstablishments().find(e => e.id === id);
   if (!existing) throw new Error('Establishment not found');
   
+  // Merge services correctly
+  const mergedServices = data.services 
+    ? data.services.map((name, index) => ({
+        id: `srv-upd-${index}`,
+        name: typeof name === 'string' ? name : name,
+        category: 'consultation' as const,
+        available: true,
+        staffCount: 0
+      }))
+    : existing.services;
+  
   return {
     ...existing,
     ...data,
+    services: mergedServices,
     updatedAt: new Date().toISOString()
   };
 }
