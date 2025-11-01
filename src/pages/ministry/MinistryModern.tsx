@@ -376,10 +376,10 @@ const MinistryModern = () => {
                     >
                       <div className="flex flex-col items-center gap-2">
                         <axis.icon className={cn("h-6 w-6", axis.color)} />
-                        <div className="font-bold text-sm text-foreground" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
-                          {axis.title}
+                        <div className="text-xs text-foreground font-medium text-center" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                          <span className="font-bold">{axis.title}</span>
+                          <span className="text-foreground/70"> - {axis.desc}</span>
                         </div>
-                        <div className="text-xs text-foreground/70 font-medium">{axis.desc}</div>
                       </div>
                     </motion.div>
                   ))}
