@@ -403,29 +403,29 @@ const MinistryModern = () => {
             />
             
             {/* Bloc unique avec toutes les informations */}
-            <div className="absolute bottom-8 left-8 right-8">
+            <div className="absolute bottom-6 left-6 right-6">
               <motion.div 
-                className="bg-background/95 backdrop-blur-xl rounded-2xl p-8 shadow-2xl"
+                className="bg-background/95 backdrop-blur-xl rounded-xl p-6 shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 {/* Titre principal */}
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold mb-3">Plan National de Développement Sanitaire</h3>
-                  <p className="text-muted-foreground text-lg">5 axes stratégiques pour transformer la santé au Gabon</p>
+                <div className="text-center mb-5">
+                  <h3 className="text-2xl font-bold mb-2">Plan National de Développement Sanitaire</h3>
+                  <p className="text-muted-foreground text-base">5 axes stratégiques pour transformer la santé au Gabon</p>
                 </div>
 
                 {/* Séparateur */}
-                <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-8 rounded-full" />
+                <div className="w-20 h-0.5 bg-gradient-to-r from-primary to-secondary mx-auto mb-5 rounded-full" />
 
                 {/* Axes stratégiques */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                   {strategicAxes.map((axis, index) => (
                     <motion.div
                       key={index}
-                      className="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-primary/10 transition-all cursor-pointer"
+                      className="group flex flex-col items-center text-center p-3 rounded-lg hover:bg-primary/10 transition-all cursor-pointer"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -433,16 +433,16 @@ const MinistryModern = () => {
                       whileHover={{ scale: 1.05, y: -5 }}
                     >
                       <motion.div 
-                        className="bg-gradient-to-br from-primary to-secondary w-14 h-14 rounded-xl flex items-center justify-center mb-3 shadow-lg"
+                        className="bg-gradient-to-br from-primary to-secondary w-12 h-12 rounded-lg flex items-center justify-center mb-2 shadow-lg"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.6 }}
                       >
-                        <axis.icon className="h-7 w-7 text-white" />
+                        <axis.icon className="h-6 w-6 text-white" />
                       </motion.div>
-                      <h4 className="font-bold text-sm mb-2 group-hover:text-primary transition-colors leading-tight">
+                      <h4 className="font-bold text-xs mb-1.5 group-hover:text-primary transition-colors leading-tight">
                         {axis.title}
                       </h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{axis.desc}</p>
+                      <p className="text-[11px] text-muted-foreground leading-snug">{axis.desc}</p>
                     </motion.div>
                   ))}
                 </div>
