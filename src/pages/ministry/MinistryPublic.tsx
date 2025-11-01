@@ -462,13 +462,25 @@ const MinistryPublic = () => {
       {/* Footer */}
       <footer className="bg-secondary text-secondary-foreground py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="font-medium mb-2">
-              © 2025 Ministère de la Santé publique et de la Population
-            </p>
-            <p className="text-sm text-secondary-foreground/80">
-              République Gabonaise - Propulsé par SANTE.GA
-            </p>
+          <div className="text-center space-y-4">
+            <div>
+              <p className="font-medium mb-2">
+                © 2025 Ministère de la Santé publique et de la Population
+              </p>
+              <p className="text-sm text-secondary-foreground/80 mb-4">
+                République Gabonaise - Propulsé par SANTE.GA
+              </p>
+            </div>
+            <div>
+              <Button 
+                variant="outline" 
+                className="bg-white/10 text-white border-white/30 hover:bg-white/20"
+                onClick={() => window.location.href = '/ministry'}
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Accès Administration
+              </Button>
+            </div>
           </div>
         </div>
       </footer>
