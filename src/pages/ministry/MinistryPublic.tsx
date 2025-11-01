@@ -23,6 +23,7 @@ import {
 import heroImage from "@/assets/ministry-hero.jpg";
 import consultationImage from "@/assets/ministry-consultation.jpg";
 import maternalImage from "@/assets/ministry-maternal.jpg";
+import strategyImage from "@/assets/ministry-strategy.jpg";
 import { GabonHealthMap } from "@/components/ministry/GabonHealthMap";
 
 const MinistryPublic = () => {
@@ -102,67 +103,90 @@ const MinistryPublic = () => {
             </p>
           </div>
 
-          {/* Strategic Axes */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-              <CardContent className="p-6">
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
-                  <Target className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                </div>
-                <h3 className="font-semibold mb-2">Gouvernance & Leadership</h3>
-                <p className="text-sm text-muted-foreground">
-                  Renforcement du secteur santé
-                </p>
-              </CardContent>
-            </Card>
+          {/* Strategic Axes - Image & Cards Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Image */}
+            <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-xl">
+              <img 
+                src={strategyImage} 
+                alt="Stratégie de santé au Gabon" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+            </div>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
-              <CardContent className="p-6">
-                <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-secondary group-hover:scale-110 transition-all">
-                  <Building2 className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
-                </div>
-                <h3 className="font-semibold mb-2">Offre de Soins</h3>
-                <p className="text-sm text-muted-foreground">
-                  Infrastructures & qualité
-                </p>
-              </CardContent>
-            </Card>
+            {/* Strategic Axes Cards */}
+            <div className="space-y-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+                    <Target className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Gouvernance & Leadership</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Renforcement du secteur santé
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-              <CardContent className="p-6">
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
-                  <Users className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                </div>
-                <h3 className="font-semibold mb-2">Ressources Humaines</h3>
-                <p className="text-sm text-muted-foreground">
-                  Formation & gestion
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:scale-110 transition-all">
+                    <Building2 className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Offre de Soins</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Infrastructures & qualité
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
-              <CardContent className="p-6">
-                <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-secondary group-hover:scale-110 transition-all">
-                  <TrendingUp className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
-                </div>
-                <h3 className="font-semibold mb-2">Financement</h3>
-                <p className="text-sm text-muted-foreground">
-                  Couverture Universelle
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+                    <Users className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Ressources Humaines</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Formation & gestion
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-              <CardContent className="p-6">
-                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
-                  <Shield className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
-                </div>
-                <h3 className="font-semibold mb-2">Promotion & Prévention</h3>
-                <p className="text-sm text-muted-foreground">
-                  Santé publique
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:scale-110 transition-all">
+                    <TrendingUp className="h-6 w-6 text-secondary group-hover:text-secondary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Financement</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Couverture Universelle
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+                <CardContent className="p-6 flex items-start gap-4">
+                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all">
+                    <Shield className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Promotion & Prévention</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Santé publique
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
