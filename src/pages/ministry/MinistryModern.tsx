@@ -414,11 +414,7 @@ const MinistryModern = () => {
                 {/* Titre principal */}
                 <div className="text-center mb-5">
                   <h3 className="text-2xl font-bold mb-2">Plan National de Développement Sanitaire</h3>
-                  <p className="text-muted-foreground text-base">5 axes stratégiques pour transformer la santé au Gabon</p>
                 </div>
-
-                {/* Séparateur */}
-                <div className="w-20 h-0.5 bg-gradient-to-r from-primary to-secondary mx-auto mb-5 rounded-full" />
 
                 {/* Axes stratégiques */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
