@@ -27,7 +27,7 @@ import {
   Stethoscope,
   Pill,
   TestTube,
-  Ambulance,
+  Truck,
   ChevronLeft,
   ExternalLink,
   Navigation,
@@ -223,7 +223,7 @@ export default function EstablishmentHomePage() {
                 </Badge>
                 {hasEmergency && (
                   <Badge variant="secondary" className="bg-red-500/20 text-white border-white/30">
-                    <Ambulance className="h-3 w-3 mr-1" />
+                    <Truck className="h-3 w-3 mr-1" />
                     Urgences 24/7
                   </Badge>
                 )}
@@ -484,7 +484,7 @@ export default function EstablishmentHomePage() {
                   )}
                   {establishment.hasAmbulance && (
                     <div className="flex items-center gap-2 text-sm">
-                      <Ambulance className="h-4 w-4 text-red-500" />
+                      <Truck className="h-4 w-4 text-red-500" />
                       <span>Service ambulance</span>
                     </div>
                   )}
