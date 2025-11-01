@@ -278,7 +278,7 @@ const MinistryModern = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1.5, duration: 0.8 }}
               >
-                <div className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-2xl p-6 shadow-2xl">
+                <div className="bg-background/30 backdrop-blur-2xl border border-white/30 p-6">
                   <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-4">
                     {[
                       { icon: Users, value: "1.8M", label: "Population", color: "text-blue-500" },
@@ -339,7 +339,7 @@ const MinistryModern = () => {
 
           {/* Image avec bloc d'informations unifié */}
           <motion.div 
-            className="relative h-[700px] rounded-3xl overflow-hidden shadow-2xl max-w-6xl mx-auto"
+            className="relative h-[700px] overflow-hidden max-w-6xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -354,7 +354,7 @@ const MinistryModern = () => {
             {/* Bloc unique avec toutes les informations */}
             <div className="absolute bottom-6 left-6 right-6">
               <motion.div 
-                className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-2xl p-6 shadow-2xl"
+                className="bg-background/30 backdrop-blur-2xl border border-white/30 p-6"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -423,7 +423,7 @@ const MinistryModern = () => {
               transition={{ duration: 0.6 }}
             >
               <Card3D>
-                <Card className="overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+                <Card className="overflow-hidden border-0 transition-all duration-300 h-full">
                   <div className="relative h-64 overflow-hidden">
                     <img 
                       src={consultationImage} 
@@ -468,11 +468,11 @@ const MinistryModern = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted/50 rounded-xl p-4">
+                      <div className="bg-muted/50 p-4">
                         <div className="text-2xl font-bold text-primary">15 Mds</div>
                         <div className="text-xs text-muted-foreground">Budget FCFA</div>
                       </div>
-                      <div className="bg-muted/50 rounded-xl p-4">
+                      <div className="bg-muted/50 p-4">
                         <div className="text-2xl font-bold text-primary">9/9</div>
                         <div className="text-xs text-muted-foreground">Provinces</div>
                       </div>
@@ -490,7 +490,7 @@ const MinistryModern = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Card3D>
-                <Card className="overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-300 h-full">
+                <Card className="overflow-hidden border-0 transition-all duration-300 h-full">
                   <div className="relative h-64 overflow-hidden">
                     <img 
                       src={maternalImage} 
@@ -535,11 +535,11 @@ const MinistryModern = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-muted/50 rounded-xl p-4">
+                      <div className="bg-muted/50 p-4">
                         <div className="text-2xl font-bold text-primary">25 Mds</div>
                         <div className="text-xs text-muted-foreground">Budget FCFA</div>
                       </div>
-                      <div className="bg-muted/50 rounded-xl p-4">
+                      <div className="bg-muted/50 p-4">
                         <div className="text-2xl font-bold text-primary">-50%</div>
                         <div className="text-xs text-muted-foreground">Objectif 2028</div>
                       </div>
@@ -574,7 +574,7 @@ const MinistryModern = () => {
                 <h2 className="text-4xl font-bold">Réseau de Santé National</h2>
               </div>
               
-              <Card className="border-0 shadow-2xl overflow-hidden">
+              <Card className="border-0 overflow-hidden">
                 <CardContent className="p-0">
                   <div className="h-[500px]">
                     <GabonHealthMap />
@@ -601,7 +601,7 @@ const MinistryModern = () => {
               </div>
 
               {/* Bloc unique de contact avec même hauteur que la carte */}
-              <Card className="border-0 shadow-2xl overflow-hidden h-[500px] bg-gradient-to-br from-background to-muted/20">
+              <Card className="border-0 overflow-hidden h-[500px] bg-gradient-to-br from-background to-muted/20">
                 <CardContent className="p-8 h-full flex flex-col">
                   {/* Informations de contact */}
                   <div className="flex-1 space-y-6">
@@ -726,7 +726,7 @@ const MinistryModern = () => {
                             !isActive && "opacity-60 scale-95"
                           )}
                         >
-                          <Card className="border-0 shadow-xl hover:shadow-2xl transition-all h-full overflow-hidden group">
+                          <Card className="border-0 transition-all h-full overflow-hidden group">
                             {/* Image de couverture */}
                             <div className="relative h-48 overflow-hidden">
                               <img 
@@ -849,7 +849,7 @@ const MinistryModern = () => {
             >
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-10 py-6 text-lg shadow-xl hover:shadow-2xl transition-all group"
+                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white px-10 py-6 text-lg transition-all group"
               >
                 Découvrir SANTE.GA
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
