@@ -273,7 +273,7 @@ const MinistryPublic = () => {
       {/* Cartographie et Contact */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
             
             {/* Carte du Réseau de Santé */}
             <div>
