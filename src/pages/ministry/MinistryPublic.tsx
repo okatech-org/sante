@@ -243,39 +243,6 @@ const MinistryPublic = () => {
         </div>
       </section>
 
-      {/* Network Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-foreground">
-              Notre Réseau de Soins
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Un maillage territorial pour garantir l'accès aux soins partout au Gabon
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { count: "4", label: "CHU", icon: Building2, color: "secondary" },
-              { count: "9", label: "CHR", icon: Building2, color: "primary" },
-              { count: "52", label: "Centres", icon: Heart, color: "accent" },
-              { count: "147", label: "Cliniques", icon: Stethoscope, color: "secondary" },
-              { count: "114", label: "Pharmacies", icon: Activity, color: "primary" },
-              { count: "18", label: "Laboratoires", icon: Users, color: "accent" }
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                  <Icon className={`h-10 w-10 mx-auto mb-3 text-${item.color}`} />
-                  <div className="text-3xl font-bold text-foreground mb-1">{item.count}</div>
-                  <div className="text-sm text-muted-foreground">{item.label}</div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* Cartographie du Réseau de Santé */}
       <section className="py-20 bg-muted/30">
