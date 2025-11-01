@@ -388,61 +388,61 @@ const MinistryModern = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image avec effet de reveal */}
-            <motion.div 
-              className="relative h-[700px] rounded-3xl overflow-hidden shadow-2xl"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <img 
-                src={strategyImage} 
-                alt="Stratégie de santé au Gabon" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <div className="bg-background/80 backdrop-blur-lg rounded-2xl p-6">
-                  <h3 className="text-2xl font-bold mb-2">Plan National de Développement Sanitaire</h3>
-                  <p className="text-muted-foreground">5 axes stratégiques pour transformer la santé au Gabon</p>
+          {/* Image avec informations intégrées */}
+          <motion.div 
+            className="relative h-[700px] rounded-3xl overflow-hidden shadow-2xl max-w-6xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <img 
+              src={strategyImage} 
+              alt="Stratégie de santé au Gabon" 
+              className="w-full h-full object-cover"
+            />
+            {/* Overlay sombre pour meilleure lisibilité */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background/80" />
+            
+            {/* Titre en haut */}
+            <div className="absolute top-8 left-8 right-8">
+              <div className="bg-background/90 backdrop-blur-lg rounded-2xl p-6 shadow-xl">
+                <h3 className="text-3xl font-bold mb-2">Plan National de Développement Sanitaire</h3>
+                <p className="text-muted-foreground text-lg">5 axes stratégiques pour transformer la santé au Gabon</p>
+              </div>
+            </div>
+
+            {/* Axes stratégiques en bas */}
+            <div className="absolute bottom-8 left-8 right-8">
+              <div className="bg-background/95 backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  {strategicAxes.map((axis, index) => (
+                    <motion.div
+                      key={index}
+                      className="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-primary/10 transition-all cursor-pointer"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: axis.delay, duration: 0.5 }}
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <motion.div 
+                        className="bg-gradient-to-br from-primary to-secondary w-12 h-12 rounded-xl flex items-center justify-center mb-3 shadow-lg"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        <axis.icon className="h-6 w-6 text-white" />
+                      </motion.div>
+                      <h4 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors">
+                        {axis.title}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">{axis.desc}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-            </motion.div>
-
-            {/* Axes stratégiques avec animations */}
-            <div className="space-y-4">
-              {strategicAxes.map((axis, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: axis.delay, duration: 0.5 }}
-                >
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/30 overflow-hidden">
-                    <CardContent className="p-6 flex items-center gap-4">
-                      <motion.div 
-                        className="bg-gradient-to-br from-primary/10 to-secondary/10 w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                      >
-                        <axis.icon className="h-7 w-7 text-primary" />
-                      </motion.div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
-                          {axis.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">{axis.desc}</p>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -632,26 +632,8 @@ const MinistryModern = () => {
               
               <Card className="border-0 shadow-2xl overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="h-[500px] relative">
+                  <div className="h-[500px]">
                     <GabonHealthMap />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="bg-background/90 backdrop-blur-xl rounded-xl p-4 shadow-lg">
-                        <div className="grid grid-cols-3 gap-4 text-center">
-                          <div>
-                            <div className="text-2xl font-bold text-primary">238</div>
-                            <div className="text-xs text-muted-foreground">Établissements</div>
-                          </div>
-                          <div>
-                            <div className="text-2xl font-bold text-secondary">52</div>
-                            <div className="text-xs text-muted-foreground">Hôpitaux</div>
-                          </div>
-                          <div>
-                            <div className="text-2xl font-bold text-accent">186</div>
-                            <div className="text-xs text-muted-foreground">Centres de santé</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
