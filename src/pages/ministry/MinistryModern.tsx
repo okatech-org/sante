@@ -401,8 +401,6 @@ const MinistryModern = () => {
               alt="Stratégie de santé au Gabon" 
               className="w-full h-full object-cover"
             />
-            {/* Overlay sombre pour meilleure lisibilité */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/60" />
             
             {/* Bloc unique avec toutes les informations */}
             <div className="absolute bottom-8 left-8 right-8">

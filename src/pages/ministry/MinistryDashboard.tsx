@@ -28,8 +28,7 @@ const MinistryDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   
   // Vérifier si c'est le ministre
-  const isMinister = user?.email === 'ministre@sante.gouv.ga' || 
-                     user?.user_metadata?.is_minister === true;
+  const isMinister = user?.email === 'ministre@sante.gouv.ga';
 
   const ministryContact: MinistryContact = {
     adresse_physique: "À côté de l'immeuble Alu-Suisse, Libreville, Gabon",
