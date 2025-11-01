@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -43,13 +43,6 @@ export function PatientCheckInModal({
   const [droitsCNAMGS, setDroitsCNAMGS] = useState<DroitsCNAMGS | null>(null);
   const [resteACharge, setResteACharge] = useState<CalculResteCharge | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Vérifier automatiquement les droits CNAMGS à l'ouverture
-  useState(() => {
-    if (open && rendezVous.patient.numeroAssureCNAMGS) {
-      verifierDroitsCNAMGS();
-    }
-  }, [open]);
 
   const verifierDroitsCNAMGS = async () => {
     setIsVerifyingCNAMGS(true);
@@ -146,8 +139,15 @@ export function PatientCheckInModal({
       detailCalcul: droits.fond === 'femme_enceinte' 
         ? 'Tiers-payant intégral - Maternité' 
         : `Ticket modérateur (${100 - tauxPriseEnCharge}%) + GAP`
-    });
+      });
   };
+
+  // Vérifier automatiquement les droits CNAMGS à l'ouverture
+  useEffect(() => {
+    if (open && rendezVous.patient.numeroAssureCNAMGS) {
+      verifierDroitsCNAMGS();
+    }
+  }, [open]);
 
   const handleConfirmCheckIn = async () => {
     setIsProcessing(true);

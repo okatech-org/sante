@@ -40,6 +40,10 @@ import AccueilHDJDossiersPage from "./pages/professional/AccueilHDJDossiersPage"
 import AccueilUrgencesTriagePage from "./pages/professional/AccueilUrgencesTriagePage";
 import AccueilUrgencesDossiersPage from "./pages/professional/AccueilUrgencesDossiersPage";
 import AccueilHospitalisationPage from "./pages/professional/AccueilHospitalisationPage";
+import AccueilHospitalisationDashboardPage from "./pages/professional/AccueilHospitalisationDashboardPage";
+import AccueilHospitalisationAdmissionsPage from "./pages/professional/AccueilHospitalisationAdmissionsPage";
+import AccueilHospitalisationChambresPage from "./pages/professional/AccueilHospitalisationChambresPage";
+import AccueilHospitalisationSortiesPage from "./pages/professional/AccueilHospitalisationSortiesPage";
 import DirectorDashboard from "./pages/professional/DirectorDashboard";
 import DoctorDashboard from "./pages/professional/DoctorDashboard";
 import ProfessionalConsultations from "./pages/professional/ProfessionalConsultations";
@@ -193,10 +197,10 @@ function AppMain() {
                     <Route path="/professional/accueil-urgences" element={<AccueilUrgencesPage />} />
                     <Route path="/professional/accueil-urgences/triage" element={<AccueilUrgencesTriagePage />} />
                     <Route path="/professional/accueil-urgences/dossiers" element={<AccueilUrgencesDossiersPage />} />
-                    <Route path="/professional/accueil-hospitalisation" element={<AccueilHospitalisationPage />} />
-                    <Route path="/professional/accueil-hospitalisation/admissions" element={<AccueilHospitalisationPage />} />
-                    <Route path="/professional/accueil-hospitalisation/chambres" element={<AccueilHospitalisationPage />} />
-                    <Route path="/professional/accueil-hospitalisation/sorties" element={<AccueilHospitalisationPage />} />
+                    <Route path="/professional/accueil-hospitalisation" element={<AccueilHospitalisationDashboardPage />} />
+                    <Route path="/professional/accueil-hospitalisation/admissions" element={<AccueilHospitalisationAdmissionsPage />} />
+                    <Route path="/professional/accueil-hospitalisation/chambres" element={<AccueilHospitalisationChambresPage />} />
+                    <Route path="/professional/accueil-hospitalisation/sorties" element={<AccueilHospitalisationSortiesPage />} />
                     <Route path="/professional/consultations" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalConsultations />

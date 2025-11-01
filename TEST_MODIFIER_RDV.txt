@@ -1,0 +1,178 @@
+==================================================
+🧪 GUIDE TEST - MODIFIER RENDEZ-VOUS
+==================================================
+
+📍 URL: http://localhost:8080/professional/accueil-hdj/rdv
+
+==================================================
+✅ TEST COMPLET (3 MINUTES)
+==================================================
+
+PRÉPARATION
+━━━━━━━━━━━
+1. Connexion : nadege.oyono@sogara.ga / Sogara2025!
+2. Navigation : Accueil HDJ → Rendez-vous
+
+TEST 1 : MODIFICATION SIMPLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Localiser RDV "Jean DUPONT - 09:00"
+2. ✅ Clic bouton "Modifier" (icône crayon)
+3. ✅ Modal s'ouvre avec titre "Modifier le rendez-vous"
+4. ✅ Vérifier badge statut "Confirmé"
+5. ✅ Champs pré-remplis :
+   • Nom: Jean DUPONT
+   • Téléphone: 077123456
+   • CNAMGS: GA123456789
+   • Service: Consultation générale
+   • Heure: 09:00
+   • Motif: Contrôle diabète
+
+6. ✅ Modifier heure : 09:00 → 10:30
+7. ✅ Alert apparaît : "Modifications non sauvegardées"
+8. ✅ Bouton "Enregistrer" devient actif
+9. ✅ Clic "Enregistrer"
+10. ✅ Bouton → "Enregistrement..." + spinner 2s
+11. ✅ Toast : "Rendez-vous de Jean DUPONT modifié"
+12. ✅ Modal se ferme automatiquement
+13. ✅ Heure mise à jour → "10:30" dans liste
+14. ✅ Alert success affichée 3s
+
+RÉSULTAT ATTENDU : ✅ TOUS LES POINTS VALIDÉS
+
+TEST 2 : VALIDATION ERREURS
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Ouvrir modal modification
+2. ✅ Vider le nom patient (supprimer tout)
+3. ✅ Changer téléphone → "12345" (invalide)
+4. ✅ Changer CNAMGS → "INVALID" (invalide)
+5. ✅ Clic "Enregistrer"
+6. ✅ 3 messages erreur en rouge :
+   • "Le nom du patient est obligatoire"
+   • "Format téléphone invalide"
+   • "Format CNAMGS invalide"
+7. ✅ Toast : "Veuillez corriger les erreurs"
+8. ✅ Corriger nom → "Jean DUPONT"
+9. ✅ Erreur nom disparaît immédiatement
+10. ✅ Corriger téléphone → "077123456"
+11. ✅ Erreur téléphone disparaît
+12. ✅ Corriger CNAMGS → "GA123456789"
+13. ✅ Erreur CNAMGS disparaît
+14. ✅ Bouton "Enregistrer" devient actif
+15. ✅ Clic → Enregistrement OK
+
+RÉSULTAT ATTENDU : ✅ VALIDATION STRICTE FONCTIONNELLE
+
+TEST 3 : ANNULATION AVEC MODIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Ouvrir modal
+2. ✅ Modifier service → "Cardiologie"
+3. ✅ Modifier heure → "14:00"
+4. ✅ Alert "Modifications non sauvées" visible
+5. ✅ Clic bouton "Annuler" (X)
+6. ✅ Popup navigateur : "Modifications non sauvées. Êtes-vous sûr ?"
+7. ✅ Clic "Annuler" dans popup → Modal reste ouvert
+8. ✅ Clic "Annuler" puis "OK" dans popup
+9. ✅ Modal se ferme
+10. ✅ Modifications perdues (RDV inchangé)
+
+RÉSULTAT ATTENDU : ✅ PROTECTION CONTRE PERTE DONNÉES
+
+TEST 4 : ANNULATION SANS MODIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Ouvrir modal
+2. ✅ Ne rien modifier
+3. ✅ Bouton "Enregistrer" désactivé (grisé)
+4. ✅ Clic "Annuler"
+5. ✅ Modal ferme immédiatement (pas de popup)
+
+RÉSULTAT ATTENDU : ✅ UX INTELLIGENTE
+
+TEST 5 : MODIFICATION COMPLÈTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Ouvrir modal "Marie NZÉ - 09:30"
+2. ✅ Modifier TOUS les champs :
+   • Patient : "Marie NZÉ-OKEMBA"
+   • Téléphone : "066111222"
+   • CNAMGS : "GA999888777"
+   • Service : "Gynécologie"
+   • Heure : "15:00"
+   • Motif : "Consultation prénatale"
+3. ✅ Clic "Enregistrer"
+4. ✅ Loading 2s
+5. ✅ Toast success
+6. ✅ Modal ferme
+7. ✅ TOUTES les données mises à jour dans liste
+8. ✅ Rechercher "Marie" → Trouvé avec nouvelles infos
+
+RÉSULTAT ATTENDU : ✅ TOUTES MODIFICATIONS PERSISTÉES
+
+TEST 6 : RESPONSIVE MOBILE
+━━━━━━━━━━━━━━━━━━━━━━━━
+1. ✅ Ouvrir DevTools (F12)
+2. ✅ Mode responsive → iPhone SE (320px)
+3. ✅ Ouvrir modal modification
+4. ✅ Vérifier :
+   • Modal s'adapte à l'écran
+   • Champs empilés verticalement
+   • Boutons touch-friendly (≥44px)
+   • Pas de scroll horizontal
+   • Texte lisible
+5. ✅ Modifier un champ
+6. ✅ Enregistrer → OK
+
+RÉSULTAT ATTENDU : ✅ PARFAIT SUR MOBILE
+
+==================================================
+🎯 POINTS CLÉS À VÉRIFIER
+==================================================
+
+INTERACTIONS
+━━━━━━━━━━━━
+✓ Bouton "Modifier" ouvre modal
+✓ Champs pré-remplis correctement
+✓ Modifications détectées (isDirty)
+✓ Validation temps réel
+✓ Loading spinner pendant sauvegarde
+✓ Modal ferme après succès
+
+VALIDATION
+━━━━━━━━━━
+✓ Nom vide → Erreur
+✓ Téléphone invalide → Erreur
+✓ CNAMGS invalide → Erreur
+✓ Service non sélectionné → Erreur
+✓ Erreurs disparaissent après correction
+
+FEEDBACK
+━━━━━━━━
+✓ Alert "Modifications non sauvées"
+✓ Toast pendant sauvegarde
+✓ Toast success
+✓ Alert success 3s
+✓ Mise à jour visuelle liste
+
+EDGE CASES
+━━━━━━━━━━
+✓ Annulation avec modifications
+✓ Annulation sans modifications
+✓ Enregistrement sans modification
+✓ Double clic prévenu (disabled)
+✓ Erreur réseau gérée
+
+==================================================
+✅ STATUT FINAL
+==================================================
+
+Fonction "Modifier RDV" :
+✅ 100% implémentée
+✅ Validation stricte
+✅ UX professionnelle
+✅ Production-ready
+
+Testez maintenant :
+http://localhost:8080/professional/accueil-hdj/rdv
+→ Clic "Modifier" sur n'importe quel RDV
+→ Modal complet s'ouvre
+→ Toutes fonctionnalités actives
+
+==================================================
