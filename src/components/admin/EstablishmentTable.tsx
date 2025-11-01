@@ -30,8 +30,12 @@ import {
   XCircle,
   AlertCircle,
   Clock,
-  Building2
+  Building2,
+  Home,
+  Map,
+  ExternalLink
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface EstablishmentTableProps {
   establishments: Establishment[];
@@ -48,6 +52,7 @@ export const EstablishmentTable = ({
 }: EstablishmentTableProps) => {
   const [sortField, setSortField] = useState<string>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const navigate = useNavigate();
 
   const handleSort = (field: string) => {
     if (field === sortField) {
@@ -55,6 +60,18 @@ export const EstablishmentTable = ({
     } else {
       setSortField(field);
       setSortDirection('asc');
+    }
+  };
+
+  const getFieldValue = (est: Establishment, field: string): any => {
+    switch (field) {
+      case 'name': return est.name;
+      case 'category': return est.category;
+      case 'status': return est.status;
+      case 'province': return est.location.province;
+      case 'beds': return est.metrics.totalBeds;
+      case 'occupancy': return est.metrics.occupancyRate;
+      default: return est.name;
     }
   };
 
@@ -68,18 +85,6 @@ export const EstablishmentTable = ({
       return aVal < bVal ? 1 : -1;
     }
   });
-
-  const getFieldValue = (est: Establishment, field: string): any => {
-    switch (field) {
-      case 'name': return est.name;
-      case 'category': return est.category;
-      case 'status': return est.status;
-      case 'province': return est.location.province;
-      case 'beds': return est.metrics.totalBeds;
-      case 'occupancy': return est.metrics.occupancyRate;
-      default: return est.name;
-    }
-  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -283,6 +288,32 @@ export const EstablishmentTable = ({
                       <Edit className="mr-2 h-4 w-4" />
                       Modifier
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    
+                    {(establishment as any).hasHomePage && (
+                      <DropdownMenuItem 
+                        onClick={async () => {
+                          // Utiliser le service pour obtenir l'URL correcte
+                          const { establishmentsService } = await import("@/services/establishments.service");
+                          const homePageInfo = await establishmentsService.getHomePage(establishment.id, establishment.name);
+                          const url = homePageInfo?.customUrl || establishmentsService.getEstablishmentHomeUrl(establishment);
+                          window.open(url, '_blank');
+                        }}
+                        className="text-blue-600"
+                      >
+                        <Home className="mr-2 h-4 w-4" />
+                        Page d'accueil
+                        <ExternalLink className="ml-auto h-3 w-3" />
+                      </DropdownMenuItem>
+                    )}
+                    
+                    <DropdownMenuItem 
+                      onClick={() => navigate(`/admin/cartography?highlight=${establishment.id}`)}
+                    >
+                      <Map className="mr-2 h-4 w-4" />
+                      Voir sur la carte
+                    </DropdownMenuItem>
+                    
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
                       onClick={() => onDelete(establishment)}

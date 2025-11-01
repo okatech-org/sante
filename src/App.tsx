@@ -63,6 +63,9 @@ import Sogara from "./pages/Sogara";
 import MinistryDashboard from "./pages/ministry/MinistryDashboard";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 
+// Pages des établissements
+import EstablishmentHomePage from "./pages/establishment/EstablishmentHomePage";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -145,6 +148,56 @@ function App() {
                     <Route path="/ministere" element={<MinistryDashboard />} />
                     <Route path="/ministere/dashboard" element={<MinistryDashboard />} />
                     <Route path="/ministere/connexion" element={<MinistryLogin />} />
+                    
+                    {/* Pages d'accueil des établissements */}
+                    <Route path="/establishment/:id" element={<EstablishmentHomePage />} />
+                    <Route path="/etablissement/:id" element={<EstablishmentHomePage />} />
+                    
+                    {/* Routes personnalisées pour établissements spécifiques */}
+                    {/* Cas spéciaux avec pages dédiées */}
+                    <Route path="/sogara" element={<Sogara />} />
+                    
+                    {/* CHU - Centres Hospitaliers Universitaires */}
+                    <Route path="/chu-libreville" element={<EstablishmentHomePage />} />
+                    <Route path="/chu-jeanne-ebori" element={<EstablishmentHomePage />} />
+                    <Route path="/chu-melen" element={<EstablishmentHomePage />} />
+                    <Route path="/chu-angondje" element={<EstablishmentHomePage />} />
+                    
+                    {/* CHR - Centres Hospitaliers Régionaux */}
+                    <Route path="/chr-franceville" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-port-gentil" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-oyem" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-mouila" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-tchibanga" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-makokou" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-koulamoutou" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-lambarene" element={<EstablishmentHomePage />} />
+                    <Route path="/chr-omboue" element={<EstablishmentHomePage />} />
+                    
+                    {/* Hôpitaux spécialisés */}
+                    <Route path="/hopital-sino-gabonais" element={<EstablishmentHomePage />} />
+                    <Route path="/hia-obo" element={<EstablishmentHomePage />} />
+                    <Route path="/hopital-psychiatrique-melen" element={<EstablishmentHomePage />} />
+                    <Route path="/ch-nkembo" element={<EstablishmentHomePage />} />
+                    
+                    {/* Cliniques et polycliniques importantes */}
+                    <Route path="/clinique-el-rapha" element={<EstablishmentHomePage />} />
+                    <Route path="/polyclinique-chambrier" element={<EstablishmentHomePage />} />
+                    <Route path="/polyclinique-el-rapha-2" element={<EstablishmentHomePage />} />
+                    <Route path="/cm-sabliere" element={<EstablishmentHomePage />} />
+                    <Route path="/clinique-littoral" element={<EstablishmentHomePage />} />
+                    <Route path="/clinique-estuaire" element={<EstablishmentHomePage />} />
+                    
+                    {/* Centres spécialisés */}
+                    <Route path="/cts-libreville" element={<EstablishmentHomePage />} />
+                    <Route path="/icl" element={<EstablishmentHomePage />} />
+                    <Route path="/dialyse-libreville" element={<EstablishmentHomePage />} />
+                    <Route path="/cnr" element={<EstablishmentHomePage />} />
+                    
+                    {/* Laboratoires et centres de recherche */}
+                    <Route path="/lnsp" element={<EstablishmentHomePage />} />
+                    <Route path="/cermel" element={<EstablishmentHomePage />} />
+                    <Route path="/iele" element={<EstablishmentHomePage />} />
                     
                     {/* Redirection par défaut */}
                     <Route path="*" element={<Navigate to="/" replace />} />

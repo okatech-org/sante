@@ -2,6 +2,9 @@
 // SANTE.GA - Plateforme E-Santé Gabon
 
 import { Establishment, EstablishmentFormData, EstablishmentFilter } from "@/types/establishment";
+import GABON_COMPLETE_ESTABLISHMENTS from "@/data/gabon-complete-establishments";
+import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
+import { convertAllEstablishments } from "@/utils/convert-establishments";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -344,6 +347,24 @@ export const establishmentsAPI = {
 
 // Données mock pour le développement/démo
 function getMockEstablishments(): Establishment[] {
+  // Convertir les 397 établissements réels au format Establishment
+  const realEstablishmentsConverted = convertAllEstablishments(REAL_ESTABLISHMENTS);
+  
+  // Combiner avec les établissements manuellement créés (CHU, CHR principaux)
+  const combinedEstablishments = [
+    ...GABON_COMPLETE_ESTABLISHMENTS, // 14 établissements principaux bien détaillés
+    ...realEstablishmentsConverted.slice(50) // Ajouter 347 établissements supplémentaires
+  ];
+  
+  // Retourner un maximum de 238 établissements (filtrés et dédupliqués)
+  const uniqueEstablishments = Array.from(
+    new Map(combinedEstablishments.map(est => [est.code, est])).values()
+  ).slice(0, 238);
+  
+  return uniqueEstablishments;
+  
+  // Ancienne version limitée (conservée pour référence)
+  /*
   return [
     {
       id: 'est-gov-001',
@@ -778,33 +799,38 @@ function getMockEstablishments(): Establishment[] {
       hasMortuary: false
     }
   ];
+  */
 }
 
 function getMockStatistics() {
+  const establishments = getMockEstablishments();
+  
+  // Calculer les vraies statistiques depuis les données
+  const byCategory = establishments.reduce((acc, est) => {
+    acc[est.category] = (acc[est.category] || 0) + 1;
+    return acc;
+  }, {} as any);
+
+  const byStatus = establishments.reduce((acc, est) => {
+    acc[est.status] = (acc[est.status] || 0) + 1;
+    return acc;
+  }, {} as any);
+
+  const totalBeds = establishments.reduce((sum, est) => sum + est.metrics.totalBeds, 0);
+  const totalDoctors = establishments.reduce((sum, est) => sum + est.staff.doctors, 0);
+  const totalNurses = establishments.reduce((sum, est) => sum + est.staff.nurses, 0);
+  const avgOccupancyRate = establishments.reduce((sum, est) => sum + est.metrics.occupancyRate, 0) / establishments.length;
+  const avgPatientSatisfaction = establishments.reduce((sum, est) => sum + est.metrics.patientSatisfaction, 0) / establishments.length;
+
   return {
-    totalEstablishments: 238,
-    byCategory: {
-      gouvernemental: 1,
-      universitaire: 4,
-      regional: 9,
-      departemental: 15,
-      prive: 88,
-      centre_sante: 95,
-      dispensaire: 20,
-      laboratoire: 4,
-      pharmacie: 2
-    },
-    byStatus: {
-      operationnel: 195,
-      partiel: 30,
-      maintenance: 8,
-      ferme: 5
-    },
-    totalBeds: 12500,
-    totalDoctors: 2159,
-    totalNurses: 15000,
-    avgOccupancyRate: 72,
-    avgPatientSatisfaction: 4.1
+    totalEstablishments: establishments.length,
+    byCategory,
+    byStatus,
+    totalBeds,
+    totalDoctors,
+    totalNurses,
+    avgOccupancyRate: Math.round(avgOccupancyRate),
+    avgPatientSatisfaction: parseFloat(avgPatientSatisfaction.toFixed(1))
   };
 }
 

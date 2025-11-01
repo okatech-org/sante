@@ -13,12 +13,15 @@ import CartographyListView from "@/components/cartography/CartographyListView";
 import { CartographyProvider } from "@/types/cartography";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { dedupeProviders } from "@/utils/cartography-dedupe";
+import { establishmentsService } from "@/services/establishments.service";
+import { useNavigate } from "react-router-dom";
 
 
 type SortBy = "name-asc" | "name-desc" | "city-asc" | "city-desc" | "type-asc" | "distance-asc";
 
 export default function AdminCartography() {
   const { isSuperAdmin } = useOfflineAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ 
     total: 0, 
     hopitaux: 0, 
@@ -62,15 +65,15 @@ export default function AdminCartography() {
     try {
       setIsLoading(true);
       
-      // Charger les institutions de santé du Gabon
-      const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
-      const gabonInstitutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
-      setAdminInstitutions(gabonInstitutions);
+      // Utiliser le service unifié pour obtenir tous les providers (397 établissements)
+      const allProviders = await establishmentsService.getAllProviders(true);
       
-      // Charger les données OSM
-      const osmData = await getOSMProvidersFromSupabase();
-      const dedupedOSM = dedupeProviders(osmData);
-      setOsmProviders(dedupedOSM);
+      // Séparer les institutions pour l'affichage spécifique
+      const institutions = allProviders.filter(p => p.type === 'institution');
+      const otherProviders = allProviders.filter(p => p.type !== 'institution');
+      
+      setAdminInstitutions(institutions);
+      setOsmProviders(otherProviders);
 
       // Charger les establishments depuis Supabase
       const { data: estabData, error: estabError } = await supabase

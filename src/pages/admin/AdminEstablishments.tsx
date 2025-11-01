@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,9 +52,25 @@ import { EstablishmentFormModal } from "@/components/admin/EstablishmentFormModa
 import { EstablishmentDetailModal } from "@/components/admin/EstablishmentDetailModal";
 import { EstablishmentFilters } from "@/components/admin/EstablishmentFilters";
 import { useEstablishments } from "@/hooks/useEstablishments";
+import { establishmentsService } from "@/services/establishments.service";
+import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
+import { Eye as ViewIcon, Grid, List } from "lucide-react";
 
 const AdminEstablishments = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user, isSuperAdmin, isAdmin } = useOfflineAuth();
+  
+  // Vérification des permissions
+  useEffect(() => {
+    if (!user || (!isSuperAdmin && !isAdmin)) {
+      navigate("/login/admin");
+    }
+  }, [user, isSuperAdmin, isAdmin, navigate]);
+
+  if (!user || (!isSuperAdmin && !isAdmin)) {
+    return null;
+  }
   
   // États principaux
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
@@ -65,6 +84,7 @@ const AdminEstablishments = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   
   // Modaux
   const [showFormModal, setShowFormModal] = useState(false);
@@ -90,18 +110,27 @@ const AdminEstablishments = () => {
     setError(null);
     
     try {
-      // Simuler un appel API
+      // Utiliser le service unifié pour obtenir exactement 397 établissements
+      const data = await establishmentsService.getAllEstablishments(true);
+      setEstablishments(data);
+      calculateStatistics(data);
+      setSuccess(`${data.length} établissements synchronisés avec la cartographie`);
+      setTimeout(() => setSuccess(null), 3000);
+      
+      toast({
+        title: "Synchronisation réussie",
+        description: `${data.length} établissements chargés (unifié avec la cartographie)`,
+      });
+    } catch (err) {
+      // Fallback vers les données locales
       const mockData = await fetchMockEstablishments();
       setEstablishments(mockData);
       calculateStatistics(mockData);
-      setSuccess("Établissements chargés avec succès");
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      setError("Erreur lors du chargement des établissements");
+      
       toast({
-        title: "Erreur",
-        description: "Impossible de charger les établissements",
-        variant: "destructive",
+        title: "Mode local",
+        description: `${mockData.length} établissements (données locales)`,
+        variant: "default",
       });
     } finally {
       setLoading(false);
@@ -305,40 +334,51 @@ const AdminEstablishments = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* En-tête */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                <Building2 className="h-8 w-8 text-blue-600" />
-                Gestion des Établissements de Santé
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Administration et supervision du réseau sanitaire national
-              </p>
+    <SuperAdminLayoutSimple>
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* En-tête */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent flex items-center gap-2">
+              <Building2 className="h-8 w-8 text-primary" />
+              Gestion des Établissements de Santé
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Administration et supervision du réseau sanitaire national • {statistics?.totalCount || 0} établissements
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <div className="flex gap-1 border rounded-lg p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('table')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
             </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleRefresh} variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Actualiser
-              </Button>
-              <Button onClick={handleExport} variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Exporter
-              </Button>
-              <Button onClick={handleCreate}>
-                <Plus className="h-4 w-4 mr-2" />
-                Nouvel Établissement
-              </Button>
-            </div>
+            <Button onClick={handleRefresh} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Actualiser
+            </Button>
+            <Button onClick={handleExport} variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Exporter
+            </Button>
+            <Button onClick={handleCreate}>
+              <Plus className="h-4 w-4 mr-2" />
+              Nouvel Établissement
+            </Button>
           </div>
         </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Messages de statut */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2">
@@ -442,18 +482,77 @@ const AdminEstablishments = () => {
               </div>
             )}
 
-            {/* Tableau des établissements */}
+            {/* Affichage des établissements (Grille ou Tableau) */}
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
+            ) : viewMode === 'grid' ? (
+              // Mode Grille
+              filteredEstablishments.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredEstablishments.map((establishment) => (
+                    <EstablishmentCard
+                      key={establishment.id}
+                      establishment={establishment}
+                      onUpdate={(updated) => {
+                        setEstablishments(prev => 
+                          prev.map(e => e.id === updated.id ? updated : e)
+                        );
+                        toast({
+                          title: "Mise à jour réussie",
+                          description: `${updated.name} a été mis à jour`
+                        });
+                      }}
+                      onDelete={handleDelete}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Card>
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <Building2 className="h-12 w-12 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">
+                      Aucun établissement trouvé
+                    </h3>
+                    <p className="text-gray-500 text-center max-w-md">
+                      Aucun établissement ne correspond aux critères de recherche.
+                      Essayez de modifier les filtres ou d'ajouter un nouvel établissement.
+                    </p>
+                    <Button onClick={handleCreate} className="mt-4">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Ajouter un établissement
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
             ) : (
-              <EstablishmentTable
-                establishments={filteredEstablishments}
-                onEdit={handleEdit}
-                onView={handleView}
-                onDelete={handleDelete}
-              />
+              // Mode Tableau
+              filteredEstablishments.length > 0 ? (
+                <EstablishmentTable
+                  establishments={filteredEstablishments}
+                  onEdit={handleEdit}
+                  onView={handleView}
+                  onDelete={handleDelete}
+                />
+              ) : (
+                <Card>
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <Building2 className="h-12 w-12 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">
+                      Aucun établissement trouvé
+                    </h3>
+                    <p className="text-gray-500 text-center max-w-md">
+                      Aucun établissement ne correspond aux critères de recherche.
+                      Essayez de modifier les filtres ou d'ajouter un nouvel établissement.
+                    </p>
+                    <Button onClick={handleCreate} className="mt-4">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Ajouter un établissement
+                    </Button>
+                  </CardContent>
+                </Card>
+              )
             )}
           </div>
         </Tabs>
@@ -482,7 +581,7 @@ const AdminEstablishments = () => {
           }}
         />
       )}
-    </div>
+    </SuperAdminLayoutSimple>
   );
 };
 
