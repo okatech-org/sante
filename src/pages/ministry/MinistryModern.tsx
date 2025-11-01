@@ -271,17 +271,7 @@ const MinistryModern = () => {
                 Ministère de la Santé
               </motion.h1>
               
-              <motion.p
-                className="text-lg lg:text-xl mb-10 text-foreground/80 max-w-2xl mx-auto font-medium"
-                style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.1, duration: 0.8 }}
-              >
-                Accélérer les progrès vers la Couverture Sanitaire Universelle pour tous les Gabonais
-              </motion.p>
-              
-              <motion.div 
+              <motion.div
                 className="flex flex-wrap gap-4 justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
