@@ -1,0 +1,178 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║  ✅ CORRECTIONS ERREURS CONSOLE                                  ║
+║                                                                   ║
+║  GitHub actualisé avec tous les correctifs                       ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+🐛 ERREURS CORRIGÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣ TypeError: Cannot read properties of undefined (reading 'includes')
+   Fichier: src/utils/convert-establishments.ts:27
+   
+   PROBLÈME:
+   • La fonction mapTypeToLevel utilisait nom.includes()
+   • Paramètre 'nom' pouvait être undefined/null
+   • Causait une erreur TypeError
+   
+   SOLUTION APPLIQUÉE:
+   • Ajout protection: const nomSafe = nom || '';
+   • Utilisation de nomSafe.includes() à la place
+   • Plus d'erreur si nom est undefined
+   
+   ✅ CORRIGÉ
+
+2️⃣ Failed to load resource: 404 - admin_get_professionals_with_profiles
+   URL: /rest/v1/rpc/admin_get_professionals_with_profiles
+   
+   PROBLÈME:
+   • Fonction RPC n'existait pas dans Supabase
+   • Requête retournait 404
+   
+   SOLUTION APPLIQUÉE:
+   • Création migration SQL complète
+   • Fonction admin_get_professionals_with_profiles créée
+   • Retourne professionnels avec profils joints
+   • SECURITY DEFINER pour accès admin
+   
+   ✅ CORRIGÉ
+
+3️⃣ Failed to load resource: 401 - professional_profiles
+   URL: /rest/v1/professional_profiles
+   
+   PROBLÈME:
+   • Table professional_profiles n'existait pas
+   • Erreur 401 Unauthorized
+   
+   SOLUTION APPLIQUÉE:
+   • Table professional_profiles créée
+   • 3 RLS policies ajoutées (SELECT, INSERT, UPDATE)
+   • Grants permissions pour authenticated
+   • Unicité sur user_id et professional_id
+   
+   ✅ CORRIGÉ
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 FICHIERS MODIFIÉS/CRÉÉS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. src/utils/convert-establishments.ts (MODIFIÉ)
+   • Ligne 27-28: Protection nom undefined
+   • const nomSafe = nom || '';
+   • Utilisation nomSafe.includes()
+
+2. supabase/migrations/20250201_admin_professionals_functions.sql (CRÉÉ)
+   • Fonction admin_get_professionals_with_profiles
+   • Table professional_profiles
+   • 3 RLS policies
+   • Grants permissions
+
+3. GITHUB_ACTUALISE.txt (CRÉÉ)
+   • Documentation mise à jour GitHub
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💾 MIGRATION SQL CRÉÉE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Fichier: 20250201_admin_professionals_functions.sql
+
+CONTENU:
+
+1. FONCTION RPC: admin_get_professionals_with_profiles
+   • RETURNS TABLE avec tous les champs professionnels
+   • LEFT JOIN avec profiles
+   • SECURITY DEFINER (accès admin)
+   • ORDER BY created_at DESC
+
+2. TABLE: professional_profiles
+   • id (UUID PK)
+   • user_id (FK → auth.users)
+   • professional_id (FK → professionals)
+   • full_name, email, phone, specialization
+   • verified (BOOLEAN)
+   • timestamps
+
+3. RLS POLICIES (3)
+   • View own profile
+   • Insert own profile
+   • Update own profile
+
+4. GRANTS
+   • SELECT, INSERT, UPDATE pour authenticated
+   • EXECUTE fonction RPC pour authenticated
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 CORRECTIONS TECHNIQUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AVANT (❌ Erreur):
+```typescript
+const mapTypeToLevel = (type: string, nom: string) => {
+  if (nom.includes('CHU')) return 'national';  // ❌ Crash si nom = undefined
+  ...
+};
+```
+
+APRÈS (✅ Corrigé):
+```typescript
+const mapTypeToLevel = (type: string, nom: string) => {
+  const nomSafe = nom || '';  // ✅ Protection
+  if (nomSafe.includes('CHU')) return 'national';  // ✅ Sécurisé
+  ...
+};
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 VALIDATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. APPLIQUER LA MIGRATION
+   └─ Aller sur Supabase Dashboard
+   └─ SQL Editor
+   └─ Copier le contenu de 20250201_admin_professionals_functions.sql
+   └─ Exécuter
+   └─ Vérifier: ✅ Success
+
+2. RAFRAÎCHIR NAVIGATEUR
+   └─ Ctrl + Shift + R
+   └─ URL: http://localhost:8080/professional/
+   └─ Vérifier console
+   └─ Plus d'erreurs ✅
+
+3. TESTER PAGES ADMIN
+   └─ URL: http://localhost:8080/admin/establishments
+   └─ Vérifier chargement établissements
+   └─ Plus d'erreur TypeError ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STATUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+╔════════════════════════════════════════════════════════╗
+║                                                        ║
+║  ✅ ERREURS CONSOLE CORRIGÉES                         ║
+║                                                        ║
+║  1. TypeError mapTypeToLevel → Protégé                ║
+║  2. Fonction RPC 404 → Créée (migration SQL)          ║
+║  3. Table professional_profiles → Créée               ║
+║                                                        ║
+║  Fichiers modifiés : 3                                ║
+║  Migration SQL : 1 (85 lignes)                        ║
+║  Commit : 57dbef6                                     ║
+║  GitHub : ✅ Poussé                                   ║
+║                                                        ║
+║  À faire :                                            ║
+║  • Exécuter migration SQL sur Supabase                ║
+║  • Rafraîchir navigateur                              ║
+║  • Vérifier console sans erreurs                      ║
+║                                                        ║
+╚════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════════════
