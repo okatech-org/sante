@@ -675,7 +675,27 @@ const MinisterDashboard = () => {
   } = useProvinces();
 
   // Utiliser les données de l'API si disponibles, sinon fallback sur mock
-  const provincesData = provincesDataAPI || [];
+  const provincesData = provincesDataAPI && provincesDataAPI.length > 0 
+    ? provincesDataAPI.map((p: any) => ({
+        id: p.id,
+        province: p.nom || p.province,
+        population: p.population,
+        structuresCount: p.structures || p.structuresCount || 0,
+        hospitals: p.hospitals || 0,
+        healthCenters: p.healthCenters || 0,
+        pharmacies: p.pharmacies || 0,
+        laboratories: p.laboratories || 0,
+        totalStaff: p.totalStaff || (p.medecins + p.infirmiers) || 0,
+        doctors: p.medecins || p.doctors || 0,
+        nurses: p.infirmiers || p.nurses || 0,
+        coverageRate: p.couverture || p.coverageRate || 0,
+        priority: p.priority || "moyenne",
+        needs: p.needs || [],
+        avgWaitTime: p.avgWaitTime || "N/A",
+        satisfaction: p.satisfaction || 0,
+        occupancyRate: p.occupancyRate || 0
+      })) 
+    : provincesHealthData;
   const provincesLoading = provincesLoadingAPI;
   const provincesError = provincesErrorAPI?.message || null;
 
@@ -1596,13 +1616,13 @@ const MinisterDashboard = () => {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="rounded-full bg-blue-500/10 text-blue-500">
-                      Politiques {(objectifsData || []).filter((o) => o.category === "politique").length}
+                      Politiques {(objectifsData || []).filter((o) => (o as any).category === "politique").length}
                     </Badge>
                     <Badge className="rounded-full bg-emerald-500/10 text-emerald-500">
-                      Économiques {(objectifsData || []).filter((o) => o.category === "economique").length}
+                      Économiques {(objectifsData || []).filter((o) => (o as any).category === "economique").length}
                     </Badge>
                     <Badge className="rounded-full bg-rose-500/10 text-rose-500">
-                      Sanitaires {(objectifsData || []).filter((o) => o.category === "sanitaire").length}
+                      Sanitaires {(objectifsData || []).filter((o) => (o as any).category === "sanitaire").length}
                     </Badge>
                   </div>
                 </div>
@@ -1614,37 +1634,37 @@ const MinisterDashboard = () => {
                       className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-inner transition hover:shadow-lg dark:border-white/10 dark:bg-white/5"
                     >
                       <div className="flex items-start justify-between">
-                        <Badge className={objectiveCategoryStyles[objectif.category]}>
-                          {objectif.category.toUpperCase()}
-                        </Badge>
-                        <Badge className={objectiveStatusStyles[objectif.status]}>
-                          {objectif.status === "en_cours" ? "En cours" : objectif.status === "atteint" ? "Atteint" : "En retard"}
-                        </Badge>
+                    <Badge className="rounded-full bg-blue-500/10 text-blue-500">
+                      {(objectif as any).category ? (objectif as any).category.toUpperCase() : "GÉNÉRAL"}
+                    </Badge>
+                    <Badge className="rounded-full bg-emerald-500/10 text-emerald-500">
+                      {(objectif as any).status === "en_cours" ? "En cours" : (objectif as any).status === "atteint" ? "Atteint" : "En cours"}
+                    </Badge>
                       </div>
-                      <h3 className="mt-4 text-lg font-semibold">{objectif.title}</h3>
+                      <h3 className="mt-4 text-lg font-semibold">{(objectif as any).title || objectif.nom}</h3>
                       <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{objectif.description}</p>
                       <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="text-xs uppercase tracking-wide text-slate-400">Actuel</p>
-                          <p className="text-base font-semibold">{objectif.current_value}</p>
+                          <p className="text-base font-semibold">{(objectif as any).current_value || objectif.progres}</p>
                         </div>
                         <div>
                           <p className="text-xs uppercase tracking-wide text-slate-400">Cible</p>
-                          <p className="text-base font-semibold text-emerald-500">{objectif.target_value}</p>
+                          <p className="text-base font-semibold text-emerald-500">{(objectif as any).target_value || objectif.cible}</p>
                         </div>
                       </div>
                       <div className="mt-4">
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-slate-400">Progression</span>
                           <span className="font-semibold text-slate-600 dark:text-slate-200">
-                            {objectif.progress}%
+                            {(objectif as any).progress || objectif.progres}%
                           </span>
                         </div>
                         <Progress
-                          value={objectif.progress}
+                          value={(objectif as any).progress || objectif.progres}
                           className={cn(
                             "mt-2 h-2 rounded-full",
-                            objectif.status === "en_retard" ? "[&>div]:bg-red-500" : "[&>div]:bg-emerald-500"
+                            (objectif as any).status === "en_retard" ? "[&>div]:bg-red-500" : "[&>div]:bg-emerald-500"
                           )}
                         />
                       </div>
@@ -1878,9 +1898,9 @@ const MinisterDashboard = () => {
                       </div>
                       <div className="h-[500px] overflow-hidden rounded-3xl border border-blue-400/30 bg-blue-500/5 dark:border-blue-400/20">
                         <CoverageCartography 
-                          provincesData={provincesData}
-                          selectedProvince={selectedProvince}
-                          onSelectProvince={setSelectedProvince}
+                          provincesData={provincesData as any}
+                          selectedProvince={selectedProvince as any}
+                          onSelectProvince={(p: any) => setSelectedProvince(p as any)}
                         />
                       </div>
                     </div>
@@ -1912,9 +1932,9 @@ const MinisterDashboard = () => {
                       </div>
                       <div className="h-[500px] overflow-hidden rounded-3xl border border-purple-400/30 bg-purple-500/5 dark:border-purple-400/20">
                         <ResourcesCartography 
-                          provincesData={provincesData}
-                          selectedProvince={selectedProvince}
-                          onSelectProvince={setSelectedProvince}
+                          provincesData={provincesData as any}
+                          selectedProvince={selectedProvince as any}
+                          onSelectProvince={(p: any) => setSelectedProvince(p as any)}
                         />
                       </div>
                     </div>
