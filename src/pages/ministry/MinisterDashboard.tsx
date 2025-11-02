@@ -1108,8 +1108,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                   </div>
                 </GlassCard>
 
-                <div className="grid gap-4">
-                  <GlassCard className="flex flex-col gap-4 rounded-3xl bg-gradient-to-br from-emerald-200/60 via-white to-white p-6 dark:from-emerald-500/20 dark:via-slate-900 dark:to-slate-900">
+                <GlassCard className="flex h-full flex-col gap-4 rounded-3xl bg-gradient-to-br from-emerald-200/60 via-white to-white p-6 dark:from-emerald-500/20 dark:via-slate-900 dark:to-slate-900">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Profil exécutif</p>
@@ -1131,72 +1130,73 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         </div>
                       ))}
                     </div>
-                    <Button className="mt-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                    <Button className="mt-auto rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
                       Agenda du jour
                     </Button>
-                  </GlassCard>
+                </GlassCard>
+              </div>
 
-                  <GlassCard className="rounded-3xl bg-gradient-to-br from-amber-200/60 via-white to-white p-6 dark:from-amber-500/15 dark:via-slate-900 dark:to-slate-900">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Financement</p>
-                        <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">Trésorerie disponible</h3>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="rounded-full border border-white/50 bg-white/70 px-3 text-xs text-slate-600 hover:bg-white dark:border-white/10 dark:bg-white/10 dark:text-slate-200"
-                        onClick={() => toast.info("Synchronisation des données budgétaires en cours")}
-                      >
-                        Mettre à jour
-                      </Button>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <GlassCard className="rounded-3xl bg-gradient-to-br from-amber-200/60 via-white to-white p-6 dark:from-amber-500/15 dark:via-slate-900 dark:to-slate-900">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Financement</p>
+                      <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">Trésorerie disponible</h3>
                     </div>
-                    <div className="mt-6 space-y-4 text-sm">
-                      <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
-                        <span>Disponible</span>
-                        <span className="text-lg font-semibold text-slate-900 dark:text-white">234,3 Mds FCFA</span>
-                      </div>
-                      <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
-                        <span>Engagé</span>
-                        <span className="text-lg font-semibold text-amber-500">198,2 Mds FCFA</span>
-                      </div>
-                      <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
-                        <span>Variation mensuelle</span>
-                        <span className="inline-flex items-center gap-1 text-emerald-500">
-                          <ArrowUpRight className="h-4 w-4" />
-                          +3,8%
-                        </span>
-                      </div>
-                    </div>
-                    <Button className="mt-6 w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
-                      Analyse budgétaire détaillée
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="rounded-full border border-white/50 bg-white/70 px-3 text-xs text-slate-600 hover:bg-white dark:border-white/10 dark:bg-white/10 dark:text-slate-200"
+                      onClick={() => toast.info("Synchronisation des données budgétaires en cours")}
+                    >
+                      Mettre à jour
                     </Button>
-                  </GlassCard>
+                  </div>
+                  <div className="mt-6 space-y-4 text-sm">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                      <span>Disponible</span>
+                      <span className="text-lg font-semibold text-slate-900 dark:text-white">234,3 Mds FCFA</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                      <span>Engagé</span>
+                      <span className="text-lg font-semibold text-amber-500">198,2 Mds FCFA</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                      <span>Variation mensuelle</span>
+                      <span className="inline-flex items-center gap-1 text-emerald-500">
+                        <ArrowUpRight className="h-4 w-4" />
+                        +3,8%
+                      </span>
+                    </div>
+                  </div>
+                  <Button className="mt-6 w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                    Analyse budgétaire détaillée
+                  </Button>
+                </GlassCard>
 
-                  <GlassCard className="rounded-3xl bg-gradient-to-br from-pink-200/50 via-white to-white p-6 dark:from-pink-500/15 dark:via-slate-900 dark:to-slate-900">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Couverture nationale</p>
-                        <h3 className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">Objectif CSU 2028</h3>
-                      </div>
-                      <Badge className="rounded-full bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-200">78%</Badge>
+                <GlassCard className="rounded-3xl bg-gradient-to-br from-pink-200/50 via-white to-white p-6 dark:from-pink-500/15 dark:via-slate-900 dark:to-slate-900">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Couverture nationale</p>
+                      <h3 className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">Objectif CSU 2028</h3>
                     </div>
-                    <div className="mt-6 flex flex-col gap-5">
-                      <div className="rounded-3xl bg-white/70 p-4 shadow-sm dark:bg-white/5">
-                        <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">Population couverte</p>
-                        <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-white">1,8 M</p>
-                        <p className="text-xs text-slate-400">+5,2% vs 2024</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 text-xs text-slate-600 dark:text-slate-300">
-                        {ministerInterests.map((tag) => (
-                          <span key={tag} className="rounded-full bg-white/80 px-3 py-1 shadow-sm dark:bg-white/10">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                    <Badge className="rounded-full bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-200">78%</Badge>
+                  </div>
+                  <div className="mt-6 flex flex-col gap-5">
+                    <div className="rounded-3xl bg-white/70 p-4 shadow-sm dark:bg-white/5">
+                      <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">Population couverte</p>
+                      <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-white">1,8 M</p>
+                      <p className="text-xs text-slate-400">+5,2% vs 2024</p>
                     </div>
-                  </GlassCard>
-                </div>
+                    <div className="flex flex-wrap gap-2 text-xs text-slate-600 dark:text-slate-300">
+                      {ministerInterests.map((tag) => (
+                        <span key={tag} className="rounded-full bg-white/80 px-3 py-1 shadow-sm dark:bg-white/10">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </GlassCard>
               </div>
 
               <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr] xl:grid-cols-[2fr_1fr] 2xl:grid-cols-[2.5fr_1fr]">

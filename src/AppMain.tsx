@@ -152,7 +152,7 @@ function AppMain() {
             <MultiEstablishmentProvider>
                 <SogaraAuthProvider>
               <TooltipProvider>
-              <BrowserRouter>
+              <BrowserRouter basename="/gouv">
                 <ConsoleSilencer />
                 <div className="min-h-screen bg-background">
                   <Routes>

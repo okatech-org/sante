@@ -2,9 +2,14 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import config from './core/Config.js';
 import Logger from './core/Logger.js';
 import eventBus from './core/EventBus.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import authRoutes from './routes/auth.routes.js';
 import patientRoutes from './routes/patient.routes.js';
@@ -32,6 +37,14 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/professionals', professionalRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// Servir les fichiers statiques React sur /gouv
+app.use('/gouv', express.static(path.resolve(__dirname, '../../dist')));
+
+// Fallback pour React Router (SPA)
+app.get(['/gouv', '/gouv/*'], (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../../dist/index.html'));
+});
 
 app.get('/health', (req, res) => {
   res.json({
