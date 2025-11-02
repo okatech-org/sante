@@ -36,6 +36,23 @@ import {
   Users,
   Zap,
   RefreshCw,
+  Briefcase,
+  BookOpen,
+  Bot,
+  Send,
+  Mic,
+  FileDown,
+  Sparkles,
+  Clock,
+  CheckSquare,
+  Folder,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Bell,
+  User,
+  Menu,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import CoverageCartography from "@/components/ministry/CoverageCartography";
@@ -138,6 +155,9 @@ const navItems: NavigationItem[] = [
   { id: "objectifs", label: "Objectifs", icon: Target },
   { id: "statistiques", label: "Statistiques", icon: BarChart3 },
   { id: "structures", label: "Structures", icon: Building2 },
+  { id: "conseil", label: "Conseil", icon: Briefcase },
+  { id: "connaissance", label: "Connaissance", icon: BookOpen },
+  { id: "iasted", label: "iAsted", icon: Bot },
   { id: "rapports", label: "Rapports", icon: FileText },
 ];
 
@@ -624,6 +644,10 @@ const MinisterDashboard = () => {
   const [activeCartography, setActiveCartography] = useState<"coverage" | "resources" | "infrastructure">("coverage");
   const [provinceSearch, setProvinceSearch] = useState<string>("");
   const [provinceDetailModal, setProvinceDetailModal] = useState<ProvinceHealthData | null>(null);
+  const [chatMessages, setChatMessages] = useState<Array<{role: "user" | "assistant", content: string}>>([]);
+  const [chatInput, setChatInput] = useState<string>("");
+  const [isAITyping, setIsAITyping] = useState<boolean>(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
 
   const loadProvincesData = useCallback(async () => {
     setProvincesLoading(true);
@@ -707,6 +731,41 @@ const MinisterDashboard = () => {
 
   const formatPercent = useCallback((value: number) => `${value.toFixed(1).replace(".", ",")}%`, []);
 
+  const handleSendMessage = useCallback(async () => {
+    if (!chatInput.trim()) return;
+
+    const userMessage = chatInput.trim();
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role: "user", content: userMessage }]);
+    setIsAITyping(true);
+
+    setTimeout(() => {
+      const aiResponse = `En tant qu'assistant ministériel iAsted, j'ai analysé votre demande "${userMessage}". 
+    
+Basé sur les données du dashboard :
+• Provinces prioritaires : ${provincesData.filter(p => p.priority === "haute").map(p => p.province).join(", ")}
+• Couverture nationale moyenne : ${nationalStats.avgCoverage.toFixed(1)}%
+• ${nationalStats.highPriorityCount} provinces nécessitent renforcement
+    
+Je peux générer un rapport détaillé, un décret ministériel ou vous fournir des recommandations stratégiques.`;
+      
+      setChatMessages(prev => [...prev, { role: "assistant", content: aiResponse }]);
+      setIsAITyping(false);
+      toast.success("Réponse de iAsted générée");
+    }, 1500);
+  }, [chatInput, provincesData, nationalStats]);
+
+  const handleGeneratePDF = useCallback((type: string) => {
+    toast.info(`Génération ${type} en cours...`);
+    setTimeout(() => {
+      toast.success(`${type} généré avec succès`);
+    }, 2000);
+  }, []);
+
+  const handleVoiceCommand = useCallback(() => {
+    toast.info("Fonction vocale activée (en développement)");
+  }, []);
+
   const chartData = chartDataset[usagePeriod];
 
   const chartPath = useMemo(() => {
@@ -783,24 +842,41 @@ const MinisterDashboard = () => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.18),transparent_55%)] dark:bg-[radial-gradient(circle_at_15%_15%,rgba(16,185,129,0.22),transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(139,92,246,0.12),transparent_55%)] dark:bg-[radial-gradient(circle_at_85%_10%,rgba(56,189,248,0.2),transparent_62%)]" />
 
-      <div className="relative mx-auto flex min-h-screen max-w-[1920px] flex-col gap-6 px-3 py-6 sm:px-6 lg:flex-row lg:gap-8 lg:px-8 xl:px-12">
-        <aside className="hidden lg:flex lg:w-56 lg:flex-col lg:gap-6">
-          <GlassCard className="flex items-center justify-between gap-4 p-4 lg:flex-col lg:items-center lg:justify-start lg:gap-6 lg:px-4 lg:py-6">
-            <div className="flex items-center gap-3 lg:flex-col lg:text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400">
-                <Shield className="h-7 w-7" />
+      <div className="relative mx-auto flex min-h-screen max-w-[1920px] flex-col gap-4 px-3 py-4 sm:px-4 lg:flex-row lg:gap-4 lg:px-6 xl:px-8">
+        <aside className={cn(
+          "hidden lg:flex lg:flex-col lg:gap-4 transition-all duration-300 ease-in-out",
+          sidebarExpanded ? "lg:w-72" : "lg:w-20"
+        )}>
+          {/* Avatar Ministre + Header */}
+          <GlassCard className="p-4">
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                  AM
+                </div>
+                <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
               </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                  République Gabonaise
-                </p>
-                <p className="text-sm font-semibold">Ministère de la Santé</p>
-              </div>
+              
+              {sidebarExpanded && (
+                <div className="text-center w-full overflow-hidden">
+                  <p className="text-sm font-semibold truncate">Pr. A. MOUGOUGOU</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Ministre de la Santé</p>
+                </div>
+              )}
             </div>
-            <ThemeToggle />
+
+            {sidebarExpanded && (
+              <div className="mt-4 pt-4 border-t border-white/20 dark:border-white/10 flex items-center justify-between">
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  République Gabonaise
+                </div>
+                <ThemeToggle />
+              </div>
+            )}
           </GlassCard>
 
-          <GlassCard className="flex flex-col items-stretch gap-2 p-3">
+          {/* Navigation */}
+          <GlassCard className="flex flex-col gap-1.5 p-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -810,21 +886,51 @@ const MinisterDashboard = () => {
                   type="button"
                   onClick={() => setActiveTab(item.id)}
                   className={cn(
-                    "group flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium transition",
+                    "group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                    !sidebarExpanded && "justify-center",
                     isActive
-                      ? "bg-emerald-500 text-white shadow-[0_20px_35px_rgba(16,185,129,0.35)]"
-                      : "text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-500"
+                      ? "bg-emerald-500 text-white shadow-[0_10px_25px_rgba(16,185,129,0.3)]"
+                      : "text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-500 dark:text-slate-400"
                   )}
+                  title={!sidebarExpanded ? item.label : undefined}
                 >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
+                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  {sidebarExpanded && (
+                    <span className="truncate">{item.label}</span>
+                  )}
+                  {!sidebarExpanded && isActive && (
+                    <span className="absolute left-full ml-2 px-3 py-1.5 bg-emerald-500 text-white text-xs rounded-lg shadow-lg whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  )}
                 </button>
               );
             })}
           </GlassCard>
+
+          {/* Toggle Sidebar Button */}
+          <GlassCard className="p-2">
+            <button
+              onClick={() => setSidebarExpanded(!sidebarExpanded)}
+              className="w-full rounded-xl p-2.5 hover:bg-emerald-500/10 transition flex items-center justify-center"
+              title={sidebarExpanded ? "Réduire" : "Étendre"}
+            >
+              {sidebarExpanded ? (
+                <ChevronLeft className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+              )}
+            </button>
+          </GlassCard>
+
+          {!sidebarExpanded && (
+            <div className="mt-auto">
+              <ThemeToggle />
+            </div>
+          )}
         </aside>
 
-        <main className="flex-1 space-y-6 pb-12">
+        <main className="flex-1 space-y-4 pb-8">
           <GlassCard className="flex items-center justify-between gap-3 rounded-3xl p-4 lg:hidden">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400">
@@ -840,7 +946,7 @@ const MinisterDashboard = () => {
             <ThemeToggle />
           </GlassCard>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <TabsList className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto rounded-full bg-white/60 px-1 py-2 shadow-sm dark:bg-white/10 lg:hidden">
               {navItems.map((item) => (
                 <TabsTrigger
@@ -854,7 +960,7 @@ const MinisterDashboard = () => {
               ))}
             </TabsList>
 
-            <TabsContent value="dashboard" className="space-y-6">
+            <TabsContent value="dashboard" className="space-y-4">
               <GlassCard className="p-6 lg:p-8">
                 <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
                   <div className="space-y-2">
@@ -882,7 +988,7 @@ const MinisterDashboard = () => {
                 </div>
               </GlassCard>
 
-              <div className="grid gap-6 lg:grid-cols-[1.8fr_1fr] xl:grid-cols-[2fr_1fr] 2xl:grid-cols-[2.3fr_1fr]">
+              <div className="grid items-stretch gap-4 lg:grid-cols-[1.8fr_1fr] xl:grid-cols-[2fr_1fr] 2xl:grid-cols-[2.3fr_1fr]">
                 <GlassCard className="overflow-hidden bg-gradient-to-br from-sky-200/40 via-white to-white p-6 shadow-[0_25px_60px_rgba(59,130,246,0.18)] dark:from-slate-800/60 dark:via-slate-900 dark:to-slate-900">
                   <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                     <div className="space-y-3 xl:max-w-xl">
@@ -1002,8 +1108,8 @@ const MinisterDashboard = () => {
                   </div>
                 </GlassCard>
 
-                <div className="grid gap-6">
-                  <GlassCard className="flex flex-col gap-6 rounded-3xl bg-gradient-to-br from-emerald-200/60 via-white to-white p-6 dark:from-emerald-500/20 dark:via-slate-900 dark:to-slate-900">
+                <div className="grid gap-4">
+                  <GlassCard className="flex flex-col gap-4 rounded-3xl bg-gradient-to-br from-emerald-200/60 via-white to-white p-6 dark:from-emerald-500/20 dark:via-slate-900 dark:to-slate-900">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Profil exécutif</p>
@@ -1093,7 +1199,7 @@ const MinisterDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr] xl:grid-cols-[2fr_1fr] 2xl:grid-cols-[2.5fr_1fr]">
+              <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr] xl:grid-cols-[2fr_1fr] 2xl:grid-cols-[2.5fr_1fr]">
                 <GlassCard className="p-6">
                   <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -1186,7 +1292,7 @@ const MinisterDashboard = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="decrets" className="space-y-6">
+            <TabsContent value="decrets" className="space-y-4">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold">Décrets et documents ministériels</h2>
@@ -1200,7 +1306,7 @@ const MinisterDashboard = () => {
                 </Button>
               </div>
 
-              <div className="grid gap-6 xl:grid-cols-[2.2fr_1fr]">
+              <div className="grid gap-4 xl:grid-cols-[2.2fr_1fr]">
                 <GlassCard className="p-6">
                   <div className="grid gap-4 sm:grid-cols-2">
                     {decretsData.map((decret) => (
@@ -1271,7 +1377,7 @@ const MinisterDashboard = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="objectifs" className="space-y-6">
+            <TabsContent value="objectifs" className="space-y-4">
               <GlassCard className="p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
@@ -1352,8 +1458,8 @@ const MinisterDashboard = () => {
               </GlassCard>
             </TabsContent>
 
-            <TabsContent value="statistiques" className="space-y-6">
-              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            <TabsContent value="statistiques" className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                 <GlassCard className="p-6">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold">Couverture CNAMGS</h3>
@@ -1422,7 +1528,7 @@ const MinisterDashboard = () => {
               </GlassCard>
             </TabsContent>
 
-            <TabsContent value="structures" className="space-y-6">
+            <TabsContent value="structures" className="space-y-4">
               {provincesError && (
                 <GlassCard className="border border-red-400/40 bg-red-500/10 p-4 dark:border-red-500/30 dark:bg-red-500/15">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -2008,7 +2114,358 @@ const MinisterDashboard = () => {
               </GlassCard>
             </TabsContent>
 
-            <TabsContent value="rapports" className="space-y-6">
+            <TabsContent value="conseil" className="space-y-4">
+              <GlassCard className="p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold">Conseil de Ministres</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Ordre du jour, décisions et suivi des réunions gouvernementales
+                    </p>
+                  </div>
+                  <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600">
+                    <Clock className="mr-2 h-4 w-4" />
+                    Nouvelle réunion
+                  </Button>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Prochaines réunions</h3>
+                    {[
+                      { date: "8 novembre 2025", sujet: "Budget santé 2026", status: "planifiée" },
+                      { date: "15 novembre 2025", sujet: "Plan national vaccination", status: "planifiée" },
+                    ].map((reunion, idx) => (
+                      <div key={idx} className="rounded-2xl border border-white/30 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-slate-900 dark:text-white">{reunion.sujet}</h4>
+                          <Badge className="bg-blue-500/15 text-blue-500">{reunion.status}</Badge>
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          <Clock className="inline h-3.5 w-3.5 mr-1" />
+                          {reunion.date}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Décisions récentes</h3>
+                    {[
+                      { titre: "Renforcement CHR Franceville", date: "28 oct 2025", statut: "approuvée" },
+                      { titre: "Campagne vaccination infantile", date: "25 oct 2025", statut: "approuvée" },
+                    ].map((decision, idx) => (
+                      <div key={idx} className="rounded-2xl border border-white/30 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-slate-900 dark:text-white">{decision.titre}</h4>
+                          <CheckSquare className="h-4 w-4 text-emerald-500" />
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{decision.date}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </GlassCard>
+            </TabsContent>
+
+            <TabsContent value="connaissance" className="space-y-4">
+              <GlassCard className="p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold">Base de Connaissance</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Documentation, lois, décrets et ressources pour iAsted
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Rechercher dans la base..."
+                      className="h-10 w-64 rounded-full"
+                    />
+                    <Button variant="outline" className="rounded-full">
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-3">
+                  {[
+                    { 
+                      titre: "Lois et Réglements", 
+                      icon: ScrollText, 
+                      count: 42, 
+                      color: "blue",
+                      items: ["Loi 12/95 Politique Santé", "Décret 0292/PR/MS Attributions", "Code Santé Publique"]
+                    },
+                    { 
+                      titre: "PNDS 2024-2028", 
+                      icon: Target, 
+                      count: 8, 
+                      color: "emerald",
+                      items: ["Axes stratégiques", "Objectifs CSU", "Plan d'action"]
+                    },
+                    { 
+                      titre: "Rapports & Études", 
+                      icon: FileText, 
+                      count: 156, 
+                      color: "purple",
+                      items: ["Bulletins épidémio", "Rapports annuels", "Études OMS"]
+                    },
+                  ].map((categorie, idx) => {
+                    const Icon = categorie.icon;
+                    return (
+                      <GlassCard key={idx} className="p-5">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={cn(
+                            "rounded-2xl p-3",
+                            categorie.color === "blue" && "bg-blue-500/15 text-blue-500",
+                            categorie.color === "emerald" && "bg-emerald-500/15 text-emerald-500",
+                            categorie.color === "purple" && "bg-purple-500/15 text-purple-500"
+                          )}>
+                            <Icon className="h-6 w-6" />
+                          </div>
+                          <Badge className="bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                            {categorie.count} docs
+                          </Badge>
+                        </div>
+                        <h3 className="font-semibold mb-3">{categorie.titre}</h3>
+                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                          {categorie.items.map((item, i) => (
+                            <li key={i} className="flex items-center gap-2">
+                              <Folder className="h-3.5 w-3.5 text-slate-400" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                        <Button variant="outline" className="w-full mt-4 rounded-full">
+                          Explorer
+                        </Button>
+                      </GlassCard>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            </TabsContent>
+
+            <TabsContent value="iasted" className="space-y-4">
+              <GlassCard className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
+                      <Bot className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-semibold">iAsted - Assistant Ministériel IA</h2>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        Chat, voice, génération de documents et recommandations intelligentes
+                      </p>
+                    </div>
+                  </div>
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    IA Multimodale
+                  </Badge>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold">Actions rapides</h3>
+                    <div className="grid gap-3">
+                      <Button
+                        onClick={() => handleGeneratePDF("Rapport mensuel")}
+                        className="justify-start rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                      >
+                        <FileDown className="mr-2 h-4 w-4" />
+                        Générer rapport PDF
+                      </Button>
+                      <Button
+                        onClick={() => handleGeneratePDF("Décret ministériel")}
+                        className="justify-start rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
+                      >
+                        <FileSignature className="mr-2 h-4 w-4" />
+                        Rédiger décret PDF
+                      </Button>
+                      <Button
+                        onClick={handleVoiceCommand}
+                        className="justify-start rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700"
+                      >
+                        <Mic className="mr-2 h-4 w-4" />
+                        Commande vocale
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setChatInput("Analyse les provinces prioritaires et donne-moi des recommandations");
+                          setTimeout(handleSendMessage, 100);
+                        }}
+                        className="justify-start rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+                      >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Recommandations IA
+                      </Button>
+                    </div>
+                  </div>
+
+                  <GlassCard className="p-4 h-[600px] flex flex-col bg-gradient-to-br from-purple-50/50 via-white to-pink-50/50 dark:from-purple-900/20 dark:via-slate-900 dark:to-pink-900/20">
+                    <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+                        <Bot className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm">iAsted Assistant</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">En ligne • Prêt à vous assister</p>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+                      {chatMessages.length === 0 && (
+                        <div className="flex flex-col items-center justify-center h-full text-center">
+                          <Bot className="h-16 w-16 text-slate-300 dark:text-slate-600 mb-4" />
+                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                            Bonjour Monsieur le Ministre,<br />
+                            Je suis iAsted, votre assistant IA personnel.<br />
+                            Comment puis-je vous aider aujourd'hui ?
+                          </p>
+                        </div>
+                      )}
+
+                      {chatMessages.map((msg, idx) => (
+                        <div key={idx} className={cn(
+                          "flex gap-3",
+                          msg.role === "user" ? "justify-end" : "justify-start"
+                        )}>
+                          {msg.role === "assistant" && (
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white flex-shrink-0">
+                              <Bot className="h-4 w-4" />
+                            </div>
+                          )}
+                          <div className={cn(
+                            "rounded-2xl px-4 py-3 max-w-[80%] text-sm",
+                            msg.role === "user"
+                              ? "bg-emerald-500 text-white"
+                              : "bg-white/70 text-slate-900 dark:bg-white/10 dark:text-slate-100"
+                          )}>
+                            <p className="whitespace-pre-line">{msg.content}</p>
+                          </div>
+                        </div>
+                      ))}
+
+                      {isAITyping && (
+                        <div className="flex gap-3">
+                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white flex-shrink-0">
+                            <Bot className="h-4 w-4" />
+                          </div>
+                          <div className="rounded-2xl bg-white/70 px-4 py-3 dark:bg-white/10">
+                            <div className="flex gap-1">
+                              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce" style={{animationDelay: "0ms"}} />
+                              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce" style={{animationDelay: "150ms"}} />
+                              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce" style={{animationDelay: "300ms"}} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Input
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                        placeholder="Posez une question à iAsted..."
+                        className="rounded-full bg-white/80 dark:bg-white/10"
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={!chatInput.trim() || isAITyping}
+                        className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </GlassCard>
+                </div>
+              </GlassCard>
+            </TabsContent>
+
+            <TabsContent value="connaissance" className="space-y-4">
+              <GlassCard className="p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold">Base de Connaissance</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Documentation, lois, décrets et ressources pour iAsted
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Rechercher dans la base..."
+                      className="h-10 w-64 rounded-full"
+                    />
+                    <Button variant="outline" className="rounded-full">
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-3">
+                  {[
+                    { 
+                      titre: "Lois et Réglements", 
+                      icon: ScrollText, 
+                      count: 42, 
+                      color: "blue",
+                      items: ["Loi 12/95 Politique Santé", "Décret 0292/PR/MS Attributions", "Code Santé Publique"]
+                    },
+                    { 
+                      titre: "PNDS 2024-2028", 
+                      icon: Target, 
+                      count: 8, 
+                      color: "emerald",
+                      items: ["Axes stratégiques", "Objectifs CSU", "Plan d'action"]
+                    },
+                    { 
+                      titre: "Rapports & Études", 
+                      icon: FileText, 
+                      count: 156, 
+                      color: "purple",
+                      items: ["Bulletins épidémio", "Rapports annuels", "Études OMS"]
+                    },
+                  ].map((categorie, idx) => {
+                    const Icon = categorie.icon;
+                    return (
+                      <GlassCard key={idx} className="p-5">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={cn(
+                            "rounded-2xl p-3",
+                            categorie.color === "blue" && "bg-blue-500/15 text-blue-500",
+                            categorie.color === "emerald" && "bg-emerald-500/15 text-emerald-500",
+                            categorie.color === "purple" && "bg-purple-500/15 text-purple-500"
+                          )}>
+                            <Icon className="h-6 w-6" />
+                          </div>
+                          <Badge className="bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                            {categorie.count} docs
+                          </Badge>
+                        </div>
+                        <h3 className="font-semibold mb-3">{categorie.titre}</h3>
+                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                          {categorie.items.map((item, i) => (
+                            <li key={i} className="flex items-center gap-2">
+                              <Folder className="h-3.5 w-3.5 text-slate-400" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                        <Button variant="outline" className="w-full mt-4 rounded-full">
+                          Explorer
+                        </Button>
+                      </GlassCard>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            </TabsContent>
+
+            <TabsContent value="rapports" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-[0.55fr_1.45fr] xl:grid-cols-[0.45fr_1.55fr]">
                 <GlassCard className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400">
