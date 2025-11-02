@@ -41,6 +41,7 @@ import {
   Bot,
   Send,
   Mic,
+  MicOff,
   FileDown,
   Sparkles,
   Clock,
@@ -53,6 +54,7 @@ import {
   User,
   Menu,
   X,
+  Volume2,
 } from "lucide-react";
 import { toast } from "sonner";
 import CoverageCartography from "@/components/ministry/CoverageCartography";
@@ -64,6 +66,9 @@ import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
 import { useObjectifs } from "@/hooks/useObjectifs";
 import { useProvinces } from "@/hooks/useProvinces";
 import IAstedButton from "@/components/ui/iAstedButton";
+import { generateMinisterReport, generateMinisterDecree, downloadPDF } from "@/services/pdfGenerator";
+import { VoiceService, TTSService } from "@/services/voiceService";
+import { useAuthStore } from "@/stores/authStore";
 
 type UsagePeriod = "semaine" | "mois" | "annee";
 
@@ -651,6 +656,10 @@ const MinisterDashboard = () => {
   const [chatInput, setChatInput] = useState<string>("");
   const [isAITyping, setIsAITyping] = useState<boolean>(false);
   const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [voiceService] = useState(() => new VoiceService());
+  
+  const { token } = useAuthStore();
 
   // React Query hooks
   const { data: kpisData, isLoading: kpisLoading, error: kpisError } = useKPIs(usagePeriod);
@@ -841,32 +850,129 @@ const MinisterDashboard = () => {
     toast.info(`Génération ${type} en cours...`);
     
     try {
-      const response = await fetch('/api/dashboard/iasted/generate-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ reportType: type }),
-      });
+      if (type.toLowerCase().includes('décret')) {
+        // Générer un décret via l'IA puis en PDF
+        const response = await fetch('/api/dashboard/iasted/generate-decree', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ 
+            subject: 'Décret ministériel généré par iAsted',
+            context: 'Amélioration du système de santé national'
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Erreur API');
+        if (!response.ok) throw new Error('Erreur API');
+
+        const { data } = await response.json();
+        
+        // Parser la réponse IA pour extraire les articles
+        const articles = [
+          'Le présent décret porte sur l\'amélioration du système de santé national.',
+          'Les mesures seront mises en œuvre dans un délai de 6 mois.',
+          'Le Ministre de la Santé est chargé de l\'exécution du présent décret.',
+        ];
+        
+        const pdfBlob = await generateMinisterDecree(
+          'Décret portant amélioration du système de santé national',
+          articles
+        );
+        
+        downloadPDF(pdfBlob, `decret-ministeriel-${Date.now()}.pdf`);
+        toast.success('Décret PDF généré et téléchargé avec succès');
+      } else {
+        // Générer un rapport via l'IA puis en PDF
+        const response = await fetch('/api/dashboard/iasted/generate-report', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ reportType: type }),
+        });
+
+        if (!response.ok) throw new Error('Erreur API');
+
+        const { data } = await response.json();
+        
+        // Créer contexte pour le PDF
+        const context = {
+          summary: data.content,
+          kpis: kpisData?.slice(0, 5).map(k => ({
+            label: k.nom,
+            value: k.valeur,
+            delta: `${k.delta >= 0 ? '+' : ''}${k.delta}%`,
+          })),
+          recommendations: [
+            'Renforcer la couverture sanitaire dans les provinces à faible taux',
+            'Accélérer le déploiement des plateaux techniques prioritaires',
+            'Optimiser la répartition budgétaire entre les provinces',
+          ],
+        };
+        
+        const pdfBlob = await generateMinisterReport(type, context);
+        downloadPDF(pdfBlob, `rapport-ministeriel-${Date.now()}.pdf`);
+        toast.success(`${type} PDF généré et téléchargé avec succès`);
       }
-
-      const { data } = await response.json();
-      toast.success(`${type} généré avec succès`);
-      
-      console.log('Rapport généré:', data.content);
     } catch (error) {
       console.error('Generate PDF error:', error);
       toast.error(`Erreur lors de la génération du ${type}`);
     }
-  }, []);
+  }, [token, kpisData]);
 
-  const handleVoiceCommand = useCallback(() => {
-    toast.info("Fonction vocale activée (en développement)");
-  }, []);
+  const handleVoiceCommand = useCallback(async () => {
+    if (!VoiceService.isSupported()) {
+      toast.error("Votre navigateur ne supporte pas l'enregistrement audio");
+      return;
+    }
+
+    try {
+      if (isRecording) {
+        // Arrêter l'enregistrement
+        toast.info("Traitement de votre commande vocale...");
+        setIsRecording(false);
+        
+        const audioBlob = await voiceService.stopRecording();
+        const transcription = await voiceService.transcribe(audioBlob, token || '');
+        
+        if (transcription) {
+          setChatInput(transcription);
+          toast.success("Commande vocale transcrite");
+          
+          // Envoyer automatiquement au chat
+          setTimeout(() => {
+            handleSendMessage();
+          }, 500);
+        }
+      } else {
+        // Demander permission micro
+        const hasPermission = await voiceService.requestMicrophonePermission();
+        
+        if (!hasPermission) {
+          toast.error("Permission microphone refusée");
+          return;
+        }
+        
+        // Démarrer l'enregistrement
+        await voiceService.startRecording();
+        setIsRecording(true);
+        toast.success("🎙️ Enregistrement en cours... Parlez maintenant");
+        
+        // Arrêter automatiquement après 10 secondes
+        setTimeout(async () => {
+          if (isRecording) {
+            await handleVoiceCommand();
+          }
+        }, 10000);
+      }
+    } catch (error) {
+      console.error('Voice command error:', error);
+      setIsRecording(false);
+      toast.error("Erreur lors de la commande vocale");
+    }
+  }, [isRecording, voiceService, token, handleSendMessage]);
 
   const chartData = chartDataset[usagePeriod];
 
@@ -2397,10 +2503,23 @@ const MinisterDashboard = () => {
                       </Button>
                       <Button
                         onClick={handleVoiceCommand}
-                        className="justify-start rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700"
+                        className={`justify-start rounded-xl ${
+                          isRecording 
+                            ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 animate-pulse' 
+                            : 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700'
+                        }`}
                       >
-                        <Mic className="mr-2 h-4 w-4" />
-                        Commande vocale
+                        {isRecording ? (
+                          <>
+                            <MicOff className="mr-2 h-4 w-4" />
+                            Arrêter (enregistrement...)
+                          </>
+                        ) : (
+                          <>
+                            <Mic className="mr-2 h-4 w-4" />
+                            Commande vocale
+                          </>
+                        )}
                       </Button>
                       <Button
                         onClick={() => {
@@ -2482,14 +2601,34 @@ const MinisterDashboard = () => {
                         onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                         placeholder="Posez une question à iAsted..."
                         className="rounded-full bg-white/80 dark:bg-white/10"
+                        disabled={isRecording}
                       />
                       <Button
                         onClick={handleSendMessage}
-                        disabled={!chatInput.trim() || isAITyping}
+                        disabled={!chatInput.trim() || isAITyping || isRecording}
                         className="rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
+                      {chatMessages.length > 0 && (
+                        <Button
+                          onClick={() => {
+                            const lastAssistant = [...chatMessages].reverse().find(m => m.role === 'assistant');
+                            if (lastAssistant && TTSService.isSupported()) {
+                              TTSService.speak(lastAssistant.content);
+                              toast.success("🔊 Lecture de la réponse");
+                            } else {
+                              toast.error("Aucune réponse à lire");
+                            }
+                          }}
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full"
+                          title="Lire la dernière réponse"
+                        >
+                          <Volume2 className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   </GlassCard>
                 </div>

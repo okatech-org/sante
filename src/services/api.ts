@@ -109,13 +109,13 @@ export const dashboardApi = {
     const { data } = await api.get<APIResponse<KPI[]>>('/dashboard/kpis', { 
       params: { periode } 
     });
-    return data.data;
+    return data?.data || [];
   },
 
   // Alerts
   getAlerts: async (): Promise<Alert[]> => {
     const { data } = await api.get<APIResponse<Alert[]>>('/dashboard/alerts');
-    return data.data;
+    return data?.data || [];
   },
 
   // Decrees
@@ -123,7 +123,7 @@ export const dashboardApi = {
     const { data } = await api.get<APIResponse<Decree[]>>('/dashboard/decrets', { 
       params 
     });
-    return data.data;
+    return data?.data || [];
   },
 
   createDecree: async (decree: Partial<Decree>): Promise<Decree> => {
@@ -145,7 +145,7 @@ export const dashboardApi = {
     const { data } = await api.get<APIResponse<Objectif[]>>('/dashboard/objectifs', { 
       params 
     });
-    return data.data;
+    return data?.data || [];
   },
 
   createObjectif: async (objectif: Partial<Objectif>): Promise<Objectif> => {
@@ -161,7 +161,7 @@ export const dashboardApi = {
   // Provinces
   getProvinces: async (): Promise<Province[]> => {
     const { data } = await api.get<APIResponse<Province[]>>('/dashboard/provinces');
-    return data.data;
+    return data?.data || [];
   },
 
   getProvince: async (id: string): Promise<Province> => {
