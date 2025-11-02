@@ -65,6 +65,9 @@ import MinistryPublic from "./pages/ministry/MinistryPublic";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 import MinistryTest from "./pages/ministry/MinistryTest";
 
+// Page d'initialisation
+import InitializeUsers from "./pages/InitializeUsers";
+
 // Pages des établissements
 import EstablishmentHomePage from "./pages/establishment/EstablishmentHomePage";
 
@@ -106,6 +109,9 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/register/patient" element={<RegisterPatient />} />
                     <Route path="/register/professional" element={<RegisterProfessional />} />
+                    
+                    {/* Route d'initialisation */}
+                    <Route path="/initialize-users" element={<InitializeUsers />} />
                     
                     {/* Routes de dashboard */}
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
