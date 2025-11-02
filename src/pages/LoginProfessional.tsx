@@ -132,7 +132,6 @@ export default function LoginProfessional() {
                           placeholder="votre@email-pro.com"
                           className="pl-10 btn-mobile-xxl"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value.trim())}
                         />
                       </div>
                     </FormControl>
@@ -163,7 +162,6 @@ export default function LoginProfessional() {
                           placeholder="••••••••"
                           className="pl-10 btn-mobile-xxl"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value.trim())}
                         />
                       </div>
                     </FormControl>

@@ -35,22 +35,20 @@ export const authService = {
   },
 
   async signIn(identifier: string, password: string) {
-    // Normaliser les entrées
-    const id = (identifier || '').trim();
-    const pwd = (password || '').trim();
-    const isEmail = id.includes('@');
+    // Check if identifier is email or phone
+    const isEmail = identifier.includes('@');
     
     if (isEmail) {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: id.toLowerCase(),
-        password: pwd,
+        email: identifier,
+        password,
       });
       if (error) throw error;
       return data;
     } else {
       const { data, error } = await supabase.auth.signInWithPassword({
-        phone: id,
-        password: pwd,
+        phone: identifier,
+        password,
       });
       if (error) throw error;
       return data;
