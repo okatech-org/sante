@@ -56,7 +56,7 @@ export default function LoginProfessional() {
         toast.success("Bienvenue Ministre !", {
           description: "Pr. Adrien MOUGOUGOU - Accès à votre espace ministériel",
         });
-        window.location.href = "/ministry/dashboard";
+        window.location.href = "/gouv/dashboard";
         return;
       }
 
