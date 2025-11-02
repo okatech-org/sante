@@ -51,6 +51,15 @@ export default function LoginProfessional() {
         return;
       }
 
+      // Vérifier d'abord si c'est le ministre et le rediriger vers son dashboard dédié
+      if (data.identifier === 'ministre@sante.gouv.ga' || user.email === 'ministre@sante.gouv.ga') {
+        toast.success("Bienvenue Ministre !", {
+          description: "Pr. Adrien MOUGOUGOU - Accès à votre espace ministériel",
+        });
+        window.location.href = "/ministry/dashboard";
+        return;
+      }
+
       // Vérifier que l'utilisateur a un rôle professionnel
       const professionalRoles = ['doctor', 'medical_staff', 'pharmacy', 'laboratory', 'hospital', 'moderator'];
       const hasProfessionalRole = userRoles.some(role => professionalRoles.includes(role));
@@ -63,20 +72,11 @@ export default function LoginProfessional() {
         });
         return;
       }
-
-      // Vérifier si c'est le ministre et le rediriger vers son dashboard dédié
-      if (data.identifier === 'ministre@sante.gouv.ga' || user.email === 'ministre@sante.gouv.ga') {
-        toast.success("Bienvenue Ministre !", {
-          description: "Accès à votre espace ministériel",
-        });
-        navigate("/ministry/dashboard");
-        return;
-      }
       
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur votre espace professionnel",
       });
-      navigate("/professional");
+      navigate("/professional/select-establishment");
     } catch (error: any) {
       const sanitized = sanitizeAuthError(error);
       if (sanitized.shouldLog) {

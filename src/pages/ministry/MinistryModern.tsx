@@ -261,8 +261,8 @@ const MinistryModern = () => {
                   Pour une couverture sanitaire universelle au Gabon
                 </p>
               </motion.div>
-
-              <motion.div
+              
+              <motion.div 
                 className="flex flex-wrap gap-4 justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -283,9 +283,9 @@ const MinistryModern = () => {
                   En savoir plus
                 </Button>
               </motion.div>
-            </motion.div>
+              </motion.div>
 
-            {/* Stats intégrées dans le Hero - Design Compact avec Glass Morphism */}
+              {/* Stats intégrées dans le Hero - Design Compact avec Glass Morphism */}
             <div className="absolute bottom-6 left-6 right-6">
               <motion.div
                 className="max-w-5xl mx-auto"
@@ -322,10 +322,10 @@ const MinistryModern = () => {
                     ))}
                   </div>
                 </div>
-              </motion.div>
-            </div>
+            </motion.div>
           </div>
         </div>
+          </div>
       </motion.section>
 
       {/* Vision & Mission avec Layout Split Moderne */}
@@ -340,12 +340,12 @@ const MinistryModern = () => {
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4 mb-4">
               <Badge className="mb-2 md:mb-0 self-center bg-primary/10 text-primary border-primary/20">
-                <Target className="w-4 h-4 mr-2" />
-                PNDS 2024-2028
-              </Badge>
+              <Target className="w-4 h-4 mr-2" />
+              PNDS 2024-2028
+            </Badge>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                Notre Vision Stratégique
-              </h2>
+              Notre Vision Stratégique
+            </h2>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               Améliorer l'état de santé et le bien-être de la population gabonaise en assurant l'accès universel à des services de santé de qualité
@@ -353,18 +353,18 @@ const MinistryModern = () => {
           </motion.div>
 
           {/* Image avec bloc d'informations unifié */}
-          <motion.div 
+            <motion.div 
             className="relative h-[700px] rounded-lg overflow-hidden max-w-6xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <img 
-              src={strategyImage} 
-              alt="Stratégie de santé au Gabon" 
-              className="w-full h-full object-cover"
-            />
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <img 
+                src={strategyImage} 
+                alt="Stratégie de santé au Gabon" 
+                className="w-full h-full object-cover"
+              />
             
             {/* Bloc unique avec toutes les informations */}
             <div className="absolute bottom-6 left-6 right-6">
@@ -382,9 +382,9 @@ const MinistryModern = () => {
 
                 {/* Axes stratégiques */}
                 <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-4">
-                  {strategicAxes.map((axis, index) => (
-                    <motion.div
-                      key={index}
+              {strategicAxes.map((axis, index) => (
+                <motion.div
+                  key={index}
                       className="text-center group"
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -396,13 +396,13 @@ const MinistryModern = () => {
                         <div className="text-foreground font-medium text-center leading-tight">
                           <div className="font-bold text-xs mb-0.5" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>{axis.title}</div>
                           <div className="text-[10px] text-foreground/70">{axis.desc}</div>
-                        </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+                      </div>
+                </motion.div>
+              ))}
             </div>
+              </motion.div>
+          </div>
           </motion.div>
         </div>
       </section>
@@ -488,7 +488,7 @@ const MinistryModern = () => {
                           <TrendingUp className="h-6 w-6 text-success" />
                           <div className="text-2xl font-bold text-foreground">15 Mds</div>
                           <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
-                        </div>
+                      </div>
                       </div>
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
@@ -561,7 +561,7 @@ const MinistryModern = () => {
                           <TrendingUp className="h-6 w-6 text-accent" />
                           <div className="text-2xl font-bold text-foreground">25 Mds</div>
                           <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
-                        </div>
+                      </div>
                       </div>
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
