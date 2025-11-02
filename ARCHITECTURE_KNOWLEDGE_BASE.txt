@@ -1,0 +1,446 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              ARCHITECTURE BASE DE CONNAISSANCE - SANTE.GA                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📐 ARCHITECTURE GÉNÉRALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           SUPER ADMIN (SANTE.GA)                            │
+│                                                                             │
+│  Dashboard Super Admin > Gestion Structure "Ministère de la Santé"         │
+│                                                                             │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │  📊 Base de Connaissance JSON                                         │ │
+│  │                                                                       │ │
+│  │  • Upload de documents (PDF, TXT, MD, DOC, DOCX)                     │ │
+│  │  • Extraction IA automatique (KnowledgeExtractor)                    │ │
+│  │  • Transformation en JSON structuré                                  │ │
+│  │  • Télécharger/Copier JSON complet                                   │ │
+│  │  • Aperçu JSON par document                                          │ │
+│  │                                                                       │ │
+│  │  Composant : KnowledgeBaseJSON.tsx                                   │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│                                    ↓                                        │
+│                           Stockage Supabase                                 │
+│                     Table: knowledge_base (JSON)                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                     ↓
+                                     ↓ iAsted se nourrit
+                                     ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     MINISTRE DE LA SANTÉ (Dashboard)                        │
+│                                                                             │
+│  http://localhost:8080/gouv/dashboard                                      │
+│                                                                             │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │  📁 Section "Dossiers"                                                │ │
+│  │                                                                       │ │
+│  │  • Gestion et classification des documents                           │ │
+│  │  • 7 catégories 3D (Lois, Décrets, Rapports, etc.)                  │ │
+│  │  • Tri intelligent (6 options)                                       │ │
+│  │  • Filtrage avancé                                                   │ │
+│  │  • Upload documents                                                  │ │
+│  │  • Miniatures PDF format A4                                          │ │
+│  │  • PAS d'export JSON (pour ministre)                                 │ │
+│  │                                                                       │ │
+│  │  Composant : KnowledgeBase.tsx                                       │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │  🤖 Section "iAsted"                                                  │ │
+│  │                                                                       │ │
+│  │  • Chat IA multimodal                                                │ │
+│  │  • Commandes vocales                                                 │ │
+│  │  • Génération de documents                                           │ │
+│  │  • Recommandations intelligentes                                     │ │
+│  │                                                                       │ │
+│  │  💡 iAsted utilise la base de connaissance JSON en arrière-plan      │ │
+│  │     (gérée par super admin, invisible pour le ministre)              │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📂 STRUCTURE DES COMPOSANTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+src/
+├── types/
+│   └── knowledge.ts                    → Interfaces TypeScript
+│
+├── services/
+│   └── knowledgeExtractor.ts           → Service extraction IA
+│
+├── hooks/
+│   └── useKnowledgeBase.ts             → Hook gestion documents
+│
+├── components/
+│   └── ministry/
+│       ├── KnowledgeBase.tsx           → Gestion dossiers (Ministre)
+│       ├── KnowledgeBaseJSON.tsx       → Gestion JSON (Super Admin)
+│       └── PDFMiniature.tsx            → Miniature PDF A4
+│
+└── pages/
+    └── ministry/
+        └── MinisterDashboard.tsx       → Dashboard ministre
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔀 FLUX DE DONNÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. CRÉATION DE CONNAISSANCE (Super Admin)
+   ┌─────────────────────────────────────────────────────────────┐
+   │  Super Admin Upload Document                                 │
+   │                    ↓                                         │
+   │  KnowledgeExtractor.processDocument()                        │
+   │  ├─ Lecture fichier (PDF/TXT/MD/DOC)                        │
+   │  ├─ Analyse contenu textuel                                 │
+   │  ├─ Détection catégorie automatique                         │
+   │  ├─ Extraction auteur, date, tags                           │
+   │  └─ Génération résumé                                       │
+   │                    ↓                                         │
+   │  Transformation en JSON structuré                            │
+   │                    ↓                                         │
+   │  Stockage Supabase (table: knowledge_base)                   │
+   └─────────────────────────────────────────────────────────────┘
+
+2. CONSULTATION DOSSIERS (Ministre)
+   ┌─────────────────────────────────────────────────────────────┐
+   │  Ministre > Dashboard > Dossiers                             │
+   │                    ↓                                         │
+   │  useKnowledgeBase hook                                       │
+   │  ├─ Chargement documents (API ou Mock)                      │
+   │  ├─ Tri intelligent (6 options)                             │
+   │  ├─ Filtrage (catégories, recherche, dates)                 │
+   │  └─ Affichage cartes 3D + liste                             │
+   │                    ↓                                         │
+   │  Clic sur catégorie → Dialog miniatures PDF A4               │
+   └─────────────────────────────────────────────────────────────┘
+
+3. UTILISATION PAR iASTED (Automatique)
+   ┌─────────────────────────────────────────────────────────────┐
+   │  iAsted interrogé par le Ministre                            │
+   │                    ↓                                         │
+   │  API iAsted Backend                                          │
+   │                    ↓                                         │
+   │  Récupération Base Connaissance JSON (Supabase)              │
+   │  ├─ Documents filtrés par pertinence                        │
+   │  ├─ Embeddings pour recherche sémantique                    │
+   │  └─ Context enrichi pour GPT-4                              │
+   │                    ↓                                         │
+   │  Génération réponse contextuelle                             │
+   │                    ↓                                         │
+   │  Affichage au Ministre (transparent)                         │
+   └─────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👥 RÔLES ET PERMISSIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SUPER ADMIN (sante.ga)
+  ✅ Accès Dashboard Super Admin
+  ✅ Gestion structures (dont Ministère Santé)
+  ✅ Upload documents → Base Connaissance JSON
+  ✅ Télécharger/Copier JSON complet
+  ✅ Aperçu JSON par document
+  ✅ Modification métadonnées
+  ✅ Suppression documents
+  
+  Composant utilisé : KnowledgeBaseJSON.tsx
+  Localisation : Dashboard Super Admin > Structures > Ministère Santé
+
+MINISTRE DE LA SANTÉ
+  ✅ Section "Dossiers" : Consultation et organisation
+  ✅ Upload documents locaux (pour organisation)
+  ✅ Tri et filtrage avancés
+  ✅ Miniatures PDF A4
+  ✅ Détails documents
+  ❌ PAS d'accès au JSON brut
+  ❌ PAS de téléchargement JSON
+  
+  Composant utilisé : KnowledgeBase.tsx
+  Localisation : http://localhost:8080/gouv/dashboard > Dossiers
+
+IASTED (IA)
+  ✅ Lecture automatique Base Connaissance JSON
+  ✅ Recherche sémantique dans documents
+  ✅ Génération réponses contextuelles
+  ✅ Citations des sources
+  ❌ Invisible pour utilisateurs (back-end)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 FORMAT JSON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Structure d'un document dans la base :
+
+{
+  "id": "kb-1",
+  "titre": "Loi n°12/95 relative à la Politique de Santé",
+  "description": "Cadre juridique définissant...",
+  "categorie": "loi",
+  "tags": ["politique", "santé", "législation", "gabon"],
+  "auteur": "Assemblée Nationale",
+  "date_publication": "1995-12-15",
+  "date_ajout": "2024-01-10",
+  "fichier_url": "https://...",
+  "fichier_type": "application/pdf",
+  "fichier_taille": 2450000,
+  "contenu_extrait": "Texte extrait...",
+  "metadonnees": {
+    "nombre_pages": 45,
+    "langue": "français",
+    "version": "1.0",
+    "statut": "validé"
+  },
+  "pertinence_score": 95,
+  "nombre_consultations": 342,
+  "derniere_consultation": "2025-11-01"
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔧 INTÉGRATION SUPER ADMIN (À FAIRE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option 1 : Dashboard Super Admin Existant
+  
+  Localisation : /admin/structures/ministere-sante
+  
+  Ajouter un onglet "Base de Connaissance" :
+  
+  ```tsx
+  import KnowledgeBaseJSON from "@/components/ministry/KnowledgeBaseJSON";
+  
+  <Tabs>
+    <TabsList>
+      <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+      <TabsTrigger value="personnel">Personnel</TabsTrigger>
+      <TabsTrigger value="knowledge">Base de Connaissance</TabsTrigger>
+    </TabsList>
+    
+    <TabsContent value="knowledge">
+      <KnowledgeBaseJSON />
+    </TabsContent>
+  </Tabs>
+  ```
+
+Option 2 : Page dédiée
+  
+  Créer : src/pages/admin/KnowledgeManagement.tsx
+  
+  Route : /admin/knowledge-base
+  
+  ```tsx
+  import KnowledgeBaseJSON from "@/components/ministry/KnowledgeBaseJSON";
+  
+  const KnowledgeManagement = () => {
+    return (
+      <div className="container mx-auto p-6">
+        <h1>Gestion Base de Connaissance</h1>
+        <KnowledgeBaseJSON />
+      </div>
+    );
+  };
+  ```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤖 INTÉGRATION IASTED (À FAIRE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Backend : src/neural/neurons/IAstedNeuron.js
+
+1. Charger la base de connaissance au démarrage
+   
+   ```javascript
+   class IAstedNeuron extends BaseNeuron {
+     constructor() {
+       super('IAstedNeuron');
+       this.knowledgeBase = [];
+       this.loadKnowledgeBase();
+     }
+     
+     async loadKnowledgeBase() {
+       const { data } = await supabase
+         .from('knowledge_base')
+         .select('*')
+         .eq('structure_id', 'ministere-sante');
+       
+       this.knowledgeBase = data || [];
+       this.logger.info(`Loaded ${this.knowledgeBase.length} documents`);
+     }
+   }
+   ```
+
+2. Recherche contextuelle lors des questions
+   
+   ```javascript
+   async handleQuestion(question, context) {
+     // Rechercher documents pertinents
+     const relevantDocs = this.knowledgeBase.filter(doc => 
+       doc.tags.some(tag => question.toLowerCase().includes(tag)) ||
+       doc.titre.toLowerCase().includes(question.toLowerCase())
+     ).slice(0, 5);
+     
+     // Enrichir le contexte pour GPT-4
+     const enrichedContext = {
+       question,
+       documents: relevantDocs.map(doc => ({
+         titre: doc.titre,
+         resume: doc.description,
+         extrait: doc.contenu_extrait?.slice(0, 500)
+       }))
+     };
+     
+     // Appel API OpenAI avec contexte enrichi
+     const response = await this.callOpenAI(enrichedContext);
+     
+     return response;
+   }
+   ```
+
+3. Citations des sources
+   
+   ```javascript
+   formatResponseWithSources(response, sources) {
+     return {
+       texte: response,
+       sources: sources.map(doc => ({
+         titre: doc.titre,
+         auteur: doc.auteur,
+         date: doc.date_publication,
+         url: doc.fichier_url
+       }))
+     };
+   }
+   ```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💾 BASE DE DONNÉES SUPABASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Table : knowledge_base
+
+CREATE TABLE knowledge_base (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  structure_id VARCHAR(255) NOT NULL,  -- 'ministere-sante'
+  titre TEXT NOT NULL,
+  description TEXT,
+  categorie VARCHAR(50) NOT NULL,
+  tags TEXT[] DEFAULT '{}',
+  auteur VARCHAR(255),
+  date_publication DATE,
+  date_ajout TIMESTAMP DEFAULT NOW(),
+  fichier_url TEXT,
+  fichier_type VARCHAR(100),
+  fichier_taille BIGINT,
+  contenu_extrait TEXT,
+  metadonnees JSONB,
+  pertinence_score INTEGER,
+  nombre_consultations INTEGER DEFAULT 0,
+  derniere_consultation TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_knowledge_structure ON knowledge_base(structure_id);
+CREATE INDEX idx_knowledge_categorie ON knowledge_base(categorie);
+CREATE INDEX idx_knowledge_tags ON knowledge_base USING GIN(tags);
+
+-- RLS (Row Level Security)
+ALTER TABLE knowledge_base ENABLE ROW LEVEL SECURITY;
+
+-- Super admin peut tout faire
+CREATE POLICY "Super admin full access" ON knowledge_base
+  FOR ALL USING (auth.jwt() ->> 'role' = 'super_admin');
+
+-- Ministre peut uniquement lire
+CREATE POLICY "Minister read access" ON knowledge_base
+  FOR SELECT USING (
+    structure_id = 'ministere-sante' AND
+    auth.jwt() ->> 'role' = 'minister'
+  );
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 ÉTAT ACTUEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ IMPLÉMENTÉ
+
+  Dashboard Ministre :
+  ✓ Section "Dossiers" (ex-Connaissance)
+  ✓ 7 catégories 3D avec design moderne
+  ✓ Tri intelligent (6 options)
+  ✓ Filtrage avancé
+  ✓ Upload documents avec extraction IA
+  ✓ Miniatures PDF format A4
+  ✓ Dialog avec vue Grid/Liste
+  ✓ 8 documents mock pré-chargés
+  
+  Section iAsted :
+  ✓ Chat IA
+  ✓ Actions rapides
+  ✓ Commandes vocales
+  ✓ Génération de documents
+  ✗ Base de Connaissance JSON (retirée - pour super admin)
+
+  Composants créés :
+  ✓ KnowledgeBase.tsx (Dossiers ministre)
+  ✓ KnowledgeBaseJSON.tsx (JSON super admin)
+  ✓ PDFMiniature.tsx (Miniatures A4)
+  ✓ Types et services (knowledge.ts, knowledgeExtractor.ts)
+  ✓ Hook useKnowledgeBase.ts
+
+⏳ À IMPLÉMENTER
+
+  Backend :
+  □ Table Supabase knowledge_base
+  □ API endpoints CRUD
+  □ Stockage fichiers (Supabase Storage)
+  □ IAstedNeuron avec intégration knowledge base
+  
+  Super Admin Dashboard :
+  □ Page/Section gestion Base Connaissance JSON
+  □ Intégration composant KnowledgeBaseJSON
+  □ Upload vers Supabase
+  □ Gestion par structure
+  
+  iAsted :
+  □ Connexion à la base JSON
+  □ Recherche sémantique (embeddings)
+  □ Citations de sources
+  □ Mise à jour consultations
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 RÉSUMÉ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SÉPARATION DES RESPONSABILITÉS :
+
+1. SUPER ADMIN
+   → Gère la Base de Connaissance JSON
+   → Upload, extraction IA, transformation
+   → Composant : KnowledgeBaseJSON.tsx
+
+2. MINISTRE
+   → Consulte les "Dossiers"
+   → Organise, trie, filtre
+   → Voit miniatures PDF
+   → Composant : KnowledgeBase.tsx (sans export JSON)
+
+3. iASTED
+   → Se nourrit automatiquement de la base JSON
+   → Recherche sémantique
+   → Répond aux questions avec sources
+   → Transparent pour l'utilisateur
+
+Le composant KnowledgeBaseJSON.tsx est prêt à être intégré dans le dashboard
+super admin pour permettre la gestion centralisée de la base de connaissance.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Date : 2 novembre 2025
+Status : ✅ Architecture implémentée
+Prochaine étape : Intégration dashboard super admin + Backend iAsted
+

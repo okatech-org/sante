@@ -58,6 +58,7 @@ import { toast } from "sonner";
 import CoverageCartography from "@/components/ministry/CoverageCartography";
 import ResourcesCartography from "@/components/ministry/ResourcesCartography";
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
+import KnowledgeBase from "@/components/ministry/KnowledgeBase";
 import { useKPIs } from "@/hooks/useKPIs";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
@@ -161,7 +162,7 @@ const navItems: NavigationItem[] = [
   { id: "statistiques", label: "Statistiques", icon: BarChart3 },
   { id: "structures", label: "Structures", icon: Building2 },
   { id: "conseil", label: "Conseil", icon: Briefcase },
-  { id: "connaissance", label: "Connaissance", icon: BookOpen },
+  { id: "dossiers", label: "Dossiers", icon: Folder },
   { id: "iasted", label: "iAsted", icon: Bot },
   { id: "rapports", label: "Rapports", icon: FileText },
 ];
@@ -1373,7 +1374,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         onClick={() => setSelectedDecret(decret)}
                         className={cn(
                           "rounded-2xl border bg-white/60 p-4 text-left transition hover:shadow-lg dark:bg-white/5",
-                          selectedDecret.id === decret.id
+                          (selectedDecret?.id === decret.id)
                             ? "border-emerald-400/60 shadow-[0_15px_30px_rgba(16,185,129,0.18)]"
                             : "border-white/30 dark:border-white/10"
                         )}
@@ -1397,39 +1398,47 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                 </GlassCard>
 
                 <GlassCard className="p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Détails</h3>
-                    <Badge className="bg-white/40 text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                      {selectedDecret.status.toUpperCase()}
-                    </Badge>
-                  </div>
-                  <div className="mt-6 space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">Référence</p>
-                      <p className="text-base font-semibold text-slate-800 dark:text-slate-100">
-                        {selectedDecret.reference}
-                      </p>
+                  {selectedDecret ? (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">Détails</h3>
+                        <Badge className="bg-white/40 text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                          {selectedDecret.status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className="mt-6 space-y-4 text-sm text-slate-500 dark:text-slate-400">
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Référence</p>
+                          <p className="text-base font-semibold text-slate-800 dark:text-slate-100">
+                            {selectedDecret.reference}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Objet</p>
+                          <p className="text-base text-slate-600 dark:text-slate-200">{selectedDecret.title}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Auteur</p>
+                          <p>{selectedDecret.author}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Progression</p>
+                          <Progress value={selectedDecret.progress} className="mt-2 h-2 rounded-full" />
+                        </div>
+                        <Button
+                          variant="outline"
+                          className="w-full rounded-full"
+                          onClick={() => toast.info("Téléchargement du dossier réglementaire")}
+                        >
+                          Télécharger le dossier complet
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-sm text-slate-500 dark:text-slate-400">
+                      Sélectionnez un décret pour afficher les détails
                     </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">Objet</p>
-                      <p className="text-base text-slate-600 dark:text-slate-200">{selectedDecret.title}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">Auteur</p>
-                      <p>{selectedDecret.author}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">Progression</p>
-                      <Progress value={selectedDecret.progress} className="mt-2 h-2 rounded-full" />
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="w-full rounded-full"
-                      onClick={() => toast.info("Téléchargement du dossier réglementaire")}
-                    >
-                      Télécharger le dossier complet
-                    </Button>
-                  </div>
+                  )}
                 </GlassCard>
               </div>
             </TabsContent>
@@ -2225,82 +2234,9 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
               </GlassCard>
             </TabsContent>
 
-            <TabsContent value="connaissance" className="space-y-4">
+            <TabsContent value="dossiers" className="space-y-4">
               <GlassCard className="p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold">Base de Connaissance</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Documentation, lois, décrets et ressources pour iAsted
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Rechercher dans la base..."
-                      className="h-10 w-64 rounded-full"
-                    />
-                    <Button variant="outline" className="rounded-full">
-                      <Search className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-3">
-                  {[
-                    { 
-                      titre: "Lois et Réglements", 
-                      icon: ScrollText, 
-                      count: 42, 
-                      color: "blue",
-                      items: ["Loi 12/95 Politique Santé", "Décret 0292/PR/MS Attributions", "Code Santé Publique"]
-                    },
-                    { 
-                      titre: "PNDS 2024-2028", 
-                      icon: Target, 
-                      count: 8, 
-                      color: "emerald",
-                      items: ["Axes stratégiques", "Objectifs CSU", "Plan d'action"]
-                    },
-                    { 
-                      titre: "Rapports & Études", 
-                      icon: FileText, 
-                      count: 156, 
-                      color: "purple",
-                      items: ["Bulletins épidémio", "Rapports annuels", "Études OMS"]
-                    },
-                  ].map((categorie, idx) => {
-                    const Icon = categorie.icon;
-                    return (
-                      <GlassCard key={idx} className="p-5">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={cn(
-                            "rounded-2xl p-3",
-                            categorie.color === "blue" && "bg-blue-500/15 text-blue-500",
-                            categorie.color === "emerald" && "bg-emerald-500/15 text-emerald-500",
-                            categorie.color === "purple" && "bg-purple-500/15 text-purple-500"
-                          )}>
-                            <Icon className="h-6 w-6" />
-                          </div>
-                          <Badge className="bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                            {categorie.count} docs
-                          </Badge>
-                        </div>
-                        <h3 className="font-semibold mb-3">{categorie.titre}</h3>
-                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                          {categorie.items.map((item, i) => (
-                            <li key={i} className="flex items-center gap-2">
-                              <Folder className="h-3.5 w-3.5 text-slate-400" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                        <Button variant="outline" className="w-full mt-4 rounded-full">
-                          Explorer
-                        </Button>
-                      </GlassCard>
-                    );
-                  })}
-                </div>
+                <KnowledgeBase />
               </GlassCard>
             </TabsContent>
 
@@ -2439,85 +2375,6 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       </Button>
                     </div>
                   </GlassCard>
-                </div>
-              </GlassCard>
-            </TabsContent>
-
-            <TabsContent value="connaissance" className="space-y-4">
-              <GlassCard className="p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold">Base de Connaissance</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Documentation, lois, décrets et ressources pour iAsted
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Rechercher dans la base..."
-                      className="h-10 w-64 rounded-full"
-                    />
-                    <Button variant="outline" className="rounded-full">
-                      <Search className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid gap-6 lg:grid-cols-3">
-                  {[
-                    { 
-                      titre: "Lois et Réglements", 
-                      icon: ScrollText, 
-                      count: 42, 
-                      color: "blue",
-                      items: ["Loi 12/95 Politique Santé", "Décret 0292/PR/MS Attributions", "Code Santé Publique"]
-                    },
-                    { 
-                      titre: "PNDS 2024-2028", 
-                      icon: Target, 
-                      count: 8, 
-                      color: "emerald",
-                      items: ["Axes stratégiques", "Objectifs CSU", "Plan d'action"]
-                    },
-                    { 
-                      titre: "Rapports & Études", 
-                      icon: FileText, 
-                      count: 156, 
-                      color: "purple",
-                      items: ["Bulletins épidémio", "Rapports annuels", "Études OMS"]
-                    },
-                  ].map((categorie, idx) => {
-                    const Icon = categorie.icon;
-                    return (
-                      <GlassCard key={idx} className="p-5">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={cn(
-                            "rounded-2xl p-3",
-                            categorie.color === "blue" && "bg-blue-500/15 text-blue-500",
-                            categorie.color === "emerald" && "bg-emerald-500/15 text-emerald-500",
-                            categorie.color === "purple" && "bg-purple-500/15 text-purple-500"
-                          )}>
-                            <Icon className="h-6 w-6" />
-                          </div>
-                          <Badge className="bg-white/70 text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                            {categorie.count} docs
-                          </Badge>
-                        </div>
-                        <h3 className="font-semibold mb-3">{categorie.titre}</h3>
-                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                          {categorie.items.map((item, i) => (
-                            <li key={i} className="flex items-center gap-2">
-                              <Folder className="h-3.5 w-3.5 text-slate-400" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                        <Button variant="outline" className="w-full mt-4 rounded-full">
-                          Explorer
-                        </Button>
-                      </GlassCard>
-                    );
-                  })}
                 </div>
               </GlassCard>
             </TabsContent>
