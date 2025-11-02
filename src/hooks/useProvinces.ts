@@ -4,19 +4,9 @@ import { dashboardApi, Province } from '@/services/api';
 export const useProvinces = (): UseQueryResult<Province[], Error> => {
   return useQuery({
     queryKey: ['provinces'],
-    queryFn: async () => {
-      try {
-        const data = await dashboardApi.getProvinces();
-        return Array.isArray(data) ? data : [];
-      } catch (error) {
-        console.error('Error fetching provinces:', error);
-        return [];
-      }
-    },
-    initialData: [],
-    staleTime: 600000,
+    queryFn: () => dashboardApi.getProvinces(),
+    staleTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
-    retry: 1,
   });
 };
 
