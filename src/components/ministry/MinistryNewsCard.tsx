@@ -51,7 +51,7 @@ export const MinistryNewsCard = ({ news }: MinistryNewsCardProps) => {
           </p>
         ) : (
           <div className="space-y-3">
-            {news.slice(0, 5).map((item) => (
+            {news.filter(item => item && item.id).slice(0, 5).map((item) => (
               <div
                 key={item.id}
                 className={`p-4 rounded-lg border-2 hover:shadow-md transition-all cursor-pointer ${

@@ -16,6 +16,9 @@ import patientRoutes from './routes/patient.routes.js';
 import professionalRoutes from './routes/professional.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
+import { authenticate, authorize } from './neurons/auth/AuthMiddleware.js';
+import { UserRoles } from './neurons/auth/RoleDefinitions.js';
 
 import authNeuron from './neurons/AuthNeuron.js';
 import patientNeuron from './neurons/PatientNeuron.js';
@@ -37,6 +40,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/professionals', professionalRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/dashboard', authenticate, authorize([UserRoles.MINISTRE, UserRoles.ADMIN, UserRoles.SUPER_ADMIN]), dashboardRoutes);
 
 // Servir les fichiers statiques React sur /gouv
 app.use('/gouv', express.static(path.resolve(__dirname, '../../dist')));

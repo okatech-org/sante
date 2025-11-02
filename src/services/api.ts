@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { useAuthStore } from '@/stores/authStore';
 
 const api: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -10,7 +11,7 @@ const api: AxiosInstance = axios.create({
 
 // Intercepteur pour JWT
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -21,8 +22,8 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      useAuthStore.getState().logout();
       window.location.href = '/gouv/login';
     }
     return Promise.reject(error);

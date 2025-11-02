@@ -1,84 +1,66 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { useAuthStore, User } from '@/stores/authStore';
 import { useNavigate } from 'react-router-dom';
-import neuralApi from '../lib/neuralApi';
+import { toast } from 'sonner';
 
-export function useAuth() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-
-  const fetchUser = useCallback(async () => {
-    try {
-      setLoading(true);
-      const userData = await neuralApi.getMe();
-      setUser(userData.user);
-      setError(null);
-    } catch (err: any) {
-      setUser(null);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
-  const login = useCallback(async (credentials: any) => {
-    try {
-      setLoading(true);
-      const data = await neuralApi.login(credentials);
-      setUser(data.user);
-      setError(null);
-      return data;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const register = useCallback(async (userData: any) => {
-    try {
-      setLoading(true);
-      const data = await neuralApi.register(userData);
-      setUser(data.user);
-      setError(null);
-      return data;
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const logout = useCallback(async () => {
-    try {
-      setLoading(true);
-      await neuralApi.logout();
-      setUser(null);
-      setError(null);
-      navigate('/auth/login');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
-
-  return {
-    user,
-    loading,
-    error,
-    login,
-    register,
-    logout,
-    isAuthenticated: !!user
-  };
+interface LoginCredentials {
+  email: string;
+  password: string;
 }
 
-export default useAuth;
+interface LoginResponse {
+  success: boolean;
+  user: User;
+  token: string;
+  role: string;
+  permissions: string[];
+}
+
+export const useAuth = () => {
+  const navigate = useNavigate();
+  const { setAuth, logout: logoutStore, token, user, isAuthenticated } = useAuthStore();
+
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: LoginCredentials) => {
+      const { data } = await axios.post<LoginResponse>('/api/auth/login', credentials);
+      return data;
+    },
+    onSuccess: ({ token, user, role, permissions }) => {
+      const userWithRole: User = {
+        ...user,
+        role: role || user.role,
+        permissions,
+      };
+      setAuth(token, userWithRole);
+      
+      // Redirection basée sur le rôle
+      if (role === 'MINISTRE' || role === 'ADMIN' || role === 'SUPER_ADMIN') {
+        navigate('/dashboard');
+        toast.success(`Bienvenue ${user.firstName || user.email}`);
+      } else {
+        navigate('/');
+        toast.success('Connexion réussie');
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.error || 'Erreur de connexion');
+    },
+  });
+
+  const logoutUser = () => {
+    logoutStore();
+    navigate('/');
+    toast.info('Déconnexion réussie');
+  };
+
+  return {
+    login: loginMutation.mutate,
+    logout: logoutUser,
+    isLoading: loginMutation.isPending,
+    error: loginMutation.error,
+    token,
+    user,
+    isAuthenticated,
+  };
+};

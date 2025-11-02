@@ -114,6 +114,7 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import MinistryModern from "./pages/ministry/MinistryModern";
 import MinistryDashboard from "./pages/ministry/MinistryDashboard";
 import MinisterDashboard from "./pages/ministry/MinisterDashboard";
+import LoginMinister from "./pages/ministry/LoginMinister";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 
 // Pages SOGARA
@@ -152,7 +153,7 @@ function AppMain() {
             <MultiEstablishmentProvider>
                 <SogaraAuthProvider>
               <TooltipProvider>
-              <BrowserRouter basename="/gouv">
+              <BrowserRouter>
                 <ConsoleSilencer />
                 <div className="min-h-screen bg-background">
                   <Routes>
@@ -342,12 +343,16 @@ function AppMain() {
                     
                     {/* Routes Ministère de la Santé - Pages publiques (sans auth) */}
                     <Route path="/gouv" element={<MinistryModern />} />
+                    <Route path="/ministry" element={<MinistryModern />} />
+                    <Route path="/ministere" element={<MinistryModern />} />
+                    <Route path="/Ministry" element={<MinistryModern />} />
+                    <Route path="/Ministere" element={<MinistryModern />} />
                     
                     {/* Routes Ministère protégées (avec auth) */}
+                    <Route path="/gouv/login" element={<LoginMinister />} />
                     <Route path="/gouv/dashboard" element={<MinisterDashboard />} />
                     <Route path="/minister/dashboard" element={<MinisterDashboard />} />
                     <Route path="/ministre/dashboard" element={<MinisterDashboard />} />
-                    <Route path="/gouv/login" element={<MinistryLogin />} />
                     
                     {/* Connexion Personnel SOGARA */}
                     <Route path="/login/sogara" element={<SogaraLogin />} />

@@ -12,7 +12,7 @@ export default defineConfig(async ({ mode }) => {
     } catch {}
   }
   return {
-    base: '/gouv/',
+    base: '/',
     server: {
       host: "::",
       port: 8080,

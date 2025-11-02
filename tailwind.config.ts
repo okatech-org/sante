@@ -100,4 +100,15 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  safelist: [
+    // Classes pour severity/priority badges dynamiques
+    'bg-red-500/10', 'text-red-600', 'border-red-400/40',
+    'bg-amber-500/10', 'text-amber-600', 'border-amber-400/40',
+    'bg-emerald-500/10', 'text-emerald-600', 'border-emerald-400/40',
+    'bg-sky-500/10', 'text-sky-600', 'border-sky-400/40',
+    // Classes pour trends
+    'text-emerald-500', 'text-red-500', 'text-slate-500',
+    // Classes pour gradients provinciaux
+    'from-red-500/20', 'from-amber-500/20', 'from-emerald-500/20',
+  ],
 } satisfies Config;

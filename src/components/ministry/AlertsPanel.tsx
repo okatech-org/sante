@@ -64,7 +64,7 @@ export const AlertsPanel = ({ alerts }: AlertsPanelProps) => {
             Aucune alerte active
           </p>
         ) : (
-          allAlerts.map((alert) => {
+          allAlerts.filter(alert => alert && alert.id).map((alert) => {
             const Icon = getAlertIcon(alert.type);
             return (
               <div

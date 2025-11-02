@@ -58,6 +58,11 @@ import { toast } from "sonner";
 import CoverageCartography from "@/components/ministry/CoverageCartography";
 import ResourcesCartography from "@/components/ministry/ResourcesCartography";
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
+import { useKPIs } from "@/hooks/useKPIs";
+import { useAlerts } from "@/hooks/useAlerts";
+import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
+import { useObjectifs } from "@/hooks/useObjectifs";
+import { useProvinces } from "@/hooks/useProvinces";
 
 type UsagePeriod = "semaine" | "mois" | "annee";
 
@@ -635,10 +640,7 @@ const MinisterDashboard = () => {
   const currentTheme = resolvedTheme ?? "light";
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [usagePeriod, setUsagePeriod] = useState<UsagePeriod>("semaine");
-  const [selectedDecret, setSelectedDecret] = useState<DecretDocument>(decretsData[0]);
-  const [provincesData, setProvincesData] = useState<ProvinceHealthData[]>([]);
-  const [provincesLoading, setProvincesLoading] = useState<boolean>(true);
-  const [provincesError, setProvincesError] = useState<string | null>(null);
+  const [selectedDecret, setSelectedDecret] = useState<DecretDocument | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<ProvinceHealthData | null>(null);
   const [sortProvinceBy, setSortProvinceBy] = useState<"name" | "coverage" | "priority">("priority");
   const [activeCartography, setActiveCartography] = useState<"coverage" | "resources" | "infrastructure">("coverage");
@@ -649,25 +651,30 @@ const MinisterDashboard = () => {
   const [isAITyping, setIsAITyping] = useState<boolean>(false);
   const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
 
-  const loadProvincesData = useCallback(async () => {
-    setProvincesLoading(true);
-    setProvincesError(null);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      setProvincesData(provincesHealthData);
-      setSelectedProvince(provincesHealthData[0]);
-      toast.success("Données provinciales synchronisées");
-    } catch (error) {
-      console.error("Erreur chargement données provinciales", error);
-      setProvincesError("Impossible de charger les données. Veuillez réessayer.");
-    } finally {
-      setProvincesLoading(false);
-    }
-  }, []);
+  // React Query hooks
+  const { data: kpisData, isLoading: kpisLoading, error: kpisError } = useKPIs(usagePeriod);
+  const { data: alertsData, isLoading: alertsLoading } = useAlerts();
+  const { data: decretsDataAPI, isLoading: decretsLoading } = useDecrees();
+  const createDecretMutation = useCreateDecree();
+  const { data: objectifsData, isLoading: objectifsLoading } = useObjectifs();
+  const { 
+    data: provincesDataAPI, 
+    isLoading: provincesLoadingAPI, 
+    error: provincesErrorAPI,
+    refetch: refetchProvinces 
+  } = useProvinces();
 
+  // Utiliser les données de l'API si disponibles, sinon fallback sur mock
+  const provincesData = provincesDataAPI || [];
+  const provincesLoading = provincesLoadingAPI;
+  const provincesError = provincesErrorAPI?.message || null;
+
+  // Initialiser selectedProvince avec la première province
   useEffect(() => {
-    loadProvincesData();
-  }, [loadProvincesData]);
+    if (provincesData.length > 0 && !selectedProvince) {
+      setSelectedProvince(provincesData[0]);
+    }
+  }, [provincesData, selectedProvince]);
 
   const sortedAndFilteredProvinces = useMemo(() => {
     let data = [...provincesData];
@@ -721,15 +728,65 @@ const MinisterDashboard = () => {
     };
   }, [provincesData]);
 
-  const handleRefreshProvinces = useCallback(() => {
-    loadProvincesData();
-  }, [loadProvincesData]);
+  const handleRefreshProvinces = useCallback(async () => {
+    const result = await refetchProvinces();
+    if (result.isSuccess) {
+      toast.success("Données provinciales synchronisées");
+    }
+  }, [refetchProvinces]);
 
   const formatNumber = useCallback((value: number) => {
     return new Intl.NumberFormat("fr-FR").format(value);
   }, []);
 
   const formatPercent = useCallback((value: number) => `${value.toFixed(1).replace(".", ",")}%`, []);
+
+  // Transformer les données API en format UI
+  const overviewStats = useMemo(() => {
+    if (!kpisData || kpisData.length === 0) {
+      return [];
+    }
+    
+    const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+      'Population': Users,
+      'Etablissements': Building2,
+      'Professionnels': Stethoscope,
+      'Budget': PieChart,
+      'Consultations': Activity,
+    };
+
+    return kpisData.slice(0, 4).map(kpi => ({
+      id: kpi.id,
+      label: kpi.nom,
+      value: kpi.valeur.toLocaleString('fr-FR'),
+      caption: kpi.unite,
+      delta: `${kpi.delta >= 0 ? '+' : ''}${kpi.delta.toFixed(1)}%`,
+      trend: (kpi.delta >= 0 ? 'up' : 'down') as Trend,
+      icon: iconMap[kpi.nom] || Activity,
+    }));
+  }, [kpisData]);
+
+  const alertsPrioritaires = useMemo(() => {
+    if (!alertsData) return [];
+    return alertsData.map(alert => ({
+      id: alert.id,
+      title: alert.titre,
+      description: alert.description,
+      severity: alert.severity,
+      province: alert.province,
+      action: alert.action,
+    }));
+  }, [alertsData]);
+
+  const nationalObjectives = useMemo(() => {
+    if (!objectifsData) return [];
+    return objectifsData.slice(0, 3).map(obj => ({
+      id: obj.id,
+      label: obj.nom,
+      detail: obj.description || '',
+      progress: `${Math.round(obj.progres)}%`,
+    }));
+  }, [objectifsData]);
 
   const handleSendMessage = useCallback(async () => {
     if (!chatInput.trim()) return;
