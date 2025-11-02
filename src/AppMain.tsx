@@ -113,6 +113,7 @@ import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 // Pages du Ministère de la Santé
 import MinistryModern from "./pages/ministry/MinistryModern";
 import MinistryDashboard from "./pages/ministry/MinistryDashboard";
+import MinisterDashboard from "./pages/ministry/MinisterDashboard";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 
 // Pages SOGARA
@@ -343,7 +344,9 @@ function AppMain() {
                     <Route path="/gouv" element={<MinistryModern />} />
                     
                     {/* Routes Ministère protégées (avec auth) */}
-                    <Route path="/gouv/dashboard" element={<MinistryDashboard />} />
+                    <Route path="/gouv/dashboard" element={<MinisterDashboard />} />
+                    <Route path="/minister/dashboard" element={<MinisterDashboard />} />
+                    <Route path="/ministre/dashboard" element={<MinisterDashboard />} />
                     <Route path="/gouv/login" element={<MinistryLogin />} />
                     
                     {/* Connexion Personnel SOGARA */}

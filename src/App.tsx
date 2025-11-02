@@ -61,6 +61,7 @@ import Sogara from "./pages/Sogara";
 
 // Pages du Ministère de la Santé
 import MinistryDashboard from "./pages/ministry/MinistryDashboard";
+import MinisterDashboard from "./pages/ministry/MinisterDashboard";
 import MinistryPublic from "./pages/ministry/MinistryPublic";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
 import MinistryTest from "./pages/ministry/MinistryTest";
@@ -164,6 +165,11 @@ function App() {
                     <Route path="/ministry/login" element={<MinistryLogin />} />
                     <Route path="/ministere/dashboard" element={<MinistryDashboard />} />
                     <Route path="/ministere/connexion" element={<MinistryLogin />} />
+                    
+                    {/* Route spécifique pour le Ministre */}
+                    <Route path="/gouv/dashboard" element={<MinisterDashboard />} />
+                    <Route path="/minister/dashboard" element={<MinisterDashboard />} />
+                    <Route path="/ministre/dashboard" element={<MinisterDashboard />} />
                     
                     {/* Pages d'accueil des établissements */}
                     <Route path="/establishment/:id" element={<EstablishmentHomePage />} />
