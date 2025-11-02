@@ -63,6 +63,15 @@ export default function LoginProfessional() {
         });
         return;
       }
+
+      // Vérifier si c'est le ministre et le rediriger vers son dashboard dédié
+      if (data.identifier === 'ministre@sante.gouv.ga' || user.email === 'ministre@sante.gouv.ga') {
+        toast.success("Bienvenue Ministre !", {
+          description: "Accès à votre espace ministériel",
+        });
+        navigate("/ministry/dashboard");
+        return;
+      }
       
       toast.success("Connexion réussie !", {
         description: "Bienvenue sur votre espace professionnel",
