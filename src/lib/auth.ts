@@ -35,19 +35,22 @@ export const authService = {
   },
 
   async signIn(identifier: string, password: string) {
-    // Check if identifier is email or phone
-    const isEmail = identifier.includes('@');
+    // Normaliser l'identifiant pour éviter les erreurs de casse/espaces
+    const raw = typeof identifier === 'string' ? identifier : '';
+    const trimmed = raw.trim();
+    const isEmail = trimmed.includes('@');
     
     if (isEmail) {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: identifier,
+        email: trimmed.toLowerCase(),
         password,
       });
       if (error) throw error;
       return data;
     } else {
       const { data, error } = await supabase.auth.signInWithPassword({
-        phone: identifier,
+        // Supprimer les espaces dans les numéros saisis au format "+241 XX XX XX XX"
+        phone: trimmed.replace(/\s+/g, ''),
         password,
       });
       if (error) throw error;
