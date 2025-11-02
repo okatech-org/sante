@@ -4,9 +4,17 @@ import { dashboardApi, Alert } from '@/services/api';
 export const useAlerts = (): UseQueryResult<Alert[], Error> => {
   return useQuery({
     queryKey: ['alerts'],
-    queryFn: () => dashboardApi.getAlerts(),
-    staleTime: 30000, // 30 secondes
-    refetchInterval: 60000, // Refetch toutes les minutes
+    queryFn: async () => {
+      try {
+        const data = await dashboardApi.getAlerts();
+        return data ?? [];
+      } catch {
+        return [];
+      }
+    },
+    initialData: [],
+    staleTime: 30000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: true,
   });
 };

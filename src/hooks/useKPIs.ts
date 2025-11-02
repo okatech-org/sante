@@ -4,8 +4,16 @@ import { dashboardApi, KPI } from '@/services/api';
 export const useKPIs = (periode?: string): UseQueryResult<KPI[], Error> => {
   return useQuery({
     queryKey: ['kpis', periode],
-    queryFn: () => dashboardApi.getKPIs(periode),
-    staleTime: 60000, // 1 minute
+    queryFn: async () => {
+      try {
+        const data = await dashboardApi.getKPIs(periode);
+        return data ?? [];
+      } catch {
+        return [];
+      }
+    },
+    initialData: [],
+    staleTime: 60000,
     refetchOnWindowFocus: false,
   });
 };

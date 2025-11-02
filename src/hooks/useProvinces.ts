@@ -4,8 +4,16 @@ import { dashboardApi, Province } from '@/services/api';
 export const useProvinces = (): UseQueryResult<Province[], Error> => {
   return useQuery({
     queryKey: ['provinces'],
-    queryFn: () => dashboardApi.getProvinces(),
-    staleTime: 600000, // 10 minutes
+    queryFn: async () => {
+      try {
+        const data = await dashboardApi.getProvinces();
+        return data ?? [];
+      } catch {
+        return [];
+      }
+    },
+    initialData: [],
+    staleTime: 600000,
     refetchOnWindowFocus: false,
   });
 };
