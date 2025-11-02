@@ -63,7 +63,6 @@ import { useAlerts } from "@/hooks/useAlerts";
 import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
 import { useObjectifs } from "@/hooks/useObjectifs";
 import { useProvinces } from "@/hooks/useProvinces";
-import IAstedButton from "@/components/ui/iAstedButton";
 
 type UsagePeriod = "semaine" | "mois" | "annee";
 
@@ -797,71 +796,27 @@ const MinisterDashboard = () => {
     setChatMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setIsAITyping(true);
 
-    try {
-      const response = await fetch('/api/dashboard/iasted/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          messages: [...chatMessages, { role: 'user', content: userMessage }],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur API');
-      }
-
-      const { data } = await response.json();
-      
-      setChatMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: data.response,
-      }]);
-      setIsAITyping(false);
-      
-      if (data.mode === 'fallback') {
-        toast.info("iAsted (mode simulation)");
-      } else {
-        toast.success("Réponse de iAsted générée");
-      }
-    } catch (error) {
-      console.error('iAsted error:', error);
-      setChatMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: "Désolé, une erreur s'est produite. Veuillez réessayer.",
-      }]);
-      setIsAITyping(false);
-      toast.error("Erreur de communication avec iAsted");
-    }
-  }, [chatInput, chatMessages]);
-
-  const handleGeneratePDF = useCallback(async (type: string) => {
-    toast.info(`Génération ${type} en cours...`);
+    setTimeout(() => {
+      const aiResponse = `En tant qu'assistant ministériel iAsted, j'ai analysé votre demande "${userMessage}". 
     
-    try {
-      const response = await fetch('/api/dashboard/iasted/generate-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ reportType: type }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur API');
-      }
-
-      const { data } = await response.json();
-      toast.success(`${type} généré avec succès`);
+Basé sur les données du dashboard :
+• Provinces prioritaires : ${provincesData.filter(p => p.priority === "haute").map(p => p.province).join(", ")}
+• Couverture nationale moyenne : ${nationalStats.avgCoverage.toFixed(1)}%
+• ${nationalStats.highPriorityCount} provinces nécessitent renforcement
+    
+Je peux générer un rapport détaillé, un décret ministériel ou vous fournir des recommandations stratégiques.`;
       
-      console.log('Rapport généré:', data.content);
-    } catch (error) {
-      console.error('Generate PDF error:', error);
-      toast.error(`Erreur lors de la génération du ${type}`);
-    }
+      setChatMessages(prev => [...prev, { role: "assistant", content: aiResponse }]);
+      setIsAITyping(false);
+      toast.success("Réponse de iAsted générée");
+    }, 1500);
+  }, [chatInput, provincesData, nationalStats]);
+
+  const handleGeneratePDF = useCallback((type: string) => {
+    toast.info(`Génération ${type} en cours...`);
+    setTimeout(() => {
+      toast.success(`${type} généré avec succès`);
+    }, 2000);
   }, []);
 
   const handleVoiceCommand = useCallback(() => {
@@ -1418,7 +1373,7 @@ const MinisterDashboard = () => {
                         onClick={() => setSelectedDecret(decret)}
                         className={cn(
                           "rounded-2xl border bg-white/60 p-4 text-left transition hover:shadow-lg dark:bg-white/5",
-                          selectedDecret?.id === decret.id
+                          selectedDecret.id === decret.id
                             ? "border-emerald-400/60 shadow-[0_15px_30px_rgba(16,185,129,0.18)]"
                             : "border-white/30 dark:border-white/10"
                         )}
@@ -1445,27 +1400,27 @@ const MinisterDashboard = () => {
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold">Détails</h3>
                     <Badge className="bg-white/40 text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                      {selectedDecret?.status?.toUpperCase() ?? "—"}
+                      {selectedDecret.status.toUpperCase()}
                     </Badge>
                   </div>
                   <div className="mt-6 space-y-4 text-sm text-slate-500 dark:text-slate-400">
                     <div>
                       <p className="text-xs uppercase tracking-wide text-slate-400">Référence</p>
                       <p className="text-base font-semibold text-slate-800 dark:text-slate-100">
-                        {selectedDecret?.reference ?? "—"}
+                        {selectedDecret.reference}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wide text-slate-400">Objet</p>
-                      <p className="text-base text-slate-600 dark:text-slate-200">{selectedDecret?.title ?? "—"}</p>
+                      <p className="text-base text-slate-600 dark:text-slate-200">{selectedDecret.title}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wide text-slate-400">Auteur</p>
-                      <p>{selectedDecret?.author ?? "—"}</p>
+                      <p>{selectedDecret.author}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wide text-slate-400">Progression</p>
-                      <Progress value={selectedDecret?.progress ?? 0} className="mt-2 h-2 rounded-full" />
+                      <Progress value={selectedDecret.progress} className="mt-2 h-2 rounded-full" />
                     </div>
                     <Button
                       variant="outline"
@@ -1490,19 +1445,19 @@ const MinisterDashboard = () => {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="rounded-full bg-blue-500/10 text-blue-500">
-                      Politiques {(objectifsData || []).filter((o) => o.category === "politique").length}
+                      Politiques {objectifsData.filter((o) => o.category === "politique").length}
                     </Badge>
                     <Badge className="rounded-full bg-emerald-500/10 text-emerald-500">
-                      Économiques {(objectifsData || []).filter((o) => o.category === "economique").length}
+                      Économiques {objectifsData.filter((o) => o.category === "economique").length}
                     </Badge>
                     <Badge className="rounded-full bg-rose-500/10 text-rose-500">
-                      Sanitaires {(objectifsData || []).filter((o) => o.category === "sanitaire").length}
+                      Sanitaires {objectifsData.filter((o) => o.category === "sanitaire").length}
                     </Badge>
                   </div>
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-1 md:grid-cols-2 2xl:grid-cols-3">
-                  {(objectifsData || []).map((objectif) => (
+                  {objectifsData.map((objectif) => (
                     <div
                       key={objectif.id}
                       className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-inner transition hover:shadow-lg dark:border-white/10 dark:bg-white/5"
@@ -2353,7 +2308,7 @@ const MinisterDashboard = () => {
               <GlassCard className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white shadow-lg">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg">
                       <Bot className="h-6 w-6" />
                     </div>
                     <div>
@@ -2363,7 +2318,7 @@ const MinisterDashboard = () => {
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                     <Sparkles className="h-3 w-3 mr-1" />
                     IA Multimodale
                   </Badge>
@@ -2371,15 +2326,7 @@ const MinisterDashboard = () => {
 
                 <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
                   <div className="space-y-4">
-                    {/* Bouton iAsted animé spectaculaire */}
-                    <div className="flex items-center justify-center py-4">
-                      <IAstedButton onClick={() => {
-                        setChatInput("Bonjour iAsted, donne-moi un aperçu de la situation sanitaire nationale");
-                        setTimeout(handleSendMessage, 100);
-                      }} />
-                    </div>
-
-                    <h3 className="text-sm font-semibold text-center">Actions rapides</h3>
+                    <h3 className="text-sm font-semibold">Actions rapides</h3>
                     <div className="grid gap-3">
                       <Button
                         onClick={() => handleGeneratePDF("Rapport mensuel")}
@@ -2415,9 +2362,9 @@ const MinisterDashboard = () => {
                     </div>
                   </div>
 
-                  <GlassCard className="p-4 h-[600px] flex flex-col bg-gradient-to-br from-emerald-50/50 via-white to-emerald-50/30 dark:from-emerald-900/20 dark:via-slate-900 dark:to-emerald-900/10">
+                  <GlassCard className="p-4 h-[600px] flex flex-col bg-gradient-to-br from-purple-50/50 via-white to-pink-50/50 dark:from-purple-900/20 dark:via-slate-900 dark:to-pink-900/20">
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
                         <Bot className="h-5 w-5" />
                       </div>
                       <div>
@@ -2444,7 +2391,7 @@ const MinisterDashboard = () => {
                           msg.role === "user" ? "justify-end" : "justify-start"
                         )}>
                           {msg.role === "assistant" && (
-                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white flex-shrink-0">
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white flex-shrink-0">
                               <Bot className="h-4 w-4" />
                             </div>
                           )}
@@ -2461,7 +2408,7 @@ const MinisterDashboard = () => {
 
                       {isAITyping && (
                         <div className="flex gap-3">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white flex-shrink-0">
+                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white flex-shrink-0">
                             <Bot className="h-4 w-4" />
                           </div>
                           <div className="rounded-2xl bg-white/70 px-4 py-3 dark:bg-white/10">
@@ -2486,7 +2433,7 @@ const MinisterDashboard = () => {
                       <Button
                         onClick={handleSendMessage}
                         disabled={!chatInput.trim() || isAITyping}
-                        className="rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+                        className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
