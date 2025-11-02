@@ -64,6 +64,7 @@ import { useAlerts } from "@/hooks/useAlerts";
 import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
 import { useObjectifs } from "@/hooks/useObjectifs";
 import { useProvinces } from "@/hooks/useProvinces";
+import IAstedButton from "@/components/ui/iAstedButton";
 
 type UsagePeriod = "semaine" | "mois" | "annee";
 
@@ -2423,6 +2424,13 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
           </Tabs>
         </main>
       </div>
+
+      {/* Bouton flottant iAsted */}
+      <IAstedButton 
+        onClick={() => setActiveTab("iasted")}
+        size="md"
+        isInterfaceOpen={activeTab === "iasted"}
+      />
     </div>
   );
 };
