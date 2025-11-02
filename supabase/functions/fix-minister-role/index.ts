@@ -74,7 +74,122 @@ serve(async (req) => {
       throw profileError
     }
 
-    // 5. Vérifier les rôles
+    // 5. Trouver ou créer l'établissement Ministère de la Santé
+    let ministryId = null
+    const { data: existingMinistry } = await supabaseAdmin
+      .from('establishments')
+      .select('id')
+      .ilike('name', '%ministère%santé%')
+      .single()
+
+    if (existingMinistry) {
+      ministryId = existingMinistry.id
+    } else {
+      const { data: newMinistry, error: ministryError } = await supabaseAdmin
+        .from('establishments')
+        .insert({
+          name: 'Ministère de la Santé Publique',
+          type: 'hospital',
+          sector: 'public',
+          address: 'À côté de l\'immeuble Alu-Suisse',
+          city: 'Libreville',
+          province: 'Estuaire',
+          phone: '+241 01-72-26-61',
+          email: 'contact@sante.gouv.ga',
+          is_verified: true,
+          status: 'active'
+        })
+        .select('id')
+        .single()
+
+      if (!ministryError && newMinistry) {
+        ministryId = newMinistry.id
+      }
+    }
+
+    // 6. Trouver ou créer le profil professionnel
+    let professionalId = null
+    const { data: existingPro } = await supabaseAdmin
+      .from('professionals')
+      .select('id')
+      .eq('profile_id', userId)
+      .single()
+
+    if (existingPro) {
+      professionalId = existingPro.id
+      // Mettre à jour
+      await supabaseAdmin
+        .from('professionals')
+        .update({
+          profession_type: 'doctor',
+          specializations: ['Administration de la Santé', 'Santé Publique'],
+          is_verified: true
+        })
+        .eq('id', professionalId)
+    } else {
+      const { data: newPro } = await supabaseAdmin
+        .from('professionals')
+        .insert({
+          profile_id: userId,
+          profession_type: 'doctor',
+          specializations: ['Administration de la Santé', 'Santé Publique'],
+          is_verified: true
+        })
+        .select('id')
+        .single()
+
+      if (newPro) {
+        professionalId = newPro.id
+      }
+    }
+
+    // 7. Supprimer les affiliations existantes
+    if (professionalId) {
+      await supabaseAdmin
+        .from('professional_affiliations')
+        .delete()
+        .eq('professional_id', professionalId)
+
+      await supabaseAdmin
+        .from('establishment_staff')
+        .delete()
+        .eq('professional_id', professionalId)
+
+      // 8. Créer l'affiliation au Ministère
+      if (ministryId) {
+        await supabaseAdmin
+          .from('professional_affiliations')
+          .upsert({
+            professional_id: professionalId,
+            establishment_id: ministryId,
+            role: 'director',
+            department: 'Administration',
+            service: 'Direction Générale',
+            status: 'approved',
+            start_date: new Date().toISOString().split('T')[0],
+            can_prescribe: true,
+            can_admit_patients: true,
+            can_access_all_patients: true,
+            can_manage_staff: true,
+            can_manage_inventory: true,
+            can_view_financials: true
+          })
+
+        await supabaseAdmin
+          .from('establishment_staff')
+          .upsert({
+            establishment_id: ministryId,
+            professional_id: professionalId,
+            role: 'Ministre de la Santé',
+            department: 'Direction Générale',
+            status: 'active',
+            is_establishment_admin: true,
+            start_date: new Date().toISOString().split('T')[0]
+          })
+      }
+    }
+
+    // 9. Vérifier les rôles
     const { data: roles } = await supabaseAdmin
       .from('user_roles')
       .select('role')
@@ -83,17 +198,29 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Rôle du ministre configuré avec succès',
+        message: 'Compte ministre configuré avec succès',
         data: {
           user_id: userId,
           email: ministerEmail,
           roles: roles?.map(r => r.role) || [],
           full_name: 'Pr. Adrien MOUGOUGOU',
+          professional_id: professionalId,
+          ministry_id: ministryId,
+          establishment: 'Ministère de la Santé Publique',
+          title: 'Ministre de la Santé',
           credentials: {
             email: ministerEmail,
             password: 'MinistryGab2025!',
             login_url: '/login/professional'
-          }
+          },
+          actions_performed: [
+            '✅ Rôle moderator ajouté',
+            '✅ Profil professionnel créé/mis à jour',
+            '✅ Établissement Ministère de la Santé créé/trouvé',
+            '✅ Affiliations SOGARA supprimées',
+            '✅ Affiliation au Ministère créée',
+            '✅ Titre "Ministre de la Santé" assigné'
+          ]
         }
       }),
       { 
