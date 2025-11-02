@@ -172,7 +172,7 @@ const MinistryModern = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = '/ministry'}
+                onClick={() => window.location.href = '/login/professional'}
                 className="border-2"
               >
                 <Shield className="h-4 w-4 mr-2" />
@@ -885,7 +885,7 @@ const MinistryModern = () => {
                 size="lg" 
                 variant="outline" 
                 className="px-10 py-6 text-lg border-2 rounded-sm hover:bg-primary hover:text-primary-foreground transition-all"
-                onClick={() => window.location.href = '/ministry'}
+                onClick={() => window.location.href = '/login/professional'}
               >
                 <Shield className="mr-2 h-5 w-5" />
                 Espace Administration
