@@ -1,5 +1,8 @@
 project_id = "bolidzesitkkfojdyuyg"
 
+[functions.create-initial-users]
+verify_jwt = false
+
 [functions.create-demo-accounts]
 verify_jwt = true
 
