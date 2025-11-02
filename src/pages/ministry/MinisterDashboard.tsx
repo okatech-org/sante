@@ -1,7 +1,9 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
+import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +55,7 @@ import {
   User,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
 import CoverageCartography from "@/components/ministry/CoverageCartography";
@@ -639,6 +642,8 @@ const GlassCard = ({ children, className }: { children: ReactNode; className?: s
 
 const MinisterDashboard = () => {
   const { resolvedTheme } = useTheme();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const currentTheme = resolvedTheme ?? "light";
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [usagePeriod, setUsagePeriod] = useState<UsagePeriod>("semaine");
@@ -825,6 +830,16 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
     toast.info("Fonction vocale activée (en développement)");
   }, []);
 
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut();
+      toast.success("Déconnexion réussie");
+      navigate("/ministere/connexion");
+    } catch (error) {
+      toast.error("Erreur lors de la déconnexion");
+    }
+  }, [signOut, navigate]);
+
   const chartData = chartDataset[usagePeriod];
 
   const chartPath = useMemo(() => {
@@ -978,6 +993,25 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                 <ChevronLeft className="h-5 w-5 text-slate-500 dark:text-slate-400" />
               ) : (
                 <ChevronRight className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+              )}
+            </button>
+          </GlassCard>
+
+          {/* Bouton Déconnexion */}
+          <GlassCard className="p-2">
+            <button
+              onClick={handleSignOut}
+              className={cn(
+                "w-full rounded-xl p-2.5 hover:bg-red-500/10 transition flex items-center justify-center gap-3 group",
+                !sidebarExpanded && "justify-center"
+              )}
+              title={sidebarExpanded ? "Déconnexion" : undefined}
+            >
+              <LogOut className="h-5 w-5 text-slate-500 dark:text-slate-400 group-hover:text-red-500" />
+              {sidebarExpanded && (
+                <span className="text-sm font-medium text-slate-500 dark:text-slate-400 group-hover:text-red-500">
+                  Déconnexion
+                </span>
               )}
             </button>
           </GlassCard>
