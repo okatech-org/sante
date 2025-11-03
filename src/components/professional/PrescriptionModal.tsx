@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, QrCode } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PrescriptionModalProps {
   open: boolean;
@@ -24,8 +27,11 @@ interface Medication {
 }
 
 export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
+  const { user } = useAuth();
   const [patientSearch, setPatientSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [medications, setMedications] = useState<Medication[]>([{
     id: "1",
     name: "",
@@ -35,6 +41,9 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
     duration: "",
     instructions: ""
   }]);
+  const [diagnosis, setDiagnosis] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const addMedication = () => {
     setMedications([...medications, {
@@ -60,11 +69,84 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
     ));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearch = async () => {
+    if (!patientSearch.trim()) return;
+    try {
+      setIsSearching(true);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, cnamgs_number")
+        .ilike("full_name", `%${patientSearch}%`)
+        .limit(10);
+      if (error) throw error;
+      setSearchResults(data || []);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erreur lors de la recherche patient");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implémenter la génération de prescription avec QR Code
-    console.log("Nouvelle prescription:", { patient: selectedPatient, medications });
-    onClose();
+    if (!selectedPatient?.id) {
+      toast.error("Sélectionnez un patient");
+      return;
+    }
+    if (medications.some(m => !m.name || !m.dosage || !m.frequency || !m.duration)) {
+      toast.error("Complétez les champs obligatoires des médicaments");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const { data: professional, error: profError } = await supabase
+        .from("professionals")
+        .select("id")
+        .eq("user_id", user?.id)
+        .maybeSingle();
+      if (profError) throw profError;
+      if (!professional?.id) throw new Error("Profil professionnel introuvable");
+
+      const { data: prescNumber, error: numError } = await supabase.rpc("generate_prescription_number");
+      if (numError) throw numError;
+      if (!prescNumber) throw new Error("Numéro de prescription indisponible");
+
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+
+      const { error: insertError } = await supabase
+        .from("electronic_prescriptions")
+        .insert([
+          {
+            professional_id: professional.id,
+            patient_id: selectedPatient.id,
+            prescription_number: prescNumber,
+            medications: medications.map(({ name, dosage, frequency, duration, instructions }) => ({ name, dosage, frequency, duration, instructions })),
+            diagnosis,
+            additional_notes: additionalNotes,
+            expiry_date: expiryDate.toISOString().split("T")[0],
+            status: "active",
+          },
+        ]);
+      if (insertError) throw insertError;
+
+      toast.success("Ordonnance créée", { description: `Numéro: ${prescNumber}` });
+      onClose();
+      // reset
+      setSelectedPatient(null);
+      setPatientSearch("");
+      setSearchResults([]);
+      setMedications([{ id: "1", name: "", dosage: "", form: "comprimé", frequency: "", duration: "", instructions: "" }]);
+      setDiagnosis("");
+      setAdditionalNotes("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erreur lors de la création de l'ordonnance");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -87,15 +169,44 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
                 value={patientSearch}
                 onChange={(e) => setPatientSearch(e.target.value)}
               />
-              <Button type="button" variant="outline">
-                Rechercher
+              <Button type="button" variant="outline" onClick={handleSearch} disabled={isSearching}>
+                {isSearching ? "Recherche..." : "Rechercher"}
               </Button>
             </div>
+            {searchResults.length > 0 && (
+              <div className="mt-2 border rounded-md divide-y">
+                {searchResults.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className="w-full text-left p-2 hover:bg-muted/50"
+                    onClick={() => { setSelectedPatient(p); setSearchResults([]); }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{p.full_name}</span>
+                      {p.cnamgs_number && <Badge variant="outline">CNAMGS: {p.cnamgs_number}</Badge>}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
             {selectedPatient && (
               <Badge className="mt-2">
-                {selectedPatient.name} - CNAMGS: {selectedPatient.cnamgs}
+                {selectedPatient.full_name}
+                {selectedPatient.cnamgs_number ? ` - CNAMGS: ${selectedPatient.cnamgs_number}` : ""}
               </Badge>
             )}
+          </div>
+          {/* Infos médicales */}
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label>Diagnostic</Label>
+              <Textarea rows={2} value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Notes additionnelles</Label>
+              <Textarea rows={2} value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} />
+            </div>
           </div>
 
           {/* Medications */}
@@ -210,8 +321,8 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
               <Button type="button" variant="outline" onClick={onClose}>
                 Annuler
               </Button>
-              <Button type="submit">
-                Générer la prescription
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Génération..." : "Générer la prescription"}
               </Button>
             </div>
           </div>

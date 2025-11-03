@@ -553,20 +553,22 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   return (
     <div className="flex min-h-screen bg-background">
       {/* Mobile menu button */}
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="md:hidden fixed top-4 left-4 z-50"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-72 p-0">
-          <SidebarContent />
-        </SheetContent>
-      </Sheet>
+      <div className="md:hidden">
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="fixed top-4 left-4 z-50"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-0">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </div>
 
       {/* Desktop Sidebar gauche - Architecture hiérarchique */}
       <aside className="hidden md:flex w-72 bg-card border-r border-border flex-col shadow-lg">
@@ -604,7 +606,6 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                           const Icon = item.icon;
                           const isActive = location.pathname === item.href;
                           
-                          // Vérifier permission si nécessaire
                           if (item.permission && hasPermission && !hasPermission(item.permission)) {
                             return null;
                           }

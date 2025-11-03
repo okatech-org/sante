@@ -30,6 +30,7 @@ import RegisterProfessional from "./pages/RegisterProfessional";
 import DashboardPatient from "./pages/DashboardPatient";
 import DashboardProfessional from "./pages/DashboardProfessional";
 import ProfessionalDashboard from "./pages/professional/ProfessionalDashboard";
+import DoctorDashboard from "./pages/professional/DoctorDashboard";
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
 import SogaraDashboard from "./pages/establishments/sogara/admin/SogaraDashboard";
@@ -42,6 +43,7 @@ import MedicalRecord from "./pages/MedicalRecord";
 import Appointments from "./pages/Appointments";
 import Teleconsultations from "./pages/professional/Teleconsultations";
 import Prescriptions from "./pages/Prescriptions";
+import ProfessionalConsultations from "./pages/professional/Consultations";
 
 // Pages d'administration
 import AdminDashboard from "./pages/AdminDashboard";
@@ -120,6 +122,7 @@ function App() {
                     <Route path="/dashboard/patient" element={<DashboardPatient />} />
                     <Route path="/dashboard/professional" element={<DashboardProfessional />} />
                     <Route path="/professional/dashboard" element={<ProfessionalDashboard />} />
+                    <Route path="/professional/doctor-dashboard" element={<DoctorDashboard />} />
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
                     <Route path="/professional/establishments" element={<EstablishmentsManager />} />
                     <Route path="/establishments/sogara/admin" element={<SogaraDashboard />} />
@@ -131,6 +134,7 @@ function App() {
                     <Route path="/medical-record" element={<MedicalRecord />} />
                     <Route path="/appointments" element={<Appointments />} />
                     <Route path="/professional/teleconsultations" element={<Teleconsultations />} />
+                    <Route path="/professional/consultations" element={<ProfessionalConsultations />} />
                     <Route path="/prescriptions" element={<Prescriptions />} />
                     
                     {/* Routes d'administration */}

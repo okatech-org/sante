@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Pill, Search, Filter, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -15,6 +16,13 @@ export default function ProfessionalPrescriptions() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const { prescriptions, stats, loading, error } = usePrescriptions();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.endsWith("/new")) {
+      setShowPrescriptionModal(true);
+    }
+  }, [location.pathname]);
 
 
   if (loading) {

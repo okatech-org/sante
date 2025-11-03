@@ -72,6 +72,7 @@ import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
 import MedicalRecord from "./pages/patient/MedicalRecord";
 import Appointments from "./pages/Appointments";
 import Prescriptions from "./pages/Prescriptions";
+import ProfessionalPrescriptions from "./pages/professional/Prescriptions";
 import Results from "./pages/Results";
 import Reimbursements from "./pages/Reimbursements";
 import Teleconsultation from "./pages/Teleconsultation";
@@ -214,6 +215,11 @@ function AppMain() {
                         <ProfessionalConsultations />
                       </ProfessionalEstablishmentLayout>
                     } />
+                    <Route path="/professional/consultations/new" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalConsultations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
                     <Route path="/professional/hospitalization" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalHospitalization />
@@ -282,6 +288,21 @@ function AppMain() {
                     <Route path="/professional/teleconsultations" element={
                       <ProfessionalEstablishmentLayout>
                         <ProfessionalTeleconsultations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/teleconsultation" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalTeleconsultations />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/prescriptions" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalPrescriptions />
+                      </ProfessionalEstablishmentLayout>
+                    } />
+                    <Route path="/professional/prescriptions/new" element={
+                      <ProfessionalEstablishmentLayout>
+                        <ProfessionalPrescriptions />
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/patients" element={
