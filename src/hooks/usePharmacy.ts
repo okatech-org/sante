@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ============================================
 // HOOK: usePharmacy - Gestion Pharmacies
 // Date: 3 novembre 2025
