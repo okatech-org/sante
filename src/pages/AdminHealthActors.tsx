@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, Eye, Edit, Trash2, MoreVertical, Filter, Grid3x3, List, ChevronLeft, ChevronRight, RefreshCw, MapPin, Phone, Globe } from "lucide-react";
+import { Building2, Users, Search, Download, Shield, CheckCircle, XCircle, Clock, FileText, Upload, Link as LinkIcon, Mail, ArrowUpDown, Eye, Edit, Trash2, MoreVertical, Filter, Grid3x3, List, ChevronLeft, ChevronRight, RefreshCw, MapPin, Phone, Globe, Star } from "lucide-react";
 import { EstablishmentStatsCard } from "@/components/stats/EstablishmentStats";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -95,6 +95,8 @@ export default function AdminHealthActors() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedStatFilter, setSelectedStatFilter] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [favoritesFilter, setFavoritesFilter] = useState<'all' | 'favorites' | 'non-favorites'>('all');
 
   useEffect(() => {
     loadData();
@@ -102,7 +104,29 @@ export default function AdminHealthActors() {
 
   useEffect(() => {
     filterEstablishments();
-  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, establishments, selectedStatFilter]);
+  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, establishments, selectedStatFilter, favoritesFilter, favoriteIds]);
+
+  // Remettre la pagination à 1 à chaque changement de recherche/filtre/tri
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, typeFilter, claimFilter, sortBy, selectedStatFilter, favoritesFilter]);
+
+  // Charger/Enregistrer les favoris (localStorage)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setFavoriteIds(parsed);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('admin_establishment_favorites', JSON.stringify(favoriteIds));
+    } catch {}
+  }, [favoriteIds]);
 
   useEffect(() => {
     filterProfessionals();
@@ -269,6 +293,14 @@ export default function AdminHealthActors() {
     }
   };
 
+  const normalizeText = (text: string) =>
+    (text || "")
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+
   const filterEstablishments = () => {
     let filtered = establishments;
 
@@ -302,11 +334,13 @@ export default function AdminHealthActors() {
     }
 
     if (searchTerm) {
-      filtered = filtered.filter(est =>
-        est.raison_sociale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        est.ville.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        est.province.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const q = normalizeText(searchTerm);
+      filtered = filtered.filter(est => {
+        const name = normalizeText(est.raison_sociale);
+        const ville = normalizeText(est.ville);
+        const province = normalizeText(est.province);
+        return name.includes(q) || ville.includes(q) || province.includes(q);
+      });
     }
 
     if (statusFilter !== "all") {
@@ -321,6 +355,13 @@ export default function AdminHealthActors() {
       filtered = filtered.filter(est => est.account_claimed === true);
     } else if (claimFilter === "unclaimed") {
       filtered = filtered.filter(est => est.account_claimed === false);
+    }
+
+    // Filtre favoris
+    if (favoritesFilter === 'favorites') {
+      filtered = filtered.filter(est => favoriteIds.includes(est.id));
+    } else if (favoritesFilter === 'non-favorites') {
+      filtered = filtered.filter(est => !favoriteIds.includes(est.id));
     }
 
     // Tri intelligent et hiérarchique
@@ -407,6 +448,10 @@ export default function AdminHealthActors() {
     });
 
     setFilteredEstablishments(filtered);
+  };
+
+  const toggleFavorite = (id: string) => {
+    setFavoriteIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const filterProfessionals = () => {
@@ -860,6 +905,21 @@ export default function AdminHealthActors() {
                     </Select>
                   </div>
 
+                  {/* Favoris */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1.5 block font-medium">Favoris</label>
+                    <Select value={favoritesFilter} onValueChange={(v: any) => setFavoritesFilter(v)}>
+                      <SelectTrigger className="bg-background/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="all">Tous</SelectItem>
+                        <SelectItem value="favorites">Favoris</SelectItem>
+                        <SelectItem value="non-favorites">Non favoris</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   {/* Reset */}
                   <div className="flex items-end">
                     <Button 
@@ -871,6 +931,7 @@ export default function AdminHealthActors() {
                         setStatusFilter("all");
                         setTypeFilter("all");
                         setClaimFilter("all");
+                        setFavoritesFilter('all');
                         setSortBy("smart");
                       }}
                     >
@@ -941,13 +1002,22 @@ export default function AdminHealthActors() {
                               />
                             </TableCell>
                             <TableCell className="font-medium">
-                              <div className="flex flex-col gap-1">
-                                <span className="text-sm">{est.raison_sociale}</span>
-                                {(est as any).source && (
-                                  <Badge variant="outline" className="w-fit text-xs bg-blue-500/10 text-blue-400 border-blue-400/30">
-                                    {(est as any).source}
-                                  </Badge>
-                                )}
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-sm">{est.raison_sociale}</span>
+                                  {(est as any).source && (
+                                    <Badge variant="outline" className="w-fit text-xs bg-blue-500/10 text-blue-400 border-blue-400/30">
+                                      {(est as any).source}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <button
+                                  onClick={() => toggleFavorite(est.id)}
+                                  aria-label={favoriteIds.includes(est.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                                  className={`p-1 rounded hover:bg-muted/60 transition-colors ${favoriteIds.includes(est.id) ? 'text-yellow-400' : 'text-muted-foreground'}`}
+                                >
+                                  <Star className={`w-4 h-4 ${favoriteIds.includes(est.id) ? '' : ''}`} />
+                                </button>
                               </div>
                             </TableCell>
                             <TableCell>
@@ -1092,38 +1162,47 @@ export default function AdminHealthActors() {
                               <Building2 className="w-5 h-5 text-primary" />
                             </div>
                           </div>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="bg-background border-border z-50">
-                              <DropdownMenuItem onClick={() => {
-                                setSelectedEstablishment(est);
-                                setShowDetailsDialog(true);
-                              }} className="gap-2">
-                                <Eye className="w-4 h-4" />
-                                Voir détails
-                              </DropdownMenuItem>
-                              {!(est.id.startsWith('json-') || est.id.startsWith('osm-')) && (
-                                <>
-                                  {!est.account_claimed && (
-                                    <DropdownMenuItem onClick={() => handleGenerateToken(est)} className="gap-2 text-blue-600">
-                                      <LinkIcon className="w-4 h-4" />
-                                      Générer lien
-                                    </DropdownMenuItem>
-                                  )}
-                                  {est.statut === 'en_validation' && (
-                                    <DropdownMenuItem onClick={() => handleApprove(est.id, 'establishment')} className="gap-2 text-green-600">
-                                      <CheckCircle className="w-4 h-4" />
-                                      Approuver
-                                    </DropdownMenuItem>
-                                  )}
-                                </>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <div className="flex items-center gap-1 opacity-100">
+                            <button
+                              onClick={() => toggleFavorite(est.id)}
+                              aria-label={favoriteIds.includes(est.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                              className={`h-8 w-8 flex items-center justify-center rounded hover:bg-muted/60 transition-colors ${favoriteIds.includes(est.id) ? 'text-yellow-400' : 'text-muted-foreground'}`}
+                            >
+                              <Star className="w-4 h-4" />
+                            </button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="bg-background border-border z-50">
+                                <DropdownMenuItem onClick={() => {
+                                  setSelectedEstablishment(est);
+                                  setShowDetailsDialog(true);
+                                }} className="gap-2">
+                                  <Eye className="w-4 h-4" />
+                                  Voir détails
+                                </DropdownMenuItem>
+                                {!(est.id.startsWith('json-') || est.id.startsWith('osm-')) && (
+                                  <>
+                                    {!est.account_claimed && (
+                                      <DropdownMenuItem onClick={() => handleGenerateToken(est)} className="gap-2 text-blue-600">
+                                        <LinkIcon className="w-4 h-4" />
+                                        Générer lien
+                                      </DropdownMenuItem>
+                                    )}
+                                    {est.statut === 'en_validation' && (
+                                      <DropdownMenuItem onClick={() => handleApprove(est.id, 'establishment')} className="gap-2 text-green-600">
+                                        <CheckCircle className="w-4 h-4" />
+                                        Approuver
+                                      </DropdownMenuItem>
+                                    )}
+                                  </>
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
                         </div>
                         
                         <h3 className="font-semibold text-base mb-2 line-clamp-2">{est.raison_sociale}</h3>

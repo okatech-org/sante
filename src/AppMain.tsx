@@ -67,6 +67,7 @@ import { ProfessionalEstablishmentLayout } from "./components/layout/Professiona
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
 import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
+import RequireProfessional from "./components/auth/RequireProfessional";
 
 // Pages Patient
 import MedicalRecord from "./pages/patient/MedicalRecord";
@@ -296,14 +297,18 @@ function AppMain() {
                       </ProfessionalEstablishmentLayout>
                     } />
                     <Route path="/professional/prescriptions" element={
-                      <ProfessionalEstablishmentLayout>
-                        <ProfessionalPrescriptions />
-                      </ProfessionalEstablishmentLayout>
+                      <RequireProfessional>
+                        <ProfessionalEstablishmentLayout>
+                          <ProfessionalPrescriptions />
+                        </ProfessionalEstablishmentLayout>
+                      </RequireProfessional>
                     } />
                     <Route path="/professional/prescriptions/new" element={
-                      <ProfessionalEstablishmentLayout>
-                        <ProfessionalPrescriptions />
-                      </ProfessionalEstablishmentLayout>
+                      <RequireProfessional>
+                        <ProfessionalEstablishmentLayout>
+                          <ProfessionalPrescriptions />
+                        </ProfessionalEstablishmentLayout>
+                      </RequireProfessional>
                     } />
                     <Route path="/professional/patients" element={
                       <ProfessionalEstablishmentLayout>

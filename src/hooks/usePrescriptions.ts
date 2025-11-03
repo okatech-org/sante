@@ -63,7 +63,6 @@ export const usePrescriptions = () => {
             medications,
             patient_id,
             sent_to_pharmacy_id,
-            profiles!electronic_prescriptions_patient_id_fkey(full_name, cnamgs_number),
             pharmacies(name)
           `)
           .eq("professional_id", professional.id)
@@ -72,21 +71,39 @@ export const usePrescriptions = () => {
 
         if (prescError) throw prescError;
 
-        const formattedPrescriptions: Prescription[] = (data || []).map((presc: any) => ({
-          id: presc.prescription_number || presc.id,
-          date: presc.issued_date,
-          patient: presc.profiles?.full_name || "Patient",
-          medications: Array.isArray(presc.medications)
-            ? presc.medications.map((med: any) => ({
-                name: med.name || med.medication_name || "Médicament",
-                dosage: med.dosage || "1cp",
-                duration: med.duration || "30j",
-              }))
-            : [],
-          status: presc.status || "active",
-          cnamgs: presc.profiles?.cnamgs_number || null,
-          pharmacy: presc.pharmacies?.name || null,
-        }));
+        // Récupérer les profils patients en une seule requête
+        const patientIds = Array.from(new Set((data || []).map((d: any) => d.patient_id).filter(Boolean)));
+        let profilesById: Record<string, { full_name: string; cnamgs_number: string | null }> = {};
+        if (patientIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from("profiles")
+            .select("id, full_name, cnamgs_number")
+            .in("id", patientIds);
+          if (profilesError) throw profilesError;
+          profilesById = (profilesData || []).reduce((acc: any, p: any) => {
+            acc[p.id] = { full_name: p.full_name, cnamgs_number: p.cnamgs_number };
+            return acc;
+          }, {} as Record<string, { full_name: string; cnamgs_number: string | null }>);
+        }
+
+        const formattedPrescriptions: Prescription[] = (data || []).map((presc: any) => {
+          const profile = profilesById[presc.patient_id];
+          return {
+            id: presc.prescription_number || presc.id,
+            date: presc.issued_date,
+            patient: profile?.full_name || "Patient",
+            medications: Array.isArray(presc.medications)
+              ? presc.medications.map((med: any) => ({
+                  name: med.name || med.medication_name || "Médicament",
+                  dosage: med.dosage || "1cp",
+                  duration: med.duration || "30j",
+                }))
+              : [],
+            status: presc.status || "active",
+            cnamgs: profile?.cnamgs_number || null,
+            pharmacy: presc.pharmacies?.name || null,
+          };
+        });
 
         setPrescriptions(formattedPrescriptions);
 

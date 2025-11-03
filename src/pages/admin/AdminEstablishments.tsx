@@ -91,9 +91,7 @@ const AdminEstablishments = () => {
     }
   }, [user, isSuperAdmin, isAdmin, navigate]);
 
-  if (!user || (!isSuperAdmin && !isAdmin)) {
-    return null;
-  }
+  // Note: ne pas retourner avant que tous les hooks soient déclarés
 
   // Chargement initial des données
   useEffect(() => {
@@ -332,6 +330,10 @@ const AdminEstablishments = () => {
   const handleRefresh = () => {
     loadEstablishments();
   };
+
+  if (!user || (!isSuperAdmin && !isAdmin)) {
+    return null;
+  }
 
   return (
     <SuperAdminLayoutSimple>

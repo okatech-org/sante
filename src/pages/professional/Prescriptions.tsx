@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PrescriptionModal } from "@/components/professional/PrescriptionModal";
-import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { PrescriptionsStats } from "@/components/professional/PrescriptionsStats";
 import { PrescriptionListItem } from "@/components/professional/PrescriptionListItem";
 import { usePrescriptions } from "@/hooks/usePrescriptions";
@@ -27,21 +26,17 @@ export default function ProfessionalPrescriptions() {
 
   if (loading) {
     return (
-      <PatientDashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </PatientDashboardLayout>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
   }
 
   if (error) {
     return (
-      <PatientDashboardLayout>
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      </PatientDashboardLayout>
+      <Alert variant="destructive">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
     );
   }
 
@@ -54,7 +49,6 @@ export default function ProfessionalPrescriptions() {
     : prescriptions;
 
   return (
-    <PatientDashboardLayout>
       <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
@@ -127,6 +121,5 @@ export default function ProfessionalPrescriptions() {
           onClose={() => setShowPrescriptionModal(false)}
         />
       </div>
-    </PatientDashboardLayout>
   );
 }
