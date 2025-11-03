@@ -36,6 +36,7 @@ import {
   TrendingUp,
   Calendar
 } from "lucide-react";
+import { PharmacyRolesTab } from "./PharmacyRolesTab";
 
 interface EstablishmentDetailModalProps {
   isOpen: boolean;
@@ -162,11 +163,14 @@ export const EstablishmentDetailModal = ({
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className={`grid w-full ${establishment.category === 'pharmacie' ? 'grid-cols-7' : 'grid-cols-6'}`}>
             <TabsTrigger value="overview">Général</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
             <TabsTrigger value="capacity">Capacités</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
+            {establishment.category === 'pharmacie' && (
+              <TabsTrigger value="roles">Rôles</TabsTrigger>
+            )}
             <TabsTrigger value="equipment">Équipements</TabsTrigger>
             <TabsTrigger value="stats">Statistiques</TabsTrigger>
           </TabsList>
@@ -513,6 +517,12 @@ export const EstablishmentDetailModal = ({
               </CardContent>
             </Card>
           </TabsContent>
+
+          {establishment.category === 'pharmacie' && (
+            <TabsContent value="roles" className="space-y-4">
+              <PharmacyRolesTab />
+            </TabsContent>
+          )}
 
           <TabsContent value="equipment" className="space-y-4">
             <Card>
