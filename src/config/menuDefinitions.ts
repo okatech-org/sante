@@ -1,4 +1,4 @@
-import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench, Link } from "lucide-react";
+import { LucideIcon, Home, Calendar, Users, Video, ClipboardList, Pill, DollarSign, TrendingUp, Mail, Stethoscope, Settings, BarChart3, Shield, Activity, FileText, Package, Building2, UserPlus, BookOpen, Briefcase, Clipboard, LayoutDashboard, UserCog, MessageSquare, GitBranch, CalendarDays, Wrench, Link, Heart } from "lucide-react";
 
 export interface MenuSection {
   id?: string; // Optional for backward compatibility
@@ -366,7 +366,7 @@ export function getMenuForContext(
 
 // Labels pour les rôles
 export const ROLE_LABELS: Record<string, string> = {
-  'director': 'Directeur Général CMST',
+  'director': 'Médecin en Chef CMST',
   'admin': 'Administrateur',
   'doctor': 'Médecin Généraliste',
   'nurse': 'Infirmier(e)',
@@ -375,7 +375,7 @@ export const ROLE_LABELS: Record<string, string> = {
   'receptionist': 'Réceptionniste'
 };
 
-// ============= MENU DIRECTEUR (Directeur Général CMST) =============
+// ============= MENU DIRECTEUR (Médecin en Chef CMST) =============
 export const DIRECTOR_MENU: MenuSection[] = [
   {
     id: 'general',
@@ -383,7 +383,8 @@ export const DIRECTOR_MENU: MenuSection[] = [
     items: [
       { label: 'Tableau de bord', href: '/professional/director-dashboard', icon: LayoutDashboard },
       { label: 'Statistiques', href: '/professional/statistics', icon: BarChart3 },
-      { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 5 }
+      { label: 'Agenda & RDV', href: '/professional/appointments', icon: Calendar, badge: 5 },
+      { label: 'Patients / Ayants Droit', href: '/establishments/sogara/admin/beneficiaries', icon: Heart, description: 'Employés SOGARA et leurs familles' }
     ]
   },
   {

@@ -99,7 +99,7 @@ export default function ProfessionalSettings() {
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <p className="font-medium">Directeur Général CMST</p>
+                  <p className="font-medium">Médecin en Chef CMST</p>
                   <p className="text-sm text-muted-foreground">Accès complet à l'administration</p>
                 </div>
                 <Badge variant="secondary">Actif</Badge>

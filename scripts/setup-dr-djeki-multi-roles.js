@@ -3,7 +3,7 @@
  * Date: 30/10/2025
  * 
  * Configure le Dr. DJEKI comme :
- * - Directeur Médical au CMST SOGARA
+ * - Médecin en Chef au CMST SOGARA
  * - Médecin Consultant au CMST SOGARA
  * - Possibilité de recevoir des invitations d'autres établissements
  */
@@ -105,7 +105,7 @@ async function setupDrDjekiMultiRoles() {
       .eq('establishment_id', CMST_SOGARA_ID);
 
     // 5. Créer les deux rôles
-    console.log('   📌 Création du rôle Directeur Médical...');
+    console.log('   📌 Création du rôle Médecin en Chef...');
     
     const { error: dirError } = await supabase
       .from('establishment_staff')
@@ -114,7 +114,7 @@ async function setupDrDjekiMultiRoles() {
         establishment_id: CMST_SOGARA_ID,
         department_id: dirDept.id,
         role: 'director',
-        position: 'Directeur Médical',
+        position: 'Médecin en Chef',
         is_department_head: true,
         is_establishment_admin: true,
         status: 'active',
@@ -126,9 +126,9 @@ async function setupDrDjekiMultiRoles() {
       });
 
     if (dirError) {
-      console.error('   ❌ Erreur rôle directeur:', dirError.message);
+      console.error('   ❌ Erreur rôle médecin en chef:', dirError.message);
     } else {
-      console.log('   ✅ Rôle Directeur Médical créé');
+      console.log('   ✅ Rôle Médecin en Chef créé');
     }
 
     console.log('   📌 Création du rôle Médecin Consultant...');
@@ -224,7 +224,7 @@ async function setupDrDjekiMultiRoles() {
     console.log('🏥 Établissement principal : CMST SOGARA');
     console.log('');
     console.log('👔 Rôles au CMST SOGARA :');
-    console.log('   1. Directeur Médical (Administration complète)');
+    console.log('   1. Médecin en Chef (Administration complète)');
     console.log('   2. Médecin Consultant Senior (Pratique médicale)');
     console.log('');
     console.log('📬 Invitations en attente :');

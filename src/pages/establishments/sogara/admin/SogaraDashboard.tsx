@@ -103,7 +103,7 @@ export default function SogaraDashboard() {
     
     // Dr. DJEKI a plusieurs rôles
     if (user?.email === 'directeur.sogara@sante.ga') {
-      roles.push({ label: 'Directeur Médical', variant: 'default' as const });
+      roles.push({ label: 'Médecin en Chef', variant: 'default' as const });
       roles.push({ label: 'Médecin Consultant', variant: 'secondary' as const });
     } else if (user?.email?.includes('dr.')) {
       roles.push({ label: 'Médecin', variant: 'default' as const });
@@ -176,7 +176,7 @@ export default function SogaraDashboard() {
         </div>
 
         {/* Statistiques principales */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Card className="p-6">
             <div className="flex items-start justify-between">
               <div>
@@ -189,6 +189,21 @@ export default function SogaraDashboard() {
               </div>
               <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
                 <Users className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground font-medium">Ayants Droit</p>
+                <p className="text-3xl font-bold mt-1 text-cyan-700 dark:text-cyan-300">{stats.employees}</p>
+                <p className="text-xs text-cyan-600 dark:text-cyan-400 mt-2">
+                  Bénéficiaires soins CMST
+                </p>
+              </div>
+              <div className="w-12 h-12 rounded-lg bg-cyan-200 dark:bg-cyan-700/30 flex items-center justify-center">
+                <Users className="h-6 w-6 text-cyan-700 dark:text-cyan-300" />
               </div>
             </div>
           </Card>

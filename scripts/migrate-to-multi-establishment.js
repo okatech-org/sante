@@ -29,7 +29,7 @@ const STAFF_MAPPING = {
   'directeur.sogara@sante.ga': {
     role: 'director',
     department: 'DIR',
-    position: 'Directeur Médical',
+    position: 'Médecin en Chef',
     isAdmin: true,
     isDepartmentHead: true
   },

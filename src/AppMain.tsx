@@ -125,6 +125,7 @@ import SogaraRedirect from "./pages/establishments/sogara/admin/SogaraRedirect";
 import SogaraEmergency from "./pages/establishments/sogara/SogaraEmergency";
 import SogaraConsultations from "./pages/establishments/sogara/SogaraConsultations";
 import SogaraEmployees from "./pages/establishments/sogara/SogaraEmployees";
+import SogaraBeneficiaries from "./pages/establishments/sogara/SogaraBeneficiaries";
 import SogaraWorkMedicine from "./pages/establishments/sogara/SogaraWorkMedicine";
 import SogaraHospitalization from "./pages/establishments/sogara/SogaraHospitalization";
 import SogaraTechnical from "./pages/establishments/sogara/SogaraTechnical";
@@ -362,6 +363,7 @@ function AppMain() {
                     <Route path="/establishments/sogara/admin/consultations" element={<SogaraConsultations />} />
                     <Route path="/establishments/sogara/admin/emergency" element={<SogaraEmergency />} />
                     <Route path="/establishments/sogara/admin/employees" element={<SogaraEmployees />} />
+                    <Route path="/establishments/sogara/admin/beneficiaries" element={<SogaraBeneficiaries />} />
                     <Route path="/establishments/sogara/admin/work-medicine" element={<SogaraWorkMedicine />} />
                     <Route path="/establishments/sogara/admin/hospitalization" element={<SogaraHospitalization />} />
                     <Route path="/establishments/sogara/admin/technical" element={<SogaraTechnical />} />

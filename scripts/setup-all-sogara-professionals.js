@@ -27,7 +27,7 @@ const SOGARA_PROFESSIONALS = {
   'directeur.sogara@sante.ga': {
     name: 'Dr. Jules DJEKI',
     roles: [
-      { role: 'director', department: 'DIR', position: 'Directeur Médical', isAdmin: true },
+      { role: 'director', department: 'DIR', position: 'Médecin en Chef', isAdmin: true },
       { role: 'doctor', department: 'MED', position: 'Médecin Consultant Senior', isAdmin: false }
     ]
   },

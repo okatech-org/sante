@@ -287,9 +287,14 @@ export const EstablishmentManagementModal = ({
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full">
+          <TabsList className="grid grid-cols-5 lg:grid-cols-11 w-full">
             <TabsTrigger value="general">Général</TabsTrigger>
             <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+            {establishment.code === 'CLN-PG-001' && (
+              <TabsTrigger value="patients" className="text-cyan-600">
+                Patients
+              </TabsTrigger>
+            )}
             <TabsTrigger value="dashboards">Dashboards</TabsTrigger>
             <TabsTrigger value="config">Configuration</TabsTrigger>
             <TabsTrigger value="billing">Facturation</TabsTrigger>
@@ -399,6 +404,19 @@ export const EstablishmentManagementModal = ({
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">Personnel total</span>
                         <span className="font-medium">{establishment.staff.total}</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                          <Users className="h-3 w-3 text-cyan-600" />
+                          Ayants droit
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-cyan-600 border-cyan-600">
+                            1,250
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">Employés SOGARA</span>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -527,6 +545,306 @@ export const EstablishmentManagementModal = ({
                       ))}
                     </TableBody>
                   </Table>
+                </CardContent>
+              </Card>
+
+            </TabsContent>
+
+            {/* NOUVEL ONGLET PATIENTS (CMST SOGARA uniquement) */}
+            <TabsContent value="patients" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Heart className="h-6 w-6 text-cyan-600" />
+                        Patients / Ayants Droit SOGARA
+                      </CardTitle>
+                      <CardDescription>
+                        Employés SOGARA et leurs familles bénéficiaires de soins au CMST
+                      </CardDescription>
+                    </div>
+                    <Badge variant="outline" className="text-cyan-600 border-cyan-600 text-lg px-4 py-1">
+                      12 bénéficiaires
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200">
+                      <CardContent className="pt-6">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <Briefcase className="h-6 w-6 text-blue-600" />
+                            <span className="text-3xl font-bold text-blue-700">8</span>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground">Employés SOGARA</p>
+                          <p className="text-xs text-blue-600 mt-1">Personnel actif</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-pink-50 dark:bg-pink-950/20 border-pink-200">
+                      <CardContent className="pt-6">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <Heart className="h-6 w-6 text-pink-600" />
+                            <span className="text-3xl font-bold text-pink-700">4</span>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground">Membres Familles</p>
+                          <p className="text-xs text-pink-600 mt-1">Proches couverts</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-green-50 dark:bg-green-950/20 border-green-200">
+                      <CardContent className="pt-6">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <UserCheck className="h-6 w-6 text-green-600" />
+                            <span className="text-3xl font-bold text-green-700">12</span>
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground">Total Ayants Droit</p>
+                          <p className="text-xs text-green-600 mt-1">Bénéficiaires actifs</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Liste des Employés */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Briefcase className="h-5 w-5 text-blue-600" />
+                        Employés SOGARA (8)
+                      </h3>
+                      <Badge variant="outline" className="bg-blue-50">Personnel</Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              CA
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Christian AVARO</p>
+                              <p className="text-xs text-muted-foreground">Directeur Général</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              IT
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Ingride TCHEN</p>
+                              <p className="text-xs text-muted-foreground">Directrice Financière</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              JN
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Jean NZENGUE</p>
+                              <p className="text-xs text-muted-foreground">Chef Production</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              MM
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Marie MOUSSAVOU</p>
+                              <p className="text-xs text-muted-foreground">Responsable HSE</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              PO
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Paul OBAME</p>
+                              <p className="text-xs text-muted-foreground">Chef Maintenance</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              PN
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Pierrette NOMSI</p>
+                              <p className="text-xs text-muted-foreground">Chef QUALITÉ</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              AM
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Alain MOUSSAVOU</p>
+                              <p className="text-xs text-muted-foreground">Technicien Raffinerie</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-blue-50/50 dark:bg-blue-950/10 border-blue-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                              SM
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Sylvie MENGUE</p>
+                              <p className="text-xs text-muted-foreground">Assistante RH</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Liste des Familles */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <Heart className="h-5 w-5 text-pink-600" />
+                        Membres Familles (4)
+                      </h3>
+                      <Badge variant="outline" className="bg-pink-50">Proches</Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Card className="bg-pink-50/50 dark:bg-pink-950/10 border-pink-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">
+                              MA
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Marie AVARO</p>
+                              <p className="text-xs text-muted-foreground">Conjointe de Christian AVARO</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-pink-50/50 dark:bg-pink-950/10 border-pink-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">
+                              SA
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Sophie AVARO</p>
+                              <p className="text-xs text-muted-foreground">Enfant de Christian AVARO</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-pink-50/50 dark:bg-pink-950/10 border-pink-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">
+                              CN
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Claire NZENGUE</p>
+                              <p className="text-xs text-muted-foreground">Conjointe de Jean NZENGUE</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-pink-50/50 dark:bg-pink-950/10 border-pink-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">
+                              JN
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">Jean NOMSI</p>
+                              <p className="text-xs text-muted-foreground">Conjoint de Pierrette NOMSI</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Informations de Couverture */}
+                  <Card className="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-950/20 dark:to-cyan-900/20 border-cyan-300">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-cyan-600 flex items-center justify-center flex-shrink-0">
+                          <Shield className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-lg text-cyan-900 dark:text-cyan-100 mb-2">
+                            Statut de Couverture Médicale
+                          </h4>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Tous les employés SOGARA et jusqu'à <strong>3 membres de famille</strong> par employé sont couverts par le CMST pour :
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                              <span className="text-sm">Visites médicales annuelles obligatoires</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                              <span className="text-sm">Consultations médecin du travail</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                              <span className="text-sm">Soins d'urgence à l'infirmerie</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                              <span className="text-sm">Campagnes de vaccination et dépistage</span>
+                            </div>
+                          </div>
+                          <div className="mt-4 p-3 bg-white/50 dark:bg-black/20 rounded-lg">
+                            <p className="text-xs text-muted-foreground">
+                              <strong>Note :</strong> Chaque employé SOGARA peut désigner jusqu'à 3 proches (conjoint + 2 enfants) comme ayants droit bénéficiant également de la couverture médicale du CMST.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </CardContent>
               </Card>
             </TabsContent>

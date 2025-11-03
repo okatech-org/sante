@@ -15,7 +15,7 @@ import {
 import { 
   Building2, Menu, LogOut, Settings, Home,
   BarChart3, Stethoscope, AlertTriangle, Users,
-  Briefcase, Bed, Activity, UserCheck
+  Briefcase, Bed, Activity, UserCheck, Heart
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -67,6 +67,12 @@ export function SogaraDashboardLayout({ children }: SogaraDashboardLayoutProps) 
       label: 'Employés SOGARA', 
       icon: Users, 
       path: '/establishments/sogara/admin/employees',
+    },
+    { 
+      id: 'beneficiaries', 
+      label: 'Patients / Ayants Droit', 
+      icon: Heart, 
+      path: '/establishments/sogara/admin/beneficiaries',
     },
     { 
       id: 'work-medicine', 

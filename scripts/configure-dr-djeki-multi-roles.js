@@ -100,7 +100,7 @@ async function configureDrDjekiMultiRoles() {
         professional_id: professional.id,
         role_in_establishment: 'director',
         department: 'Direction Médicale',
-        job_position: 'Directeur Médical',
+        job_position: 'Médecin en Chef',
         matricule: 'DIR-001',
         is_admin: true,
         is_department_head: true,
