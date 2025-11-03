@@ -160,9 +160,85 @@ export class EstablishmentsService {
         .from('establishments')
         .select('*');
       
+      // Mapper les données Supabase au format Establishment
+      const { establishmentsAPI } = await import('@/api/establishments.api');
+      const supabaseEstablishments = supabaseData 
+        ? await Promise.all(supabaseData.map(async (row: any) => {
+            // Utiliser un mapping simple car on veut garder les données brutes
+            return {
+              id: row.id,
+              code: row.numero_rccm || row.id,
+              name: row.raison_sociale,
+              fullName: row.raison_sociale,
+              category: row.type_etablissement === 'chu' ? 'universitaire' : 
+                       row.type_etablissement === 'chr' ? 'regional' :
+                       row.type_etablissement === 'clinique' ? 'prive' : 'centre_sante',
+              level: row.secteur === 'public' ? 'national' : 'local',
+              status: row.statut === 'actif' ? 'operationnel' : 'inactive',
+              managingAuthority: row.secteur === 'public' ? 'Ministère de la Santé' : 'Privé',
+              director: row.directeur_general_nom,
+              directorContact: row.directeur_general_telephone,
+              location: {
+                address: row.adresse_rue || '',
+                city: row.ville || '',
+                province: row.province || '',
+                coordinates: row.latitude && row.longitude ? {
+                  latitude: parseFloat(row.latitude),
+                  longitude: parseFloat(row.longitude),
+                } : undefined,
+              },
+              contact: {
+                phoneMain: row.telephone_standard || '',
+                phoneEmergency: row.telephone_urgences,
+                email: row.email || '',
+                website: row.site_web,
+              },
+              metrics: {
+                totalBeds: row.nombre_lits_total || 0,
+                occupiedBeds: 0,
+                occupancyRate: row.taux_occupation || 0,
+                consultationsMonthly: 0,
+                surgeriesMonthly: 0,
+                emergenciesMonthly: 0,
+                patientSatisfaction: row.satisfaction_moyenne || 0,
+                averageWaitTime: '30 min',
+                averageStayDuration: '3 jours',
+              },
+              staff: {
+                doctors: 0,
+                specialists: 0,
+                nurses: 0,
+                technicians: 0,
+                administrative: 0,
+                support: 0,
+                total: 0,
+              },
+              services: [],
+              equipment: [],
+              certifications: [],
+              insuranceAccepted: row.cnamgs_conventionne ? ['CNAMGS'] : [],
+              createdAt: row.created_at,
+              updatedAt: row.updated_at,
+              isPublic: row.secteur === 'public',
+              isEmergencyCenter: row.service_urgences_actif || false,
+              isReferralCenter: false,
+              isTeachingHospital: row.type_etablissement === 'chu',
+              hasAmbulance: false,
+              hasPharmacy: false,
+              hasLaboratory: false,
+              hasMortuary: false,
+              logoUrl: '/placeholder.svg',
+              photos: [],
+              notes: '',
+              alerts: [],
+            } as Establishment;
+          }))
+        : [];
+      
       // 6. Fusionner et dédupliquer (utiliser code comme clé unique)
       const allEstablishments: Establishment[] = [
         ...detailedEstablishments, // Priorité aux données détaillées
+        ...supabaseEstablishments,  // Données Supabase en 2e
         ...realEstablishments,
         ...osmEstablishments,
         ...institutionEstablishments
