@@ -144,14 +144,14 @@ export const EstablishmentFilters = ({ filter, onFilterChange }: EstablishmentFi
             <div>
               <label className="text-sm font-medium mb-2 block">Province</label>
               <Select
-                value={filter.province?.[0] || ""}
-                onValueChange={(value) => updateFilter('province', value ? [value] : undefined)}
+                value={filter.province?.[0] || "all"}
+                onValueChange={(value) => updateFilter('province', value === "all" ? undefined : [value])}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Toutes les provinces" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les provinces</SelectItem>
+                  <SelectItem value="all">Toutes les provinces</SelectItem>
                   {GABON_PROVINCES.map(province => (
                     <SelectItem key={province} value={province}>
                       {province}

@@ -58,7 +58,8 @@ import {
   Stethoscope,
   Heart,
   Brain,
-  Pill
+  Pill,
+  Briefcase
 } from "lucide-react";
 import { Establishment } from "@/types/establishment";
 import { establishmentsService } from "@/services/establishments.service";
