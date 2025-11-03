@@ -141,27 +141,23 @@ const AdminEstablishments = () => {
     setError(null);
     
     try {
-      // Utiliser le service unifié pour obtenir exactement 397 établissements
-      const data = await establishmentsService.getAllEstablishments(true);
+      // Charger les données réelles depuis Supabase
+      const data = await fetchEstablishments();
       setEstablishments(data);
       calculateStatistics(data);
-      setSuccess(`${data.length} établissements synchronisés avec la cartographie`);
+      setSuccess(`${data.length} établissements chargés depuis la base de données`);
       setTimeout(() => setSuccess(null), 3000);
       
       toast({
-        title: "Synchronisation réussie",
-        description: `${data.length} établissements chargés (unifié avec la cartographie)`,
+        title: "Données chargées",
+        description: `${data.length} établissements depuis Supabase`,
       });
     } catch (err) {
-      // Fallback vers les données locales
-      const mockData = await fetchMockEstablishments();
-      setEstablishments(mockData);
-      calculateStatistics(mockData);
-      
+      setError('Erreur lors du chargement des établissements');
       toast({
-        title: "Mode local",
-        description: `${mockData.length} établissements (données locales)`,
-        variant: "default",
+        title: "Erreur",
+        description: "Impossible de charger les établissements",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
