@@ -14,3 +14,6 @@ verify_jwt = true
 
 [functions.create-demo-professional-data]
 verify_jwt = true
+
+[functions.generate-decree-with-ai]
+verify_jwt = true

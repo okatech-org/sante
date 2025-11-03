@@ -11,8 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { CalendarIcon, FileText, Save, Send, X, Plus, Upload } from "lucide-react";
+import { CalendarIcon, FileText, Save, Send, X, Plus, Upload, Sparkles, FileUp, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DecreeCreatorProps {
   isOpen: boolean;
@@ -46,6 +47,10 @@ export function DecreeCreator({ isOpen, onClose, onSave }: DecreeCreatorProps) {
   });
 
   const [currentTag, setCurrentTag] = useState('');
+  const [aiContext, setAiContext] = useState('');
+  const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const handleAddTag = () => {
     if (currentTag && !decree.tags.includes(currentTag)) {
@@ -84,16 +89,169 @@ export function DecreeCreator({ isOpen, onClose, onSave }: DecreeCreatorProps) {
     onClose();
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setReferenceFiles(prev => [...prev, ...newFiles]);
+      toast.success(`${newFiles.length} fichier(s) ajouté(s)`);
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setReferenceFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleGenerateWithAI = async () => {
+    if (!aiContext.trim()) {
+      toast.error("Veuillez décrire le contexte du document");
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      // Lire le contenu des fichiers de référence
+      const referenceDocuments: string[] = [];
+      for (const file of referenceFiles) {
+        const text = await file.text();
+        referenceDocuments.push(`## ${file.name}\n\n${text}`);
+      }
+
+      const { data, error } = await supabase.functions.invoke('generate-decree-with-ai', {
+        body: {
+          context: aiContext,
+          type: decree.type,
+          referenceDocuments: referenceDocuments.length > 0 ? referenceDocuments : undefined
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || "Erreur lors de la génération");
+      }
+
+      // Mettre à jour le contenu du décret avec le texte généré
+      setDecree(prev => ({
+        ...prev,
+        content: data.content
+      }));
+
+      toast.success("Document généré avec succès par l'IA");
+      setShowAiPanel(false);
+    } catch (error: any) {
+      console.error('Erreur génération IA:', error);
+      toast.error(error.message || "Erreur lors de la génération du document");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
-            Création d'un Document Ministériel
+          <DialogTitle className="text-xl font-bold flex items-center justify-between">
+            <span>Création d'un Document Ministériel</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAiPanel(!showAiPanel)}
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              {showAiPanel ? "Fermer l'Assistant IA" : "Générer avec l'IA"}
+            </Button>
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Panneau Assistant IA */}
+          {showAiPanel && (
+            <div className="rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/20 p-4 space-y-4">
+              <div className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                <Sparkles className="h-5 w-5" />
+                <h3 className="font-semibold">Assistant IA - Génération de Document</h3>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label htmlFor="ai-context">Décrivez le contexte et l'objectif du document *</Label>
+                  <Textarea
+                    id="ai-context"
+                    placeholder="Ex: Je souhaite créer un décret portant sur la réorganisation des services d'urgence dans les CHU. L'objectif est d'améliorer les délais de prise en charge et de clarifier les responsabilités de chaque service..."
+                    value={aiContext}
+                    onChange={(e) => setAiContext(e.target.value)}
+                    className="min-h-[120px]"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Documents de référence (optionnel)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      multiple
+                      accept=".txt,.doc,.docx,.pdf,.md"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id="reference-files"
+                    />
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => document.getElementById('reference-files')?.click()}
+                    >
+                      <FileUp className="mr-2 h-4 w-4" />
+                      Importer des documents de référence
+                    </Button>
+                  </div>
+                  
+                  {referenceFiles.length > 0 && (
+                    <div className="space-y-2 mt-3">
+                      <p className="text-sm font-medium">{referenceFiles.length} document(s) importé(s) :</p>
+                      {referenceFiles.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between bg-white dark:bg-slate-900 p-2 rounded border">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-slate-500" />
+                            <span className="text-sm">{file.name}</span>
+                            <span className="text-xs text-slate-400">({(file.size / 1024).toFixed(1)} KB)</span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveFile(index)}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  onClick={handleGenerateWithAI}
+                  disabled={isGenerating || !aiContext.trim()}
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                >
+                  {isGenerating ? (
+                    <>
+                      <span className="animate-spin mr-2">⏳</span>
+                      Génération en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Générer le document avec l'IA
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
           {/* Type de document */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
