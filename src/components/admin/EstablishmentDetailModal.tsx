@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -48,6 +50,27 @@ export const EstablishmentDetailModal = ({
   establishment,
   onEdit
 }: EstablishmentDetailModalProps) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setIsFavorite(Array.isArray(ids) ? ids.includes(establishment.id) : false);
+    } catch {}
+  }, [establishment.id]);
+
+  const toggleFavorite = () => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      const exists = ids.includes(establishment.id);
+      const next = exists ? ids.filter(id => id !== establishment.id) : [...ids, establishment.id];
+      localStorage.setItem('admin_establishment_favorites', JSON.stringify(next));
+      setIsFavorite(!exists);
+      toast.success(exists ? "Retiré des favoris" : "Ajouté aux favoris");
+    } catch {}
+  };
   
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -128,6 +151,13 @@ export const EstablishmentDetailModal = ({
                 </div>
               </div>
             </div>
+            <button
+              onClick={toggleFavorite}
+              aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              className={`p-2 rounded hover:bg-muted/60 transition-colors ${isFavorite ? 'text-yellow-400' : 'text-muted-foreground'}`}
+            >
+              <Star className="h-5 w-5" />
+            </button>
           </div>
         </DialogHeader>
 

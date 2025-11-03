@@ -1,7 +1,7 @@
 // Modal pour gérer les pages d'accueil personnalisées des établissements
 // SANTE.GA - Plateforme E-Santé Gabon
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,7 @@ import {
   CheckCircle,
   Copy,
   Eye,
+  Star,
   Edit
 } from "lucide-react";
 import { Establishment } from "@/types/establishment";
@@ -63,6 +64,27 @@ export const EstablishmentHomePageModal = ({
   });
   const [newService, setNewService] = useState("");
   const [copied, setCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setIsFavorite(Array.isArray(ids) ? ids.includes(establishment.id) : false);
+    } catch {}
+  }, [establishment.id]);
+
+  const toggleFavorite = () => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      const exists = ids.includes(establishment.id);
+      const next = exists ? ids.filter(id => id !== establishment.id) : [...ids, establishment.id];
+      localStorage.setItem('admin_establishment_favorites', JSON.stringify(next));
+      setIsFavorite(!exists);
+      window.dispatchEvent(new Event('admin:favorite-changed'));
+    } catch {}
+  };
 
   // Obtenir l'URL de la page d'accueil (personnalisée ou générique)
   const homePageUrl = homePageInfo?.customUrl || 
@@ -131,6 +153,13 @@ export const EstablishmentHomePageModal = ({
           <DialogTitle className="flex items-center gap-2">
             <Home className="h-5 w-5" />
             Gestion de la Page d'Accueil
+            <button
+              onClick={toggleFavorite}
+              aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              className={`ml-2 p-1 rounded hover:bg-muted/60 transition-colors ${isFavorite ? 'text-yellow-400' : 'text-muted-foreground'}`}
+            >
+              <Star className="h-4 w-4" />
+            </button>
           </DialogTitle>
           <DialogDescription>
             Configurez la page d'accueil personnalisée pour {establishment.name}

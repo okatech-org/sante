@@ -1,7 +1,7 @@
 // Carte d'établissement avec actions complètes
 // SANTE.GA - Plateforme E-Santé Gabon
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,6 +66,28 @@ export const EstablishmentCard = ({
   const [showHomePageModal, setShowHomePageModal] = useState(false);
   const [isVerified, setIsVerified] = useState(establishment.status === 'operationnel');
   const [isRejected, setIsRejected] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setIsFavorite(Array.isArray(ids) ? ids.includes(establishment.id) : false);
+    } catch {}
+  }, [establishment.id]);
+
+  const toggleFavorite = () => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      const exists = ids.includes(establishment.id);
+      const next = exists ? ids.filter(id => id !== establishment.id) : [...ids, establishment.id];
+      localStorage.setItem('admin_establishment_favorites', JSON.stringify(next));
+      setIsFavorite(!exists);
+      window.dispatchEvent(new Event('admin:favorite-changed'));
+      toast.success(exists ? "Retiré des favoris" : "Ajouté aux favoris");
+    } catch {}
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -179,30 +201,41 @@ export const EstablishmentCard = ({
                 <p className="text-sm text-gray-600">{establishment.code}</p>
               </div>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate(`/admin/cartography?highlight=${establishment.id}`)}>
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Voir sur la carte
-                </DropdownMenuItem>
-                {onDelete && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onDelete(establishment)} className="text-red-600">
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Supprimer
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                className={isFavorite ? 'text-yellow-400' : 'text-muted-foreground'}
+                onClick={toggleFavorite}
+              >
+                <Star className="h-4 w-4" />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate(`/admin/cartography?highlight=${establishment.id}`)}>
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Voir sur la carte
+                  </DropdownMenuItem>
+                  {onDelete && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onDelete(establishment)} className="text-red-600">
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Supprimer
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </CardHeader>
 

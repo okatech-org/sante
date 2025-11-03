@@ -54,7 +54,7 @@ import { EstablishmentFilters } from "@/components/admin/EstablishmentFilters";
 import { useEstablishments } from "@/hooks/useEstablishments";
 import { establishmentsService } from "@/services/establishments.service";
 import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
-import { Eye as ViewIcon, Grid, List } from "lucide-react";
+import { Eye as ViewIcon, Grid, List, Star } from "lucide-react";
 
 const AdminEstablishments = () => {
   const { toast } = useToast();
@@ -74,6 +74,8 @@ const AdminEstablishments = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [favoritesFirst, setFavoritesFirst] = useState<boolean>(false);
   
   // Modaux
   const [showFormModal, setShowFormModal] = useState(false);
@@ -98,10 +100,41 @@ const AdminEstablishments = () => {
     loadEstablishments();
   }, []);
 
+  // Charger favoris depuis localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setFavoriteIds(Array.isArray(ids) ? ids : []);
+    } catch {}
+  }, []);
+
+  // Rafraîchir favoris à l'ouverture/fermeture des modales
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setFavoriteIds(Array.isArray(ids) ? ids : []);
+    } catch {}
+  }, [showDetailModal, showFormModal]);
+
+  // Écouter les changements de favoris (depuis les cartes)
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem('admin_establishment_favorites');
+        const ids = raw ? JSON.parse(raw) : [];
+        setFavoriteIds(Array.isArray(ids) ? ids : []);
+      } catch {}
+    };
+    window.addEventListener('admin:favorite-changed', handler);
+    return () => window.removeEventListener('admin:favorite-changed', handler);
+  }, []);
+
   // Filtrage intelligent
   useEffect(() => {
     applyFilters();
-  }, [establishments, filter, searchQuery, selectedSegment]);
+  }, [establishments, filter, searchQuery, selectedSegment, favoritesFirst, favoriteIds]);
 
   const loadEstablishments = async () => {
     setLoading(true);
@@ -216,6 +249,15 @@ const AdminEstablishments = () => {
     }
     if (filter.hasEmergency !== undefined) {
       filtered = filtered.filter(est => est.isEmergencyCenter === filter.hasEmergency);
+    }
+
+    // Tri: Favoris d'abord si activé
+    if (favoritesFirst) {
+      filtered = filtered.sort((a, b) => {
+        const favA = favoriteIds.includes(a.id) ? 1 : 0;
+        const favB = favoriteIds.includes(b.id) ? 1 : 0;
+        return favB - favA;
+      });
     }
 
     setFilteredEstablishments(filtered);
@@ -465,10 +507,21 @@ const AdminEstablishments = () => {
                 </div>
               </div>
 
-              <EstablishmentFilters
-                filter={filter}
-                onFilterChange={setFilter}
-              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={favoritesFirst ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setFavoritesFirst(!favoritesFirst)}
+                  className="gap-2"
+                >
+                  <Star className="h-4 w-4" />
+                  Favoris d'abord
+                </Button>
+                <EstablishmentFilters
+                  filter={filter}
+                  onFilterChange={setFilter}
+                />
+              </div>
             </div>
 
             {/* Description du segment sélectionné */}

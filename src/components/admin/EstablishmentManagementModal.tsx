@@ -61,6 +61,7 @@ import {
   Pill,
   Briefcase
 } from "lucide-react";
+import { Star } from "lucide-react";
 import { Establishment } from "@/types/establishment";
 import { establishmentsService } from "@/services/establishments.service";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -188,6 +189,29 @@ export const EstablishmentManagementModal = ({
     }
   ]);
 
+  // Favoris (persistance locale)
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids = raw ? JSON.parse(raw) : [];
+      setIsFavorite(Array.isArray(ids) ? ids.includes(establishment.id) : false);
+    } catch {}
+  }, [establishment.id]);
+
+  const toggleFavorite = () => {
+    try {
+      const raw = localStorage.getItem('admin_establishment_favorites');
+      const ids: string[] = raw ? JSON.parse(raw) : [];
+      const exists = ids.includes(establishment.id);
+      const next = exists ? ids.filter(id => id !== establishment.id) : [...ids, establishment.id];
+      localStorage.setItem('admin_establishment_favorites', JSON.stringify(next));
+      setIsFavorite(!exists);
+      toast.success(exists ? "Retiré des favoris" : "Ajouté aux favoris");
+    } catch {}
+  };
+
   // États pour les logs
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([
     {
@@ -281,6 +305,13 @@ export const EstablishmentManagementModal = ({
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Building2 className="h-6 w-6" />
             Gestion de l'Établissement - {establishment.name}
+            <button
+              onClick={toggleFavorite}
+              aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              className={`ml-2 p-1 rounded hover:bg-muted/60 transition-colors ${isFavorite ? 'text-yellow-400' : 'text-muted-foreground'}`}
+            >
+              <Star className="h-5 w-5" />
+            </button>
           </DialogTitle>
           <DialogDescription>
             Configuration complète et gestion des utilisateurs, dashboards, facturation et paramètres de l'établissement
