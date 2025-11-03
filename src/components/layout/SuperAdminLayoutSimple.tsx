@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { 
   LogOut, Settings, Sun, Moon, Laptop, Globe, Menu, X, 
   BarChart3, Users, Clock, UserCheck, Map, Building2, 
-  DollarSign, Shield, Bell, Activity, Server 
+  DollarSign, Shield, Bell, Activity, Server, Pill 
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -86,7 +86,7 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
     { 
       id: 'pharmacies', 
       label: 'Pharmacies', 
-      icon: Building2, 
+      icon: Pill, 
       path: '/admin/pharmacies',
       description: 'Gestion et validation des pharmacies'
     },
