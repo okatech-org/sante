@@ -64,7 +64,8 @@ import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import KnowledgeBase from "@/components/ministry/KnowledgeBase";
 import { useKPIs } from "@/hooks/useKPIs";
 import { useAlerts } from "@/hooks/useAlerts";
-import { useDecrees, useCreateDecree } from "@/hooks/useDecrees";
+import { useDecrees, useCreateDecree, useUpdateDecree, useDeleteDecree } from "@/hooks/useDecrees";
+import DecreeCreator from "@/components/ministry/DecreeCreator";
 import { useObjectifs } from "@/hooks/useObjectifs";
 import { useProvinces } from "@/hooks/useProvinces";
 import IAstedButton from "@/components/ui/iAstedButton";
@@ -142,9 +143,10 @@ interface DecretDocument {
   priority: "basse" | "moyenne" | "haute" | "urgente";
   created_date: string;
   signature_date?: string;
-  publication_date?: string;
   author: string;
   progress: number;
+  pdfUrl?: string;
+  publication_date?: string;
 }
 
 interface NationalObjective {
@@ -661,9 +663,16 @@ const MinisterDashboard = () => {
   // React Query hooks
   const { data: kpisData, isLoading: kpisLoading, error: kpisError } = useKPIs(usagePeriod);
   const { data: alertsData, isLoading: alertsLoading } = useAlerts();
-  const { data: decretsDataAPI, isLoading: decretsLoading } = useDecrees();
+  const [decretStatusFilter, setDecretStatusFilter] = useState<string>("");
+  const { data: decretsDataAPI, isLoading: decretsLoading } = useDecrees({ status: decretStatusFilter });
   const createDecretMutation = useCreateDecree();
-  const { data: objectifsData, isLoading: objectifsLoading } = useObjectifs();
+  const updateDecretMutation = useUpdateDecree();
+  const deleteDecretMutation = useDeleteDecree();
+  const { data: objectifsDataAPI, isLoading: objectifsLoading } = useObjectifs();
+  const [isDecreeCreatorOpen, setIsDecreeCreatorOpen] = useState(false);
+  
+  // Utiliser les données statiques pour les objectifs car l'API ne retourne pas les mêmes champs
+  const objectifsDataMapped = objectifsData;
   const { 
     data: provincesDataAPI, 
     isLoading: provincesLoadingAPI, 
@@ -786,14 +795,14 @@ const MinisterDashboard = () => {
   }, [alertsData]);
 
   const nationalObjectives = useMemo(() => {
-    if (!objectifsData) return [];
-    return objectifsData.slice(0, 3).map(obj => ({
+    if (!objectifsDataMapped || objectifsDataMapped.length === 0) return [];
+    return objectifsDataMapped.slice(0, 3).map(obj => ({
       id: obj.id,
-      label: obj.nom,
+      label: obj.title,
       detail: obj.description || '',
-      progress: `${Math.round(obj.progres)}%`,
+      progress: `${Math.round(obj.progress)}%`,
     }));
-  }, [objectifsData]);
+  }, [objectifsDataMapped]);
 
   const handleSendMessage = useCallback(async () => {
     if (!chatInput.trim()) return;
@@ -829,6 +838,68 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
   const handleVoiceCommand = useCallback(() => {
     toast.info("Fonction vocale activée (en développement)");
   }, []);
+
+  // Mapper les données de l'API vers DecretDocument
+  const decretsDataMapped = useMemo(() => {
+    if (!decretsDataAPI || decretsDataAPI.length === 0) return decretsData;
+    
+    return decretsDataAPI.map((decree): DecretDocument => ({
+      id: decree.id,
+      reference: decree.numero,
+      type: decree.categorie.toLowerCase().includes('arrêté') || decree.categorie.toLowerCase().includes('arrete') ? 'arrete' 
+           : decree.categorie.toLowerCase().includes('circulaire') ? 'circulaire'
+           : decree.categorie.toLowerCase().includes('note') ? 'note_service'
+           : 'decret',
+      title: decree.titre,
+      description: decree.titre,
+      status: decree.statut === 'draft' ? 'brouillon' 
+            : decree.statut === 'signed' ? 'signe'
+            : decree.statut === 'published' ? 'publie'
+            : 'brouillon',
+      priority: 'moyenne',
+      created_date: decree.date || decree.createdAt,
+      signature_date: decree.statut === 'signed' || decree.statut === 'published' ? decree.date : undefined,
+      author: decree.createdBy || 'Cabinet du Ministre',
+      progress: decree.statut === 'published' ? 100 
+              : decree.statut === 'signed' ? 90
+              : decree.statut === 'draft' ? 40
+              : 50,
+      pdfUrl: decree.pdfUrl,
+    }));
+  }, [decretsDataAPI]);
+
+  const handleCreateDecree = useCallback(async (decreeData: any) => {
+    try {
+      await createDecretMutation.mutateAsync({
+        titre: decreeData.title,
+        numero: decreeData.reference,
+        date: decreeData.effectiveDate ? new Date(decreeData.effectiveDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        statut: decreeData.status === 'draft' ? 'draft' : 'draft',
+        categorie: decreeData.type === 'decree' ? 'Décret'
+                 : decreeData.type === 'order' ? 'Arrêté'
+                 : decreeData.type === 'circular' ? 'Circulaire'
+                 : decreeData.type === 'decision' ? 'Décision'
+                 : 'Note de Service',
+        pdfUrl: undefined,
+      });
+      toast.success("Décret créé avec succès");
+      setIsDecreeCreatorOpen(false);
+    } catch (error) {
+      toast.error("Erreur lors de la création du décret");
+    }
+  }, [createDecretMutation]);
+
+  const handleDeleteDecree = useCallback(async (id: string) => {
+    try {
+      await deleteDecretMutation.mutateAsync(id);
+      toast.success("Décret supprimé avec succès");
+      if (selectedDecret?.id === id) {
+        setSelectedDecret(null);
+      }
+    } catch (error) {
+      toast.error("Erreur lors de la suppression du décret");
+    }
+  }, [deleteDecretMutation, selectedDecret]);
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -1393,16 +1464,44 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                     Pilotage réglementaire et suivi des actes officiels
                   </p>
                 </div>
-                <Button className="rounded-full bg-emerald-500 px-5 hover:bg-emerald-600">
-                  <FileSignature className="mr-2 h-4 w-4" />
-                  Nouveau décret
-                </Button>
+                <div className="flex gap-2 items-center">
+                  <select
+                    value={decretStatusFilter}
+                    onChange={(e) => setDecretStatusFilter(e.target.value)}
+                    className="rounded-full border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-4 py-2 text-sm"
+                  >
+                    <option value="">Tous les statuts</option>
+                    <option value="draft">Brouillon</option>
+                    <option value="signed">Signé</option>
+                    <option value="published">Publié</option>
+                  </select>
+                  <Button 
+                    onClick={() => setIsDecreeCreatorOpen(true)}
+                    className="rounded-full bg-emerald-500 px-5 hover:bg-emerald-600"
+                  >
+                    <FileSignature className="mr-2 h-4 w-4" />
+                    Nouveau décret
+                  </Button>
+                </div>
               </div>
 
-              <div className="grid gap-4 xl:grid-cols-[2.2fr_1fr]">
+              {decretsLoading ? (
                 <GlassCard className="p-6">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {decretsData.map((decret) => (
+                  <div className="flex items-center justify-center py-12">
+                    <RefreshCw className="h-8 w-8 animate-spin text-emerald-500" />
+                  </div>
+                </GlassCard>
+              ) : (
+                <div className="grid gap-4 xl:grid-cols-[2.2fr_1fr]">
+                  <GlassCard className="p-6">
+                    {decretsDataMapped.length === 0 ? (
+                      <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+                        <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                        <p>Aucun décret trouvé</p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {decretsDataMapped.map((decret) => (
                       <button
                         key={decret.id}
                         type="button"
@@ -1426,26 +1525,36 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                             {decret.priority}
                           </Badge>
                         </div>
-                        <Progress value={decret.progress} className="mt-3 h-2 rounded-full" />
-                      </button>
-                    ))}
-                  </div>
+                          <Progress value={decret.progress} className="mt-3 h-2 rounded-full" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </GlassCard>
 
                 <GlassCard className="p-6">
                   {selectedDecret ? (
                     <>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold">Détails</h3>
                         <Badge className="bg-white/40 text-slate-600 dark:bg-white/10 dark:text-slate-300">
                           {selectedDecret.status.toUpperCase()}
                         </Badge>
                       </div>
-                      <div className="mt-6 space-y-4 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
                         <div>
                           <p className="text-xs uppercase tracking-wide text-slate-400">Référence</p>
                           <p className="text-base font-semibold text-slate-800 dark:text-slate-100">
                             {selectedDecret.reference}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Type</p>
+                          <p className="text-base text-slate-600 dark:text-slate-200">
+                            {selectedDecret.type === 'decret' ? 'Décret' 
+                            : selectedDecret.type === 'arrete' ? 'Arrêté'
+                            : selectedDecret.type === 'circulaire' ? 'Circulaire'
+                            : 'Note de Service'}
                           </p>
                         </div>
                         <div>
@@ -1457,26 +1566,60 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           <p>{selectedDecret.author}</p>
                         </div>
                         <div>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">Date de création</p>
+                          <p>{new Date(selectedDecret.created_date).toLocaleDateString("fr-FR")}</p>
+                        </div>
+                        {selectedDecret.signature_date && (
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-slate-400">Date de signature</p>
+                            <p>{new Date(selectedDecret.signature_date).toLocaleDateString("fr-FR")}</p>
+                          </div>
+                        )}
+                        <div>
                           <p className="text-xs uppercase tracking-wide text-slate-400">Progression</p>
                           <Progress value={selectedDecret.progress} className="mt-2 h-2 rounded-full" />
                         </div>
-                        <Button
-                          variant="outline"
-                          className="w-full rounded-full"
-                          onClick={() => toast.info("Téléchargement du dossier réglementaire")}
-                        >
-                          Télécharger le dossier complet
-                        </Button>
+                        <div className="pt-4 space-y-2">
+                          {selectedDecret.pdfUrl && (
+                            <Button
+                              variant="outline"
+                              className="w-full rounded-full"
+                              onClick={() => window.open(selectedDecret.pdfUrl, '_blank')}
+                            >
+                              <FileDown className="mr-2 h-4 w-4" />
+                              Télécharger le PDF
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline"
+                            className="w-full rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                            onClick={() => {
+                              if (confirm('Êtes-vous sûr de vouloir supprimer ce décret ?')) {
+                                handleDeleteDecree(selectedDecret.id);
+                              }
+                            }}
+                          >
+                            Supprimer le décret
+                          </Button>
+                        </div>
                       </div>
                     </>
                   ) : (
-                    <div className="text-sm text-slate-500 dark:text-slate-400">
-                      Sélectionnez un décret pour afficher les détails
+                    <div className="text-center py-12 text-sm text-slate-500 dark:text-slate-400">
+                      <FileText className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                      <p>Sélectionnez un décret pour afficher les détails</p>
                     </div>
                   )}
                 </GlassCard>
               </div>
-            </TabsContent>
+            )}
+            
+            <DecreeCreator
+              isOpen={isDecreeCreatorOpen}
+              onClose={() => setIsDecreeCreatorOpen(false)}
+              onSave={handleCreateDecree}
+            />
+          </TabsContent>
 
             <TabsContent value="objectifs" className="space-y-4">
               <GlassCard className="p-6">
@@ -1489,19 +1632,19 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="rounded-full bg-blue-500/10 text-blue-500">
-                      Politiques {objectifsData.filter((o) => o.category === "politique").length}
+                      Politiques {objectifsDataMapped.filter((o) => o.category === "politique").length}
                     </Badge>
                     <Badge className="rounded-full bg-emerald-500/10 text-emerald-500">
-                      Économiques {objectifsData.filter((o) => o.category === "economique").length}
+                      Économiques {objectifsDataMapped.filter((o) => o.category === "economique").length}
                     </Badge>
                     <Badge className="rounded-full bg-rose-500/10 text-rose-500">
-                      Sanitaires {objectifsData.filter((o) => o.category === "sanitaire").length}
+                      Sanitaires {objectifsDataMapped.filter((o) => o.category === "sanitaire").length}
                     </Badge>
                   </div>
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-1 md:grid-cols-2 2xl:grid-cols-3">
-                  {objectifsData.map((objectif) => (
+                  {objectifsDataMapped.map((objectif) => (
                     <div
                       key={objectif.id}
                       className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-inner transition hover:shadow-lg dark:border-white/10 dark:bg-white/5"
@@ -1773,7 +1916,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         <CoverageCartography 
                           provincesData={provincesData}
                           selectedProvince={selectedProvince}
-                          onSelectProvince={setSelectedProvince}
+                          onSelectProvince={(province) => setSelectedProvince(province as any)}
                         />
                       </div>
                     </div>
@@ -1807,7 +1950,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         <ResourcesCartography 
                           provincesData={provincesData}
                           selectedProvince={selectedProvince}
-                          onSelectProvince={setSelectedProvince}
+                          onSelectProvince={(province) => setSelectedProvince(province as any)}
                         />
                       </div>
                     </div>
