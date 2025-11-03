@@ -79,7 +79,16 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
       label: 'Établissements', 
       icon: Building2, 
       path: '/admin/establishments',
-      description: 'Hôpitaux, cliniques, pharmacies'
+      description: 'Hôpitaux, cliniques, centres'
+    },
+    
+    // Gestion Pharmacies
+    { 
+      id: 'pharmacies', 
+      label: 'Pharmacies', 
+      icon: Building2, 
+      path: '/admin/pharmacies',
+      description: 'Gestion et validation des pharmacies'
     },
     
     // Approbations
