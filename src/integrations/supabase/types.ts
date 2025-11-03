@@ -279,13 +279,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "electronic_prescriptions_sent_to_pharmacy_id_fkey"
-            columns: ["sent_to_pharmacy_id"]
-            isOneToOne: false
-            referencedRelation: "pharmacies"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "electronic_prescriptions_teleconsultation_id_fkey"
             columns: ["teleconsultation_id"]
             isOneToOne: false
@@ -1051,53 +1044,259 @@ export type Database = {
         }
         Relationships: []
       }
-      pharmacies: {
+      pharmacie_employes: {
         Row: {
-          address: string
-          city: string
+          commentaire: string | null
           created_at: string | null
-          email: string | null
+          date_debut: string
+          date_fin: string | null
+          est_actif: boolean | null
           id: string
-          latitude: number | null
-          longitude: number | null
-          name: string
-          opening_hours: Json | null
-          phone: string | null
-          province: string
-          services: string[] | null
+          motif_fin: string | null
+          nombre_heures_semaine: number | null
+          permissions_specifiques: Json | null
+          pharmacie_id: string
+          professionnel_id: string
+          salaire_mensuel: number | null
+          type_contrat: string | null
+          type_relation: string
           updated_at: string | null
         }
         Insert: {
-          address: string
-          city: string
+          commentaire?: string | null
           created_at?: string | null
-          email?: string | null
+          date_debut: string
+          date_fin?: string | null
+          est_actif?: boolean | null
           id?: string
-          latitude?: number | null
-          longitude?: number | null
-          name: string
-          opening_hours?: Json | null
-          phone?: string | null
-          province: string
-          services?: string[] | null
+          motif_fin?: string | null
+          nombre_heures_semaine?: number | null
+          permissions_specifiques?: Json | null
+          pharmacie_id: string
+          professionnel_id: string
+          salaire_mensuel?: number | null
+          type_contrat?: string | null
+          type_relation: string
           updated_at?: string | null
         }
         Update: {
-          address?: string
-          city?: string
+          commentaire?: string | null
           created_at?: string | null
-          email?: string | null
+          date_debut?: string
+          date_fin?: string | null
+          est_actif?: boolean | null
           id?: string
-          latitude?: number | null
-          longitude?: number | null
-          name?: string
-          opening_hours?: Json | null
-          phone?: string | null
-          province?: string
-          services?: string[] | null
+          motif_fin?: string | null
+          nombre_heures_semaine?: number | null
+          permissions_specifiques?: Json | null
+          pharmacie_id?: string
+          professionnel_id?: string
+          salaire_mensuel?: number | null
+          type_contrat?: string | null
+          type_relation?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pharmacie_employes_pharmacie_id_fkey"
+            columns: ["pharmacie_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pharmacie_employes_professionnel_id_fkey"
+            columns: ["professionnel_id"]
+            isOneToOne: false
+            referencedRelation: "professionnels_sante_pharmacie"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pharmacies: {
+        Row: {
+          accepte_commandes_en_ligne: boolean | null
+          accepte_reservations: boolean | null
+          adresse_complete: string
+          autres_assurances_acceptees: Json | null
+          capacite_stockage_medicaments: number | null
+          code_pharmacie: string
+          code_postal: string | null
+          conventionnement_cnamgs: boolean | null
+          created_at: string | null
+          created_by: string | null
+          date_autorisation: string | null
+          date_inscription_onpg: string | null
+          date_verification: string | null
+          delai_preparation_moyen_minutes: number | null
+          dispose_armoire_securisee: boolean | null
+          dispose_balance_electronique: boolean | null
+          dispose_chambre_froide: boolean | null
+          email: string | null
+          enseigne: string | null
+          geolocation: unknown
+          horaires: Json | null
+          id: string
+          jours_fermeture: Json | null
+          latitude: number
+          logo_url: string | null
+          longitude: number
+          mobile_money_providers: Json | null
+          modes_paiement: Json | null
+          motif_refus: string | null
+          nom_commercial: string
+          nombre_avis: number | null
+          nombre_commandes_total: number | null
+          nombre_employes: number | null
+          note_moyenne: number | null
+          numero_autorisation_ouverture: string | null
+          numero_convention_cnamgs: string | null
+          numero_inscription_onpg: string | null
+          ouvert_24_7: boolean | null
+          pharmacien_titulaire_id: string | null
+          photos_pharmacie: Json | null
+          province: string
+          quartier: string | null
+          reperes_geographiques: string | null
+          services_disponibles: Json | null
+          site_web: string | null
+          statut_onpg: string | null
+          statut_verification: string | null
+          surface_m2: number | null
+          telephone_principal: string
+          telephone_secondaire: string | null
+          telephone_urgence: string | null
+          type_structure: string
+          updated_at: string | null
+          verifie_par_admin: string | null
+          ville: string
+          visible_plateforme: boolean | null
+        }
+        Insert: {
+          accepte_commandes_en_ligne?: boolean | null
+          accepte_reservations?: boolean | null
+          adresse_complete: string
+          autres_assurances_acceptees?: Json | null
+          capacite_stockage_medicaments?: number | null
+          code_pharmacie: string
+          code_postal?: string | null
+          conventionnement_cnamgs?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          date_autorisation?: string | null
+          date_inscription_onpg?: string | null
+          date_verification?: string | null
+          delai_preparation_moyen_minutes?: number | null
+          dispose_armoire_securisee?: boolean | null
+          dispose_balance_electronique?: boolean | null
+          dispose_chambre_froide?: boolean | null
+          email?: string | null
+          enseigne?: string | null
+          geolocation?: unknown
+          horaires?: Json | null
+          id?: string
+          jours_fermeture?: Json | null
+          latitude: number
+          logo_url?: string | null
+          longitude: number
+          mobile_money_providers?: Json | null
+          modes_paiement?: Json | null
+          motif_refus?: string | null
+          nom_commercial: string
+          nombre_avis?: number | null
+          nombre_commandes_total?: number | null
+          nombre_employes?: number | null
+          note_moyenne?: number | null
+          numero_autorisation_ouverture?: string | null
+          numero_convention_cnamgs?: string | null
+          numero_inscription_onpg?: string | null
+          ouvert_24_7?: boolean | null
+          pharmacien_titulaire_id?: string | null
+          photos_pharmacie?: Json | null
+          province: string
+          quartier?: string | null
+          reperes_geographiques?: string | null
+          services_disponibles?: Json | null
+          site_web?: string | null
+          statut_onpg?: string | null
+          statut_verification?: string | null
+          surface_m2?: number | null
+          telephone_principal: string
+          telephone_secondaire?: string | null
+          telephone_urgence?: string | null
+          type_structure: string
+          updated_at?: string | null
+          verifie_par_admin?: string | null
+          ville: string
+          visible_plateforme?: boolean | null
+        }
+        Update: {
+          accepte_commandes_en_ligne?: boolean | null
+          accepte_reservations?: boolean | null
+          adresse_complete?: string
+          autres_assurances_acceptees?: Json | null
+          capacite_stockage_medicaments?: number | null
+          code_pharmacie?: string
+          code_postal?: string | null
+          conventionnement_cnamgs?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          date_autorisation?: string | null
+          date_inscription_onpg?: string | null
+          date_verification?: string | null
+          delai_preparation_moyen_minutes?: number | null
+          dispose_armoire_securisee?: boolean | null
+          dispose_balance_electronique?: boolean | null
+          dispose_chambre_froide?: boolean | null
+          email?: string | null
+          enseigne?: string | null
+          geolocation?: unknown
+          horaires?: Json | null
+          id?: string
+          jours_fermeture?: Json | null
+          latitude?: number
+          logo_url?: string | null
+          longitude?: number
+          mobile_money_providers?: Json | null
+          modes_paiement?: Json | null
+          motif_refus?: string | null
+          nom_commercial?: string
+          nombre_avis?: number | null
+          nombre_commandes_total?: number | null
+          nombre_employes?: number | null
+          note_moyenne?: number | null
+          numero_autorisation_ouverture?: string | null
+          numero_convention_cnamgs?: string | null
+          numero_inscription_onpg?: string | null
+          ouvert_24_7?: boolean | null
+          pharmacien_titulaire_id?: string | null
+          photos_pharmacie?: Json | null
+          province?: string
+          quartier?: string | null
+          reperes_geographiques?: string | null
+          services_disponibles?: Json | null
+          site_web?: string | null
+          statut_onpg?: string | null
+          statut_verification?: string | null
+          surface_m2?: number | null
+          telephone_principal?: string
+          telephone_secondaire?: string | null
+          telephone_urgence?: string | null
+          type_structure?: string
+          updated_at?: string | null
+          verifie_par_admin?: string | null
+          ville?: string
+          visible_plateforme?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_pharmacies_titulaire"
+            columns: ["pharmacien_titulaire_id"]
+            isOneToOne: false
+            referencedRelation: "professionnels_sante_pharmacie"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       practice_locations: {
         Row: {
@@ -1201,15 +1400,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "prescription_pharmacy_requests_pharmacy_id_fkey"
-            columns: ["pharmacy_id"]
-            isOneToOne: false
-            referencedRelation: "pharmacies"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       professional_availability: {
         Row: {
@@ -1696,6 +1887,222 @@ export type Database = {
         }
         Relationships: []
       }
+      professionnels_sante_pharmacie: {
+        Row: {
+          acces_administration: boolean | null
+          acces_facturation: boolean | null
+          acces_gestion_stocks: boolean | null
+          acces_rapports_activite: boolean | null
+          adresse_personnelle: string | null
+          annee_obtention_diplome: number | null
+          annees_experience: number | null
+          autorite_delivrance: string | null
+          certificat_formation_url: string | null
+          certificat_nationalite_url: string | null
+          code_professionnel: string
+          compte_actif: boolean | null
+          copie_carte_onpg_url: string | null
+          copie_cni_url: string | null
+          copie_diplome_url: string | null
+          created_at: string | null
+          created_by: string | null
+          date_autorisation_exercice: string | null
+          date_desactivation: string | null
+          date_embauche: string | null
+          date_fin_contrat: string | null
+          date_inscription_onpg: string | null
+          date_naissance: string | null
+          date_verification: string | null
+          derniere_connexion: string | null
+          diplome_pharmacie: string | null
+          email_professionnel: string
+          est_pharmacien_titulaire: boolean | null
+          extrait_casier_judiciaire_url: string | null
+          formation_professionnelle: string | null
+          id: string
+          lieu_naissance: string | null
+          motif_desactivation: string | null
+          motif_refus: string | null
+          nationalite: string
+          niveau_etude: string | null
+          nom: string
+          nom_complet: string | null
+          nombre_dispensations: number | null
+          nombre_evaluations: number | null
+          nombre_validations_ordonnances: number | null
+          note_moyenne: number | null
+          numero_autorisation_exercice: string | null
+          numero_inscription_onpg: string | null
+          pays_obtention_diplome: string | null
+          permissions: Json | null
+          pharmacie_principale_id: string | null
+          pharmacies_secondaires: Json | null
+          photo_url: string | null
+          prenom: string
+          sexe: string | null
+          specialisation: string | null
+          statut_emploi: string
+          statut_onpg: string | null
+          statut_verification: string | null
+          supervise_par_pharmacien_id: string | null
+          telephone_fixe: string | null
+          telephone_mobile: string
+          type_professionnel: string
+          universite: string | null
+          updated_at: string | null
+          user_id: string
+          verifie_par_admin: string | null
+          ville_residence: string | null
+        }
+        Insert: {
+          acces_administration?: boolean | null
+          acces_facturation?: boolean | null
+          acces_gestion_stocks?: boolean | null
+          acces_rapports_activite?: boolean | null
+          adresse_personnelle?: string | null
+          annee_obtention_diplome?: number | null
+          annees_experience?: number | null
+          autorite_delivrance?: string | null
+          certificat_formation_url?: string | null
+          certificat_nationalite_url?: string | null
+          code_professionnel: string
+          compte_actif?: boolean | null
+          copie_carte_onpg_url?: string | null
+          copie_cni_url?: string | null
+          copie_diplome_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_autorisation_exercice?: string | null
+          date_desactivation?: string | null
+          date_embauche?: string | null
+          date_fin_contrat?: string | null
+          date_inscription_onpg?: string | null
+          date_naissance?: string | null
+          date_verification?: string | null
+          derniere_connexion?: string | null
+          diplome_pharmacie?: string | null
+          email_professionnel: string
+          est_pharmacien_titulaire?: boolean | null
+          extrait_casier_judiciaire_url?: string | null
+          formation_professionnelle?: string | null
+          id?: string
+          lieu_naissance?: string | null
+          motif_desactivation?: string | null
+          motif_refus?: string | null
+          nationalite: string
+          niveau_etude?: string | null
+          nom: string
+          nom_complet?: string | null
+          nombre_dispensations?: number | null
+          nombre_evaluations?: number | null
+          nombre_validations_ordonnances?: number | null
+          note_moyenne?: number | null
+          numero_autorisation_exercice?: string | null
+          numero_inscription_onpg?: string | null
+          pays_obtention_diplome?: string | null
+          permissions?: Json | null
+          pharmacie_principale_id?: string | null
+          pharmacies_secondaires?: Json | null
+          photo_url?: string | null
+          prenom: string
+          sexe?: string | null
+          specialisation?: string | null
+          statut_emploi: string
+          statut_onpg?: string | null
+          statut_verification?: string | null
+          supervise_par_pharmacien_id?: string | null
+          telephone_fixe?: string | null
+          telephone_mobile: string
+          type_professionnel: string
+          universite?: string | null
+          updated_at?: string | null
+          user_id: string
+          verifie_par_admin?: string | null
+          ville_residence?: string | null
+        }
+        Update: {
+          acces_administration?: boolean | null
+          acces_facturation?: boolean | null
+          acces_gestion_stocks?: boolean | null
+          acces_rapports_activite?: boolean | null
+          adresse_personnelle?: string | null
+          annee_obtention_diplome?: number | null
+          annees_experience?: number | null
+          autorite_delivrance?: string | null
+          certificat_formation_url?: string | null
+          certificat_nationalite_url?: string | null
+          code_professionnel?: string
+          compte_actif?: boolean | null
+          copie_carte_onpg_url?: string | null
+          copie_cni_url?: string | null
+          copie_diplome_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_autorisation_exercice?: string | null
+          date_desactivation?: string | null
+          date_embauche?: string | null
+          date_fin_contrat?: string | null
+          date_inscription_onpg?: string | null
+          date_naissance?: string | null
+          date_verification?: string | null
+          derniere_connexion?: string | null
+          diplome_pharmacie?: string | null
+          email_professionnel?: string
+          est_pharmacien_titulaire?: boolean | null
+          extrait_casier_judiciaire_url?: string | null
+          formation_professionnelle?: string | null
+          id?: string
+          lieu_naissance?: string | null
+          motif_desactivation?: string | null
+          motif_refus?: string | null
+          nationalite?: string
+          niveau_etude?: string | null
+          nom?: string
+          nom_complet?: string | null
+          nombre_dispensations?: number | null
+          nombre_evaluations?: number | null
+          nombre_validations_ordonnances?: number | null
+          note_moyenne?: number | null
+          numero_autorisation_exercice?: string | null
+          numero_inscription_onpg?: string | null
+          pays_obtention_diplome?: string | null
+          permissions?: Json | null
+          pharmacie_principale_id?: string | null
+          pharmacies_secondaires?: Json | null
+          photo_url?: string | null
+          prenom?: string
+          sexe?: string | null
+          specialisation?: string | null
+          statut_emploi?: string
+          statut_onpg?: string | null
+          statut_verification?: string | null
+          supervise_par_pharmacien_id?: string | null
+          telephone_fixe?: string | null
+          telephone_mobile?: string
+          type_professionnel?: string
+          universite?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verifie_par_admin?: string | null
+          ville_residence?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professionnels_sante_pharmacie_pharmacie_principale_id_fkey"
+            columns: ["pharmacie_principale_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professionnels_sante_pharmacie_supervise_par_pharmacien_id_fkey"
+            columns: ["supervise_par_pharmacien_id"]
+            isOneToOne: false
+            referencedRelation: "professionnels_sante_pharmacie"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_change_requests: {
         Row: {
           change_type: string
@@ -1819,6 +2226,30 @@ export type Database = {
           two_factor_enabled?: boolean | null
           updated_at?: string
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      spatial_ref_sys: {
+        Row: {
+          auth_name: string | null
+          auth_srid: number | null
+          proj4text: string | null
+          srid: number
+          srtext: string | null
+        }
+        Insert: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid: number
+          srtext?: string | null
+        }
+        Update: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid?: number
+          srtext?: string | null
         }
         Relationships: []
       }
@@ -1983,9 +2414,177 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      geography_columns: {
+        Row: {
+          coord_dimension: number | null
+          f_geography_column: unknown
+          f_table_catalog: unknown
+          f_table_name: unknown
+          f_table_schema: unknown
+          srid: number | null
+          type: string | null
+        }
+        Relationships: []
+      }
+      geometry_columns: {
+        Row: {
+          coord_dimension: number | null
+          f_geometry_column: unknown
+          f_table_catalog: string | null
+          f_table_name: unknown
+          f_table_schema: unknown
+          srid: number | null
+          type: string | null
+        }
+        Insert: {
+          coord_dimension?: number | null
+          f_geometry_column?: unknown
+          f_table_catalog?: string | null
+          f_table_name?: unknown
+          f_table_schema?: unknown
+          srid?: number | null
+          type?: string | null
+        }
+        Update: {
+          coord_dimension?: number | null
+          f_geometry_column?: unknown
+          f_table_catalog?: string | null
+          f_table_name?: unknown
+          f_table_schema?: unknown
+          srid?: number | null
+          type?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      _postgis_deprecate: {
+        Args: { newname: string; oldname: string; version: string }
+        Returns: undefined
+      }
+      _postgis_index_extent: {
+        Args: { col: string; tbl: unknown }
+        Returns: unknown
+      }
+      _postgis_pgsql_version: { Args: never; Returns: string }
+      _postgis_scripts_pgsql_version: { Args: never; Returns: string }
+      _postgis_selectivity: {
+        Args: { att_name: string; geom: unknown; mode?: string; tbl: unknown }
+        Returns: number
+      }
+      _postgis_stats: {
+        Args: { ""?: string; att_name: string; tbl: unknown }
+        Returns: string
+      }
+      _st_3dintersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_containsproperly: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_coveredby:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_covers:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_crosses: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_dwithin: {
+        Args: {
+          geog1: unknown
+          geog2: unknown
+          tolerance: number
+          use_spheroid?: boolean
+        }
+        Returns: boolean
+      }
+      _st_equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_intersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_linecrossingdirection: {
+        Args: { line1: unknown; line2: unknown }
+        Returns: number
+      }
+      _st_longestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      _st_maxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      _st_orderingequals: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_sortablehash: { Args: { geom: unknown }; Returns: number }
+      _st_touches: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_voronoi: {
+        Args: {
+          clip?: unknown
+          g1: unknown
+          return_polygons?: boolean
+          tolerance?: number
+        }
+        Returns: unknown
+      }
+      _st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      addauth: { Args: { "": string }; Returns: boolean }
+      addgeometrycolumn:
+        | {
+            Args: {
+              column_name: string
+              new_dim: number
+              new_srid: number
+              new_type: string
+              schema_name: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              column_name: string
+              new_dim: number
+              new_srid: number
+              new_type: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              catalog_name: string
+              column_name: string
+              new_dim: number
+              new_srid_in: number
+              new_type: string
+              schema_name: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
       admin_get_professionals_with_profiles: {
         Args: never
         Returns: {
@@ -2012,11 +2611,142 @@ export type Database = {
         Args: { _token: string; _user_id: string }
         Returns: string
       }
+      disablelongtransactions: { Args: never; Returns: string }
+      dropgeometrycolumn:
+        | {
+            Args: {
+              column_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+        | { Args: { column_name: string; table_name: string }; Returns: string }
+        | {
+            Args: {
+              catalog_name: string
+              column_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+      dropgeometrytable:
+        | { Args: { schema_name: string; table_name: string }; Returns: string }
+        | { Args: { table_name: string }; Returns: string }
+        | {
+            Args: {
+              catalog_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+      enablelongtransactions: { Args: never; Returns: string }
+      equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
       generate_establishment_invitation_token: {
         Args: { _establishment_id: string }
         Returns: string
       }
       generate_prescription_number: { Args: never; Returns: string }
+      geometry: { Args: { "": string }; Returns: unknown }
+      geometry_above: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_below: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_cmp: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_contained_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_contains_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_distance_box: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_distance_centroid: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_eq: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_ge: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_gt: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_le: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_left: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_lt: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overabove: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overbelow: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overlaps_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overleft: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overright: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_right: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_same: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_same_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_within: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geomfromewkt: { Args: { "": string }; Returns: unknown }
       get_professional_context: {
         Args: { _establishment_id: string; _user_id: string }
         Returns: {
@@ -2069,6 +2799,7 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
       }
+      gettransactionid: { Args: never; Returns: unknown }
       has_any_role: {
         Args: {
           _roles: Database["public"]["Enums"]["app_role"][]
@@ -2096,6 +2827,639 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: never; Returns: boolean }
+      longtransactionsenabled: { Args: never; Returns: boolean }
+      populate_geometry_columns:
+        | { Args: { use_typmod?: boolean }; Returns: string }
+        | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
+      postgis_constraint_dims: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: number
+      }
+      postgis_constraint_srid: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: number
+      }
+      postgis_constraint_type: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: string
+      }
+      postgis_extensions_upgrade: { Args: never; Returns: string }
+      postgis_full_version: { Args: never; Returns: string }
+      postgis_geos_version: { Args: never; Returns: string }
+      postgis_lib_build_date: { Args: never; Returns: string }
+      postgis_lib_revision: { Args: never; Returns: string }
+      postgis_lib_version: { Args: never; Returns: string }
+      postgis_libjson_version: { Args: never; Returns: string }
+      postgis_liblwgeom_version: { Args: never; Returns: string }
+      postgis_libprotobuf_version: { Args: never; Returns: string }
+      postgis_libxml_version: { Args: never; Returns: string }
+      postgis_proj_version: { Args: never; Returns: string }
+      postgis_scripts_build_date: { Args: never; Returns: string }
+      postgis_scripts_installed: { Args: never; Returns: string }
+      postgis_scripts_released: { Args: never; Returns: string }
+      postgis_svn_version: { Args: never; Returns: string }
+      postgis_type_name: {
+        Args: {
+          coord_dimension: number
+          geomname: string
+          use_new_name?: boolean
+        }
+        Returns: string
+      }
+      postgis_version: { Args: never; Returns: string }
+      postgis_wagyu_version: { Args: never; Returns: string }
+      st_3dclosestpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3ddistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_3dintersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_3dlongestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3dmakebox: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3dmaxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_3dshortestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_addpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_angle:
+        | { Args: { line1: unknown; line2: unknown }; Returns: number }
+        | {
+            Args: { pt1: unknown; pt2: unknown; pt3: unknown; pt4?: unknown }
+            Returns: number
+          }
+      st_area:
+        | { Args: { geog: unknown; use_spheroid?: boolean }; Returns: number }
+        | { Args: { "": string }; Returns: number }
+      st_asencodedpolyline: {
+        Args: { geom: unknown; nprecision?: number }
+        Returns: string
+      }
+      st_asewkt: { Args: { "": string }; Returns: string }
+      st_asgeojson:
+        | {
+            Args: {
+              geom_column?: string
+              maxdecimaldigits?: number
+              pretty_bool?: boolean
+              r: Record<string, unknown>
+            }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_asgml:
+        | {
+            Args: {
+              geom: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+              version: number
+            }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | {
+            Args: {
+              geog: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              geog: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+              version: number
+            }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_askml:
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; nprefix?: string }
+            Returns: string
+          }
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; nprefix?: string }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_aslatlontext: {
+        Args: { geom: unknown; tmpl?: string }
+        Returns: string
+      }
+      st_asmarc21: { Args: { format?: string; geom: unknown }; Returns: string }
+      st_asmvtgeom: {
+        Args: {
+          bounds: unknown
+          buffer?: number
+          clip_geom?: boolean
+          extent?: number
+          geom: unknown
+        }
+        Returns: unknown
+      }
+      st_assvg:
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; rel?: number }
+            Returns: string
+          }
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; rel?: number }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_astext: { Args: { "": string }; Returns: string }
+      st_astwkb:
+        | {
+            Args: {
+              geom: unknown[]
+              ids: number[]
+              prec?: number
+              prec_m?: number
+              prec_z?: number
+              with_boxes?: boolean
+              with_sizes?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              geom: unknown
+              prec?: number
+              prec_m?: number
+              prec_z?: number
+              with_boxes?: boolean
+              with_sizes?: boolean
+            }
+            Returns: string
+          }
+      st_asx3d: {
+        Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+        Returns: string
+      }
+      st_azimuth:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: number }
+      st_boundingdiagonal: {
+        Args: { fits?: boolean; geom: unknown }
+        Returns: unknown
+      }
+      st_buffer:
+        | {
+            Args: { geom: unknown; options?: string; radius: number }
+            Returns: unknown
+          }
+        | {
+            Args: { geom: unknown; quadsegs: number; radius: number }
+            Returns: unknown
+          }
+      st_centroid: { Args: { "": string }; Returns: unknown }
+      st_clipbybox2d: {
+        Args: { box: unknown; geom: unknown }
+        Returns: unknown
+      }
+      st_closestpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_collect: { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+      st_concavehull: {
+        Args: {
+          param_allow_holes?: boolean
+          param_geom: unknown
+          param_pctconvex: number
+        }
+        Returns: unknown
+      }
+      st_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_containsproperly: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_coorddim: { Args: { geometry: unknown }; Returns: number }
+      st_coveredby:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_covers:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_crosses: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_curvetoline: {
+        Args: { flags?: number; geom: unknown; tol?: number; toltype?: number }
+        Returns: unknown
+      }
+      st_delaunaytriangles: {
+        Args: { flags?: number; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_difference: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_disjoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_distance:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+        | {
+            Args: { geog1: unknown; geog2: unknown; use_spheroid?: boolean }
+            Returns: number
+          }
+      st_distancesphere:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+        | {
+            Args: { geom1: unknown; geom2: unknown; radius: number }
+            Returns: number
+          }
+      st_distancespheroid: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_dwithin: {
+        Args: {
+          geog1: unknown
+          geog2: unknown
+          tolerance: number
+          use_spheroid?: boolean
+        }
+        Returns: boolean
+      }
+      st_equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_expand:
+        | {
+            Args: {
+              dm?: number
+              dx: number
+              dy: number
+              dz?: number
+              geom: unknown
+            }
+            Returns: unknown
+          }
+        | {
+            Args: { box: unknown; dx: number; dy: number; dz?: number }
+            Returns: unknown
+          }
+        | { Args: { box: unknown; dx: number; dy: number }; Returns: unknown }
+      st_force3d: { Args: { geom: unknown; zvalue?: number }; Returns: unknown }
+      st_force3dm: {
+        Args: { geom: unknown; mvalue?: number }
+        Returns: unknown
+      }
+      st_force3dz: {
+        Args: { geom: unknown; zvalue?: number }
+        Returns: unknown
+      }
+      st_force4d: {
+        Args: { geom: unknown; mvalue?: number; zvalue?: number }
+        Returns: unknown
+      }
+      st_generatepoints:
+        | {
+            Args: { area: unknown; npoints: number; seed: number }
+            Returns: unknown
+          }
+        | { Args: { area: unknown; npoints: number }; Returns: unknown }
+      st_geogfromtext: { Args: { "": string }; Returns: unknown }
+      st_geographyfromtext: { Args: { "": string }; Returns: unknown }
+      st_geohash:
+        | { Args: { geog: unknown; maxchars?: number }; Returns: string }
+        | { Args: { geom: unknown; maxchars?: number }; Returns: string }
+      st_geomcollfromtext: { Args: { "": string }; Returns: unknown }
+      st_geometricmedian: {
+        Args: {
+          fail_if_not_converged?: boolean
+          g: unknown
+          max_iter?: number
+          tolerance?: number
+        }
+        Returns: unknown
+      }
+      st_geometryfromtext: { Args: { "": string }; Returns: unknown }
+      st_geomfromewkt: { Args: { "": string }; Returns: unknown }
+      st_geomfromgeojson:
+        | { Args: { "": Json }; Returns: unknown }
+        | { Args: { "": Json }; Returns: unknown }
+        | { Args: { "": string }; Returns: unknown }
+      st_geomfromgml: { Args: { "": string }; Returns: unknown }
+      st_geomfromkml: { Args: { "": string }; Returns: unknown }
+      st_geomfrommarc21: { Args: { marc21xml: string }; Returns: unknown }
+      st_geomfromtext: { Args: { "": string }; Returns: unknown }
+      st_gmltosql: { Args: { "": string }; Returns: unknown }
+      st_hasarc: { Args: { geometry: unknown }; Returns: boolean }
+      st_hausdorffdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_hexagon: {
+        Args: { cell_i: number; cell_j: number; origin?: unknown; size: number }
+        Returns: unknown
+      }
+      st_hexagongrid: {
+        Args: { bounds: unknown; size: number }
+        Returns: Record<string, unknown>[]
+      }
+      st_interpolatepoint: {
+        Args: { line: unknown; point: unknown }
+        Returns: number
+      }
+      st_intersection: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_intersects:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+      st_isvaliddetail: {
+        Args: { flags?: number; geom: unknown }
+        Returns: Database["public"]["CompositeTypes"]["valid_detail"]
+        SetofOptions: {
+          from: "*"
+          to: "valid_detail"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      st_length:
+        | { Args: { geog: unknown; use_spheroid?: boolean }; Returns: number }
+        | { Args: { "": string }; Returns: number }
+      st_letters: { Args: { font?: Json; letters: string }; Returns: unknown }
+      st_linecrossingdirection: {
+        Args: { line1: unknown; line2: unknown }
+        Returns: number
+      }
+      st_linefromencodedpolyline: {
+        Args: { nprecision?: number; txtin: string }
+        Returns: unknown
+      }
+      st_linefromtext: { Args: { "": string }; Returns: unknown }
+      st_linelocatepoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_linetocurve: { Args: { geometry: unknown }; Returns: unknown }
+      st_locatealong: {
+        Args: { geometry: unknown; leftrightoffset?: number; measure: number }
+        Returns: unknown
+      }
+      st_locatebetween: {
+        Args: {
+          frommeasure: number
+          geometry: unknown
+          leftrightoffset?: number
+          tomeasure: number
+        }
+        Returns: unknown
+      }
+      st_locatebetweenelevations: {
+        Args: { fromelevation: number; geometry: unknown; toelevation: number }
+        Returns: unknown
+      }
+      st_longestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makebox2d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makeline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makevalid: {
+        Args: { geom: unknown; params: string }
+        Returns: unknown
+      }
+      st_maxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_minimumboundingcircle: {
+        Args: { inputgeom: unknown; segs_per_quarter?: number }
+        Returns: unknown
+      }
+      st_mlinefromtext: { Args: { "": string }; Returns: unknown }
+      st_mpointfromtext: { Args: { "": string }; Returns: unknown }
+      st_mpolyfromtext: { Args: { "": string }; Returns: unknown }
+      st_multilinestringfromtext: { Args: { "": string }; Returns: unknown }
+      st_multipointfromtext: { Args: { "": string }; Returns: unknown }
+      st_multipolygonfromtext: { Args: { "": string }; Returns: unknown }
+      st_node: { Args: { g: unknown }; Returns: unknown }
+      st_normalize: { Args: { geom: unknown }; Returns: unknown }
+      st_offsetcurve: {
+        Args: { distance: number; line: unknown; params?: string }
+        Returns: unknown
+      }
+      st_orderingequals: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_perimeter: {
+        Args: { geog: unknown; use_spheroid?: boolean }
+        Returns: number
+      }
+      st_pointfromtext: { Args: { "": string }; Returns: unknown }
+      st_pointm: {
+        Args: {
+          mcoordinate: number
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+        }
+        Returns: unknown
+      }
+      st_pointz: {
+        Args: {
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+          zcoordinate: number
+        }
+        Returns: unknown
+      }
+      st_pointzm: {
+        Args: {
+          mcoordinate: number
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+          zcoordinate: number
+        }
+        Returns: unknown
+      }
+      st_polyfromtext: { Args: { "": string }; Returns: unknown }
+      st_polygonfromtext: { Args: { "": string }; Returns: unknown }
+      st_project: {
+        Args: { azimuth: number; distance: number; geog: unknown }
+        Returns: unknown
+      }
+      st_quantizecoordinates: {
+        Args: {
+          g: unknown
+          prec_m?: number
+          prec_x: number
+          prec_y?: number
+          prec_z?: number
+        }
+        Returns: unknown
+      }
+      st_reduceprecision: {
+        Args: { geom: unknown; gridsize: number }
+        Returns: unknown
+      }
+      st_relate: { Args: { geom1: unknown; geom2: unknown }; Returns: string }
+      st_removerepeatedpoints: {
+        Args: { geom: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_segmentize: {
+        Args: { geog: unknown; max_segment_length: number }
+        Returns: unknown
+      }
+      st_setsrid:
+        | { Args: { geom: unknown; srid: number }; Returns: unknown }
+        | { Args: { geog: unknown; srid: number }; Returns: unknown }
+      st_sharedpaths: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_shortestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_simplifypolygonhull: {
+        Args: { geom: unknown; is_outer?: boolean; vertex_fraction: number }
+        Returns: unknown
+      }
+      st_split: { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+      st_square: {
+        Args: { cell_i: number; cell_j: number; origin?: unknown; size: number }
+        Returns: unknown
+      }
+      st_squaregrid: {
+        Args: { bounds: unknown; size: number }
+        Returns: Record<string, unknown>[]
+      }
+      st_srid:
+        | { Args: { geom: unknown }; Returns: number }
+        | { Args: { geog: unknown }; Returns: number }
+      st_subdivide: {
+        Args: { geom: unknown; gridsize?: number; maxvertices?: number }
+        Returns: unknown[]
+      }
+      st_swapordinates: {
+        Args: { geom: unknown; ords: unknown }
+        Returns: unknown
+      }
+      st_symdifference: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_symmetricdifference: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_tileenvelope: {
+        Args: {
+          bounds?: unknown
+          margin?: number
+          x: number
+          y: number
+          zoom: number
+        }
+        Returns: unknown
+      }
+      st_touches: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_transform:
+        | { Args: { geom: unknown; to_proj: string }; Returns: unknown }
+        | {
+            Args: { from_proj: string; geom: unknown; to_srid: number }
+            Returns: unknown
+          }
+        | {
+            Args: { from_proj: string; geom: unknown; to_proj: string }
+            Returns: unknown
+          }
+      st_triangulatepolygon: { Args: { g1: unknown }; Returns: unknown }
+      st_union:
+        | {
+            Args: { geom1: unknown; geom2: unknown; gridsize: number }
+            Returns: unknown
+          }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+      st_voronoilines: {
+        Args: { extend_to?: unknown; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_voronoipolygons: {
+        Args: { extend_to?: unknown; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_wkbtosql: { Args: { wkb: string }; Returns: unknown }
+      st_wkttosql: { Args: { "": string }; Returns: unknown }
+      st_wrapx: {
+        Args: { geom: unknown; move: number; wrap: number }
+        Returns: unknown
+      }
+      unlockrows: { Args: { "": string }; Returns: number }
+      updategeometrysrid: {
+        Args: {
+          catalogn_name: string
+          column_name: string
+          new_srid_in: number
+          schema_name: string
+          table_name: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role:
@@ -2184,7 +3548,15 @@ export type Database = {
         | "kinesitherapeute"
     }
     CompositeTypes: {
-      [_ in never]: never
+      geometry_dump: {
+        path: number[] | null
+        geom: unknown
+      }
+      valid_detail: {
+        valid: boolean | null
+        reason: string | null
+        location: unknown
+      }
     }
   }
 }
