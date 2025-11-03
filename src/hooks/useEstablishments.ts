@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Establishment, EstablishmentFormData } from '@/types/establishment';
-import { establishmentsAPI } from '@/api/establishments.api';
 
 export const useEstablishments = () => {
   const [loading, setLoading] = useState(false);
@@ -11,6 +10,8 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
+      // Importer l'API establishments
+      const { establishmentsAPI } = await import('@/api/establishments.api');
       const data = await establishmentsAPI.getAll();
       return data;
     } catch (err) {
@@ -26,6 +27,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
+      const { establishmentsAPI } = await import('@/api/establishments.api');
       const result = await establishmentsAPI.create(data);
       return result;
     } catch (err) {
@@ -41,6 +43,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
+      const { establishmentsAPI } = await import('@/api/establishments.api');
       const result = await establishmentsAPI.update(id, data);
       return result;
     } catch (err) {
@@ -56,6 +59,7 @@ export const useEstablishments = () => {
     setError(null);
     
     try {
+      const { establishmentsAPI } = await import('@/api/establishments.api');
       const result = await establishmentsAPI.delete(id);
       return result;
     } catch (err) {
