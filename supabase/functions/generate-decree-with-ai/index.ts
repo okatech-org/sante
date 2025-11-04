@@ -12,6 +12,33 @@ serve(async (req) => {
 
   try {
     const { context, type, referenceDocuments } = await req.json();
+
+    // Basic validation & limits
+    if (typeof context !== 'string' || context.trim().length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Le contexte est requis" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (context.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: 'context too long (max 5000 characters)' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const validTypes = ['decree', 'order', 'circular', 'decision', 'note'];
+    if (type && !validTypes.includes(type)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid type' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (referenceDocuments && (!Array.isArray(referenceDocuments) || referenceDocuments.length > 5)) {
+      return new Response(
+        JSON.stringify({ error: 'referenceDocuments must be array with max 5 items' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     
     if (!context) {
       return new Response(
@@ -27,6 +54,9 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY n'est pas configurée");
     }
+
+    // Sanitization to reduce prompt injection vectors
+    const sanitizedContext = context.replace(/[<>]/g, '').substring(0, 5000);
 
     // Construire le prompt système selon le type de document
     const documentTypePrompts: Record<string, string> = {
@@ -58,10 +88,10 @@ Règles :
 - Date et signature en fin de document`;
 
     // Ajouter le contexte des documents de référence si fournis
-    let userPrompt = context;
+    let userPrompt = sanitizedContext;
     if (referenceDocuments && referenceDocuments.length > 0) {
       systemPrompt += `\n\nDocuments de référence fournis :\n${referenceDocuments.join('\n\n---\n\n')}`;
-      userPrompt = `En vous basant sur les documents de référence fournis et le contexte suivant, rédigez le document :\n\n${context}`;
+      userPrompt = `En vous basant sur les documents de référence fournis et le contexte suivant, rédigez le document :\n\n${sanitizedContext}`;
     }
 
     console.log('Génération du document avec l\'IA...', { type, contextLength: context.length, hasReferences: !!referenceDocuments?.length });

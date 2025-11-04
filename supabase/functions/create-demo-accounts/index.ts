@@ -6,11 +6,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Use a fixed password for demo accounts (easier for testing)
-const DEMO_PASSWORD = 'Demo@2024!';
+// Toggle via env: DEMO_ACCOUNTS_ENABLED=false in production
+const DEMO_ACCOUNTS_ENABLED = (Deno.env.get('DEMO_ACCOUNTS_ENABLED') ?? 'true') === 'true';
 
 function generateSecurePassword(): string {
-  return DEMO_PASSWORD; // Return fixed password for demos
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+  let password = '';
+  const array = new Uint32Array(12);
+  crypto.getRandomValues(array);
+  for (let i = 0; i < 12; i++) {
+    password += chars[array[i] % chars.length];
+  }
+  return password;
 }
 
 interface DemoAccount {
@@ -174,6 +181,14 @@ serve(async (req) => {
   }
 
   try {
+    // Block in production unless explicitly enabled
+    const isProduction = (Deno.env.get('ENVIRONMENT') ?? Deno.env.get('NODE_ENV') ?? '').toLowerCase() === 'production';
+    if (isProduction && !DEMO_ACCOUNTS_ENABLED) {
+      return new Response(
+        JSON.stringify({ error: 'Demo account creation disabled in production' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     // Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -233,19 +248,16 @@ serve(async (req) => {
     console.log(`Admin user ${user.email} is creating demo accounts`);
 
     const results = []
-    const generatedPasswords: Record<string, string> = {};
 
     // Generate demo accounts with secure random passwords
     for (const template of demoAccountTemplates) {
       const password = generateSecurePassword();
-      generatedPasswords[template.email] = password;
       
       const account: DemoAccount = {
         ...template,
         password
       };
       
-      console.log(`Creating account: ${account.email}`)
       console.log(`Creating account: ${account.email}`)
       
       // Try to create the user
@@ -538,8 +550,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: 'Demo accounts processed. Passwords have been generated securely.',
-        results,
-        passwords: generatedPasswords // Return generated passwords to admin
+        results
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
