@@ -66,17 +66,19 @@ export function ImportMedicamentsButton() {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Importer depuis l'API française?</AlertDialogTitle>
-          <AlertDialogDescription className="space-y-2">
-            <p>Cette action va:</p>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>Télécharger <strong>15 800+ médicaments</strong> depuis l'API Médicaments FR</li>
-              <li>Convertir les prix EUR → XAF (1 EUR = 656 XAF)</li>
-              <li>Adapter les données au format Gabon (CIP, DCI, etc.)</li>
-              <li>Fusionner avec les médicaments existants</li>
-            </ul>
-            <p className="text-warning mt-4">
-              ⚠️ L'opération peut prendre 2-3 minutes. Les doublons seront évités automatiquement.
-            </p>
+          <AlertDialogDescription>
+            <div className="space-y-3">
+              <p>Cette action va:</p>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>Télécharger <strong>15 800+ médicaments</strong> depuis l'API Médicaments FR</li>
+                <li>Convertir les prix EUR → XAF (1 EUR = 656 XAF)</li>
+                <li>Adapter les données au format Gabon (CIP, DCI, etc.)</li>
+                <li>Fusionner avec les médicaments existants</li>
+              </ul>
+              <p className="text-warning mt-4">
+                ⚠️ L'opération peut prendre 2-3 minutes. Les doublons seront évités automatiquement.
+              </p>
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
