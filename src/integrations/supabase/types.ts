@@ -287,6 +287,45 @@ export type Database = {
           },
         ]
       }
+      equivalences_therapeutiques: {
+        Row: {
+          bioequivalence_validee: boolean | null
+          created_at: string | null
+          id: string
+          medicament_generique_id: string | null
+          medicament_princeps_id: string | null
+        }
+        Insert: {
+          bioequivalence_validee?: boolean | null
+          created_at?: string | null
+          id?: string
+          medicament_generique_id?: string | null
+          medicament_princeps_id?: string | null
+        }
+        Update: {
+          bioequivalence_validee?: boolean | null
+          created_at?: string | null
+          id?: string
+          medicament_generique_id?: string | null
+          medicament_princeps_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equivalences_therapeutiques_medicament_generique_id_fkey"
+            columns: ["medicament_generique_id"]
+            isOneToOne: false
+            referencedRelation: "medicaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equivalences_therapeutiques_medicament_princeps_id_fkey"
+            columns: ["medicament_princeps_id"]
+            isOneToOne: false
+            referencedRelation: "medicaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_departments: {
         Row: {
           code: string
@@ -822,6 +861,54 @@ export type Database = {
           whatsapp_business?: string | null
         }
         Relationships: []
+      }
+      interactions_medicamenteuses: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          medicament_a_id: string | null
+          medicament_b_id: string | null
+          niveau_gravite: string
+          recommandation: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          medicament_a_id?: string | null
+          medicament_b_id?: string | null
+          niveau_gravite: string
+          recommandation?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          medicament_a_id?: string | null
+          medicament_b_id?: string | null
+          niveau_gravite?: string
+          recommandation?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interactions_medicamenteuses_medicament_a_id_fkey"
+            columns: ["medicament_a_id"]
+            isOneToOne: false
+            referencedRelation: "medicaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interactions_medicamenteuses_medicament_b_id_fkey"
+            columns: ["medicament_b_id"]
+            isOneToOne: false
+            referencedRelation: "medicaments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       medical_history: {
         Row: {
@@ -2349,6 +2436,54 @@ export type Database = {
         }
         Relationships: []
       }
+      stocks_pharmacie: {
+        Row: {
+          created_at: string | null
+          derniere_mise_a_jour: string | null
+          id: string
+          medicament_id: string | null
+          pharmacie_id: string | null
+          prix_vente: number | null
+          quantite_disponible: number | null
+          seuil_alerte: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          derniere_mise_a_jour?: string | null
+          id?: string
+          medicament_id?: string | null
+          pharmacie_id?: string | null
+          prix_vente?: number | null
+          quantite_disponible?: number | null
+          seuil_alerte?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          derniere_mise_a_jour?: string | null
+          id?: string
+          medicament_id?: string | null
+          pharmacie_id?: string | null
+          prix_vente?: number | null
+          quantite_disponible?: number | null
+          seuil_alerte?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stocks_pharmacie_medicament_id_fkey"
+            columns: ["medicament_id"]
+            isOneToOne: false
+            referencedRelation: "medicaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stocks_pharmacie_pharmacie_id_fkey"
+            columns: ["pharmacie_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_settings: {
         Row: {
           category: string
@@ -2847,6 +2982,10 @@ export type Database = {
         Returns: boolean
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
+      get_medicament_enriched: {
+        Args: { p_medicament_id: string; p_pharmacie_id?: string }
+        Returns: Json
+      }
       get_professional_context: {
         Args: { _establishment_id: string; _user_id: string }
         Returns: {
