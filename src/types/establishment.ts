@@ -226,6 +226,8 @@ export interface EstablishmentFilter {
   insuranceAccepted?: ('CNAMGS' | 'CNSS' | 'Privé')[];
   minBeds?: number;
   maxBeds?: number;
+  // Segmentation intelligente (governmental, tertiaryHospitals, ...)
+  segment?: string[];
 }
 
 export interface EstablishmentFormData {
@@ -274,7 +276,7 @@ export interface EstablishmentFormData {
 // Données de segmentation intelligente avec exemples détaillés
 export const ESTABLISHMENT_SEGMENTS = {
   governmental: {
-    label: 'Institutions Gouvernementales',
+    label: 'Administrations',
     icon: '🏛️',
     color: 'blue',
     priority: 1,

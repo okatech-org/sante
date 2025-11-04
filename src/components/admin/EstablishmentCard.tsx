@@ -45,7 +45,7 @@ import {
   Mail,
   Shield
 } from "lucide-react";
-import { Establishment } from "@/types/establishment";
+import { Establishment, ESTABLISHMENT_SEGMENTS } from "@/types/establishment";
 import { EstablishmentManagementModal } from "./EstablishmentManagementModal";
 import { EstablishmentHomePageModal } from "./EstablishmentHomePageModal";
 import { establishmentsService } from "@/services/establishments.service";
@@ -54,12 +54,14 @@ interface EstablishmentCardProps {
   establishment: Establishment;
   onUpdate: (establishment: Establishment) => void;
   onDelete?: (establishment: Establishment) => void;
+  segmentKey?: keyof typeof ESTABLISHMENT_SEGMENTS;
 }
 
 export const EstablishmentCard = ({
   establishment,
   onUpdate,
-  onDelete
+  onDelete,
+  segmentKey
 }: EstablishmentCardProps) => {
   const navigate = useNavigate();
   const [showManagementModal, setShowManagementModal] = useState(false);
@@ -161,6 +163,93 @@ export const EstablishmentCard = ({
 
   const occupancyTrend = establishment.metrics.occupancyRate > 70;
 
+  const renderSegmentBadge = () => {
+    if (!segmentKey) return null;
+    const seg = ESTABLISHMENT_SEGMENTS[segmentKey];
+    const colorMap: Record<string, string> = {
+      blue: 'bg-blue-100 text-blue-800 border-blue-200',
+      purple: 'bg-purple-100 text-purple-800 border-purple-200',
+      green: 'bg-green-100 text-green-800 border-green-200',
+      teal: 'bg-teal-100 text-teal-800 border-teal-200',
+      orange: 'bg-orange-100 text-orange-800 border-orange-200',
+      pink: 'bg-pink-100 text-pink-800 border-pink-200',
+      gray: 'bg-gray-100 text-gray-800 border-gray-200'
+    };
+    const cls = colorMap[seg.color] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return (
+      <Badge variant="outline" className={`gap-1 ${cls}`}>
+        <span>{seg.icon}</span>
+        <span className="text-[11px] leading-none">{seg.label}</span>
+      </Badge>
+    );
+  };
+
+  const getPrimaryNature = () => {
+    const lowerName = (establishment.name || '').toLowerCase();
+    const services = (establishment.services || []).map(s => s.category);
+    const equipmentCats = (establishment.equipment || []).map(e => e.category);
+
+    // 1) Administrations
+    if (segmentKey === 'governmental' || /minist|direction|cnamgs|cnss|dpml|onpg/.test(lowerName)) {
+      return { key: 'admin', label: 'Administration', cls: 'bg-blue-100 text-blue-800 border-blue-200', emoji: '🏛️' };
+    }
+
+    // 2) Services de Support – ordre de priorité spécifique
+    if (
+      establishment.category === 'pharmacie' || establishment.hasPharmacy || services.includes('pharmacie' as any) || /pharm|pharma/.test(lowerName)
+    ) {
+      return { key: 'pharmacy', label: 'Pharmacie', cls: 'bg-lime-100 text-lime-800 border-lime-200', emoji: '💊' };
+    }
+    if (
+      establishment.category === 'laboratoire' || establishment.hasLaboratory || services.includes('laboratoire' as any) || /labo|laborat/.test(lowerName)
+    ) {
+      return { key: 'laboratory', label: 'Laboratoire', cls: 'bg-cyan-100 text-cyan-800 border-cyan-200', emoji: '🔬' };
+    }
+    if (
+      services.includes('imagerie' as any) || equipmentCats.includes('imagerie' as any) || /(imager|radio|scanner|irm|échograph|echograph)/.test(lowerName)
+    ) {
+      return { key: 'imaging', label: 'Imagerie médicale', cls: 'bg-indigo-100 text-indigo-800 border-indigo-200', emoji: '🩻' };
+    }
+    if (/(banque\s*de\s*sang|transfusion|don\s*du\s*sang|ctr\s*transfusion|cts)/.test(lowerName)) {
+      return { key: 'blood', label: 'Banque de sang', cls: 'bg-red-100 text-red-800 border-red-200', emoji: '🩸' };
+    }
+
+    // 3) Hôpital (CHU/CHR/CHD ou hôpital générique)
+    if (segmentKey === 'tertiaryHospitals' || segmentKey === 'secondaryHospitals' || /\b(chu|chr|chd)\b|hosp|hopit|hôpital|hopital/.test(lowerName)) {
+      return { key: 'hospital', label: 'Hôpital', cls: 'bg-purple-100 text-purple-800 border-purple-200', emoji: '🏥' };
+    }
+
+    // 4) Clinique (y compris polyclinique)
+    if (segmentKey === 'privateClinics' || /polyclinique|clinique/.test(lowerName)) {
+      return { key: 'clinic', label: 'Clinique', cls: 'bg-orange-100 text-orange-800 border-orange-200', emoji: '🏨' };
+    }
+
+    // 5) Soins primaires
+    if (/\bcabinet\b/.test(lowerName)) {
+      return { key: 'cabinet', label: 'Cabinet médical', cls: 'bg-teal-100 text-teal-800 border-teal-200', emoji: '🩺' };
+    }
+    if (establishment.category === 'centre_sante' || establishment.category === 'dispensaire' || /centre\s*(m[ée]dical|de\s*sant[é])|sant[é]\s*au\s*travail|\bcmst\b/.test(lowerName)) {
+      return { key: 'center', label: 'Centre de santé', cls: 'bg-teal-100 text-teal-800 border-teal-200', emoji: '🏪' };
+    }
+
+    // 6) Par défaut: segment label
+    if (segmentKey) {
+      const seg = ESTABLISHMENT_SEGMENTS[segmentKey];
+      const colorMap: Record<string, string> = {
+        blue: 'bg-blue-100 text-blue-800 border-blue-200',
+        purple: 'bg-purple-100 text-purple-800 border-purple-200',
+        green: 'bg-green-100 text-green-800 border-green-200',
+        teal: 'bg-teal-100 text-teal-800 border-teal-200',
+        orange: 'bg-orange-100 text-orange-800 border-orange-200',
+        pink: 'bg-pink-100 text-pink-800 border-pink-200',
+        gray: 'bg-gray-100 text-gray-800 border-gray-200'
+      };
+      return { key: 'segment', label: seg.label, cls: colorMap[seg.color] || 'bg-gray-100 text-gray-800 border-gray-200', emoji: seg.icon as string } as any;
+    }
+
+    return null;
+  };
+
   return (
     <>
       <Card className="h-full hover:shadow-lg transition-shadow">
@@ -242,9 +331,12 @@ export const EstablishmentCard = ({
         <CardContent className="space-y-4">
           {/* Badges de statut et catégorie */}
           <div className="flex flex-wrap gap-2">
-            <Badge className={getCategoryColor(establishment.category)}>
-              {establishment.category}
-            </Badge>
+            {(getPrimaryNature()) && (() => { const n = getPrimaryNature()!; return (
+              <Badge key={n.key} variant="outline" className={`gap-1 ${n.cls}`}>
+                <span>{n.emoji}</span>
+                <span className="text-[11px] leading-none">{n.label}</span>
+              </Badge>
+            ); })()}
             <Badge variant="outline" className="gap-1">
               {getStatusIcon(establishment.status)}
               {establishment.status}

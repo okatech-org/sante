@@ -120,6 +120,22 @@ export const EstablishmentManagementModal = ({
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(establishment.category === 'pharmacie' ? 'dashboard' : 'general');
   const [editedEstablishment, setEditedEstablishment] = useState(establishment);
+  const [pharmacySettings, setPharmacySettings] = useState({
+    onpgNumber: '',
+    titularName: '',
+    titularGabonese: false,
+    authorizationNumber: '',
+    authorizationDate: '',
+    ubipharmLinked: false,
+    stockAlerts: true,
+    stockMinThreshold: 10,
+    cnamgsConvention: false,
+    cnamgsNumber: '',
+    guard247: false,
+    guardSchedule: '' as string,
+    servicesVaccination: false,
+    servicesScreening: false,
+  });
   
   console.log('🏥 EstablishmentManagementModal opened for:', {
     name: establishment.name,
@@ -133,8 +149,8 @@ export const EstablishmentManagementModal = ({
       id: '1',
       name: 'Dr. Marie Obiang',
       email: 'marie.obiang@example.com',
-      role: 'Médecin Chef',
-      department: 'Direction',
+      role: 'Pharmacien titulaire',
+      department: 'Officine',
       status: 'active',
       lastLogin: '2025-11-01 10:30',
       createdAt: '2023-05-15'
@@ -143,8 +159,8 @@ export const EstablishmentManagementModal = ({
       id: '2',
       name: 'Jean Nzamba',
       email: 'jean.nzamba@example.com',
-      role: 'Administrateur',
-      department: 'Administration',
+      role: 'Technicien pharmacie',
+      department: 'Officine',
       status: 'active',
       lastLogin: '2025-11-01 09:15',
       createdAt: '2023-06-20'
@@ -152,53 +168,117 @@ export const EstablishmentManagementModal = ({
   ]);
 
   // États pour les dashboards et services
-  const [dashboardServices, setDashboardServices] = useState<DashboardService[]>([
-    {
-      id: '1',
-      name: 'Dashboard Médecin',
-      description: 'Interface de gestion médicale',
-      roles: ['Médecin', 'Médecin Chef'],
-      enabled: true,
-      icon: Stethoscope,
-      url: '/dashboard/doctor'
-    },
-    {
-      id: '2',
-      name: 'Dashboard Infirmier',
-      description: 'Suivi des soins infirmiers',
-      roles: ['Infirmier', 'Infirmier Chef'],
-      enabled: true,
-      icon: Heart,
-      url: '/dashboard/nurse'
-    },
-    {
-      id: '3',
-      name: 'Dashboard Pharmacie',
-      description: 'Gestion des stocks médicaments',
-      roles: ['Pharmacien'],
-      enabled: true,
-      icon: Pill,
-      url: '/dashboard/pharmacy'
-    },
-    {
-      id: '4',
-      name: 'Dashboard Administration',
-      description: 'Gestion administrative',
-      roles: ['Administrateur', 'Direction'],
-      enabled: true,
-      icon: Building2,
-      url: '/dashboard/admin'
-    },
-    {
-      id: '5',
-      name: 'Dashboard Laboratoire',
-      description: 'Gestion des analyses',
-      roles: ['Laborantin'],
-      enabled: false,
-      icon: Brain,
-      url: '/dashboard/lab'
+  const [dashboardServices, setDashboardServices] = useState<DashboardService[]>([]);
+
+  const computeDashboardServices = () => {
+    const lowerName = (establishment.name || '').toLowerCase();
+    const isPharmacy =
+      establishment.hasPharmacy ||
+      establishment.category === 'pharmacie' ||
+      /pharm|pharma/.test(lowerName);
+
+    if (isPharmacy) {
+      return [
+        {
+          id: 'ph-1',
+          name: "Officine",
+          description: "Ordonnances, dispensation, conseils pharmaceutiques",
+          roles: ['Pharmacien titulaire', 'Pharmacien adjoint'],
+          enabled: true,
+          icon: Pill,
+          url: '/dashboard/pharmacy'
+        },
+        {
+          id: 'ph-2',
+          name: 'Stocks & Ruptures',
+          description: 'Inventaire, alertes de rupture, commandes',
+          roles: ['Pharmacien titulaire', 'Préparateur en pharmacie', 'Technicien pharmacie'],
+          enabled: true,
+          icon: Activity,
+          url: '/dashboard/pharmacy/stocks'
+        },
+        {
+          id: 'ph-3',
+          name: 'CNAMGS - Tiers payant',
+          description: 'Facturation, remboursements, suivi GAP',
+          roles: ['Technicien pharmacie', 'Pharmacien titulaire'],
+          enabled: true,
+          icon: CreditCard,
+          url: '/dashboard/pharmacy/cnamgs'
+        },
+        {
+          id: 'ph-4',
+          name: 'Grossistes (UbiPharm)',
+          description: 'Commandes et réceptions grossiste',
+          roles: ['Pharmacien titulaire', 'Technicien pharmacie'],
+          enabled: true,
+          icon: Upload,
+          url: '/dashboard/pharmacy/wholesalers'
+        },
+        {
+          id: 'ph-5',
+          name: 'Vaccinations & Dépistages',
+          description: 'Agenda vaccins et campagnes',
+          roles: ['Pharmacien adjoint', 'Préparateur en pharmacie'],
+          enabled: false,
+          icon: Shield,
+          url: '/dashboard/pharmacy/prevention'
+        },
+        {
+          id: 'ph-6',
+          name: 'Pharmacovigilance',
+          description: 'Suivi effets indésirables et interactions',
+          roles: ['Pharmacien titulaire'],
+          enabled: true,
+          icon: AlertCircle,
+          url: '/dashboard/pharmacy/pharmacovigilance'
+        }
+      ];
     }
-  ]);
+
+    return [
+      {
+        id: '1',
+        name: 'Dashboard Médecin',
+        description: 'Interface de gestion médicale',
+        roles: ['Médecin', 'Médecin Chef'],
+        enabled: true,
+        icon: Stethoscope,
+        url: '/dashboard/doctor'
+      },
+      {
+        id: '2',
+        name: 'Dashboard Infirmier',
+        description: 'Suivi des soins infirmiers',
+        roles: ['Infirmier', 'Infirmier Chef'],
+        enabled: true,
+        icon: Heart,
+        url: '/dashboard/nurse'
+      },
+      {
+        id: '4',
+        name: 'Dashboard Administration',
+        description: 'Gestion administrative',
+        roles: ['Administrateur', 'Direction'],
+        enabled: true,
+        icon: Building2,
+        url: '/dashboard/admin'
+      },
+      {
+        id: '5',
+        name: 'Dashboard Laboratoire',
+        description: 'Gestion des analyses',
+        roles: ['Laborantin'],
+        enabled: false,
+        icon: Brain,
+        url: '/dashboard/lab'
+      }
+    ];
+  };
+
+  useEffect(() => {
+    setDashboardServices(computeDashboardServices());
+  }, [establishment]);
 
   // Favoris (persistance locale)
   const [isFavorite, setIsFavorite] = useState(false);
@@ -331,16 +411,21 @@ export const EstablishmentManagementModal = ({
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {establishment.category === 'pharmacie' ? (
-            <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full">
+            <TabsList className="grid grid-cols-5 lg:grid-cols-12 w-full">
               <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               <TabsTrigger value="general">Général</TabsTrigger>
               <TabsTrigger value="users">Utilisateurs</TabsTrigger>
-              <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsTrigger value="pharm-compliance">Conformité</TabsTrigger>
+              <TabsTrigger value="pharm-stocks">Stocks</TabsTrigger>
+              <TabsTrigger value="pharm-wholesalers">Grossistes</TabsTrigger>
+              <TabsTrigger value="pharm-cnamgs">CNAMGS</TabsTrigger>
+              <TabsTrigger value="pharm-guard">Garde 24/7</TabsTrigger>
+              <TabsTrigger value="pharm-services">Services</TabsTrigger>
+              <TabsTrigger value="pharm-pharmacovigilance">Pharmacovigilance</TabsTrigger>
+              <TabsTrigger value="config">Configuration Officine</TabsTrigger>
               <TabsTrigger value="billing">Facturation</TabsTrigger>
               <TabsTrigger value="logs">Logs</TabsTrigger>
               <TabsTrigger value="contact">Contact</TabsTrigger>
-              <TabsTrigger value="capacity">Capacités</TabsTrigger>
-              <TabsTrigger value="equipment">Équipements</TabsTrigger>
               <TabsTrigger value="stats">Statistiques</TabsTrigger>
             </TabsList>
           ) : (
@@ -369,6 +454,159 @@ export const EstablishmentManagementModal = ({
               <>
                 <TabsContent value="dashboard" className="space-y-4">
                   <PharmacyDashboard pharmacyId={establishment.id} />
+                </TabsContent>
+
+                {/* Conformité (ONPG & Autorisation) */}
+                <TabsContent value="pharm-compliance" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">ONPG & Autorisation d'ouverture</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label>Numéro ONPG</Label>
+                        <Input placeholder="ONPG-XXXX" />
+                      </div>
+                      <div>
+                        <Label>Pharmacien titulaire</Label>
+                        <Input placeholder="Nom Prénom" />
+                      </div>
+                      <div>
+                        <Label>Autorisation d'ouverture</Label>
+                        <Input placeholder="AOA-XXXX" />
+                      </div>
+                      <div>
+                        <Label>Date d'autorisation</Label>
+                        <Input type="date" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Stocks */}
+                <TabsContent value="pharm-stocks" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Gestion des stocks</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">Alertes de rupture</p>
+                          <p className="text-sm text-muted-foreground">Notifications au franchissement du seuil</p>
+                        </div>
+                        <Switch defaultChecked />
+                      </div>
+                      <div>
+                        <Label>Seuil minimal (par défaut)</Label>
+                        <Input type="number" defaultValue={10} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Grossistes */}
+                <TabsContent value="pharm-wholesalers" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Connexion grossistes (UbiPharm)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">UbiPharm Gabon</p>
+                        <p className="text-sm text-muted-foreground">Commandes & réceptions</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">Non connecté</Badge>
+                        <Button variant="outline" size="sm">Connecter</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* CNAMGS */}
+                <TabsContent value="pharm-cnamgs" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Convention CNAMGS</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between p-3 border rounded-lg col-span-2">
+                        <div>
+                          <p className="font-medium">Convention active</p>
+                          <p className="text-sm text-muted-foreground">Tiers-payant & remboursements</p>
+                        </div>
+                        <Switch defaultChecked />
+                      </div>
+                      <div>
+                        <Label>Numéro de convention</Label>
+                        <Input placeholder="CNAMGS-PH-XXXX" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Garde 24/7 */}
+                <TabsContent value="pharm-guard" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Organisation de garde 24/7</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">Ouverture 24/7</p>
+                          <p className="text-sm text-muted-foreground">Accueil continu</p>
+                        </div>
+                        <Switch />
+                      </div>
+                      <div>
+                        <Label>Planning (texte)</Label>
+                        <Textarea rows={4} placeholder="Ex: semaine paire: nuit, semaine impaire: jour..." />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Services de prévention */}
+                <TabsContent value="pharm-services" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Services de prévention</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">Vaccinations</p>
+                          <p className="text-sm text-muted-foreground">Agenda et campagnes</p>
+                        </div>
+                        <Switch />
+                      </div>
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">Dépistages</p>
+                          <p className="text-sm text-muted-foreground">Glycémie, tension, VIH, etc.</p>
+                        </div>
+                        <Switch />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Pharmacovigilance */}
+                <TabsContent value="pharm-pharmacovigilance" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Pharmacovigilance</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-sm text-muted-foreground">Déclarez les effets indésirables et vérifiez les interactions médicamenteuses.</p>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm"><AlertCircle className="h-4 w-4 mr-2" />Déclarer un effet indésirable</Button>
+                        <Button variant="outline" size="sm"><Search className="h-4 w-4 mr-2" />Vérifier interactions</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </TabsContent>
               </>
             )}
@@ -1279,12 +1517,45 @@ export const EstablishmentManagementModal = ({
 
             {/* Onglet Capacités */}
             <TabsContent value="capacity" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Capacité d'accueil</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
+              {editedEstablishment.category === 'pharmacie' ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Capacités Officine</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label>Comptoirs</Label>
+                      <Input type="number" placeholder="2" />
+                    </div>
+                    <div>
+                      <Label>Postes de préparation</Label>
+                      <Input type="number" placeholder="3" />
+                    </div>
+                    <div>
+                      <Label>Surface réserve (m²)</Label>
+                      <Input type="number" placeholder="25" />
+                    </div>
+                    <div>
+                      <Label>Nombre de frigos</Label>
+                      <Input type="number" placeholder="2" />
+                    </div>
+                    <div>
+                      <Label>Chambre froide (L)</Label>
+                      <Input type="number" placeholder="800" />
+                    </div>
+                    <div>
+                      <Label>File d'attente max</Label>
+                      <Input type="number" placeholder="15" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Capacité d'accueil</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
                       <Label>Total de lits</Label>
                       <Input
@@ -1316,7 +1587,9 @@ export const EstablishmentManagementModal = ({
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+                </Card>
+
+              )}
 
               <Card>
                 <CardHeader>
@@ -1364,12 +1637,53 @@ export const EstablishmentManagementModal = ({
 
             {/* Onglet Équipements */}
             <TabsContent value="equipment" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Équipements médicaux</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {establishment.equipment && establishment.equipment.length > 0 ? (
+              {editedEstablishment.category === 'pharmacie' ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Équipements Officine</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Chambre froide</p>
+                        <p className="text-sm text-muted-foreground">Vaccins et produits thermosensibles</p>
+                      </div>
+                      <Badge variant="default">Disponible</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Armoire sécurisée</p>
+                        <p className="text-sm text-muted-foreground">Stupéfiants</p>
+                      </div>
+                      <Badge variant="default">Conforme</Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <p className="font-medium">Lecteur code-barres</p>
+                        <Badge variant="secondary">x2</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <p className="font-medium">Imprimante étiquettes</p>
+                        <Badge variant="secondary">x1</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <p className="font-medium">Caisse (POS)</p>
+                        <Badge variant="secondary">Actif</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <p className="font-medium">Onduleur</p>
+                        <Badge variant="secondary">Présent</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Équipements médicaux</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {establishment.equipment && establishment.equipment.length > 0 ? (
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -1413,77 +1727,133 @@ export const EstablishmentManagementModal = ({
                     </div>
                   )}
                 </CardContent>
-              </Card>
+                </Card>
+              )}
             </TabsContent>
 
             {/* Onglet Statistiques */}
             <TabsContent value="stats" className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm text-gray-500">Consultations/mois</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold">{establishment.metrics.consultationsMonthly.toLocaleString()}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <TrendingUp className="h-3 w-3 text-green-500" />
-                      <span className="text-xs text-green-500">+12% vs mois dernier</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm text-gray-500">Urgences/mois</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold">{establishment.metrics.emergenciesMonthly.toLocaleString()}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <TrendingDown className="h-3 w-3 text-red-500" />
-                      <span className="text-xs text-red-500">-5% vs mois dernier</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm text-gray-500">Satisfaction patients</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold">{establishment.metrics.patientSatisfaction.toFixed(1)}/5</p>
-                    <Progress value={establishment.metrics.patientSatisfaction * 20} className="h-2 mt-2" />
-                  </CardContent>
-                </Card>
-              </div>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Indicateurs de performance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm">Temps d'attente moyen</span>
-                        <span className="text-sm font-medium">{establishment.metrics.averageWaitTime}</span>
-                      </div>
-                      <Progress value={60} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm">Durée moyenne de séjour</span>
-                        <span className="text-sm font-medium">{establishment.metrics.averageStayDuration}</span>
-                      </div>
-                      <Progress value={45} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm">Taux de réadmission (30j)</span>
-                        <span className="text-sm font-medium">8.5%</span>
-                      </div>
-                      <Progress value={8.5} className="h-2" />
-                    </div>
+              {editedEstablishment.category === 'pharmacie' ? (
+                <>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Ordonnances/mois</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">1 240</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <TrendingUp className="h-3 w-3 text-green-500" />
+                          <span className="text-xs text-green-500">+8% vs mois dernier</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Taux de rupture</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">4.2%</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <TrendingDown className="h-3 w-3 text-red-500" />
+                          <span className="text-xs text-red-500">-1.1 pt</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Préparation moyenne</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">07:40</p>
+                        <Progress value={60} className="h-2 mt-2" />
+                      </CardContent>
+                    </Card>
                   </div>
-                </CardContent>
-              </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Top 5 molécules</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-5 gap-2 text-sm">
+                        <Badge variant="secondary">Paracétamol</Badge>
+                        <Badge variant="secondary">Amoxicilline</Badge>
+                        <Badge variant="secondary">Ibuprofène</Badge>
+                        <Badge variant="secondary">Oméprazole</Badge>
+                        <Badge variant="secondary">Metformine</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Consultations/mois</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">{editedEstablishment.metrics.consultationsMonthly.toLocaleString()}</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <TrendingUp className="h-3 w-3 text-green-500" />
+                          <span className="text-xs text-green-500">+12% vs mois dernier</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Urgences/mois</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">{editedEstablishment.metrics.emergenciesMonthly.toLocaleString()}</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          <TrendingDown className="h-3 w-3 text-red-500" />
+                          <span className="text-xs text-red-500">-5% vs mois dernier</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm text-gray-500">Satisfaction patients</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold">{editedEstablishment.metrics.patientSatisfaction.toFixed(1)}/5</p>
+                        <Progress value={editedEstablishment.metrics.patientSatisfaction * 20} className="h-2 mt-2" />
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Indicateurs de performance</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm">Temps d'attente moyen</span>
+                            <span className="text-sm font-medium">{editedEstablishment.metrics.averageWaitTime}</span>
+                          </div>
+                          <Progress value={60} className="h-2" />
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm">Durée moyenne de séjour</span>
+                            <span className="text-sm font-medium">{editedEstablishment.metrics.averageStayDuration}</span>
+                          </div>
+                          <Progress value={45} className="h-2" />
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm">Taux de réadmission (30j)</span>
+                            <span className="text-sm font-medium">8.5%</span>
+                          </div>
+                          <Progress value={8.5} className="h-2" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
             </TabsContent>
           </ScrollArea>
 

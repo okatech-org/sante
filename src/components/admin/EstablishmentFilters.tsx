@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Filter, X } from "lucide-react";
-import { EstablishmentFilter, GABON_PROVINCES } from "@/types/establishment";
+import { EstablishmentFilter, GABON_PROVINCES, ESTABLISHMENT_SEGMENTS } from "@/types/establishment";
 import { Badge } from "@/components/ui/badge";
 
 interface EstablishmentFiltersProps {
@@ -27,6 +27,7 @@ export const EstablishmentFilters = ({ filter, onFilterChange }: EstablishmentFi
     filter.status?.length || 0,
     filter.level?.length || 0,
     filter.province?.length || 0,
+    filter.segment?.length || 0,
     filter.hasEmergency !== undefined ? 1 : 0,
     filter.hasPharmacy !== undefined ? 1 : 0,
     filter.hasLaboratory !== undefined ? 1 : 0,
@@ -226,6 +227,25 @@ export const EstablishmentFilters = ({ filter, onFilterChange }: EstablishmentFi
               </div>
             </div>
           </div>
+
+          {/* Segmentation intelligente */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">Segmentation</label>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {Object.entries(ESTABLISHMENT_SEGMENTS).map(([key, seg]) => (
+                <div key={key} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`seg-${key}`}
+                    checked={filter.segment?.includes(key) || false}
+                    onCheckedChange={() => toggleArrayFilter('segment', key)}
+                  />
+                  <label htmlFor={`seg-${key}`} className="text-sm font-normal cursor-pointer">
+                    <span className="mr-1">{seg.icon}</span>{seg.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
         </PopoverContent>
       </Popover>
 
@@ -238,6 +258,15 @@ export const EstablishmentFilters = ({ filter, onFilterChange }: EstablishmentFi
               <X 
                 className="h-3 w-3 ml-1 cursor-pointer" 
                 onClick={() => toggleArrayFilter('category', cat)}
+              />
+            </Badge>
+          ))}
+          {filter.segment?.map(seg => (
+            <Badge key={seg} variant="secondary" className="text-xs">
+              {ESTABLISHMENT_SEGMENTS[seg as keyof typeof ESTABLISHMENT_SEGMENTS]?.label || seg}
+              <X 
+                className="h-3 w-3 ml-1 cursor-pointer" 
+                onClick={() => toggleArrayFilter('segment', seg)}
               />
             </Badge>
           ))}

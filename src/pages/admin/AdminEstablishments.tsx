@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
 import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
@@ -77,6 +77,14 @@ const AdminEstablishments = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [favoritesFirst, setFavoritesFirst] = useState<boolean>(false);
+  const segmentCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    establishments.forEach(est => {
+      const seg = getEstablishmentSegment(est);
+      counts[seg] = (counts[seg] || 0) + 1;
+    });
+    return counts;
+  }, [establishments]);
   
   // Modaux
   const [showFormModal, setShowFormModal] = useState(false);
@@ -217,9 +225,13 @@ const AdminEstablishments = () => {
   const applyFilters = () => {
     let filtered = [...establishments];
 
-    // Filtre par segment
+    // Filtre par segment (onglet)
     if (selectedSegment !== 'all') {
       filtered = filtered.filter(est => getEstablishmentSegment(est) === selectedSegment);
+    }
+    // Filtre par segmentation intelligente (panneau filtres)
+    if (filter.segment?.length) {
+      filtered = filtered.filter(est => filter.segment?.includes(getEstablishmentSegment(est)));
     }
 
     // Filtre par recherche
@@ -261,16 +273,84 @@ const AdminEstablishments = () => {
     setFilteredEstablishments(filtered);
   };
 
-  const getEstablishmentSegment = (est: Establishment): string => {
-    if (est.category === 'gouvernemental') return 'governmental';
-    if (est.category === 'universitaire' || est.level === 'regional') return 'tertiaryHospitals';
-    if (est.category === 'departemental') return 'secondaryHospitals';
-    if (est.category === 'centre_sante' || est.category === 'dispensaire') return 'primaryCare';
-    if (est.category === 'prive') return 'privateClinics';
-    if (est.category === 'specialise') return 'specializedCenters';
-    if (est.category === 'laboratoire' || est.category === 'pharmacie') return 'supportServices';
+  function getEstablishmentSegment(est: Establishment): string {
+    const name = est.name?.toLowerCase() || '';
+    const code = est.code?.toLowerCase() || '';
+    const servicesCategories = (est.services || []).map(s => s.category);
+
+    // 1) Institutions Gouvernementales
+    if (
+      est.category === 'gouvernemental' ||
+      /minist|direction|cnamgs|cnss|ordre|dpml|agence|autorité/.test(name)
+    ) {
+      return 'governmental';
+    }
+
+    // 2) Hôpitaux de Référence (CHU/CHR, militaire de référence)
+    if (
+      est.category === 'universitaire' ||
+      est.level === 'national' ||
+      est.isTeachingHospital ||
+      /\b(chu|chr)\b/.test(code + ' ' + name) ||
+      est.category === 'militaire' ||
+      (est.isReferralCenter && (est.metrics?.totalBeds ?? 0) >= 300)
+    ) {
+      return 'tertiaryHospitals';
+    }
+
+    // 3) Hôpitaux Secondaires (CHD, hôpitaux régionaux/départementaux, confessionnels)
+    if (
+      est.category === 'departemental' ||
+      est.level === 'regional' ||
+      /\bchd\b/.test(code) ||
+      est.category === 'confessionnel'
+    ) {
+      return 'secondaryHospitals';
+    }
+
+    // 5) Cliniques privées - par nom explicite
+    if (/\bpolyclinique\b|\bclinique\b/.test(name)) {
+      return 'privateClinics';
+    }
+
+    // 6) Centres Spécialisés (mots-clés)
+    if (
+      est.category === 'specialise' ||
+      /(dialyse|canc|oncolog|rééduc|santé mentale|transfusion|drépanocyt|diabétolog|cardiolog|tubercul|vih)/.test(name)
+    ) {
+      return 'specializedCenters';
+    }
+
+    // 7) Services de Support (laboratoire, imagerie, pharmacie)
+    if (
+      est.category === 'laboratoire' ||
+      est.category === 'pharmacie' ||
+      est.hasPharmacy ||
+      /(pharm|pharma)/.test(name) ||
+      /(labo|laborat|imager|radiolog|scanner|irm)/.test(name) ||
+      servicesCategories.some(c => ['laboratoire', 'imagerie', 'pharmacie'].includes(c as any))
+    ) {
+      return 'supportServices';
+    }
+
+    // 4) Soins Primaires (centres, dispensaires, cabinets, santé au travail)
+    if (
+      est.category === 'centre_sante' ||
+      est.category === 'dispensaire' ||
+      /\bcabinet\b/.test(name) ||
+      /centre\s*(m[ée]dical|de\s*sant[é])/.test(name) ||
+      /sant[é]\s*au\s*travail|\bcmst\b/.test(name)
+    ) {
+      return 'primaryCare';
+    }
+
+    // Cliniques privées (fallback par catégorie)
+    if (est.category === 'prive') {
+      return 'privateClinics';
+    }
+
     return 'primaryCare';
-  };
+  }
 
   // Actions CRUD
   const handleCreate = () => {
@@ -488,9 +568,12 @@ const AdminEstablishments = () => {
               Tous ({establishments.length})
             </TabsTrigger>
             {Object.entries(ESTABLISHMENT_SEGMENTS).map(([key, segment]) => (
-              <TabsTrigger key={key} value={key} className="text-xs">
-                <span className="mr-1">{segment.icon}</span>
-                {segment.label.split(' ')[0]}
+              <TabsTrigger key={key} value={key} className="text-xs flex items-center gap-1">
+                <span>{segment.icon}</span>
+                <span>{segment.label}</span>
+                <span className="ml-1 inline-flex items-center justify-center rounded-md bg-muted px-1.5 py-0.5 text-[10px]">
+                  {segmentCounts[key] || 0}
+                </span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -553,6 +636,7 @@ const AdminEstablishments = () => {
                     <EstablishmentCard
                       key={establishment.id}
                       establishment={establishment}
+                      segmentKey={getEstablishmentSegment(establishment) as any}
                       onUpdate={(updated) => {
                         setEstablishments(prev => 
                           prev.map(e => e.id === updated.id ? updated : e)
