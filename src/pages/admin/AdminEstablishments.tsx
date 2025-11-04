@@ -50,6 +50,7 @@ import { EstablishmentTable } from "@/components/admin/EstablishmentTable";
 import { EstablishmentStatsCards } from "@/components/admin/EstablishmentStatsCards";
 import { EstablishmentFormModal } from "@/components/admin/EstablishmentFormModal";
 import { EstablishmentDetailModal } from "@/components/admin/EstablishmentDetailModal";
+import { EstablishmentManagementModal } from "@/components/admin/EstablishmentManagementModal";
 import { EstablishmentFilters } from "@/components/admin/EstablishmentFilters";
 import { useEstablishments } from "@/hooks/useEstablishments";
 import { establishmentsService } from "@/services/establishments.service";
@@ -80,6 +81,7 @@ const AdminEstablishments = () => {
   // Modaux
   const [showFormModal, setShowFormModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showManagementModal, setShowManagementModal] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState<Establishment | null>(null);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
   
@@ -286,6 +288,11 @@ const AdminEstablishments = () => {
   const handleView = (establishment: Establishment) => {
     setSelectedEstablishment(establishment);
     setShowDetailModal(true);
+  };
+
+  const handleManage = (establishment: Establishment) => {
+    setSelectedEstablishment(establishment);
+    setShowManagementModal(true);
   };
 
   const handleDelete = async (establishment: Establishment) => {
@@ -629,6 +636,22 @@ const AdminEstablishments = () => {
           onEdit={() => {
             setShowDetailModal(false);
             handleEdit(selectedEstablishment);
+          }}
+        />
+      )}
+
+      {showManagementModal && selectedEstablishment && (
+        <EstablishmentManagementModal
+          isOpen={showManagementModal}
+          onClose={() => setShowManagementModal(false)}
+          establishment={selectedEstablishment}
+          onSave={(updated) => {
+            setEstablishments(prev => prev.map(e => e.id === updated.id ? updated : e));
+            setShowManagementModal(false);
+            toast({
+              title: "Succès",
+              description: "Établissement mis à jour avec succès",
+            });
           }}
         />
       )}

@@ -118,8 +118,14 @@ export const EstablishmentManagementModal = ({
   onSave
 }: EstablishmentManagementModalProps) => {
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("general");
+  const [activeTab, setActiveTab] = useState(establishment.category === 'pharmacie' ? 'dashboard' : 'general');
   const [editedEstablishment, setEditedEstablishment] = useState(establishment);
+  
+  console.log('🏥 EstablishmentManagementModal opened for:', {
+    name: establishment.name,
+    category: establishment.category,
+    isPharmacy: establishment.category === 'pharmacie'
+  });
   
   // États pour les utilisateurs
   const [users, setUsers] = useState<EstablishmentUser[]>([
