@@ -2,16 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pill, MapPin, Phone, Search, Shield, Clock, Building2, Package, RefreshCw, Filter } from "lucide-react";
+import { Pill, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMedicationsSearch } from "@/hooks/useMedicationsSearch";
 import { toast } from "sonner";
 import { Establishment } from "@/types/establishment";
 import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MedicamentsList } from "@/components/admin/depot/MedicamentsList";
 
@@ -37,57 +34,6 @@ export default function AdminPharmacyStructure() {
   const [activeTab, setActiveTab] = useState("pharmacies");
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15);
-
-  // Dépôt pharmaceutique (produits)
-  const [query, setQuery] = useState("");
-  const [searchLimit, setSearchLimit] = useState<number>(20);
-  const { data: meds } = useMedicationsSearch(query, searchLimit);
-  const medResults = Array.isArray(meds) ? meds : [];
-  const [initialMeds, setInitialMeds] = useState<any[]>([]);
-  const [loadingMeds, setLoadingMeds] = useState<boolean>(false);
-  const [initialOffset, setInitialOffset] = useState<number>(0);
-  const initialPageSize = 30;
-  const [selectedForme, setSelectedForme] = useState<string>("");
-  const [ordonnanceOnly, setOrdonnanceOnly] = useState<boolean>(false);
-  const [genericOnly, setGenericOnly] = useState<boolean>(false);
-  const [classeQuery, setClasseQuery] = useState<string>("");
-  const [detailOpen, setDetailOpen] = useState<boolean>(false);
-  const [detailId, setDetailId] = useState<string | null>(null);
-  const [searchExtraById, setSearchExtraById] = useState<Record<string, { est_generique: boolean | null; classe_therapeutique: string | null }>>({});
-  const [medDepotAvailable, setMedDepotAvailable] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('med_depot_unavailable') ? false : true;
-    } catch {
-      return true;
-    }
-  });
-
-  // Chargement initial d'un échantillon de produits (sans recherche)
-  useEffect(() => {
-    if (!medDepotAvailable || activeTab !== 'depot') return;
-    const loadInitial = async () => {
-      setLoadingMeds(true);
-      try {
-        const { data, error } = await supabase
-          .from('medicaments')
-          .select('id, nom_commercial, dci, forme_pharmaceutique, dosage, tarif_conventionne_cnamgs, prix_moyen_pharmacie, necessite_ordonnance, est_generique, classe_therapeutique, image_url')
-          .order('nom_commercial', { ascending: true })
-          .range(initialOffset, initialOffset + initialPageSize - 1);
-        if (error) throw error;
-        setInitialMeds(prev => initialOffset === 0 ? (Array.isArray(data) ? data : []) : [...prev, ...((Array.isArray(data) ? data : []))]);
-      } catch (e: any) {
-        const msg = (e?.message || '').toLowerCase();
-        if (e?.status === 404 || e?.code === '404' || msg.includes('not found') || msg.includes('does not exist') || msg.includes('relation')) {
-          setMedDepotAvailable(false);
-          try { localStorage.setItem('med_depot_unavailable', '1'); } catch {}
-        }
-        toast.error('Erreur chargement dépôt pharmaceutique', { description: e?.message || 'Ressource introuvable' });
-      } finally {
-        setLoadingMeds(false);
-      }
-    };
-    loadInitial();
-  }, [initialOffset, medDepotAvailable, activeTab]);
 
   useEffect(() => {
     const run = async () => {
@@ -130,58 +76,6 @@ export default function AdminPharmacyStructure() {
   useEffect(() => {
     setCurrentPage(0);
   }, [search, itemsPerPage]);
-
-  // Enrichir les résultats de recherche si des filtres nécessitent des champs supplémentaires
-  useEffect(() => {
-    if (!medDepotAvailable || activeTab !== 'depot') return;
-    const needExtras = genericOnly || (classeQuery.trim().length > 0);
-    if (!needExtras || medResults.length === 0) return;
-    const missingIds = medResults
-      .map((m: any) => m.id)
-      .filter((id: string) => !searchExtraById[id]);
-    if (missingIds.length === 0) return;
-    (async () => {
-      try {
-        const { data, error } = await supabase
-          .from('medicaments')
-          .select('id, est_generique, classe_therapeutique')
-          .in('id', missingIds);
-        if (error) throw error;
-        const map: Record<string, { est_generique: boolean | null; classe_therapeutique: string | null }> = {};
-        (data || []).forEach((row: any) => {
-          map[row.id] = { est_generique: row.est_generique, classe_therapeutique: row.classe_therapeutique };
-        });
-        setSearchExtraById(prev => ({ ...prev, ...map }));
-      } catch {
-        // silencieux
-      }
-    })();
-  }, [genericOnly, classeQuery, medResults, medDepotAvailable, activeTab]);
-
-  const allFormes = useMemo(() => {
-    const src = (query.trim().length >= 2 ? medResults : initialMeds) as any[];
-    const set = new Set<string>();
-    src.forEach(m => { if (m.forme_pharmaceutique) set.add(m.forme_pharmaceutique); });
-    return Array.from(set).sort();
-  }, [medResults, initialMeds, query]);
-
-  const displayedMeds = useMemo(() => {
-    const base = (query.trim().length >= 2 ? medResults.map((m: any) => ({ ...m, ...searchExtraById[m.id] })) : initialMeds) as any[];
-    return base.filter((m: any) => {
-      if (selectedForme && selectedForme !== 'all' && m.forme_pharmaceutique !== selectedForme) return false;
-      if (ordonnanceOnly && !m.necessite_ordonnance) return false;
-      if (genericOnly && !m.est_generique) return false;
-      if (classeQuery && !(m.classe_therapeutique || '').toLowerCase().includes(classeQuery.toLowerCase())) return false;
-      return true;
-    });
-  }, [medResults, initialMeds, searchExtraById, selectedForme, ordonnanceOnly, genericOnly, classeQuery, query]);
-
-  const handleResetFilters = () => {
-    setSelectedForme("");
-    setOrdonnanceOnly(false);
-    setGenericOnly(false);
-    setClasseQuery("");
-  };
 
   return (
     <SuperAdminLayoutSimple>
