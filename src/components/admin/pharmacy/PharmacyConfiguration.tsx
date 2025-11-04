@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,14 +16,104 @@ import {
   Snowflake,
   Lock
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface PharmacyConfigurationProps {
   pharmacyId: string;
 }
 
 export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps) => {
+  const [config, setConfig] = useState({
+    is_onsite: false,
+    accepte_commandes_en_ligne: false,
+    accepte_reservations: false,
+    ouvert_24_7: false,
+    conventionnement_cnamgs: false,
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("pharmacies")
+          .select("ouvert_24_7, conventionnement_cnamgs, accepte_commandes_en_ligne, accepte_reservations, type_structure")
+          .eq("id", pharmacyId)
+          .maybeSingle();
+        if (error) throw error;
+        if (data) {
+          setConfig({
+            is_onsite: data.type_structure === "pharmacie_sur_site",
+            accepte_commandes_en_ligne: data.accepte_commandes_en_ligne || false,
+            accepte_reservations: data.accepte_reservations || false,
+            ouvert_24_7: data.ouvert_24_7 || false,
+            conventionnement_cnamgs: data.conventionnement_cnamgs || false,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Erreur lors du chargement");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (pharmacyId) loadConfig();
+  }, [pharmacyId]);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from("pharmacies")
+        .update({
+          type_structure: config.is_onsite ? "pharmacie_sur_site" : "officine_privee",
+          accepte_commandes_en_ligne: config.accepte_commandes_en_ligne,
+          accepte_reservations: config.accepte_reservations,
+          ouvert_24_7: config.ouvert_24_7,
+        })
+        .eq("id", pharmacyId);
+      if (error) throw error;
+      toast.success("Configuration enregistrée");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erreur lors de l'enregistrement");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-8">Chargement...</div>;
+  }
+
   return (
     <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Type de Pharmacie
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="is-onsite">Pharmacie sur site</Label>
+              <p className="text-sm text-muted-foreground">
+                Pharmacie intégrée dans un établissement de santé (hôpital, clinique)
+              </p>
+            </div>
+            <Switch
+              id="is-onsite"
+              checked={config.is_onsite}
+              onCheckedChange={(checked) => setConfig({ ...config, is_onsite: checked })}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
@@ -81,7 +172,11 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
                 Pharmacie de garde permanente
               </p>
             </div>
-            <Switch id="open-24-7" />
+            <Switch
+              id="open-24-7"
+              checked={config.ouvert_24_7}
+              onCheckedChange={(checked) => setConfig({ ...config, ouvert_24_7: checked })}
+            />
           </div>
 
           <div className="border-t pt-4">
@@ -155,14 +250,22 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
               <Label htmlFor="online-orders">Commandes en ligne</Label>
               <p className="text-sm text-muted-foreground">Via plateforme SANTE.GA</p>
             </div>
-            <Switch id="online-orders" defaultChecked />
+            <Switch
+              id="online-orders"
+              checked={config.accepte_commandes_en_ligne}
+              onCheckedChange={(checked) => setConfig({ ...config, accepte_commandes_en_ligne: checked })}
+            />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="reservations">Réservations ordonnances</Label>
               <p className="text-sm text-muted-foreground">Préparation anticipée</p>
             </div>
-            <Switch id="reservations" defaultChecked />
+            <Switch
+              id="reservations"
+              checked={config.accepte_reservations}
+              onCheckedChange={(checked) => setConfig({ ...config, accepte_reservations: checked })}
+            />
           </div>
         </CardContent>
       </Card>
@@ -220,10 +323,10 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
       </Card>
 
       <div className="flex justify-end gap-2">
-        <Button variant="outline">Annuler</Button>
-        <Button>
+        <Button variant="outline" onClick={() => window.location.reload()}>Annuler</Button>
+        <Button onClick={handleSave} disabled={saving}>
           <Settings className="h-4 w-4 mr-2" />
-          Enregistrer les modifications
+          {saving ? "Enregistrement..." : "Enregistrer les modifications"}
         </Button>
       </div>
     </div>

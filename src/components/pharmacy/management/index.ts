@@ -3,6 +3,7 @@
 // ============================================
 
 export { PharmacyGeneralInfoForm } from './PharmacyGeneralInfoForm';
+export { PharmacyConfigurationManager } from './PharmacyConfigurationManager';
 export { PharmacyHoursManager } from './PharmacyHoursManager';
 export { PharmacyServicesManager } from './PharmacyServicesManager';
 export { PharmacyPaymentManager } from './PharmacyPaymentManager';

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMedicationsSearch } from "@/hooks/useMedicationsSearch";
 
 interface PrescriptionModalProps {
   open: boolean;
@@ -238,12 +239,23 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nom du médicament (DCI) *</Label>
-                    <Input
-                      value={med.name}
-                      onChange={(e) => updateMedication(med.id, "name", e.target.value)}
-                      placeholder="Ex: Paracétamol"
-                      required
-                    />
+                    <div className="relative">
+                      <Input
+                        value={med.name}
+                        onChange={(e) => updateMedication(med.id, "name", e.target.value)}
+                        placeholder="Ex: Paracétamol"
+                        required
+                      />
+                      {/* Suggestions */}
+                      <MedicationSuggestions 
+                        query={med.name}
+                        onPick={(sugg) => {
+                          updateMedication(med.id, "name", sugg.dci || sugg.nom_commercial || "");
+                          if (sugg.dosage) updateMedication(med.id, "dosage", sugg.dosage);
+                          if (sugg.forme_pharmaceutique) updateMedication(med.id, "form", sugg.forme_pharmaceutique);
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -329,5 +341,32 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function MedicationSuggestions({ query, onPick }: { query: string; onPick: (s: any) => void }) {
+  const { data, isLoading } = useMedicationsSearch(query || "", 8);
+  const suggestions = Array.isArray(data) ? data : [];
+  if (!query || query.trim().length < 2 || isLoading || suggestions.length === 0) return null;
+  return (
+    <div className="absolute z-20 mt-1 w-full rounded-md border bg-popover shadow-sm max-h-56 overflow-auto">
+      {suggestions.map((s: any) => (
+        <button
+          key={s.id}
+          type="button"
+          className="w-full px-3 py-2 text-left hover:bg-muted/60 text-sm"
+          onClick={() => onPick(s)}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-medium">{s.dci || s.nom_commercial}</span>
+            {s.dosage && <span className="text-muted-foreground">{s.dosage}</span>}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {s.nom_commercial}
+            {s.forme_pharmaceutique ? ` • ${s.forme_pharmaceutique}` : ""}
+          </div>
+        </button>
+      ))}
+    </div>
   );
 }

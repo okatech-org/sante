@@ -27,6 +27,7 @@ import {
 import { usePharmacy, useUpdatePharmacy } from '@/hooks/usePharmacy';
 import { usePharmacyEmployees } from '@/hooks/usePharmacyProfessionals';
 import { PharmacyGeneralInfoForm } from './management/PharmacyGeneralInfoForm';
+import { PharmacyConfigurationManager } from './management/PharmacyConfigurationManager';
 import { PharmacyHoursManager } from './management/PharmacyHoursManager';
 import { PharmacyServicesManager } from './management/PharmacyServicesManager';
 import { PharmacyTeamManager } from './management/PharmacyTeamManager';
@@ -92,10 +93,14 @@ export function PharmacyManagementModal({
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
           <div className="px-6 border-b">
-            <TabsList className="w-full grid grid-cols-6 h-auto p-1">
+            <TabsList className="w-full grid grid-cols-7 h-auto p-1">
               <TabsTrigger value="general" className="flex items-center gap-2 py-2.5">
                 <Building2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Général</span>
+              </TabsTrigger>
+              <TabsTrigger value="configuration" className="flex items-center gap-2 py-2.5">
+                <Settings className="h-4 w-4" />
+                <span className="hidden sm:inline">Configuration</span>
               </TabsTrigger>
               <TabsTrigger value="hours" className="flex items-center gap-2 py-2.5">
                 <Clock className="h-4 w-4" />
@@ -124,6 +129,13 @@ export function PharmacyManagementModal({
             <div className="px-6 py-6">
               <TabsContent value="general" className="mt-0">
                 <PharmacyGeneralInfoForm 
+                  pharmacy={pharmacy} 
+                  onUpdate={updatePharmacy}
+                />
+              </TabsContent>
+
+              <TabsContent value="configuration" className="mt-0">
+                <PharmacyConfigurationManager 
                   pharmacy={pharmacy} 
                   onUpdate={updatePharmacy}
                 />

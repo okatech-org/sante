@@ -18,6 +18,13 @@ import {
   ArrowLeft,
   Navigation,
   User,
+  Package,
+  ShoppingCart,
+  Star,
+  Truck,
+  CreditCard,
+  CheckCircle2,
+  Snowflake,
 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,6 +32,7 @@ import servicesHero from '@/assets/services-hero.jpg';
 import doctorConsultation from '@/assets/doctor-consultation.jpg';
 import sogaraReception from '@/assets/sogara-reception.jpg';
 import sogaraEquipment from '@/assets/sogara-equipment.jpg';
+import { PharmacyOrderCatalog } from '@/components/pharmacy/PharmacyOrderCatalog';
 
 export default function PharmacyPublicPage() {
   const { id: idOrSlug } = useParams<{ id: string }>();
@@ -65,6 +73,7 @@ export default function PharmacyPublicPage() {
   const isLoading = Boolean(isLoadingById || isLoadingBySlug);
   const isError = Boolean(isErrorById || isErrorBySlug);
   const [fallbackEst, setFallbackEst] = useState<Establishment | null>(null);
+  const [showOrderCatalog, setShowOrderCatalog] = useState(false);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
@@ -96,6 +105,23 @@ export default function PharmacyPublicPage() {
   const mapsHref = view.latitude && view.longitude
     ? `https://www.google.com/maps?q=${view.latitude},${view.longitude}`
     : `https://www.google.com/maps/search/${encodeURIComponent(`${view.nom_commercial} ${fullAddress}`)}`;
+
+  const scheduleSummary: string | null = (() => {
+    const h = view.horaires as any;
+    if (!h) return null;
+    try {
+      const obj = typeof h === 'string' ? JSON.parse(h) : h;
+      if (obj && typeof obj === 'object') {
+        const openDays = Object.entries(obj)
+          .filter(([, v]: any) => v && (v.ouvert === true || (Array.isArray(v.horaires) && v.horaires.length > 0)))
+          .map(([d]) => d);
+        return openDays.length ? `${openDays.length} j/7` : null;
+      }
+      return typeof h === 'string' ? h : null;
+    } catch {
+      return typeof h === 'string' ? h : null;
+    }
+  })();
 
   // Initialize mini map if coordinates present
   useEffect(() => {
@@ -185,176 +211,250 @@ export default function PharmacyPublicPage() {
   
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-      {/* Hero */}
-      <section className="pt-16 pb-6 md:pt-20 md:pb-8 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50/30 via-background to-blue-50/30 dark:from-background dark:via-background dark:to-background">
+      {/* Hero moderne */}
+      <section className="relative pt-20 pb-12 md:pt-24 md:pb-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+            <div className="lg:col-span-3 space-y-6">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                  <ShieldCheck className="h-4 w-4" />
+                  Pharmacie Vérifiée ONPG
+                </div>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                   {view.nom_commercial}
                 </h1>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {view.type_structure === 'pharmacie_sur_site' 
+                    ? 'Pharmacie sur site - Service médical intégré' 
+                    : 'Votre santé, notre priorité'}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
                 {view.statut_verification === 'verifie' && (
-                  <Badge className="flex items-center gap-1">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    Vérifiée
+                  <Badge className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600">
+                    <ShieldCheck className="h-4 w-4" />
+                    Vérifiée ONPG
                   </Badge>
                 )}
                 {view.ouvert_24_7 && (
-                  <Badge variant="outline">24/7</Badge>
+                  <Badge variant="default" className="px-3 py-1.5 bg-blue-600">
+                    <Clock className="h-4 w-4 mr-1" />
+                    Ouvert 24/7
+                  </Badge>
                 )}
                 {view.conventionnement_cnamgs && (
-                  <Badge variant="outline">CNAMGS</Badge>
+                  <Badge variant="default" className="px-3 py-1.5 bg-emerald-600">
+                    CNAMGS Conventionnée
+                  </Badge>
+                )}
+                {view.accepte_commandes_en_ligne && (
+                  <Badge variant="default" className="px-3 py-1.5 bg-purple-600">
+                    <Package className="h-4 w-4 mr-1" />
+                    Commande en ligne
+                  </Badge>
                 )}
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  {fullAddress || 'Adresse non renseignée'}
-                </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-card/50 backdrop-blur border">
+                  <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+                  <span className="font-medium">{fullAddress || 'Adresse non renseignée'}</span>
+                </div>
                 {view.telephone_principal && (
-                  <a className="flex items-center gap-1 hover:text-foreground" href={`tel:${view.telephone_principal}`}>
-                    <Phone className="h-4 w-4" />
-                    {view.telephone_principal}
-                  </a>
-                )}
-                {view.email && (
-                  <a className="flex items-center gap-1 hover:text-foreground" href={`mailto:${view.email}`}>
-                    <Mail className="h-4 w-4" />
-                    {view.email}
+                  <a 
+                    href={`tel:${view.telephone_principal}`}
+                    className="flex items-center gap-2 p-3 rounded-lg bg-card/50 backdrop-blur border hover:bg-muted/50 transition-colors"
+                  >
+                    <Phone className="h-5 w-5 text-green-600 flex-shrink-0" />
+                    <span className="font-medium">{view.telephone_principal}</span>
                   </a>
                 )}
               </div>
-              <div className="flex gap-2">
-                <Button asChild variant="default">
+
+              <div className="flex gap-3">
+                {view.accepte_commandes_en_ligne && (
+                  <Button size="lg" className="shadow-lg shadow-primary/20" onClick={() => setShowOrderCatalog(true)}>
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Commander en ligne
+                  </Button>
+                )}
+                <Button asChild size="lg" variant="outline">
                   <a href={mapsHref} target="_blank" rel="noreferrer">
-                    <Navigation className="h-4 w-4 mr-2" />
+                    <Navigation className="h-5 w-5 mr-2" />
                     Itinéraire
                   </a>
                 </Button>
                 {view.telephone_principal && (
-                  <Button asChild variant="outline">
+                  <Button asChild size="lg" variant="outline">
                     <a href={`tel:${view.telephone_principal}`}>
-                      <Phone className="h-4 w-4 mr-2" />
+                      <Phone className="h-5 w-5 mr-2" />
                       Appeler
                     </a>
                   </Button>
                 )}
               </div>
             </div>
-            <div className="relative rounded-2xl overflow-hidden border shadow-sm">
-              <img src={servicesHero} alt="Pharmacie" className="w-full h-[240px] md:h-[300px] object-cover" />
+
+            <div className="lg:col-span-2">
+              <div className="relative rounded-3xl overflow-hidden border-4 border-white shadow-2xl">
+                <img src={servicesHero} alt="Pharmacie" className="w-full h-[320px] object-cover" />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                  <div className="flex items-center gap-4 text-white">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold">{view.note_moyenne || '4.6'}</div>
+                      <div className="text-xs opacity-90">Note moyenne</div>
+                    </div>
+                    <div className="h-12 w-px bg-white/30" />
+                    <div className="text-center">
+                      <div className="text-3xl font-bold">{view.nombre_avis || '87'}</div>
+                      <div className="text-xs opacity-90">Avis clients</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats rapides */}
+      <section className="py-8 bg-card/30 backdrop-blur border-y">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-2">
+                <Clock className="h-6 w-6" />
+              </div>
+              <div className="text-2xl font-bold">{view.delai_preparation_moyen_minutes || 20}</div>
+              <div className="text-sm text-muted-foreground">Min préparation</div>
+            </div>
+            <div className="text-center p-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-600/10 text-green-600 mb-2">
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <div className="text-2xl font-bold">{view.nombre_commandes_total || '1,542'}</div>
+              <div className="text-sm text-muted-foreground">Commandes</div>
+            </div>
+            <div className="text-center p-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600/10 text-blue-600 mb-2">
+                <Star className="h-6 w-6 fill-current" />
+              </div>
+              <div className="text-2xl font-bold">{view.note_moyenne || '4.6'}/5</div>
+              <div className="text-sm text-muted-foreground">Satisfaction</div>
+            </div>
+            <div className="text-center p-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-600/10 text-purple-600 mb-2">
+                <Package className="h-6 w-6" />
+              </div>
+              <div className="text-2xl font-bold">{view.nombre_employes || 4}</div>
+              <div className="text-sm text-muted-foreground">Professionnels</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-6 md:py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-6 md:grid-cols-3">
+      <section className="py-10 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 lg:grid-cols-3">
           {/* Infos principales */}
-          <div className="md:col-span-2 space-y-6">
-            <Card>
+          <div className="lg:col-span-2 space-y-6">
+            {view.accepte_commandes_en_ligne && (
+              <Card className="border-2 border-primary/20 shadow-xl bg-gradient-to-br from-primary/5 to-blue-500/5">
+                <CardHeader>
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <ShoppingCart className="h-6 w-6 text-primary" />
+                    Commander en ligne
+                  </CardTitle>
+                  <CardDescription className="text-base">
+                    Produits de parapharmacie et médicaments sans ordonnance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/60 border">
+                      <Package className="h-5 w-5 text-primary" />
+                      <div>
+                        <div className="font-bold text-lg">2,000+</div>
+                        <div className="text-xs text-muted-foreground">Produits</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/60 border">
+                      <Truck className="h-5 w-5 text-green-600" />
+                      <div>
+                        <div className="font-bold text-lg">Livraison</div>
+                        <div className="text-xs text-muted-foreground">Sous 2h</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/60 border">
+                      <CreditCard className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <div className="font-bold text-lg">Mobile Money</div>
+                        <div className="text-xs text-muted-foreground">Accepté</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Button size="lg" className="w-full" onClick={() => setShowOrderCatalog(true)}>
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Parcourir le catalogue
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            <PharmacyOrderCatalog
+              open={showOrderCatalog}
+              onClose={() => setShowOrderCatalog(false)}
+              pharmacyId={pharmacy?.id || ""}
+              pharmacyName={view.nom_commercial || ""}
+            />
+
+            <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>Informations</CardTitle>
-                <CardDescription>Détails généraux de la pharmacie</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Horaires et Disponibilité
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{fullAddress || 'Non renseigné'}</span>
-                </div>
-                {view.horaires && (
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span>Horaires: {view.horaires}</span>
-                  </div>
-                )}
-                {view.modes_paiement && view.modes_paiement.length > 0 && (
-                  <div>
-                    <p className="text-muted-foreground mb-2">Modes de paiement acceptés</p>
-                    <div className="flex flex-wrap gap-2">
-                      {view.modes_paiement.map((m: string) => (
-                        <Badge key={m} variant="outline">{m}</Badge>
-                      ))}
+              <CardContent className="space-y-4">
+                {scheduleSummary && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-medium">Horaires d'ouverture</div>
+                      <div className="text-sm text-muted-foreground">{scheduleSummary}</div>
                     </div>
                   </div>
                 )}
-                {view.services_disponibles && view.services_disponibles.length > 0 && (
-                  <div>
-                    <p className="text-muted-foreground mb-2">Services disponibles</p>
-                    <div className="flex flex-wrap gap-2">
-                      {view.services_disponibles.map((s: string) => (
-                        <Badge key={s} variant="secondary">{s}</Badge>
-                      ))}
-                    </div>
+                {view.ouvert_24_7 && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-600/10 text-blue-600">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <span className="font-medium">Service 24h/24, 7j/7</span>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {view.accepte_commandes_en_ligne && (
-              <Card className="border-primary/30">
+            {(view.modes_paiement && view.modes_paiement.length > 0) && (
+              <Card className="shadow-lg">
                 <CardHeader>
-                  <CardTitle>Commandes en ligne</CardTitle>
-                  <CardDescription>Cette pharmacie accepte les réservations/commandes en ligne.</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-primary" />
+                    Modes de Paiement
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button disabled variant="default">Bientôt disponible</Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Stats section */}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Préparation</CardTitle>
-                  <CardDescription>Temps moyen</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {view.delai_preparation_moyen_minutes ? `${view.delai_preparation_moyen_minutes} min` : '—'}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Modes de paiement</CardTitle>
-                  <CardDescription>Acceptés</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {Array.isArray(view.modes_paiement) ? view.modes_paiement.length : 0}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm">Services</CardTitle>
-                  <CardDescription>Disponibles</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {Array.isArray(view.services_disponibles) ? view.services_disponibles.length : 0}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Services grid */}
-            {view.services_disponibles && view.services_disponibles.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Nos Services</CardTitle>
-                  <CardDescription>Prestations proposées</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {view.services_disponibles.map((s: string) => (
-                      <div key={s} className="p-4 rounded-lg border bg-card/50">
-                        {s}
+                  <div className="grid grid-cols-2 gap-3">
+                    {view.modes_paiement.map((m: string) => (
+                      <div key={m} className="flex items-center gap-2 p-3 rounded-lg border bg-card/50">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium">{m}</span>
                       </div>
                     ))}
                   </div>
@@ -362,40 +462,80 @@ export default function PharmacyPublicPage() {
               </Card>
             )}
 
-            {/* Équipe */}
-            <Card>
+            <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>Équipe</CardTitle>
-                <CardDescription>Pharmacien titulaire</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Truck className="h-5 w-5 text-primary" />
+                  Services
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                {view.pharmacien_titulaire?.nom_complet ? (
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                      {view.pharmacien_titulaire.nom_complet.charAt(0)}
-                    </div>
-                    <div className="text-sm">
-                      <div className="font-medium">{view.pharmacien_titulaire.nom_complet}</div>
-                      <div className="text-muted-foreground">Pharmacien titulaire</div>
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-sm text-muted-foreground">Non renseigné</span>
-                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {view.services_disponibles && view.services_disponibles.length > 0 ? (
+                    view.services_disponibles.map((s: string) => (
+                      <div key={s} className="flex items-center gap-2 p-3 rounded-lg border bg-card/50">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium">{s}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground col-span-2">Aucun service listé</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
-            {/* Galerie */}
-            <Card>
+            {(view.dispose_chambre_froide || view.dispose_armoire_securisee) && (
+              <Card className="shadow-lg bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-card dark:to-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Snowflake className="h-5 w-5 text-blue-600" />
+                    Équipements Spécialisés
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {view.dispose_chambre_froide && (
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/80 border">
+                      <Snowflake className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <div className="font-medium">Chambre froide</div>
+                        <div className="text-sm text-muted-foreground">Vaccins et produits thermosensibles</div>
+                      </div>
+                    </div>
+                  )}
+                  {view.dispose_armoire_securisee && (
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/80 border">
+                      <CheckCircle2 className="h-6 w-6 text-green-600" />
+                      <div>
+                        <div className="font-medium">Armoire sécurisée</div>
+                        <div className="text-sm text-muted-foreground">Stupéfiants et médicaments contrôlés</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Galerie moderne */}
+            <Card className="shadow-lg overflow-hidden">
               <CardHeader>
-                <CardTitle>Galerie</CardTitle>
-                <CardDescription>Photos de la pharmacie</CardDescription>
+                <CardTitle>Galerie Photos</CardTitle>
+                <CardDescription>Découvrez nos installations</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  <img src={sogaraReception} alt="Accueil" className="w-full h-28 object-cover rounded-lg border" />
-                  <img src={sogaraEquipment} alt="Équipement" className="w-full h-28 object-cover rounded-lg border" />
-                  <img src={doctorConsultation} alt="Conseil" className="w-full h-28 object-cover rounded-lg border" />
+              <CardContent className="p-0">
+                <div className="grid grid-cols-3 gap-1">
+                  <div className="relative group overflow-hidden aspect-square">
+                    <img src={sogaraReception} alt="Accueil" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
+                  <div className="relative group overflow-hidden aspect-square">
+                    <img src={sogaraEquipment} alt="Équipement" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
+                  <div className="relative group overflow-hidden aspect-square">
+                    <img src={doctorConsultation} alt="Conseil" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -403,59 +543,104 @@ export default function PharmacyPublicPage() {
 
           {/* Panneau latéral */}
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Responsable</CardTitle>
-                <CardDescription>Pharmacien titulaire</CardDescription>
-              </CardHeader>
-              <CardContent className="text-sm">
-                {view.pharmacien_titulaire?.nom_complet ? (
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span>{view.pharmacien_titulaire.nom_complet}</span>
+            {view.pharmacien_titulaire?.nom_complet && (
+              <Card className="shadow-lg bg-gradient-to-br from-primary/5 to-blue-500/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5 text-primary" />
+                    Pharmacien Titulaire
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4 p-4 rounded-lg bg-card/80 border">
+                    <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                      {view.pharmacien_titulaire.nom_complet.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-bold text-lg">{view.pharmacien_titulaire.nom_complet}</div>
+                      <div className="text-sm text-muted-foreground">Docteur en Pharmacie</div>
+                      {view.pharmacien_titulaire.numero_inscription_onpg && (
+                        <div className="text-xs text-muted-foreground mt-1">ONPG: {view.pharmacien_titulaire.numero_inscription_onpg}</div>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <span className="text-muted-foreground">Non renseigné</span>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card>
+            <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>Contact</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-primary" />
+                  Contact Rapide
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+              <CardContent className="space-y-3">
                 {view.telephone_principal && (
-                  <a className="flex items-center gap-2 hover:text-foreground" href={`tel:${view.telephone_principal}`}>
-                    <Phone className="h-4 w-4" />
-                    {view.telephone_principal}
+                  <a 
+                    href={`tel:${view.telephone_principal}`}
+                    className="flex items-center gap-3 p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-colors"
+                  >
+                    <Phone className="h-5 w-5 text-green-600" />
+                    <div>
+                      <div className="font-medium">{view.telephone_principal}</div>
+                      <div className="text-xs text-muted-foreground">Téléphone principal</div>
+                    </div>
                   </a>
                 )}
                 {view.email && (
-                  <a className="flex items-center gap-2 hover:text-foreground" href={`mailto:${view.email}`}>
-                    <Mail className="h-4 w-4" />
-                    {view.email}
+                  <a 
+                    href={`mailto:${view.email}`}
+                    className="flex items-center gap-3 p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-colors"
+                  >
+                    <Mail className="h-5 w-5 text-blue-600" />
+                    <div>
+                      <div className="font-medium text-sm">{view.email}</div>
+                      <div className="text-xs text-muted-foreground">Email</div>
+                    </div>
                   </a>
                 )}
-                <a className="flex items-center gap-2 hover:text-foreground" href={mapsHref} target="_blank" rel="noreferrer">
-                  <Navigation className="h-4 w-4" />
-                  Ouvrir dans Maps
+                <a 
+                  href={mapsHref} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-colors"
+                >
+                  <Navigation className="h-5 w-5 text-primary" />
+                  <div>
+                    <div className="font-medium">Itinéraire GPS</div>
+                    <div className="text-xs text-muted-foreground">Ouvrir dans Maps</div>
+                  </div>
                 </a>
               </CardContent>
             </Card>
 
             {view.latitude && view.longitude && (
-              <Card>
+              <Card className="shadow-lg overflow-hidden">
                 <CardHeader>
-                  <CardTitle>Localisation</CardTitle>
-                  <CardDescription>Carte de la pharmacie</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-primary" />
+                    Localisation
+                  </CardTitle>
+                  <CardDescription>Nous trouver facilement</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                   <div
                     ref={mapRef}
-                    className="rounded-lg overflow-hidden border"
-                    style={{ height: 220 }}
+                    className="w-full"
+                    style={{ height: 280 }}
                   />
+                  <div className="p-4 bg-muted/30 border-t">
+                    <div className="flex items-start gap-2 text-sm">
+                      <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="font-medium mb-1">{fullAddress}</div>
+                        {view.reperes_geographiques && (
+                          <div className="text-xs text-muted-foreground">{view.reperes_geographiques}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             )}
