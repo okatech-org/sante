@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ImportMedicamentsButton } from "./ImportMedicamentsButton";
 
 export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
@@ -58,6 +59,17 @@ export const MedicamentsList = () => {
 
   return (
     <div className="space-y-6">
+      {/* En-tête avec bouton d'import */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Dépôt Pharmaceutique</h2>
+          <p className="text-muted-foreground">
+            Gestion nationale des médicaments
+          </p>
+        </div>
+        <ImportMedicamentsButton />
+      </div>
+
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
