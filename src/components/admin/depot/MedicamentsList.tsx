@@ -19,8 +19,8 @@ export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
   const [page, setPage] = useState(0);
-  const [showAll, setShowAll] = useState(false);
-  const limit = showAll ? 1000 : 156; // Charger jusqu'à 1000 médicaments si "Tout afficher"
+  const [showAll, setShowAll] = useState(true);
+  const limit = showAll ? 1000 : 156; // Charger jusqu'à 1000 médicaments par défaut
   
   // Valeur du select (utilise "all" pour afficher mais filtre avec "")
   const selectValue = classeFilter || "all";
