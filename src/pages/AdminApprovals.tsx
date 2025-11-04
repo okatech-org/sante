@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Clock, CheckCircle, XCircle, Search, Shield, FileText, User, Mail, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
@@ -55,6 +56,7 @@ const typeColors: Record<string, string> = {
 
 export default function AdminApprovals() {
   const { isSuperAdmin } = useOfflineAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [approvals, setApprovals] = useState<PendingApproval[]>([]);
   const [filteredApprovals, setFilteredApprovals] = useState<PendingApproval[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,8 +68,10 @@ export default function AdminApprovals() {
   const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
+    if (!authLoading && user) {
     loadApprovals();
-  }, []);
+    }
+  }, [authLoading, user]);
 
   useEffect(() => {
     filterApprovals();
@@ -280,6 +284,22 @@ export default function AdminApprovals() {
               <Shield className="w-16 h-16 mx-auto mb-4 text-destructive" />
               <h2 className="text-2xl font-bold mb-2">Accès refusé</h2>
               <p className="text-muted-foreground">Seuls les super admins peuvent accéder à cette page.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </SuperAdminLayoutSimple>
+    );
+  }
+
+  if (!authLoading && !user) {
+    return (
+      <SuperAdminLayoutSimple>
+        <div className="flex items-center justify-center min-h-screen">
+          <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+            <CardContent className="p-8 text-center">
+              <Shield className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <h2 className="text-2xl font-bold mb-2">Authentification requise</h2>
+              <p className="text-muted-foreground">Veuillez vous connecter pour charger les demandes en attente.</p>
             </CardContent>
           </Card>
         </div>

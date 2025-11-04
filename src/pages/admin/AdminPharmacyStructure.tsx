@@ -52,9 +52,17 @@ export default function AdminPharmacyStructure() {
   const [detailOpen, setDetailOpen] = useState<boolean>(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [searchExtraById, setSearchExtraById] = useState<Record<string, { est_generique: boolean | null; classe_therapeutique: string | null }>>({});
+  const [medDepotAvailable, setMedDepotAvailable] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('med_depot_unavailable') ? false : true;
+    } catch {
+      return true;
+    }
+  });
 
   // Chargement initial d'un échantillon de produits (sans recherche)
   useEffect(() => {
+    if (!medDepotAvailable || activeTab !== 'depot') return;
     const loadInitial = async () => {
       setLoadingMeds(true);
       try {
@@ -66,13 +74,18 @@ export default function AdminPharmacyStructure() {
         if (error) throw error;
         setInitialMeds(prev => initialOffset === 0 ? (Array.isArray(data) ? data : []) : [...prev, ...((Array.isArray(data) ? data : []))]);
       } catch (e: any) {
-        toast.error('Erreur chargement dépôt pharmaceutique', { description: e.message });
+        const msg = (e?.message || '').toLowerCase();
+        if (e?.status === 404 || e?.code === '404' || msg.includes('not found') || msg.includes('does not exist') || msg.includes('relation')) {
+          setMedDepotAvailable(false);
+          try { localStorage.setItem('med_depot_unavailable', '1'); } catch {}
+        }
+        toast.error('Erreur chargement dépôt pharmaceutique', { description: e?.message || 'Ressource introuvable' });
       } finally {
         setLoadingMeds(false);
       }
     };
     loadInitial();
-  }, [initialOffset]);
+  }, [initialOffset, medDepotAvailable, activeTab]);
 
   useEffect(() => {
     const run = async () => {
@@ -106,6 +119,7 @@ export default function AdminPharmacyStructure() {
 
   // Enrichir les résultats de recherche si des filtres nécessitent des champs supplémentaires
   useEffect(() => {
+    if (!medDepotAvailable || activeTab !== 'depot') return;
     const needExtras = genericOnly || (classeQuery.trim().length > 0);
     if (!needExtras || medResults.length === 0) return;
     const missingIds = medResults
@@ -128,7 +142,7 @@ export default function AdminPharmacyStructure() {
         // silencieux
       }
     })();
-  }, [genericOnly, classeQuery, medResults]);
+  }, [genericOnly, classeQuery, medResults, medDepotAvailable, activeTab]);
 
   const allFormes = useMemo(() => {
     const src = (query.trim().length >= 2 ? medResults : initialMeds) as any[];
@@ -140,7 +154,7 @@ export default function AdminPharmacyStructure() {
   const displayedMeds = useMemo(() => {
     const base = (query.trim().length >= 2 ? medResults.map((m: any) => ({ ...m, ...searchExtraById[m.id] })) : initialMeds) as any[];
     return base.filter((m: any) => {
-      if (selectedForme && m.forme_pharmaceutique !== selectedForme) return false;
+      if (selectedForme && selectedForme !== 'all' && m.forme_pharmaceutique !== selectedForme) return false;
       if (ordonnanceOnly && !m.necessite_ordonnance) return false;
       if (genericOnly && !m.est_generique) return false;
       if (classeQuery && !(m.classe_therapeutique || '').toLowerCase().includes(classeQuery.toLowerCase())) return false;
@@ -277,6 +291,14 @@ export default function AdminPharmacyStructure() {
 
           {/* Onglet Dépôt Pharmaceutique */}
           <TabsContent value="depot" className="mt-6 space-y-4">
+            {!medDepotAvailable ? (
+              <Card>
+                <CardContent className="py-10 text-center text-sm text-muted-foreground">
+                  Dépôt pharmaceutique non initialisé. Appliquez la migration « 20251104_apis_medicaments.sql » sur votre projet Supabase pour activer cette section.
+                </CardContent>
+              </Card>
+            ) : (
+            <>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className="relative flex-1 max-w-xl">
@@ -300,7 +322,7 @@ export default function AdminPharmacyStructure() {
                   <Select value={selectedForme} onValueChange={setSelectedForme}>
                     <SelectTrigger className="w-[220px]"><SelectValue placeholder="Toutes les formes" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Toutes les formes</SelectItem>
+                      <SelectItem value="all">Toutes les formes</SelectItem>
                       {allFormes.map(f => (<SelectItem key={f} value={f}>{f}</SelectItem>))}
                     </SelectContent>
                   </Select>
@@ -379,6 +401,8 @@ export default function AdminPharmacyStructure() {
             </div>
 
             <MedicationDetailModal open={detailOpen} onClose={() => setDetailOpen(false)} medId={detailId} />
+            </>
+            )}
           </TabsContent>
         </Tabs>
       </div>
