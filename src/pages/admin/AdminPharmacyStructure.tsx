@@ -13,7 +13,7 @@ import { Establishment } from "@/types/establishment";
 import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MedicationDetailModal } from "@/components/admin/pharmacy/MedicationDetailModal";
+import { MedicamentsList } from "@/components/admin/depot/MedicamentsList";
 
 type PharmacyRow = {
   id: string;
@@ -291,118 +291,7 @@ export default function AdminPharmacyStructure() {
 
           {/* Onglet Dépôt Pharmaceutique */}
           <TabsContent value="depot" className="mt-6 space-y-4">
-            {!medDepotAvailable ? (
-              <Card>
-                <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                  Dépôt pharmaceutique non initialisé. Appliquez la migration « 20251104_apis_medicaments.sql » sur votre projet Supabase pour activer cette section.
-                </CardContent>
-              </Card>
-            ) : (
-            <>
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-xl">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Rechercher un produit (ex: paracétamol, amoxicilline, ibuprofène...)"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-                <Badge variant="secondary" className="hidden md:inline-flex items-center gap-1">
-                  <Package className="h-3 w-3" />
-                  {displayedMeds.length} produits
-                </Badge>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
-                  <Select value={selectedForme} onValueChange={setSelectedForme}>
-                    <SelectTrigger className="w-[220px]"><SelectValue placeholder="Toutes les formes" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Toutes les formes</SelectItem>
-                      {allFormes.map(f => (<SelectItem key={f} value={f}>{f}</SelectItem>))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Sur ordonnance</span>
-                  <Switch checked={ordonnanceOnly} onCheckedChange={setOrdonnanceOnly} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Génériques</span>
-                  <Switch checked={genericOnly} onCheckedChange={setGenericOnly} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Classe thérapeutique"
-                    value={classeQuery}
-                    onChange={(e) => setClasseQuery(e.target.value)}
-                    className="w-[240px]"
-                  />
-                </div>
-                <Button variant="outline" size="sm" onClick={handleResetFilters}>
-                  <RefreshCw className="h-4 w-4 mr-2" /> Réinitialiser
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {displayedMeds.map((m: any) => (
-                <Card key={m.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {m.dci || m.nom_commercial}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-1 text-sm">
-                    {m.nom_commercial && (
-                      <div className="text-muted-foreground">Nom commercial: {m.nom_commercial}</div>
-                    )}
-                    <div className="text-muted-foreground">Forme: {m.forme_pharmaceutique || 'NC'}</div>
-                    {m.dosage && <div className="text-muted-foreground">Dosage: {m.dosage}</div>}
-                    <div className="font-semibold">
-                      {m.prix_moyen_pharmacie ? `${m.prix_moyen_pharmacie.toLocaleString()} FCFA` : 'Prix: NC'}
-                    </div>
-                    {m.necessite_ordonnance && (
-                      <Badge variant="secondary" className="text-xs">Sur ordonnance</Badge>
-                    )}
-                    <div className="pt-2">
-                      <Button variant="outline" size="sm" onClick={() => { setDetailId(m.id); setDetailOpen(true); }}>Voir détails</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            {query.trim().length < 2 && !loadingMeds && initialMeds.length === 0 && (
-              <Card>
-                <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                  Aucun produit disponible dans le dépôt.
-                </CardContent>
-              </Card>
-            )}
-            {loadingMeds && (
-              <div className="flex items-center justify-center py-10">
-                <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
-            <div className="flex justify-center pt-2">
-              {query.trim().length >= 2 ? (
-                <Button variant="outline" size="sm" onClick={() => setSearchLimit(prev => prev + 20)}>
-                  <RefreshCw className="h-4 w-4 mr-2" /> Voir plus
-                </Button>
-              ) : (
-                <Button variant="outline" size="sm" onClick={() => setInitialOffset(prev => prev + initialPageSize)} disabled={loadingMeds}>
-                  <RefreshCw className="h-4 w-4 mr-2" /> Voir plus
-                </Button>
-              )}
-            </div>
-
-            <MedicationDetailModal open={detailOpen} onClose={() => setDetailOpen(false)} medId={detailId} />
-            </>
-            )}
+            <MedicamentsList />
           </TabsContent>
         </Tabs>
       </div>
