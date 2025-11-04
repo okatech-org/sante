@@ -47,7 +47,7 @@ interface UseMedicamentsOptions {
 }
 
 export const useMedicaments = (options: UseMedicamentsOptions = {}) => {
-  const { limit = 50, offset = 0, search, classe_therapeutique, statut = 'actif' } = options;
+  const { limit = 1000, offset = 0, search, classe_therapeutique, statut = 'actif' } = options;
 
   return useQuery({
     queryKey: ["medicaments", limit, offset, search, classe_therapeutique, statut],
