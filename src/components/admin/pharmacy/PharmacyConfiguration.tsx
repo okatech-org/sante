@@ -54,8 +54,8 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
             ouvert_24_7: data.ouvert_24_7 || false,
             conventionnement_cnamgs: data.conventionnement_cnamgs || false,
           });
-          setModesPaiement(Array.isArray(data.modes_paiement) ? data.modes_paiement : []);
-          setServicesDisponibles(Array.isArray(data.services_disponibles) ? data.services_disponibles : []);
+          setModesPaiement(Array.isArray(data.modes_paiement) ? (data.modes_paiement as string[]) : []);
+          setServicesDisponibles(Array.isArray(data.services_disponibles) ? (data.services_disponibles as string[]) : []);
         }
       } catch (err) {
         console.error(err);

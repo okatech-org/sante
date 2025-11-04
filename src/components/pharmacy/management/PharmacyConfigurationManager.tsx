@@ -105,7 +105,7 @@ export function PharmacyConfigurationManager({ pharmacy, onUpdate }: PharmacyCon
             <Label htmlFor="type_structure">Type de Structure *</Label>
             <Select 
               value={typeStructure} 
-              onValueChange={setTypeStructure}
+              onValueChange={(value) => setTypeStructure(value as typeof typeStructure)}
               disabled={!isEditing}
             >
               <SelectTrigger>

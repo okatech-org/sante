@@ -856,6 +856,99 @@ export type Database = {
         }
         Relationships: []
       }
+      medicaments: {
+        Row: {
+          classe_therapeutique: string | null
+          code_atc: string | null
+          code_cip: string | null
+          conditionnement: string | null
+          date_ajout: string | null
+          date_amm: string | null
+          date_modification: string | null
+          dci: string | null
+          dosage: string | null
+          est_generique: boolean | null
+          famille_pharmacologique: string | null
+          forme_pharmaceutique: string | null
+          id: string
+          image_url: string | null
+          laboratoire_fabricant: string | null
+          necessite_ordonnance: boolean | null
+          nom_commercial: string | null
+          notice_url: string | null
+          numero_amm: string | null
+          pays_origine: string | null
+          prix_moyen_pharmacie: number | null
+          search_vector: unknown
+          statut: string | null
+          stupefiant: boolean | null
+          substance_controlee: boolean | null
+          tarif_conventionne_cnamgs: number | null
+          tarif_reference: string | null
+          voie_administration: string | null
+        }
+        Insert: {
+          classe_therapeutique?: string | null
+          code_atc?: string | null
+          code_cip?: string | null
+          conditionnement?: string | null
+          date_ajout?: string | null
+          date_amm?: string | null
+          date_modification?: string | null
+          dci?: string | null
+          dosage?: string | null
+          est_generique?: boolean | null
+          famille_pharmacologique?: string | null
+          forme_pharmaceutique?: string | null
+          id?: string
+          image_url?: string | null
+          laboratoire_fabricant?: string | null
+          necessite_ordonnance?: boolean | null
+          nom_commercial?: string | null
+          notice_url?: string | null
+          numero_amm?: string | null
+          pays_origine?: string | null
+          prix_moyen_pharmacie?: number | null
+          search_vector?: unknown
+          statut?: string | null
+          stupefiant?: boolean | null
+          substance_controlee?: boolean | null
+          tarif_conventionne_cnamgs?: number | null
+          tarif_reference?: string | null
+          voie_administration?: string | null
+        }
+        Update: {
+          classe_therapeutique?: string | null
+          code_atc?: string | null
+          code_cip?: string | null
+          conditionnement?: string | null
+          date_ajout?: string | null
+          date_amm?: string | null
+          date_modification?: string | null
+          dci?: string | null
+          dosage?: string | null
+          est_generique?: boolean | null
+          famille_pharmacologique?: string | null
+          forme_pharmaceutique?: string | null
+          id?: string
+          image_url?: string | null
+          laboratoire_fabricant?: string | null
+          necessite_ordonnance?: boolean | null
+          nom_commercial?: string | null
+          notice_url?: string | null
+          numero_amm?: string | null
+          pays_origine?: string | null
+          prix_moyen_pharmacie?: number | null
+          search_vector?: unknown
+          statut?: string | null
+          stupefiant?: boolean | null
+          substance_controlee?: boolean | null
+          tarif_conventionne_cnamgs?: number | null
+          tarif_reference?: string | null
+          voie_administration?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           allow_reply: boolean | null
@@ -2875,6 +2968,22 @@ export type Database = {
       }
       postgis_version: { Args: never; Returns: string }
       postgis_wagyu_version: { Args: never; Returns: string }
+      search_medicaments: {
+        Args: { p_limit?: number; p_query: string }
+        Returns: {
+          classe_therapeutique: string
+          dci: string
+          dosage: string
+          est_generique: boolean
+          forme_pharmaceutique: string
+          id: string
+          image_url: string
+          necessite_ordonnance: boolean
+          nom_commercial: string
+          prix_moyen_pharmacie: number
+          tarif_conventionne_cnamgs: number
+        }[]
+      }
       st_3dclosestpoint: {
         Args: { geom1: unknown; geom2: unknown }
         Returns: unknown
