@@ -271,56 +271,131 @@ export interface EstablishmentFormData {
   hasLaboratory: boolean;
 }
 
-// Données de segmentation intelligente
+// Données de segmentation intelligente avec exemples détaillés
 export const ESTABLISHMENT_SEGMENTS = {
   governmental: {
     label: 'Institutions Gouvernementales',
     icon: '🏛️',
     color: 'blue',
     priority: 1,
-    description: 'Ministères et organismes publics de santé'
+    description: 'Ministères et organismes publics de santé',
+    examples: [
+      'Ministère de la Santé',
+      'Direction Générale de la Santé',
+      'CNAMGS (Caisse Nationale d\'Assurance Maladie)',
+      'CNSS (Caisse Nationale de Sécurité Sociale)',
+      'DPML (Direction de la Pharmacie et du Médicament)',
+      'ONPG (Ordre National des Pharmaciens)'
+    ]
   },
   tertiaryHospitals: {
     label: 'Hôpitaux de Référence',
     icon: '🏥',
     color: 'purple',
     priority: 2,
-    description: 'CHU, CHR - Soins tertiaires et quaternaires'
+    description: 'CHU, CHR - Soins tertiaires et quaternaires',
+    examples: [
+      'CHU de Libreville',
+      'CHU d\'Owendo',
+      'CHR de Franceville',
+      'CHR d\'Oyem',
+      'CHR de Port-Gentil',
+      'Hôpitaux militaires de référence'
+    ]
   },
   secondaryHospitals: {
     label: 'Hôpitaux Secondaires',
     icon: '🏨',
     color: 'green',
     priority: 3,
-    description: 'CHD, Hôpitaux départementaux'
+    description: 'CHD, Hôpitaux départementaux et régionaux',
+    examples: [
+      'CHD de Moanda',
+      'CHD de Lambaréné',
+      'CHD de Tchibanga',
+      'Hôpitaux départementaux',
+      'Hôpitaux régionaux',
+      'Hôpitaux confessionnels (mission, église)'
+    ]
   },
   primaryCare: {
     label: 'Soins Primaires',
     icon: '🏪',
     color: 'teal',
     priority: 4,
-    description: 'Centres de santé, dispensaires, cabinets'
+    description: 'Centres de santé, dispensaires, cabinets médicaux et paramédicaux',
+    examples: [
+      'Centres de santé intégrés',
+      'Centres médicaux de quartier',
+      'Dispensaires',
+      'Cabinets de médecins généralistes',
+      'Cabinets de pédiatres',
+      'Cabinets de gynécologues',
+      'Cabinets de kinésithérapeutes',
+      'Cabinets de psychologues',
+      'Cabinets d\'infirmiers',
+      'Cabinets de sages-femmes',
+      'Cabinets dentaires',
+      'Cabinets d\'ophtalmologues',
+      'Postes de santé communautaires'
+    ]
   },
   privateClinics: {
     label: 'Cliniques Privées',
     icon: '💼',
     color: 'orange',
     priority: 5,
-    description: 'Établissements privés et semi-privés'
+    description: 'Établissements privés et semi-privés',
+    examples: [
+      'Cliniques privées généralistes',
+      'Cliniques de chirurgie',
+      'Cliniques de maternité',
+      'Polycliniques',
+      'Centres médicaux privés',
+      'Cliniques dentaires privées',
+      'Centres d\'ophtalmologie privés'
+    ]
   },
   specializedCenters: {
     label: 'Centres Spécialisés',
     icon: '🔬',
     color: 'pink',
     priority: 6,
-    description: 'Centres spécialisés et de référence'
+    description: 'Centres spécialisés et de référence thématique',
+    examples: [
+      'Centre National de Transfusion Sanguine',
+      'Centres de lutte contre le VIH/SIDA',
+      'Centres de lutte contre la tuberculose',
+      'Centres de santé mentale',
+      'Centres de dialyse',
+      'Centres de cancérologie',
+      'Centres de rééducation',
+      'Centres de drépanocytose',
+      'Centres de diabétologie',
+      'Centres de cardiologie',
+      'Maternités spécialisées'
+    ]
   },
   supportServices: {
     label: 'Services de Support',
     icon: '🏭',
     color: 'gray',
     priority: 7,
-    description: 'Laboratoires, pharmacies, imagerie'
+    description: 'Laboratoires, pharmacies, imagerie et services annexes',
+    examples: [
+      'Pharmacies d\'officine',
+      'Pharmacies hospitalières',
+      'Pharmacies de dépôt',
+      'Laboratoires d\'analyses médicales',
+      'Laboratoires de biologie médicale',
+      'Centres d\'imagerie médicale',
+      'Centres de radiologie',
+      'Centres d\'échographie',
+      'Centres de scanner',
+      'Centres d\'IRM',
+      'Dépôts pharmaceutiques',
+      'Banques de sang'
+    ]
   }
 } as const;
 
