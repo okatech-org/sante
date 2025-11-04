@@ -30,6 +30,7 @@ export const MedicamentsList = () => {
     offset: 0,
     search: search || undefined,
     classe_therapeutique: classeFilter || undefined,
+    statut: 'all',
   });
 
   const formatPrice = (price: number | null) => {

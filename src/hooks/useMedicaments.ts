@@ -55,9 +55,12 @@ export const useMedicaments = (options: UseMedicamentsOptions = {}) => {
       let query = supabase
         .from("medicaments")
         .select("*", { count: "exact" })
-        .eq("statut", statut)
         .order("nom_commercial", { ascending: true })
         .range(offset, offset + limit - 1);
+
+      if (statut && statut !== 'all') {
+        query = query.eq("statut", statut);
+      }
 
       if (search) {
         query = query.or(
