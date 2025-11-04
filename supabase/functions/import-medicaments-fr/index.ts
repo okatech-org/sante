@@ -66,6 +66,10 @@ Deno.serve(async (req) => {
         const presentation = med.presentation?.[0];
         const composition = med.composition?.[0];
         
+        // Extraction du nom commercial (avant la virgule)
+        const nomComplet = med.elementPharmaceutique?.trim() || 'Non spécifié';
+        const nomCommercial = nomComplet.split(',')[0].trim();
+        
         // Conversion EUR → XAF (1 EUR ≈ 656 XAF)
         const tauxConversion = 656;
         const prixEur = presentation?.prix || 0;
@@ -74,7 +78,7 @@ Deno.serve(async (req) => {
         return {
           code_cip: presentation?.cip13?.toString() || presentation?.cip7?.toString() || med.cis?.toString(),
           code_atc: null, // Non fourni par l'API FR
-          nom_commercial: med.elementPharmaceutique?.trim() || 'Non spécifié',
+          nom_commercial: nomCommercial,
           dci: composition?.denominationSubstance?.trim() || null,
           forme_pharmaceutique: med.formePharmaceutique?.trim() || null,
           dosage: composition?.dosage?.trim() || null,
