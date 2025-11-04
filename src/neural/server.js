@@ -29,11 +29,44 @@ import notificationNeuron from './neurons/NotificationNeuron.js';
 const logger = new Logger('Server');
 const app = express();
 
+// Trust proxy (needed for correct IP when behind reverse proxy)
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+
 app.use(helmet());
-app.use(cors());
+
+// Strict CORS based on env allowlist
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:8081').split(',').map(o => o.trim());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow curl / health checks
+    const ok = allowedOrigins.includes(origin);
+    callback(ok ? null : new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 app.use(compression());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Lightweight in-memory rate limiter (per IP)
+const RATE_LIMIT_WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10); // 1 min
+const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX || '300', 10); // 300 req/min
+const buckets = new Map();
+app.use((req, res, next) => {
+  const now = Date.now();
+  const key = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+  let b = buckets.get(key);
+  if (!b || now - b.start > RATE_LIMIT_WINDOW_MS) {
+    b = { start: now, count: 0 };
+    buckets.set(key, b);
+  }
+  b.count += 1;
+  if (b.count > RATE_LIMIT_MAX) {
+    return res.status(429).json({ error: 'Too many requests' });
+  }
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
@@ -66,21 +99,22 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.get('/metrics/eventbus', (req, res) => {
+app.get('/metrics/eventbus', authenticate, authorize([UserRoles.ADMIN, UserRoles.SUPER_ADMIN]), (req, res) => {
   res.json(eventBus.getMetrics());
 });
 
-app.get('/events/history', (req, res) => {
+app.get('/events/history', authenticate, authorize([UserRoles.ADMIN, UserRoles.SUPER_ADMIN]), (req, res) => {
   const { limit = 100, type } = req.query;
-  res.json(eventBus.getHistory(parseInt(limit), type));
+  res.json(eventBus.getHistory(parseInt(limit, 10), type));
 });
 
 app.use((err, req, res, next) => {
   logger.error('Error:', err);
-  res.status(500).json({
-    error: 'Internal server error',
-    message: err.message
-  });
+  const payload = { error: 'Internal server error' };
+  if (config.env !== 'production') {
+    payload.message = err.message;
+  }
+  res.status(500).json(payload);
 });
 
 const start = async () => {

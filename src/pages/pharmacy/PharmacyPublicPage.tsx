@@ -44,9 +44,12 @@ export default function PharmacyPublicPage() {
     queryKey: ['pharmacyBySlug', idOrSlug],
     enabled: !!idOrSlug && !isUuid,
     queryFn: async () => {
-      // Rechercher par nom commercial dérivé du slug (sans dépendre de la colonne slug)
+      // Rechercher par nom commercial dérivé du slug (tolérant aux accents)
       const base = nameFromPharmacySlug(idOrSlug!).toLowerCase();
-      const tokens = base.split(/[^a-z0-9]+/).filter(Boolean);
+      const tokens = base
+        .split(/[^a-z0-9]+/)
+        .filter(Boolean)
+        .map(t => (t.length > 4 ? t.slice(0, t.length - 1) : t));
       const pattern = `%${tokens.join('%')}%`;
       const { data, error } = await supabase
         .from('pharmacies')
