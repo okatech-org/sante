@@ -20,7 +20,13 @@ const config = {
   },
 
   jwt: {
-    secret: process.env.JWT_SECRET || 'change-me-in-production',
+    secret: (() => {
+      const s = process.env.JWT_SECRET;
+      if (!s) {
+        throw new Error('[Config] Missing JWT_SECRET environment variable.');
+      }
+      return s;
+    })(),
     expiresIn: process.env.JWT_EXPIRES_IN || '24h'
   },
 

@@ -2,7 +2,10 @@ import jwt from 'jsonwebtoken';
 import Logger from '../core/Logger.js';
 
 const logger = new Logger('AuthMiddleware');
-const JWT_SECRET = process.env.JWT_SECRET || 'sante-ga-secret-change-in-production-2025';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('[AuthMiddleware] Missing JWT_SECRET environment variable. Set a strong secret before starting the server.');
+}
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 export const authenticateJWT = (req, res, next) => {
