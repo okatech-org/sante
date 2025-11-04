@@ -37,6 +37,11 @@ import {
   Calendar
 } from "lucide-react";
 import { PharmacyRolesTab } from "./PharmacyRolesTab";
+import { PharmacyStaffManagement } from "./pharmacy/PharmacyStaffManagement";
+import { PharmacyConfiguration } from "./pharmacy/PharmacyConfiguration";
+import { PharmacyBillingTab } from "./pharmacy/PharmacyBillingTab";
+import { PharmacyDashboard } from "./pharmacy/PharmacyDashboard";
+import { PharmacyLogsTab } from "./pharmacy/PharmacyLogsTab";
 
 interface EstablishmentDetailModalProps {
   isOpen: boolean;
@@ -162,17 +167,31 @@ export const EstablishmentDetailModal = ({
           </div>
         </DialogHeader>
 
-        <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className={`grid w-full ${establishment.category === 'pharmacie' ? 'grid-cols-7' : 'grid-cols-6'}`}>
-            <TabsTrigger value="overview">Général</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-            <TabsTrigger value="capacity">Capacités</TabsTrigger>
-            <TabsTrigger value="services">Services</TabsTrigger>
-            {establishment.category === 'pharmacie' && (
-              <TabsTrigger value="roles">Rôles</TabsTrigger>
+        <Tabs defaultValue={establishment.category === 'pharmacie' ? 'dashboard' : 'overview'} className="mt-6">
+          <TabsList className={`grid w-full ${establishment.category === 'pharmacie' ? 'grid-cols-10' : 'grid-cols-6'}`}>
+            {establishment.category === 'pharmacie' ? (
+              <>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                <TabsTrigger value="overview">Général</TabsTrigger>
+                <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+                <TabsTrigger value="configuration">Configuration</TabsTrigger>
+                <TabsTrigger value="billing">Facturation</TabsTrigger>
+                <TabsTrigger value="logs">Logs</TabsTrigger>
+                <TabsTrigger value="contact">Contact</TabsTrigger>
+                <TabsTrigger value="capacity">Capacités</TabsTrigger>
+                <TabsTrigger value="equipment">Équipements</TabsTrigger>
+                <TabsTrigger value="stats">Statistiques</TabsTrigger>
+              </>
+            ) : (
+              <>
+                <TabsTrigger value="overview">Général</TabsTrigger>
+                <TabsTrigger value="contact">Contact</TabsTrigger>
+                <TabsTrigger value="capacity">Capacités</TabsTrigger>
+                <TabsTrigger value="services">Services</TabsTrigger>
+                <TabsTrigger value="equipment">Équipements</TabsTrigger>
+                <TabsTrigger value="stats">Statistiques</TabsTrigger>
+              </>
             )}
-            <TabsTrigger value="equipment">Équipements</TabsTrigger>
-            <TabsTrigger value="stats">Statistiques</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -422,6 +441,30 @@ export const EstablishmentDetailModal = ({
               </CardContent>
             </Card>
           </TabsContent>
+
+          {establishment.category === 'pharmacie' && (
+            <>
+              <TabsContent value="dashboard" className="space-y-4">
+                <PharmacyDashboard pharmacyId={establishment.id} />
+              </TabsContent>
+
+              <TabsContent value="users" className="space-y-4">
+                <PharmacyStaffManagement pharmacyId={establishment.id} />
+              </TabsContent>
+
+              <TabsContent value="configuration" className="space-y-4">
+                <PharmacyConfiguration pharmacyId={establishment.id} />
+              </TabsContent>
+
+              <TabsContent value="billing" className="space-y-4">
+                <PharmacyBillingTab pharmacyId={establishment.id} />
+              </TabsContent>
+
+              <TabsContent value="logs" className="space-y-4">
+                <PharmacyLogsTab pharmacyId={establishment.id} />
+              </TabsContent>
+            </>
+          )}
 
           <TabsContent value="services" className="space-y-4">
             <Card>
