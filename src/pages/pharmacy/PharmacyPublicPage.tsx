@@ -39,34 +39,28 @@ export default function PharmacyPublicPage() {
     }
   }, [idOrSlug, navigate]);
   const isUuid = !!idOrSlug && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(idOrSlug);
-  const { data: pharmacyById } = usePharmacy(isUuid ? idOrSlug : undefined);
-  const { data: pharmacyBySlug } = useQuery({
+  const { data: pharmacyById, isLoading: isLoadingById, isError: isErrorById } = usePharmacy(isUuid ? idOrSlug : undefined);
+  const { data: pharmacyBySlug, isLoading: isLoadingBySlug, isError: isErrorBySlug } = useQuery({
     queryKey: ['pharmacyBySlug', idOrSlug],
     enabled: !!idOrSlug && !isUuid,
     queryFn: async () => {
-      const normalizedSlug = idOrSlug!.toLowerCase().replace(/_/g, '-');
+      // Rechercher par nom commercial dérivé du slug (sans dépendre de la colonne slug)
+      const base = nameFromPharmacySlug(idOrSlug!).toLowerCase();
+      const tokens = base.split(/[^a-z0-9]+/).filter(Boolean);
+      const pattern = `%${tokens.join('%')}%`;
       const { data, error } = await supabase
         .from('pharmacies')
         .select(`*, pharmacien_titulaire:professionnels_sante_pharmacie!pharmacien_titulaire_id(id,nom_complet,numero_inscription_onpg,photo_url,type_professionnel)`) 
-        .eq('slug', normalizedSlug)
+        .ilike('nom_commercial', pattern)
+        .limit(1)
         .maybeSingle();
       if (error) throw error;
-      // Fallback tolérant si slug non présent
-      if (!data) {
-        const base = nameFromPharmacySlug(idOrSlug!).toLowerCase();
-        const tokens = base.split(/[^a-z0-9]+/).filter(Boolean).map(t => t.length > 4 ? t.slice(0, t.length - 1) : t);
-        const pattern = `%${tokens.join('%')}%`;
-        const { data: fallback } = await supabase
-          .from('pharmacies')
-          .select(`*, pharmacien_titulaire:professionnels_sante_pharmacie!pharmacien_titulaire_id(id,nom_complet,numero_inscription_onpg,photo_url,type_professionnel)`) 
-          .ilike('nom_commercial', pattern)
-          .maybeSingle();
-        return fallback as any;
-      }
       return data as any;
     }
   });
   const pharmacy = pharmacyById || pharmacyBySlug;
+  const isLoading = Boolean(isLoadingById || isLoadingBySlug);
+  const isError = Boolean(isErrorById || isErrorBySlug);
   const [fallbackEst, setFallbackEst] = useState<Establishment | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -137,15 +131,15 @@ export default function PharmacyPublicPage() {
   // Charger un fallback depuis les établissements si la pharmacie n'existe pas
   useEffect(() => {
     const loadFallback = async () => {
-      if (!pharmacy && id) {
-        const est = await establishmentsService.getEstablishmentById(id);
+      if (!pharmacy && isUuid && idOrSlug) {
+        const est = await establishmentsService.getEstablishmentById(idOrSlug);
         if (est && (est.category === 'pharmacie' || /pharm|pharma/i.test(est.name))) {
           setFallbackEst(est);
         }
       }
     };
     loadFallback();
-  }, [pharmacy, id]);
+  }, [pharmacy, isUuid, idOrSlug]);
 
   if (isLoading) {
     return (

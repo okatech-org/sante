@@ -279,19 +279,19 @@ export function PharmacySearch() {
                         <Badge variant="default" className="text-xs">Ouvert</Badge>
                       )}
                     </div>
-                    <CardDescription className="space-y-1">
-                      <div className="flex items-center gap-1 text-sm">
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <div className="flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
                         {pharmacy.quartier && `${pharmacy.quartier}, `}
                         {pharmacy.ville}
                       </div>
                       {pharmacy.distance_km && (
-                        <div className="flex items-center gap-1 text-sm">
+                        <div className="flex items-center gap-1">
                           <Navigation className="h-3 w-3" />
                           {pharmacy.distance_km} km
                         </div>
                       )}
-                    </CardDescription>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex items-center gap-1 text-sm">

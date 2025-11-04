@@ -89,19 +89,19 @@ export const usePrescriptions = () => {
         const formattedPrescriptions: Prescription[] = (data || []).map((presc: any) => {
           const profile = profilesById[presc.patient_id];
           return {
-            id: presc.prescription_number || presc.id,
-            date: presc.issued_date,
+          id: presc.prescription_number || presc.id,
+          date: presc.issued_date,
             patient: profile?.full_name || "Patient",
-            medications: Array.isArray(presc.medications)
-              ? presc.medications.map((med: any) => ({
-                  name: med.name || med.medication_name || "Médicament",
-                  dosage: med.dosage || "1cp",
-                  duration: med.duration || "30j",
-                }))
-              : [],
-            status: presc.status || "active",
+          medications: Array.isArray(presc.medications)
+            ? presc.medications.map((med: any) => ({
+                name: med.name || med.medication_name || "Médicament",
+                dosage: med.dosage || "1cp",
+                duration: med.duration || "30j",
+              }))
+            : [],
+          status: presc.status || "active",
             cnamgs: profile?.cnamgs_number || null,
-            pharmacy: presc.pharmacies?.name || null,
+          pharmacy: presc.pharmacies?.name || null,
           };
         });
 

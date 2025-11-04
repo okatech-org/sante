@@ -133,7 +133,7 @@ export function PrescriptionModal({ open, onClose }: PrescriptionModalProps) {
       if (insertError) throw insertError;
 
       toast.success("Ordonnance créée", { description: `Numéro: ${prescNumber}` });
-      onClose();
+    onClose();
       // reset
       setSelectedPatient(null);
       setPatientSearch("");
