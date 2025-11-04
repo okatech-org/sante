@@ -18,9 +18,7 @@ import {
 export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
-  const [page, setPage] = useState(0);
-  const [showAll, setShowAll] = useState(true);
-  const limit = showAll ? 1000 : 156; // Charger jusqu'à 1000 médicaments par défaut
+  const limit = 1000; // Charger 1000 médicaments
   
   // Valeur du select (utilise "all" pour afficher mais filtre avec "")
   const selectValue = classeFilter || "all";
@@ -29,7 +27,7 @@ export const MedicamentsList = () => {
   const { data: classes } = useClassesTherapeutiques();
   const { data, isLoading, error } = useMedicaments({
     limit,
-    offset: page * limit,
+    offset: 0,
     search: search || undefined,
     classe_therapeutique: classeFilter || undefined,
   });
@@ -129,7 +127,6 @@ export const MedicamentsList = () => {
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value);
-                    setPage(0);
                   }}
                   className="pl-10"
                 />
@@ -140,7 +137,6 @@ export const MedicamentsList = () => {
               value={selectValue}
               onValueChange={(value) => {
                 setClasseFilter(value === "all" ? "" : value);
-                setPage(0);
               }}
             >
               <SelectTrigger className="w-full md:w-[250px]">
@@ -245,71 +241,15 @@ export const MedicamentsList = () => {
             </div>
           </TableCell>
         </TableRow>
-      ))}
-      {!showAll && data && data.total > limit && (
-        <TableRow>
-          <TableCell colSpan={8} className="text-center py-4">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowAll(true);
-                setPage(0);
-              }}
-            >
-              <Package className="h-4 w-4 mr-2" />
-              Charger tous les médicaments ({data.total} au total)
-            </Button>
-          </TableCell>
-        </TableRow>
-      )}
+                  ))}
                 </TableBody>
               </Table>
 
-              {/* Pagination */}
-              {!showAll && (
-                <div className="flex items-center justify-between mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    Page {page + 1} sur {Math.ceil((data?.total || 0) / limit)}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage((p) => Math.max(0, p - 1))}
-                      disabled={page === 0}
-                    >
-                      Précédent
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPage((p) => p + 1)}
-                      disabled={page >= Math.ceil((data?.total || 0) / limit) - 1}
-                    >
-                      Suivant
-                    </Button>
-                  </div>
-                </div>
-              )}
-              
-              {showAll && (
-                <div className="text-center mt-4">
-                  <p className="text-sm text-muted-foreground">
-                    Affichage de tous les médicaments ({data?.total || 0})
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setShowAll(false);
-                      setPage(0);
-                    }}
-                    className="mt-2"
-                  >
-                    Afficher par pages
-                  </Button>
-                </div>
-              )}
+              <div className="text-center mt-4">
+                <p className="text-sm text-muted-foreground">
+                  Affichage de {data?.medicaments.length || 0} médicaments sur {data?.total || 0} au total
+                </p>
+              </div>
             </>
           )}
         </CardContent>
