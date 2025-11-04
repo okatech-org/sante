@@ -20,6 +20,9 @@ export const MedicamentsList = () => {
   const [classeFilter, setClasseFilter] = useState<string>("");
   const [page, setPage] = useState(0);
   const limit = 20;
+  
+  // Valeur du select (utilise "all" pour afficher mais filtre avec "")
+  const selectValue = classeFilter || "all";
 
   const { data: statsData } = useMedicamentStats();
   const { data: classes } = useClassesTherapeutiques();
@@ -133,9 +136,9 @@ export const MedicamentsList = () => {
             </div>
 
             <Select
-              value={classeFilter}
+              value={selectValue}
               onValueChange={(value) => {
-                setClasseFilter(value);
+                setClasseFilter(value === "all" ? "" : value);
                 setPage(0);
               }}
             >
@@ -143,7 +146,7 @@ export const MedicamentsList = () => {
                 <SelectValue placeholder="Classe thérapeutique" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Toutes les classes</SelectItem>
+                <SelectItem value="all">Toutes les classes</SelectItem>
                 {classes?.map((classe) => (
                   <SelectItem key={classe} value={classe}>
                     {classe}
