@@ -82,13 +82,13 @@ export const SuperAdminLayoutSimple = ({ children }: SuperAdminLayoutProps) => {
       description: 'Hôpitaux, cliniques, centres'
     },
     
-    // Gestion Pharmacies
+    // Structure Pharmaceutique (nouveau volet)
     { 
-      id: 'pharmacies', 
-      label: 'Pharmacies', 
+      id: 'pharmacy-structure', 
+      label: 'Structure Pharmaceutique', 
       icon: Pill, 
-      path: '/admin/pharmacies',
-      description: 'Gestion et validation des pharmacies'
+      path: '/admin/pharmacy-structure',
+      description: 'Pharmacies & dépôt pharmaceutique'
     },
     
     // Approbations

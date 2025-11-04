@@ -101,6 +101,7 @@ import AdminCartography from "./pages/admin/AdminCartography";
 
 // Pages Admin Super Admin
 import AdminEstablishments from "./pages/admin/AdminEstablishments";
+import AdminPharmacyStructure from "./pages/admin/AdminPharmacyStructure";
 import PharmacyManagement from "./pages/admin/PharmacyManagement";
 import AdminBilling from "./pages/admin/AdminBilling";
 import AdminAPI from "./pages/admin/AdminAPI";
@@ -354,6 +355,7 @@ function AppMain() {
                     <Route path="/admin/health-actors" element={<AdminHealthActors />} />
                     <Route path="/admin/establishments" element={<AdminEstablishments />} />
                     <Route path="/admin/pharmacies" element={<PharmacyManagement />} />
+                    <Route path="/admin/pharmacy-structure" element={<AdminPharmacyStructure />} />
                     <Route path="/admin/approvals" element={<AdminApprovals />} />
                     <Route path="/admin/cartography" element={<AdminCartography />} />
                     <Route path="/admin/billing" element={<AdminBilling />} />
