@@ -67,6 +67,11 @@ import { establishmentsService } from "@/services/establishments.service";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { PharmacyStaffManagement } from "./pharmacy/PharmacyStaffManagement";
+import { PharmacyConfiguration } from "./pharmacy/PharmacyConfiguration";
+import { PharmacyBillingTab } from "./pharmacy/PharmacyBillingTab";
+import { PharmacyDashboard } from "./pharmacy/PharmacyDashboard";
+import { PharmacyLogsTab } from "./pharmacy/PharmacyLogsTab";
 
 interface EstablishmentManagementModalProps {
   isOpen: boolean;
@@ -319,25 +324,49 @@ export const EstablishmentManagementModal = ({
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-11 w-full">
-            <TabsTrigger value="general">Général</TabsTrigger>
-            <TabsTrigger value="users">Utilisateurs</TabsTrigger>
-            {establishment.code === 'CLN-PG-001' && (
-              <TabsTrigger value="patients" className="text-cyan-600">
-                Patients
-              </TabsTrigger>
-            )}
-            <TabsTrigger value="dashboards">Dashboards</TabsTrigger>
-            <TabsTrigger value="config">Configuration</TabsTrigger>
-            <TabsTrigger value="billing">Facturation</TabsTrigger>
-            <TabsTrigger value="logs">Logs</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-            <TabsTrigger value="capacity">Capacités</TabsTrigger>
-            <TabsTrigger value="equipment">Équipements</TabsTrigger>
-            <TabsTrigger value="stats">Statistiques</TabsTrigger>
-          </TabsList>
+          {establishment.category === 'pharmacie' ? (
+            <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full">
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsTrigger value="general">Général</TabsTrigger>
+              <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+              <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsTrigger value="billing">Facturation</TabsTrigger>
+              <TabsTrigger value="logs">Logs</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
+              <TabsTrigger value="capacity">Capacités</TabsTrigger>
+              <TabsTrigger value="equipment">Équipements</TabsTrigger>
+              <TabsTrigger value="stats">Statistiques</TabsTrigger>
+            </TabsList>
+          ) : (
+            <TabsList className="grid grid-cols-5 lg:grid-cols-11 w-full">
+              <TabsTrigger value="general">Général</TabsTrigger>
+              <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+              {establishment.code === 'CLN-PG-001' && (
+                <TabsTrigger value="patients" className="text-cyan-600">
+                  Patients
+                </TabsTrigger>
+              )}
+              <TabsTrigger value="dashboards">Dashboards</TabsTrigger>
+              <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsTrigger value="billing">Facturation</TabsTrigger>
+              <TabsTrigger value="logs">Logs</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
+              <TabsTrigger value="capacity">Capacités</TabsTrigger>
+              <TabsTrigger value="equipment">Équipements</TabsTrigger>
+              <TabsTrigger value="stats">Statistiques</TabsTrigger>
+            </TabsList>
+          )}
 
           <ScrollArea className="h-[60vh] mt-4">
+            {/* Volets spécifiques aux pharmacies */}
+            {establishment.category === 'pharmacie' && (
+              <>
+                <TabsContent value="dashboard" className="space-y-4">
+                  <PharmacyDashboard pharmacyId={establishment.id} />
+                </TabsContent>
+              </>
+            )}
+
             {/* Onglet Général / Vue d'ensemble */}
             <TabsContent value="general" className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -488,17 +517,20 @@ export const EstablishmentManagementModal = ({
 
             {/* Onglet Utilisateurs */}
             <TabsContent value="users" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base flex items-center justify-between">
-                    <span>Utilisateurs de l'établissement</span>
-                    <Button size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Ajouter utilisateur
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+              {establishment.category === 'pharmacie' ? (
+                <PharmacyStaffManagement pharmacyId={establishment.id} />
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center justify-between">
+                      <span>Utilisateurs de l'établissement</span>
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Ajouter utilisateur
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
                   <div className="mb-4 flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
@@ -579,7 +611,7 @@ export const EstablishmentManagementModal = ({
                   </Table>
                 </CardContent>
               </Card>
-
+              )}
             </TabsContent>
 
             {/* NOUVEL ONGLET PATIENTS (CMST SOGARA uniquement) */}
@@ -937,66 +969,76 @@ export const EstablishmentManagementModal = ({
 
             {/* Onglet Configuration */}
             <TabsContent value="config" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Paramètres généraux</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Centre d'urgences 24/7</p>
-                      <p className="text-sm text-gray-500">Activer le service d'urgences</p>
+              {establishment.category === 'pharmacie' ? (
+                <PharmacyConfiguration pharmacyId={establishment.id} />
+              ) : (
+                <>
+                  <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Paramètres généraux</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Centre d'urgences 24/7</p>
+                        <p className="text-sm text-gray-500">Activer le service d'urgences</p>
+                      </div>
+                      <Switch checked={establishment.isEmergencyCenter} />
                     </div>
-                    <Switch checked={establishment.isEmergencyCenter} />
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Centre de référence</p>
-                      <p className="text-sm text-gray-500">Établissement de référence régional</p>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Centre de référence</p>
+                        <p className="text-sm text-gray-500">Établissement de référence régional</p>
+                      </div>
+                      <Switch checked={establishment.isReferralCenter} />
                     </div>
-                    <Switch checked={establishment.isReferralCenter} />
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Hôpital universitaire</p>
-                      <p className="text-sm text-gray-500">Formation des étudiants en médecine</p>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Hôpital universitaire</p>
+                        <p className="text-sm text-gray-500">Formation des étudiants en médecine</p>
+                      </div>
+                      <Switch checked={establishment.isTeachingHospital} />
                     </div>
-                    <Switch checked={establishment.isTeachingHospital} />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Services disponibles</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Pill className="h-4 w-4 text-green-500" />
-                      <div>
-                        <p className="font-medium">Pharmacie</p>
-                        <p className="text-sm text-gray-500">Pharmacie sur site</p>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Services disponibles</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Pill className="h-4 w-4 text-green-500" />
+                        <div>
+                          <p className="font-medium">Pharmacie</p>
+                          <p className="text-sm text-gray-500">Pharmacie sur site</p>
+                        </div>
                       </div>
+                      <Switch checked={establishment.hasPharmacy} />
                     </div>
-                    <Switch checked={establishment.hasPharmacy} />
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-blue-500" />
-                      <div>
-                        <p className="font-medium">Laboratoire</p>
-                        <p className="text-sm text-gray-500">Laboratoire d'analyses</p>
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-blue-500" />
+                        <div>
+                          <p className="font-medium">Laboratoire</p>
+                          <p className="text-sm text-gray-500">Laboratoire d'analyses</p>
+                        </div>
                       </div>
+                      <Switch checked={establishment.hasLaboratory} />
                     </div>
-                    <Switch checked={establishment.hasLaboratory} />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+                </>
+              )}
             </TabsContent>
 
             {/* Onglet Facturation */}
             <TabsContent value="billing" className="space-y-4">
+              {establishment.category === 'pharmacie' ? (
+                <PharmacyBillingTab pharmacyId={establishment.id} />
+              ) : (
+                <>
               <div className="grid grid-cols-3 gap-4">
                 <Card>
                   <CardHeader className="pb-2">
@@ -1071,15 +1113,20 @@ export const EstablishmentManagementModal = ({
                   </Table>
                 </CardContent>
               </Card>
+              </>
+              )}
             </TabsContent>
 
             {/* Onglet Logs & Audit */}
             <TabsContent value="logs" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base flex items-center justify-between">
-                    <span>Journaux d'audit</span>
-                    <div className="flex gap-2">
+              {establishment.category === 'pharmacie' ? (
+                <PharmacyLogsTab pharmacyId={establishment.id} />
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center justify-between">
+                      <span>Journaux d'audit</span>
+                      <div className="flex gap-2">
                       <Button variant="outline" size="sm">
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Actualiser
@@ -1113,6 +1160,7 @@ export const EstablishmentManagementModal = ({
                   </div>
                 </CardContent>
               </Card>
+              )}
             </TabsContent>
 
             {/* Onglet Contact */}
