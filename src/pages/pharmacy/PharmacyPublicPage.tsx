@@ -131,12 +131,21 @@ export default function PharmacyPublicPage() {
   // Charger un fallback depuis les établissements si la pharmacie n'existe pas
   useEffect(() => {
     const loadFallback = async () => {
-      if (!pharmacy && isUuid && idOrSlug) {
+      if (pharmacy) return;
+      if (!idOrSlug) return;
+      // 1) Si URL contient un UUID, tenter par ID d'établissement
+      if (isUuid) {
         const est = await establishmentsService.getEstablishmentById(idOrSlug);
         if (est && (est.category === 'pharmacie' || /pharm|pharma/i.test(est.name))) {
           setFallbackEst(est);
+          return;
         }
       }
+      // 2) Sinon, recherche par nom dérivé du slug dans les établissements
+      const base = nameFromPharmacySlug(idOrSlug);
+      const candidates = await establishmentsService.searchEstablishments(base);
+      const match = candidates.find((e) => e.category === 'pharmacie') || candidates.find((e) => /pharm|pharma/i.test(e.name));
+      if (match) setFallbackEst(match);
     };
     loadFallback();
   }, [pharmacy, isUuid, idOrSlug]);
