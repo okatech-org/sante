@@ -9,6 +9,8 @@ import { Pill, MapPin, Phone, Search, Shield, Clock, Building2, Package } from "
 import { supabase } from "@/integrations/supabase/client";
 import { useMedicationsSearch } from "@/hooks/useMedicationsSearch";
 import { toast } from "sonner";
+import { Establishment } from "@/types/establishment";
+import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
 
 type PharmacyRow = {
   id: string;
@@ -17,7 +19,9 @@ type PharmacyRow = {
   ville: string;
   province: string;
   quartier: string | null;
+  adresse_complete: string | null;
   telephone_principal: string | null;
+  email: string | null;
   ouvert_24_7: boolean;
   conventionnement_cnamgs: boolean;
   statut_verification: string;
@@ -33,6 +37,29 @@ export default function AdminPharmacyStructure() {
   const [query, setQuery] = useState("");
   const { data: meds } = useMedicationsSearch(query, 20);
   const medResults = Array.isArray(meds) ? meds : [];
+  const [initialMeds, setInitialMeds] = useState<any[]>([]);
+  const [loadingMeds, setLoadingMeds] = useState<boolean>(false);
+
+  // Chargement initial d'un échantillon de produits (sans recherche)
+  useEffect(() => {
+    const loadInitial = async () => {
+      setLoadingMeds(true);
+      try {
+        const { data, error } = await supabase
+          .from('medicaments')
+          .select('id, nom_commercial, dci, forme_pharmaceutique, dosage, tarif_conventionne_cnamgs, prix_moyen_pharmacie, necessite_ordonnance, image_url')
+          .order('nom_commercial', { ascending: true })
+          .limit(30);
+        if (error) throw error;
+        setInitialMeds(Array.isArray(data) ? data : []);
+      } catch (e: any) {
+        toast.error('Erreur chargement dépôt pharmaceutique', { description: e.message });
+      } finally {
+        setLoadingMeds(false);
+      }
+    };
+    loadInitial();
+  }, []);
 
   useEffect(() => {
     const run = async () => {
@@ -40,7 +67,7 @@ export default function AdminPharmacyStructure() {
       try {
         const { data, error } = await supabase
           .from("pharmacies")
-          .select("id, code_pharmacie, nom_commercial, ville, province, quartier, telephone_principal, ouvert_24_7, conventionnement_cnamgs, statut_verification")
+          .select("id, code_pharmacie, nom_commercial, ville, province, quartier, adresse_complete, telephone_principal, email, ouvert_24_7, conventionnement_cnamgs, statut_verification")
           .order("nom_commercial", { ascending: true });
         if (error) throw error;
         setPharmacies((data as any[]) || []);
@@ -113,47 +140,73 @@ export default function AdminPharmacyStructure() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredPharmacies.map((p) => (
-                  <Card key={p.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span className="truncate">{p.nom_commercial}</span>
-                        <Badge variant={p.statut_verification === 'verifie' ? 'default' : 'secondary'}>
-                          {p.statut_verification}
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span>{p.quartier ? `${p.quartier}, ` : ''}{p.ville} • {p.province}</span>
-                      </div>
-                      {p.telephone_principal && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Phone className="h-4 w-4" />
-                          <span>{p.telephone_principal}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        {p.ouvert_24_7 && (
-                          <Badge variant="outline" className="flex items-center gap-1 text-xs">
-                            <Clock className="h-3 w-3" /> 24/7
-                          </Badge>
-                        )}
-                        {p.conventionnement_cnamgs && (
-                          <Badge variant="outline" className="flex items-center gap-1 text-xs">
-                            <Shield className="h-3 w-3" /> CNAMGS
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="pt-2">
-                        <Button variant="outline" size="sm" onClick={() => window.open(`/pharmacies/${p.id}`, '_blank')}>
-                          Voir la fiche
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {filteredPharmacies.map((p) => {
+                  const est: Establishment = {
+                    id: p.id,
+                    code: p.code_pharmacie,
+                    name: p.nom_commercial,
+                    category: 'pharmacie' as any,
+                    level: 'local' as any,
+                    status: p.statut_verification === 'verifie' ? 'operationnel' as any : 'maintenance' as any,
+                    managingAuthority: 'Privé',
+                    location: {
+                      address: p.adresse_complete || '',
+                      city: p.ville,
+                      province: p.province,
+                      coordinates: undefined,
+                    },
+                    contact: {
+                      phoneMain: p.telephone_principal || '',
+                      email: p.email || undefined,
+                      website: undefined,
+                    },
+                    metrics: {
+                      totalBeds: 0,
+                      occupiedBeds: 0,
+                      occupancyRate: 0,
+                      consultationsMonthly: 0,
+                      surgeriesMonthly: 0,
+                      emergenciesMonthly: 0,
+                      patientSatisfaction: 4.6,
+                      averageWaitTime: '—',
+                      averageStayDuration: '—',
+                    },
+                    staff: {
+                      doctors: 0,
+                      specialists: 0,
+                      nurses: 0,
+                      technicians: 0,
+                      administrative: 0,
+                      support: 0,
+                      total: 0,
+                    },
+                    services: p.ouvert_24_7 || p.conventionnement_cnamgs ? [{ id: 'ph', name: 'Pharmacie', category: 'pharmacie', available: true, staffCount: 0 }] as any : [],
+                    equipment: [],
+                    certifications: [],
+                    insuranceAccepted: [],
+                    createdAt: '',
+                    updatedAt: '',
+                    isPublic: true,
+                    isEmergencyCenter: false,
+                    isReferralCenter: false,
+                    isTeachingHospital: false,
+                    hasAmbulance: false,
+                    hasPharmacy: true,
+                    hasLaboratory: false,
+                    hasMortuary: false,
+                  };
+                  return (
+                    <EstablishmentCard
+                      key={p.id}
+                      establishment={est}
+                      segmentKey={'supportServices' as any}
+                      onUpdate={(updated) => {
+                        // Après gestion via modal, on rafraîchit les pharmacies
+                        setPharmacies(prev => prev.map(ph => ph.id === updated.id ? ph : ph));
+                      }}
+                    />
+                  );
+                })}
               </div>
             )}
           </TabsContent>
@@ -172,12 +225,12 @@ export default function AdminPharmacyStructure() {
               </div>
               <Badge variant="secondary" className="hidden md:inline-flex items-center gap-1">
                 <Package className="h-3 w-3" />
-                {Array.isArray(meds) ? medResults.length : 0} produits
+                {query.trim().length >= 2 ? medResults.length : initialMeds.length} produits
               </Badge>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {medResults.map((m: any) => (
+              {(query.trim().length >= 2 ? medResults : initialMeds).map((m: any) => (
                 <Card key={m.id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <CardTitle className="text-base">
@@ -200,12 +253,17 @@ export default function AdminPharmacyStructure() {
                 </Card>
               ))}
             </div>
-            {query.trim().length < 2 && (
+            {query.trim().length < 2 && !loadingMeds && initialMeds.length === 0 && (
               <Card>
                 <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                  Saisissez au moins 2 caractères pour rechercher des produits pharmaceutiques.
+                  Aucun produit disponible dans le dépôt.
                 </CardContent>
               </Card>
+            )}
+            {loadingMeds && (
+              <div className="flex items-center justify-center py-10">
+                <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
             )}
           </TabsContent>
         </Tabs>
