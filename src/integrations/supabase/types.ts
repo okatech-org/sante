@@ -1160,6 +1160,7 @@ export type Database = {
           reperes_geographiques: string | null
           services_disponibles: Json | null
           site_web: string | null
+          slug: string
           statut_onpg: string | null
           statut_verification: string | null
           surface_m2: number | null
@@ -1218,6 +1219,7 @@ export type Database = {
           reperes_geographiques?: string | null
           services_disponibles?: Json | null
           site_web?: string | null
+          slug: string
           statut_onpg?: string | null
           statut_verification?: string | null
           surface_m2?: number | null
@@ -1276,6 +1278,7 @@ export type Database = {
           reperes_geographiques?: string | null
           services_disponibles?: Json | null
           site_web?: string | null
+          slug?: string
           statut_onpg?: string | null
           statut_verification?: string | null
           surface_m2?: number | null
@@ -2646,6 +2649,10 @@ export type Database = {
       equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
       generate_establishment_invitation_token: {
         Args: { _establishment_id: string }
+        Returns: string
+      }
+      generate_pharmacy_slug: {
+        Args: { pharmacy_id: string; pharmacy_name: string }
         Returns: string
       }
       generate_prescription_number: { Args: never; Returns: string }
