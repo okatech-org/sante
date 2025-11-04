@@ -137,6 +137,9 @@ import SogaraManagement from "./pages/admin/establishments/SogaraManagement";
 
 // Pages d'authentification admin
 import SuperAdminLogin from "./pages/SuperAdminLogin";
+import Pharmacies from "./pages/Pharmacies";
+import EstablishmentPublicPage from "./pages/establishments/EstablishmentPublicPage";
+import PharmacyPublicPage from "./pages/pharmacy/PharmacyPublicPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -169,6 +172,10 @@ function AppMain() {
                     <Route path="/how-it-works" element={<HowItWorks />} />
                     <Route path="/awareness" element={<Awareness />} />
                     <Route path="/for-professionals" element={<ForProfessionals />} />
+                  <Route path="/pharmacies" element={<Pharmacies />} />
+                  <Route path="/pharmacie" element={<Pharmacies />} />
+                  <Route path="/pharmacies/:id" element={<PharmacyPublicPage />} />
+                  <Route path="/pharmacy/:id" element={<PharmacyPublicPage />} />
 
                     {/* Routes d'authentification */}
                     <Route path="/login/patient" element={<LoginPatient />} />
@@ -369,6 +376,10 @@ function AppMain() {
                     {/* Routes SOGARA */}
                     {/* Page publique SOGARA */}
                     <Route path="/sogara" element={<SogaraPublic />} />
+                  
+                  {/* Pages publiques d'établissement */}
+                  <Route path="/establishments/:id" element={<EstablishmentPublicPage />} />
+                  <Route path="/establishment/:id" element={<EstablishmentPublicPage />} />
                     
                     {/* Routes Ministère de la Santé - Pages publiques (sans auth) */}
                     <Route path="/gouv" element={<MinistryModern />} />

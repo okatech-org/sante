@@ -3,6 +3,7 @@
 // Total : 397 établissements
 
 import { Establishment } from "@/types/establishment";
+import { pharmacySlugFromName } from "@/lib/utils";
 import { CartographyProvider } from "@/types/cartography";
 import { supabase } from "@/integrations/supabase/client";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
@@ -434,6 +435,17 @@ export class EstablishmentsService {
       return customUrl;
     }
     
+    // Si c'est une pharmacie (détection robuste), diriger vers la page publique Pharmacie dédiée
+    const lowerName = (establishment.name || '').toLowerCase();
+    const looksLikePharmacy =
+      establishment.category === 'pharmacie' ||
+      (establishment as any).hasPharmacy ||
+      /pharm|pharma/.test(lowerName);
+    if (looksLikePharmacy) {
+      const slug = pharmacySlugFromName(establishment.name);
+      return `/pharmacies/${slug}`;
+    }
+
     // Pour les établissements importants sans URL prédéfinie, générer une URL
     const importantCategories = ['universitaire', 'regional', 'gouvernemental', 'militaire'];
     if (importantCategories.includes(establishment.category)) {

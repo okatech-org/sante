@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
+import { usePharmacy } from "@/hooks/usePharmacy";
+import { pharmacySlugFromName } from "@/lib/utils";
 import { 
   Building2, 
   MapPin, 
@@ -137,6 +139,7 @@ export default function EstablishmentPublicPage() {
   const [establishment, setEstablishment] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingInEmail, setSigningInEmail] = useState<string | null>(null);
+  const { data: maybePharmacy, isLoading: isPharmacyLoading } = usePharmacy(id);
 
   useEffect(() => {
     if (id) {
@@ -147,7 +150,22 @@ export default function EstablishmentPublicPage() {
     }
   }, [id]);
 
+  // Redirection automatique si l'ID correspond à une pharmacie existante
+  useEffect(() => {
+    if (maybePharmacy && id) {
+      const slug = pharmacySlugFromName(maybePharmacy.nom_commercial || id);
+      navigate(`/pharmacies/${slug}`, { replace: true });
+    }
+  }, [maybePharmacy, id, navigate]);
+
   if (!establishment) {
+    if (isPharmacyLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">

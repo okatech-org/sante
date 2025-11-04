@@ -13,6 +13,7 @@ import {
   PharmacieSearchResult,
   InscriptionPharmacieFormData
 } from '@/types/pharmacy';
+import { pharmacySlugFromName } from '@/lib/utils';
 
 // ============================================
 // QUERY KEYS
@@ -52,8 +53,9 @@ export const usePharmacy = (pharmacyId: string | undefined) => {
           )
         `)
         .eq('id', pharmacyId)
-        .single();
+        .maybeSingle();
 
+      // Avec maybeSingle, 0 ligne renvoie data=null sans lever d'erreur (évite 406)
       if (error) throw error;
       
       return data as Pharmacie;
@@ -214,6 +216,7 @@ export const useCreatePharmacy = () => {
       const pharmacyData = {
         code_pharmacie: code,
         nom_commercial: data.nom_commercial,
+        slug: pharmacySlugFromName(data.nom_commercial),
         type_structure: data.type_structure,
         numero_autorisation_ouverture: data.numero_autorisation_ouverture,
         date_autorisation: data.date_autorisation,

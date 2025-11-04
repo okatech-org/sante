@@ -49,6 +49,7 @@ import { Establishment, ESTABLISHMENT_SEGMENTS } from "@/types/establishment";
 import { EstablishmentManagementModal } from "./EstablishmentManagementModal";
 import { EstablishmentHomePageModal } from "./EstablishmentHomePageModal";
 import { establishmentsService } from "@/services/establishments.service";
+import { pharmacySlugFromName } from "@/lib/utils";
 
 interface EstablishmentCardProps {
   establishment: Establishment;
@@ -151,7 +152,14 @@ export const EstablishmentCard = ({
   };
 
   const handleOpenPublicPage = async () => {
-    // Récupérer l'URL personnalisée si elle existe
+    // Si c'est une pharmacie, ouvrir directement la page publique pharmacie
+    const nature = getPrimaryNature();
+    if (nature?.key === 'pharmacy') {
+      const slug = pharmacySlugFromName(establishment.name);
+      window.open(`/pharmacies/${slug}`, '_blank');
+      return;
+    }
+    // Sinon, récupérer l'URL personnalisée si elle existe
     const homePageInfo = await establishmentsService.getHomePage(establishment.id, establishment.name);
     const url = homePageInfo?.customUrl || establishmentsService.getEstablishmentHomeUrl(establishment);
     window.open(url, '_blank');

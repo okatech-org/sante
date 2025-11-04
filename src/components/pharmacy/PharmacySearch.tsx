@@ -27,6 +27,7 @@ import {
 import { usePharmaciesSearch, useNearbyPharmacies } from '@/hooks/usePharmacy';
 import { PharmacieSearchFilters, PROVINCES_GABON, VILLES_PRINCIPALES } from '@/types/pharmacy';
 import { Link } from 'react-router-dom';
+import { pharmacySlugFromName } from '@/lib/utils';
 
 export function PharmacySearch() {
   const [filters, setFilters] = useState<PharmacieSearchFilters>({
@@ -83,6 +84,50 @@ export function PharmacySearch() {
         <p className="text-muted-foreground">
           Recherchez des pharmacies au Gabon par localisation, services ou disponibilité
         </p>
+      </div>
+
+      {/* Raccourcis Province / Ville */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">Raccourcis</p>
+          {(filters.province || filters.ville) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFilters({ ...filters, province: undefined, ville: undefined, page: 1 })}
+            >
+              Réinitialiser
+            </Button>
+          )}
+        </div>
+
+        {/* Provinces */}
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+          {PROVINCES_GABON.map((province) => (
+            <Badge
+              key={province}
+              variant={filters.province === province ? 'default' : 'outline'}
+              className="cursor-pointer whitespace-nowrap"
+              onClick={() => setFilters({ ...filters, province, ville: undefined, page: 1 })}
+            >
+              {province}
+            </Badge>
+          ))}
+        </div>
+
+        {/* Villes principales */}
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+          {VILLES_PRINCIPALES.map((ville) => (
+            <Badge
+              key={ville}
+              variant={filters.ville === ville ? 'default' : 'outline'}
+              className="cursor-pointer whitespace-nowrap"
+              onClick={() => setFilters({ ...filters, ville, page: 1 })}
+            >
+              {ville}
+            </Badge>
+          ))}
+        </div>
       </div>
 
       {/* Filtres de Recherche */}
@@ -222,8 +267,10 @@ export function PharmacySearch() {
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {displayResults.map((pharmacy: any) => (
-              <Link key={pharmacy.id || pharmacy.pharmacy_id} to={`/pharmacy/${pharmacy.id || pharmacy.pharmacy_id}`}>
+            {displayResults.map((pharmacy: any) => {
+              const slug = pharmacySlugFromName(pharmacy.nom_commercial || String(pharmacy.id || pharmacy.pharmacy_id));
+              return (
+              <Link key={pharmacy.id || pharmacy.pharmacy_id} to={`/pharmacies/${slug}`}>
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
@@ -276,7 +323,7 @@ export function PharmacySearch() {
                   </CardContent>
                 </Card>
               </Link>
-            ))}
+            );})}
           </div>
         )}
 

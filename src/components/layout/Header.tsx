@@ -79,6 +79,9 @@ export function Header() {
               <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors">
                 Professionnels
               </a>
+              <Link to="/pharmacies" className="text-sm font-medium hover:text-primary transition-colors">
+                Pharmacies
+              </Link>
               <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors">
                 Sensibilisation
               </Link>
@@ -148,6 +151,9 @@ export function Header() {
                     <a href="/#professionals" className="text-sm font-medium hover:text-primary transition-colors py-2">
                       Professionnels
                     </a>
+                    <Link to="/pharmacies" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                      Pharmacies
+                    </Link>
                     <Link to="/awareness" className="text-sm font-medium hover:text-primary transition-colors py-2">
                       Sensibilisation
                     </Link>
