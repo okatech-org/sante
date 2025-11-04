@@ -172,7 +172,13 @@ export class EstablishmentsService {
               fullName: row.raison_sociale,
               category: row.type_etablissement === 'chu' ? 'universitaire' : 
                        row.type_etablissement === 'chr' ? 'regional' :
-                       row.type_etablissement === 'clinique' ? 'prive' : 'centre_sante',
+                       row.type_etablissement === 'chd' ? 'departemental' :
+                       row.type_etablissement === 'clinique' ? 'prive' :
+                       row.type_etablissement === 'pharmacie' ? 'pharmacie' :
+                       row.type_etablissement === 'laboratoire' ? 'laboratoire' :
+                       row.type_etablissement === 'dispensaire' ? 'dispensaire' :
+                       row.type_etablissement === 'hopital_militaire' ? 'militaire' :
+                       row.type_etablissement === 'centre_specialise' ? 'specialise' : 'centre_sante',
               level: row.secteur === 'public' ? 'national' : 'local',
               status: row.statut === 'actif' ? 'operationnel' : 'inactive',
               managingAuthority: row.secteur === 'public' ? 'Ministère de la Santé' : 'Privé',
