@@ -6,28 +6,25 @@ const corsHeaders = {
 };
 
 interface MedicamentFR {
-  codeCIS: string;
-  denomination: string;
+  cis: number;
+  elementPharmaceutique: string;
   formePharmaceutique: string;
   voiesAdministration: string[];
-  statutAdministratifAMM: string;
-  compositions: Array<{
-    substancesActives: Array<{
-      denominationSubstance: string;
-      dosageSubstance: string;
-    }>;
+  statusAutorisation: string;
+  titulaire?: string;
+  composition: Array<{
+    denominationSubstance: string;
+    dosage: string;
   }>;
-  presentations: Array<{
-    codeCIP13: string;
-    codeCIP7: string;
+  presentation: Array<{
+    cip13: number;
+    cip7: number;
     libelle: string;
-    statutAdministratifPresentation: string;
+    statusAdministratif: string;
     prix?: number;
     tauxRemboursement?: string;
   }>;
-  groupeGenerique?: {
-    libelle: string;
-  };
+  generiques?: Array<any>;
 }
 
 Deno.serve(async (req) => {
@@ -66,8 +63,8 @@ Deno.serve(async (req) => {
       const batch = medicamentsFR.slice(i, i + batchSize);
       
       const medicamentsToInsert = batch.map(med => {
-        const presentation = med.presentations?.[0];
-        const composition = med.compositions?.[0]?.substancesActives?.[0];
+        const presentation = med.presentation?.[0];
+        const composition = med.composition?.[0];
         
         // Conversion EUR → XAF (1 EUR ≈ 656 XAF)
         const tauxConversion = 656;
@@ -75,25 +72,25 @@ Deno.serve(async (req) => {
         const prixXAF = Math.round(prixEur * tauxConversion);
 
         return {
-          code_cip: presentation?.codeCIP13 || presentation?.codeCIP7 || med.codeCIS,
+          code_cip: presentation?.cip13?.toString() || presentation?.cip7?.toString() || med.cis?.toString(),
           code_atc: null, // Non fourni par l'API FR
-          nom_commercial: med.denomination?.trim() || 'Non spécifié',
+          nom_commercial: med.elementPharmaceutique?.trim() || 'Non spécifié',
           dci: composition?.denominationSubstance?.trim() || null,
           forme_pharmaceutique: med.formePharmaceutique?.trim() || null,
-          dosage: composition?.dosageSubstance?.trim() || null,
+          dosage: composition?.dosage?.trim() || null,
           conditionnement: presentation?.libelle?.trim() || null,
           voie_administration: med.voiesAdministration?.join(', ') || null,
           classe_therapeutique: null, // À enrichir manuellement
           famille_pharmacologique: null,
-          laboratoire_fabricant: null, // Non fourni par l'API FR
+          laboratoire_fabricant: med.titulaire?.trim() || null,
           pays_origine: 'France',
           tarif_conventionne_cnamgs: prixXAF > 0 ? prixXAF : null,
           prix_moyen_pharmacie: prixXAF > 0 ? Math.round(prixXAF * 1.15) : null, // +15% marge
-          est_generique: !!med.groupeGenerique,
+          est_generique: med.generiques && med.generiques.length > 0,
           necessite_ordonnance: true, // Par défaut prudent
           substance_controlee: false,
           stupefiant: false,
-          statut: med.statutAdministratifAMM?.includes('Autorisation active') ? 'actif' : 'inactif',
+          statut: med.statusAutorisation?.includes('Autorisation active') ? 'actif' : 'inactif',
         };
       });
 
