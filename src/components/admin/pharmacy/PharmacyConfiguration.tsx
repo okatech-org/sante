@@ -31,6 +31,8 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
     ouvert_24_7: false,
     conventionnement_cnamgs: false,
   });
+  const [modesPaiement, setModesPaiement] = useState<string[]>([]);
+  const [servicesDisponibles, setServicesDisponibles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -39,18 +41,21 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
       try {
         const { data, error } = await supabase
           .from("pharmacies")
-          .select("ouvert_24_7, conventionnement_cnamgs, accepte_commandes_en_ligne, accepte_reservations, type_structure")
+          .select("ouvert_24_7, conventionnement_cnamgs, accepte_commandes_en_ligne, accepte_reservations, type_structure, modes_paiement, services_disponibles")
           .eq("id", pharmacyId)
           .maybeSingle();
         if (error) throw error;
         if (data) {
           setConfig({
-            is_onsite: data.type_structure === "pharmacie_sur_site",
+            // Pharmacie intégrée à un hôpital => "pharmacie_hospitaliere"
+            is_onsite: data.type_structure === "pharmacie_hospitaliere",
             accepte_commandes_en_ligne: data.accepte_commandes_en_ligne || false,
             accepte_reservations: data.accepte_reservations || false,
             ouvert_24_7: data.ouvert_24_7 || false,
             conventionnement_cnamgs: data.conventionnement_cnamgs || false,
           });
+          setModesPaiement(Array.isArray(data.modes_paiement) ? data.modes_paiement : []);
+          setServicesDisponibles(Array.isArray(data.services_disponibles) ? data.services_disponibles : []);
         }
       } catch (err) {
         console.error(err);
@@ -68,10 +73,14 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
       const { error } = await supabase
         .from("pharmacies")
         .update({
-          type_structure: config.is_onsite ? "pharmacie_sur_site" : "officine_privee",
+          // Mappe "pharmacie intégrée" => pharmacie_hospitaliere (valeur autorisée)
+          type_structure: config.is_onsite ? "pharmacie_hospitaliere" : "officine_privee",
           accepte_commandes_en_ligne: config.accepte_commandes_en_ligne,
           accepte_reservations: config.accepte_reservations,
           ouvert_24_7: config.ouvert_24_7,
+          conventionnement_cnamgs: config.conventionnement_cnamgs,
+          modes_paiement: modesPaiement,
+          services_disponibles: servicesDisponibles,
         })
         .eq("id", pharmacyId);
       if (error) throw error;
@@ -213,19 +222,47 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <Label htmlFor="cash">Espèces</Label>
-            <Switch id="cash" defaultChecked />
+            <Switch
+              id="cash"
+              checked={modesPaiement.includes("especes")}
+              onCheckedChange={(checked) => {
+                setModesPaiement((prev) =>
+                  checked ? Array.from(new Set([...prev, "especes"])) : prev.filter((m) => m !== "especes")
+                );
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <Label htmlFor="card">Carte Bancaire</Label>
-            <Switch id="card" defaultChecked />
+            <Switch
+              id="card"
+              checked={modesPaiement.includes("carte_bancaire")}
+              onCheckedChange={(checked) => {
+                setModesPaiement((prev) =>
+                  checked ? Array.from(new Set([...prev, "carte_bancaire"])) : prev.filter((m) => m !== "carte_bancaire")
+                );
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <Label htmlFor="mobile-money">Mobile Money (Airtel/Moov)</Label>
-            <Switch id="mobile-money" defaultChecked />
+            <Switch
+              id="mobile-money"
+              checked={modesPaiement.includes("mobile_money")}
+              onCheckedChange={(checked) => {
+                setModesPaiement((prev) =>
+                  checked ? Array.from(new Set([...prev, "mobile_money"])) : prev.filter((m) => m !== "mobile_money")
+                );
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <Label htmlFor="cnamgs">Tiers-payant CNAMGS</Label>
-            <Switch id="cnamgs" defaultChecked />
+            <Switch
+              id="cnamgs"
+              checked={config.conventionnement_cnamgs}
+              onCheckedChange={(checked) => setConfig({ ...config, conventionnement_cnamgs: checked })}
+            />
           </div>
         </CardContent>
       </Card>
@@ -243,7 +280,15 @@ export const PharmacyConfiguration = ({ pharmacyId }: PharmacyConfigurationProps
               <Label htmlFor="delivery">Livraison à domicile</Label>
               <p className="text-sm text-muted-foreground">Rayon 5km</p>
             </div>
-            <Switch id="delivery" defaultChecked />
+            <Switch
+              id="delivery"
+              checked={servicesDisponibles.includes("livraison")}
+              onCheckedChange={(checked) => {
+                setServicesDisponibles((prev) =>
+                  checked ? Array.from(new Set([...prev, "livraison"])) : prev.filter((s) => s !== "livraison")
+                );
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <div>
