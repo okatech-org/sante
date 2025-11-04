@@ -35,6 +35,8 @@ export default function AdminPharmacyStructure() {
   const [pharmacies, setPharmacies] = useState<PharmacyRow[]>([]);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("pharmacies");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(15);
 
   // Dépôt pharmaceutique (produits)
   const [query, setQuery] = useState("");
@@ -117,6 +119,18 @@ export default function AdminPharmacyStructure() {
     );
   }, [pharmacies, search]);
 
+  const paginatedPharmacies = useMemo(() => {
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredPharmacies.slice(startIndex, endIndex);
+  }, [filteredPharmacies, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredPharmacies.length / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [search, itemsPerPage]);
+
   // Enrichir les résultats de recherche si des filtres nécessitent des champs supplémentaires
   useEffect(() => {
     if (!medDepotAvailable || activeTab !== 'depot') return;
@@ -194,7 +208,7 @@ export default function AdminPharmacyStructure() {
 
           {/* Onglet Pharmacies */}
           <TabsContent value="pharmacies" className="mt-6 space-y-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="relative flex-1 max-w-xl">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -203,6 +217,22 @@ export default function AdminPharmacyStructure() {
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-9"
                 />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">Afficher :</span>
+                <Select
+                  value={itemsPerPage.toString()}
+                  onValueChange={(value) => setItemsPerPage(Number(value))}
+                >
+                  <SelectTrigger className="w-[100px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -217,8 +247,9 @@ export default function AdminPharmacyStructure() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredPharmacies.map((p) => {
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {paginatedPharmacies.map((p) => {
                   const est: Establishment = {
                     id: p.id,
                     code: p.code_pharmacie,
@@ -286,6 +317,35 @@ export default function AdminPharmacyStructure() {
                   );
                 })}
               </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between mt-6 px-2">
+                <p className="text-sm text-muted-foreground">
+                  Affichage de {currentPage * itemsPerPage + 1} à {Math.min((currentPage + 1) * itemsPerPage, filteredPharmacies.length)} sur {filteredPharmacies.length} pharmacies
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    disabled={currentPage === 0}
+                  >
+                    Précédent
+                  </Button>
+                  <span className="text-sm text-muted-foreground px-2">
+                    Page {currentPage + 1} sur {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                    disabled={currentPage >= totalPages - 1}
+                  >
+                    Suivant
+                  </Button>
+                </div>
+              </div>
+            </>
             )}
           </TabsContent>
 
