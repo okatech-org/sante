@@ -19,7 +19,7 @@ import { ImportMedicamentsButton } from "./ImportMedicamentsButton";
 export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
-  const limit = 1000; // Charger 1000 médicaments
+  const limit = 50000; // Charger tous les médicaments
   
   // Valeur du select (utilise "all" pour afficher mais filtre avec "")
   const selectValue = classeFilter || "all";
