@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMedicaments, useClassesTherapeutiques, useMedicamentStats } from "@/hooks/useMedicaments";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Pill, Package, FileText, AlertCircle } from "lucide-react";
+import { Loader2, Search, Pill, Package, FileText, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -19,20 +19,32 @@ import { ImportMedicamentsButton } from "./ImportMedicamentsButton";
 export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
-  const limit = 50000; // Charger tous les médicaments
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const limit = 20000; // Limite totale de chargement
   
   // Valeur du select (utilise "all" pour afficher mais filtre avec "")
   const selectValue = classeFilter || "all";
 
+  // Réinitialiser la page lors d'un changement de recherche ou filtre
+  useEffect(() => {
+    setPage(1);
+  }, [search, classeFilter]);
+
+  const offset = (page - 1) * pageSize;
+
   const { data: statsData } = useMedicamentStats();
   const { data: classes } = useClassesTherapeutiques();
   const { data, isLoading, error } = useMedicaments({
-    limit,
-    offset: 0,
+    limit: pageSize,
+    offset,
     search: search || undefined,
     classe_therapeutique: classeFilter || undefined,
     statut: 'all',
   });
+
+  const totalCount = data?.total || 0;
+  const totalPages = Math.ceil(Math.min(totalCount, limit) / pageSize);
 
   const formatPrice = (price: number | null) => {
     if (!price) return "N/A";
@@ -171,11 +183,65 @@ export const MedicamentsList = () => {
       {/* Tableau des médicaments */}
       <Card>
         <CardHeader>
-          <CardTitle>
-            Liste des médicaments ({data?.total || 0})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>
+              Liste des médicaments ({totalCount})
+            </CardTitle>
+            
+            {/* Contrôles de pagination en haut */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                Afficher:
+              </span>
+              <Select
+                value={pageSize.toString()}
+                onValueChange={(value) => {
+                  setPageSize(Number(value));
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="w-20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
+          {/* Informations de pagination */}
+          <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
+            <div>
+              Affichage de {Math.min(offset + 1, totalCount)} à {Math.min(offset + pageSize, totalCount)} sur {totalCount}
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1 || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Précédent
+              </Button>
+              <span className="text-sm font-medium">
+                Page {page} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages || isLoading}
+              >
+                Suivant
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -258,10 +324,35 @@ export const MedicamentsList = () => {
                 </TableBody>
               </Table>
 
-              <div className="text-center mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Affichage de {data?.medicaments.length || 0} médicaments sur {data?.total || 0} au total
-                </p>
+              {/* Pagination en bas */}
+              <div className="flex items-center justify-between mt-6 pt-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Affichage de {Math.min(offset + 1, totalCount)} à {Math.min(offset + pageSize, totalCount)} sur {totalCount}
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1 || isLoading}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Précédent
+                  </Button>
+                  <span className="text-sm font-medium">
+                    Page {page} / {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages || isLoading}
+                  >
+                    Suivant
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </>
           )}
