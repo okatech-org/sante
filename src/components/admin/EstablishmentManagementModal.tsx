@@ -118,7 +118,14 @@ export const EstablishmentManagementModal = ({
   onSave
 }: EstablishmentManagementModalProps) => {
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(establishment.category === 'pharmacie' ? 'dashboard' : 'general');
+  // Détection robuste d'une pharmacie (catégorie, flag ou nom)
+  const lowerName = (establishment.name || '').toLowerCase();
+  const isPharmacy =
+    establishment.category === 'pharmacie' ||
+    (establishment as any).hasPharmacy === true ||
+    /pharm|pharma/.test(lowerName);
+
+  const [activeTab, setActiveTab] = useState(isPharmacy ? 'dashboard' : 'general');
   const [editedEstablishment, setEditedEstablishment] = useState(establishment);
   const [pharmacySettings, setPharmacySettings] = useState({
     onpgNumber: '',
@@ -172,12 +179,12 @@ export const EstablishmentManagementModal = ({
 
   const computeDashboardServices = () => {
     const lowerName = (establishment.name || '').toLowerCase();
-    const isPharmacy =
-      establishment.hasPharmacy ||
+    const isPharm =
+      (establishment as any).hasPharmacy ||
       establishment.category === 'pharmacie' ||
       /pharm|pharma/.test(lowerName);
 
-    if (isPharmacy) {
+    if (isPharm) {
       return [
         {
           id: 'ph-1',
@@ -410,7 +417,7 @@ export const EstablishmentManagementModal = ({
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {establishment.category === 'pharmacie' ? (
+          {isPharmacy ? (
             <TabsList className="grid grid-cols-5 lg:grid-cols-12 w-full">
               <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               <TabsTrigger value="general">Général</TabsTrigger>
@@ -450,7 +457,7 @@ export const EstablishmentManagementModal = ({
 
           <ScrollArea className="h-[60vh] mt-4">
             {/* Volets spécifiques aux pharmacies */}
-            {establishment.category === 'pharmacie' && (
+            {isPharmacy && (
               <>
                 <TabsContent value="dashboard" className="space-y-4">
                   <PharmacyDashboard pharmacyId={establishment.id} />
@@ -1213,7 +1220,7 @@ export const EstablishmentManagementModal = ({
 
             {/* Onglet Configuration */}
             <TabsContent value="config" className="space-y-4">
-              {establishment.category === 'pharmacie' ? (
+              {isPharmacy ? (
                 <PharmacyConfiguration pharmacyId={establishment.id} />
               ) : (
                 <>
