@@ -19,7 +19,8 @@ export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
   const [page, setPage] = useState(0);
-  const limit = 20;
+  const [showAll, setShowAll] = useState(false);
+  const limit = showAll ? 1000 : 50; // Charger jusqu'à 1000 médicaments si "Tout afficher"
   
   // Valeur du select (utilise "all" pour afficher mais filtre avec "")
   const selectValue = classeFilter || "all";
@@ -195,10 +196,22 @@ export const MedicamentsList = () => {
                 </TableHeader>
                 <TableBody>
                   {data?.medicaments.map((med) => (
-                    <TableRow key={med.id}>
-                      <TableCell className="font-medium">
-                        {med.nom_commercial || "N/A"}
-                      </TableCell>
+                  <TableRow key={med.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-3">
+                        {med.image_url && (
+                          <img
+                            src={med.image_url}
+                            alt={med.nom_commercial || "Médicament"}
+                            className="h-10 w-10 object-contain rounded border"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        )}
+                        <span>{med.nom_commercial || "N/A"}</span>
+                      </div>
+                    </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {med.dci || "N/A"}
                       </TableCell>
@@ -220,46 +233,83 @@ export const MedicamentsList = () => {
                       <TableCell>
                         <div className="flex gap-1">
                           {med.est_generique && (
-                            <Badge variant="secondary" className="text-xs">
-                              Générique
-                            </Badge>
-                          )}
-                          {med.necessite_ordonnance && (
-                            <Badge variant="outline" className="text-xs">
-                              Ord.
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                <Badge variant="secondary" className="text-xs">
+                  Générique
+                </Badge>
+              )}
+              {med.necessite_ordonnance && (
+                <Badge variant="outline" className="text-xs">
+                  Ord.
+                </Badge>
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+      ))}
+      {!showAll && data && data.total > limit && (
+        <TableRow>
+          <TableCell colSpan={8} className="text-center py-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAll(true);
+                setPage(0);
+              }}
+            >
+              <Package className="h-4 w-4 mr-2" />
+              Charger tous les médicaments ({data.total} au total)
+            </Button>
+          </TableCell>
+        </TableRow>
+      )}
                 </TableBody>
               </Table>
 
               {/* Pagination */}
-              <div className="flex items-center justify-between mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Page {page + 1} sur {Math.ceil((data?.total || 0) / limit)}
-                </p>
-                <div className="flex gap-2">
+              {!showAll && (
+                <div className="flex items-center justify-between mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Page {page + 1} sur {Math.ceil((data?.total || 0) / limit)}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                    >
+                      Précédent
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPage((p) => p + 1)}
+                      disabled={page >= Math.ceil((data?.total || 0) / limit) - 1}
+                    >
+                      Suivant
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {showAll && (
+                <div className="text-center mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Affichage de tous les médicaments ({data?.total || 0})
+                  </p>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setPage((p) => Math.max(0, p - 1))}
-                    disabled={page === 0}
+                    onClick={() => {
+                      setShowAll(false);
+                      setPage(0);
+                    }}
+                    className="mt-2"
                   >
-                    Précédent
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage((p) => p + 1)}
-                    disabled={page >= Math.ceil((data?.total || 0) / limit) - 1}
-                  >
-                    Suivant
+                    Afficher par pages
                   </Button>
                 </div>
-              </div>
+              )}
             </>
           )}
         </CardContent>
