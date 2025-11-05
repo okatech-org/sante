@@ -20,6 +20,12 @@ export function parseAddress(adresseDescriptive: string, ville: string, province
     return { ville, province };
   }
 
+  // Traiter les valeurs placeholder comme "adresse non spécifiée" ou "non renseignée"
+  const normalized = adresseDescriptive.trim().toLowerCase();
+  if (/adresse\s*non\s*sp[eé]cifi[eé]e|non\s*renseign[eé]e|n\/a|aucune|inconnue/.test(normalized)) {
+    return { ville, province };
+  }
+
   const parts = adresseDescriptive.split(',').map(s => s.trim()).filter(Boolean);
   
   // Si l'adresse contient déjà ville et province, extraire la première partie

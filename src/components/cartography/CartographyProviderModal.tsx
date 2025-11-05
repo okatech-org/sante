@@ -67,7 +67,7 @@ export default function CartographyProviderModal({
   };
 
   const handleShare = async () => {
-    const shareText = `${provider.nom}\n${provider.ville}, ${provider.adresse_descriptive}\nTél: ${provider.telephones[0]}`;
+    const shareText = `${provider.nom}\n${standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province)}\nTél: ${provider.telephones[0]}`;
     
     if (navigator.share) {
       try {
