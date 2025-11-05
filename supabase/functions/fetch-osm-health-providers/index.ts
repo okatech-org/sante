@@ -16,12 +16,20 @@ serve(async (req) => {
     const { province, city, saveToDatabase } = await req.json();
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') as string;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') as string;
     const authHeader = req.headers.get('Authorization') ?? '';
-    const supabase = createClient(supabaseUrl, anonKey, {
+    
+    // Client pour les opérations générales (avec auth header de l'utilisateur)
+    const supabaseClient = createClient(supabaseUrl, supabaseServiceKey, {
       global: { headers: { Authorization: authHeader } },
       auth: { persistSession: false },
     });
+    
+    // Client admin avec service role pour les opérations privilégiées
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false },
+    });
+    
     
     console.log('Fetching OSM health providers for:', { province, city });
 
@@ -258,17 +266,33 @@ serve(async (req) => {
 
 
     if (saveToDatabase) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Non authentifié');
-      const { data: role } = await supabase
+      // Vérifier l'authentification de l'utilisateur
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+      
+      if (userError || !user) {
+        console.error('Auth error:', userError);
+        throw new Error('Authentication requise pour sauvegarder en base');
+      }
+      
+      console.log('User authenticated:', user.id);
+      
+      // Vérifier le rôle super_admin
+      const { data: role, error: roleError } = await supabaseClient
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .eq('role', 'super_admin')
         .single();
-      if (!role) throw new Error('Accès refusé - super admin requis');
 
-      const { error: upsertError } = await supabase
+      if (roleError || !role) {
+        console.error('Role check error:', roleError);
+        throw new Error('Accès refusé - super admin requis');
+      }
+      
+      console.log('Super admin verified:', user.id);
+
+      // Utiliser le client admin pour l'upsert (bypass RLS)
+      const { error: upsertError } = await supabaseAdmin
         .from('osm_health_providers')
         .upsert(providers, { onConflict: 'id' });
 
