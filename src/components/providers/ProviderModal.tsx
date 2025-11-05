@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Star, MapPin, Phone, Mail, Clock, DollarSign, Shield, Calendar, Navigation, Check, X } from "lucide-react";
 import { Provider } from "@/lib/providers-data";
+import { standardizeAddress } from "@/utils/address-formatter";
 
 interface ProviderModalProps {
   provider: Provider | null;
@@ -75,8 +76,9 @@ export const ProviderModal = ({
                 <div className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="font-medium">{provider.address}</p>
-                    <p className="text-sm text-muted-foreground">{provider.city}, {provider.province}</p>
+                    <p className="font-medium">
+                      {standardizeAddress(provider.address, provider.city, provider.province)}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

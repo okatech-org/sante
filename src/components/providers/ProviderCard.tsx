@@ -7,6 +7,7 @@ import { Provider } from "@/lib/providers-data";
 import { useState } from "react";
 import { BookingModal } from "@/components/appointments/BookingModal";
 import { useAppointmentStore } from "@/stores/appointmentStore";
+import { standardizeAddress } from "@/utils/address-formatter";
 
 interface ProviderCardProps {
   provider: Provider;
@@ -53,8 +54,8 @@ export const ProviderCard = ({
           <div className="flex items-start gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
             <div>
-              <p>{provider.address}</p>
-              <p className="text-muted-foreground">{provider.city} - {provider.distance} km</p>
+              <p>{standardizeAddress(provider.address, provider.city, provider.province)}</p>
+              <p className="text-muted-foreground">{provider.distance} km</p>
             </div>
           </div>
         </div>
@@ -131,7 +132,7 @@ export const ProviderCard = ({
           <div className="flex items-start gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
             <div>
-              <p>{provider.address}</p>
+              <p>{standardizeAddress(provider.address, provider.city, provider.province)}</p>
               <p className="text-muted-foreground">{provider.distance} m de vous</p>
             </div>
           </div>
@@ -188,7 +189,7 @@ export const ProviderCard = ({
           <div className="flex items-start gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
             <div>
-              <p>{provider.address}</p>
+              <p>{standardizeAddress(provider.address, provider.city, provider.province)}</p>
               <p className="text-muted-foreground">{provider.distance} km de vous</p>
             </div>
           </div>
@@ -254,7 +255,7 @@ export const ProviderCard = ({
           <div className="flex items-start gap-2 text-sm">
             <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
             <div>
-              <p>{provider.address}</p>
+              <p>{standardizeAddress(provider.address, provider.city, provider.province)}</p>
               <p className="text-muted-foreground">{provider.distance} km de vous</p>
             </div>
           </div>
