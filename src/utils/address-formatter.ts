@@ -84,17 +84,17 @@ export function parseAddress(adresseDescriptive: string, ville: string, province
 /**
  * Formate une adresse selon la nomenclature standard
  * - Avec adresse: "Adresse, Ville, Province"
- * - Sans adresse: "à Quartier, Ville, Province"
+ * - Sans adresse: "Quartier, Ville, Province"
  * - Minimal: "Ville, Province"
  */
 export function formatAddress(components: AddressComponents): string {
   const parts: string[] = [];
   
-  // Priorité à l'adresse précise, sinon quartier avec préfixe "à"
+  // Priorité à l'adresse précise, sinon quartier
   if (components.adresse) {
     parts.push(components.adresse);
   } else if (components.quartier) {
-    parts.push(`à ${components.quartier}`);
+    parts.push(components.quartier);
   }
   
   // Toujours ajouter ville et province
@@ -149,7 +149,7 @@ export function standardizeAddressWithName(
       locality.toLowerCase() !== normalizeProvince(province).toLowerCase()
     ) {
       const normalizedProvince = normalizeProvince(province, ville);
-      return `à ${locality}, ${ville}, ${normalizedProvince}`;
+      return `${locality}, ${ville}, ${normalizedProvince}`;
     }
   }
 
