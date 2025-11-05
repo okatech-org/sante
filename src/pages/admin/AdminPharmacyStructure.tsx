@@ -34,6 +34,13 @@ export default function AdminPharmacyStructure() {
   const [activeTab, setActiveTab] = useState("pharmacies");
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [medicamentTotal, setMedicamentTotal] = useState<number | null>(null);
+  const [stats, setStats] = useState({
+    total: 0,
+    verified: 0,
+    open247: 0,
+    cnamgs: 0,
+  });
 
   useEffect(() => {
     const run = async () => {
@@ -45,6 +52,13 @@ export default function AdminPharmacyStructure() {
           .order("nom_commercial", { ascending: true });
         if (error) throw error;
         setPharmacies((data as any[]) || []);
+        const list = (data as PharmacyRow[]) || [];
+        setStats({
+          total: list.length,
+          verified: list.filter((p) => p.statut_verification === "verifie").length,
+          open247: list.filter((p) => p.ouvert_24_7).length,
+          cnamgs: list.filter((p) => p.conventionnement_cnamgs).length,
+        });
       } catch (e: any) {
         toast.error("Erreur chargement pharmacies", { description: e.message });
       } finally {
@@ -54,15 +68,65 @@ export default function AdminPharmacyStructure() {
     run();
   }, []);
 
+  // Charger le total réel des médicaments (référentiel dépôt)
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const { count, error } = await supabase
+          .from("medicaments")
+          .select("id", { count: "exact", head: true });
+        if (error) throw error;
+        setMedicamentTotal(count ?? 0);
+      } catch (e: any) {
+        // Ne bloque pas l'écran, affiche un toast d'information
+        toast.error("Erreur chargement total médicaments", { description: e.message });
+        setMedicamentTotal(null);
+      }
+    };
+    run();
+  }, []);
+
   const filteredPharmacies = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return pharmacies;
-    return pharmacies.filter(p =>
-      p.nom_commercial.toLowerCase().includes(q) ||
-      (p.ville || '').toLowerCase().includes(q) ||
-      (p.province || '').toLowerCase().includes(q) ||
-      (p.code_pharmacie || '').toLowerCase().includes(q)
-    );
+
+    const scoreFor = (p: PharmacyRow): number => {
+      const name = (p.nom_commercial || "").toLowerCase();
+      const city = (p.ville || "").toLowerCase();
+      const province = (p.province || "").toLowerCase();
+      const code = (p.code_pharmacie || "").toLowerCase();
+
+      let score = 0;
+      const startsWith = (s: string) => s.startsWith(q);
+      const contains = (s: string) => s.includes(q);
+
+      if (startsWith(name)) score += 50; else if (contains(name)) score += 25;
+      if (startsWith(code)) score += 40; else if (contains(code)) score += 20;
+      if (startsWith(city)) score += 20; else if (contains(city)) score += 10;
+      if (startsWith(province)) score += 10; else if (contains(province)) score += 5;
+
+      // Boost qualité
+      if (p.statut_verification === "verifie") score += 8;
+      if (p.ouvert_24_7) score += 5;
+      if (p.conventionnement_cnamgs) score += 5;
+
+      return score;
+    };
+
+    // Filtrer par pertinence minimale et trier par score décroissant
+    return pharmacies
+      .map((p) => ({ p, score: scoreFor(p) }))
+      .filter(({ p, score }) => {
+        // Conserver si un champ contient la requête et score > 0
+        const name = (p.nom_commercial || "").toLowerCase();
+        const city = (p.ville || "").toLowerCase();
+        const province = (p.province || "").toLowerCase();
+        const code = (p.code_pharmacie || "").toLowerCase();
+        const matched = name.includes(q) || city.includes(q) || province.includes(q) || code.includes(q);
+        return matched && score > 0;
+      })
+      .sort((a, b) => b.score - a.score || (a.p.nom_commercial || "").localeCompare(b.p.nom_commercial || ""))
+      .map(({ p }) => p);
   }, [pharmacies, search]);
 
   const paginatedPharmacies = useMemo(() => {
@@ -90,6 +154,30 @@ export default function AdminPharmacyStructure() {
               Pharmacies du réseau et dépôt pharmaceutique (produits référencés)
             </p>
           </div>
+        </div>
+
+        {/* Statistiques réelles */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Pharmacies</CardTitle></CardHeader>
+            <CardContent className="pt-0"><div className="text-2xl font-semibold">{stats.total}</div></CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Vérifiées</CardTitle></CardHeader>
+            <CardContent className="pt-0"><div className="text-2xl font-semibold">{stats.verified}</div></CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Ouvertes 24/7</CardTitle></CardHeader>
+            <CardContent className="pt-0"><div className="text-2xl font-semibold">{stats.open247}</div></CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Convention CNAMGS</CardTitle></CardHeader>
+            <CardContent className="pt-0"><div className="text-2xl font-semibold">{stats.cnamgs}</div></CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Médicaments (total)</CardTitle></CardHeader>
+            <CardContent className="pt-0"><div className="text-2xl font-semibold">{medicamentTotal ?? "—"}</div></CardContent>
+          </Card>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>

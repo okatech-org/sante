@@ -37,6 +37,35 @@ import { PharmacyOrderCatalog } from '@/components/pharmacy/PharmacyOrderCatalog
 export default function PharmacyPublicPage() {
   const { id: idOrSlug } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  // Remplacements/overrides spécifiques de slug → contenu
+  const slug = (idOrSlug || '').toLowerCase();
+  const overrides: Record<string, any> = {
+    'pharmacie-du-marche-port-gentil-4': {
+      nom_commercial: 'Pharmacie Centrale',
+      type_structure: 'officine_privee',
+      quartier: 'Centre-ville (à côté de Mandji Sport / Parking Rétro), BP 640, Rue du Gouverneur Bernard',
+      ville: 'Port-Gentil',
+      province: 'Ogooué-Maritime',
+      telephone_principal: '011 55 21 64 / 077 36 98 35',
+      email: null,
+      latitude: -0.7194,
+      longitude: 8.7818,
+      reperes_geographiques: 'Rue du Gouverneur Bernard, près Mandji Sport / Parking Rétro',
+      statut_verification: 'verifie',
+      ouvert_24_7: false,
+      conventionnement_cnamgs: true,
+      horaires: null,
+      modes_paiement: [],
+      services_disponibles: [],
+      delai_preparation_moyen_minutes: null,
+      pharmacien_titulaire: null,
+      accepte_commandes_en_ligne: false,
+      nombre_commandes_total: null,
+      nombre_avis: null,
+      note_moyenne: null,
+      nombre_employes: null,
+    },
+  };
   // Redirection 301 (client) des anciens slugs avec underscores vers tirets
   useEffect(() => {
     if (idOrSlug && idOrSlug.includes('_')) {
@@ -69,9 +98,10 @@ export default function PharmacyPublicPage() {
       return data as any;
     }
   });
-  const pharmacy = pharmacyById || pharmacyBySlug;
-  const isLoading = Boolean(isLoadingById || isLoadingBySlug);
-  const isError = Boolean(isErrorById || isErrorBySlug);
+  const override = overrides[slug];
+  const pharmacy = override || pharmacyById || pharmacyBySlug;
+  const isLoading = override ? false : Boolean(isLoadingById || isLoadingBySlug);
+  const isError = override ? false : Boolean(isErrorById || isErrorBySlug);
   const [fallbackEst, setFallbackEst] = useState<Establishment | null>(null);
   const [showOrderCatalog, setShowOrderCatalog] = useState(false);
   const mapRef = useRef<HTMLDivElement | null>(null);

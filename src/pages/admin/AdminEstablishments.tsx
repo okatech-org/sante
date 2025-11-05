@@ -56,6 +56,8 @@ import { useEstablishments } from "@/hooks/useEstablishments";
 import { establishmentsService } from "@/services/establishments.service";
 import { EstablishmentCard } from "@/components/admin/EstablishmentCard";
 import { Eye as ViewIcon, Grid, List, Star } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import providersData from "@/data/cartography-providers.json";
 
 const AdminEstablishments = () => {
   const { toast } = useToast();
@@ -456,6 +458,98 @@ const AdminEstablishments = () => {
     loadEstablishments();
   };
 
+  const handleImportCartography = async () => {
+    setLoading(true);
+    try {
+      // Récupérer le token de session pour authentifier l'appel (Super Admin requis côté fonction)
+      const { data: sessionResp } = await supabase.auth.getSession();
+      const token = sessionResp?.session?.access_token;
+      if (!token) {
+        toast({ title: 'Connexion requise', description: 'Veuillez vous connecter en tant que Super Admin pour importer.', variant: 'destructive' });
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('import-cartography-data', {
+        body: { scope: 'port-gentil' },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (error) throw error;
+      toast({
+        title: 'Import terminé',
+        description: `${data?.imported || 0} établissements importés (${data?.errors || 0} erreurs)`,
+      });
+      await loadEstablishments();
+    } catch (e: any) {
+      // Fallback client-side import (si fonction non disponible ou droits non reconnus)
+      try {
+        const allowedTypes = ['hopital', 'clinique', 'cabinet_medical', 'laboratoire', 'imagerie'];
+        const typeMapping: Record<string, string> = {
+          hopital: 'chu',
+          clinique: 'clinique',
+          cabinet_medical: 'centre_medical',
+          laboratoire: 'centre_medical',
+          imagerie: 'centre_medical',
+        };
+        const secteurMapping: Record<string, string> = {
+          public: 'public',
+          prive: 'prive',
+          parapublic: 'parapublic',
+          confessionnel: 'confessionnel',
+          ong: 'ong',
+          militaire: 'militaire',
+        };
+
+        const batch = (providersData as any[])
+          .filter((p) => p && p.ville === 'Port-Gentil' && allowedTypes.includes(p.type))
+          .map((p) => ({
+            raison_sociale: p.nom,
+            type_etablissement: typeMapping[p.type] || 'centre_medical',
+            secteur: secteurMapping[p.secteur] || 'prive',
+            province: p.province || 'G4',
+            ville: p.ville || 'Port-Gentil',
+            adresse_rue: p.adresse_descriptive || null,
+            latitude: p.coordonnees?.lat ?? null,
+            longitude: p.coordonnees?.lng ?? null,
+            repere_geographique: p.adresse_descriptive || null,
+            telephone_standard: (p.telephones && p.telephones[0]) || null,
+            email: p.email || null,
+            site_web: p.site_web || null,
+            service_urgences_actif: !!p.ouvert_24_7,
+            cnamgs_conventionne: !!(p.conventionnement && p.conventionnement.cnamgs),
+            nombre_lits_total: p.nombre_lits || 0,
+            statut: 'actif',
+            date_inscription: new Date().toISOString().split('T')[0],
+          }));
+
+        if (batch.length === 0) {
+          throw new Error('Aucun établissement de Port-Gentil à importer');
+        }
+
+        // Upsert par lots pour éviter les erreurs
+        const batchSize = 50;
+        let imported = 0;
+        for (let i = 0; i < batch.length; i += batchSize) {
+          const slice = batch.slice(i, i + batchSize);
+          const { data: up, error: upErr } = await supabase
+            .from('establishments')
+            .upsert(slice, { onConflict: 'raison_sociale,ville', ignoreDuplicates: false })
+            .select();
+          if (upErr) throw upErr;
+          imported += up?.length || 0;
+        }
+
+        toast({ title: 'Import local réussi', description: `${imported} établissements importés (client)` });
+        await loadEstablishments();
+      } catch (fallbackErr: any) {
+        const message = typeof fallbackErr?.message === 'string' ? fallbackErr.message : 'Échec import cartographie';
+        toast({ title: 'Erreur import', description: message, variant: 'destructive' });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!user || (!isSuperAdmin && !isAdmin)) {
     return null;
   }
@@ -495,6 +589,10 @@ const AdminEstablishments = () => {
             <Button onClick={handleRefresh} variant="outline" size="sm">
               <RefreshCw className="h-4 w-4 mr-2" />
               Actualiser
+            </Button>
+            <Button onClick={handleImportCartography} variant="outline" size="sm">
+              <Upload className="h-4 w-4 mr-2" />
+              Import cartographie
             </Button>
             <Button onClick={handleExport} variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
