@@ -300,8 +300,16 @@ export class EstablishmentsService {
       // Récupérer tous les établissements
       const establishments = await this.getAllEstablishments(forceRefresh);
       
-      // Convertir en format CartographyProvider
-      this.cachedProviders = establishments.map(est => this.establishmentToProvider(est));
+      // Convertir en format CartographyProvider et filtrer les institutions non sanitaires
+      const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const allowedInstitutionNames = new Set((GABON_HEALTH_INSTITUTIONS as any[]).map((i: any) => normalize(i.nom)));
+      
+      const mapped = establishments.map(est => this.establishmentToProvider(est));
+      this.cachedProviders = mapped.filter(p => {
+        if (p.type !== 'institution') return true;
+        const n = normalize(p.nom || '');
+        return allowedInstitutionNames.has(n);
+      });
       
       return this.cachedProviders;
     } catch (error) {
