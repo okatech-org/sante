@@ -134,33 +134,6 @@
     "source": "Plateforme"
   },
   {
-    "id": "INST_CNSS",
-    "type": "institution",
-    "nom": "Caisse Nationale de Sécurité Sociale (CNSS)",
-    "province": "G1",
-    "ville": "Libreville",
-    "coordonnees": {
-      "lat": 0.3912,
-      "lng": 9.4587
-    },
-    "adresse_descriptive": "Boulevard Léon Mba, Immeuble CNSS, Libreville",
-    "telephones": ["+241 01 76 24 76", "+241 01 76 24 77"],
-    "email": "info@cnss.ga",
-    "site_web": "http://www.cnss.ga",
-    "horaires": "Lundi-Vendredi: 08h00-15h00",
-    "services": ["Sécurité sociale", "Prestations familiales", "Accidents du travail"],
-    "specialites": [],
-    "ouvert_24_7": false,
-    "conventionnement": {
-      "cnamgs": false,
-      "cnss": false
-    },
-    "secteur": "parapublic",
-    "statut_operationnel": "operationnel",
-    "has_account": false,
-    "source": "Plateforme"
-  },
-  {
     "id": "INST_PNLP",
     "type": "institution",
     "nom": "Programme National de Lutte contre le Paludisme (PNLP)",
@@ -234,33 +207,6 @@
       "cnss": false
     },
     "secteur": "public",
-    "statut_operationnel": "operationnel",
-    "has_account": false,
-    "source": "Plateforme"
-  },
-  {
-    "id": "INST_UNICEF",
-    "type": "institution",
-    "nom": "UNICEF Gabon",
-    "province": "G1",
-    "ville": "Libreville",
-    "coordonnees": {
-      "lat": 0.4018,
-      "lng": 9.4678
-    },
-    "adresse_descriptive": "Immeuble Mindoubé, Batterie IV, Libreville",
-    "telephones": ["+241 01 44 31 00"],
-    "email": "libreville@unicef.org",
-    "site_web": "https://www.unicef.org/gabon",
-    "horaires": "Lundi-Vendredi: 08h00-17h00",
-    "services": ["Santé infantile", "Vaccination", "Nutrition", "Eau et assainissement"],
-    "specialites": [],
-    "ouvert_24_7": false,
-    "conventionnement": {
-      "cnamgs": false,
-      "cnss": false
-    },
-    "secteur": "ong",
     "statut_operationnel": "operationnel",
     "has_account": false,
     "source": "Plateforme"
