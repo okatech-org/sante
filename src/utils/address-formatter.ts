@@ -122,6 +122,41 @@ export function standardizeAddress(
 }
 
 /**
+ * Standardise l'adresse en essayant d'inférer le quartier/localité depuis le nom
+ * Utile quand l'adresse descriptive est vide ou générique et que le nom contient "d'Ebeigne", "de Nkembo", etc.
+ */
+export function standardizeAddressWithName(
+  adresseDescriptive: string | undefined,
+  ville: string,
+  province: string,
+  nom?: string
+): string {
+  const base = standardizeAddress(adresseDescriptive, ville, province);
+  const firstPart = base.split(',')[0]?.trim() || '';
+  // Si on a déjà un préfixe ou une adresse différente de la ville, on garde tel quel
+  if (firstPart.startsWith('à ') || (firstPart && firstPart.toLowerCase() !== ville.toLowerCase())) {
+    return base;
+  }
+  if (!nom) return base;
+
+  // Heuristique: extraire un toponyme à partir du nom (d', de, du, des)
+  const match = nom.match(/\b(?:d['’]|de |du |des )([A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿ'’\-]+)/u);
+  if (match) {
+    const locality = match[1].trim();
+    if (
+      locality.length > 1 &&
+      locality.toLowerCase() !== ville.toLowerCase() &&
+      locality.toLowerCase() !== normalizeProvince(province).toLowerCase()
+    ) {
+      const normalizedProvince = normalizeProvince(province, ville);
+      return `à ${locality}, ${ville}, ${normalizedProvince}`;
+    }
+  }
+
+  return base;
+}
+
+/**
  * Extrait le quartier d'une adresse
  */
 export function extractQuartier(adresseDescriptive: string | undefined, ville: string, province: string): string | null {

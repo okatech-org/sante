@@ -14,7 +14,7 @@ import { formatDistance } from "@/utils/distance";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
-import { standardizeAddress } from "@/utils/address-formatter";
+import { standardizeAddressWithName } from "@/utils/address-formatter";
 
 interface CartographyProviderModalProps {
   provider: CartographyProvider | null;
@@ -67,7 +67,7 @@ export default function CartographyProviderModal({
   };
 
   const handleShare = async () => {
-    const shareText = `${provider.nom}\n${standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province)}\nTél: ${provider.telephones[0]}`;
+    const shareText = `${provider.nom}\n${standardizeAddressWithName(provider.adresse_descriptive, provider.ville, provider.province, provider.nom)}\nTél: ${provider.telephones[0]}`;
     
     if (navigator.share) {
       try {
@@ -258,7 +258,7 @@ export default function CartographyProviderModal({
                   Localisation
                 </div>
                 <p className="text-xs leading-relaxed">
-                  {standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province)}
+                  {standardizeAddressWithName(provider.adresse_descriptive, provider.ville, provider.province, provider.nom)}
                 </p>
               </div>
 

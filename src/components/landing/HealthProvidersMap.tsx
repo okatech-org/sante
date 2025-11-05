@@ -10,7 +10,7 @@ import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { supabase } from "@/integrations/supabase/client";
-import { standardizeAddress } from "@/utils/address-formatter";
+import { standardizeAddressWithName } from "@/utils/address-formatter";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -230,7 +230,7 @@ export default function HealthProvidersMap({
         icon: customIcon
       });
 
-      const formattedAddress = standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province);
+      const formattedAddress = standardizeAddressWithName(provider.adresse_descriptive, provider.ville, provider.province, provider.nom);
       const popupContent = `
         <div style="min-width: 240px; padding: 4px;">
           <h3 style="font-weight: 700; margin-bottom: 8px; font-size: 15px; color: hsl(var(--foreground));">
