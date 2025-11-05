@@ -26,28 +26,28 @@ export function parseAddress(adresseDescriptive: string, ville: string, province
     return { ville, province };
   }
 
-  const parts = adresseDescriptive.split(',').map(s => s.trim()).filter(Boolean);
-  
-  // Si l'adresse contient déjà ville et province, extraire la première partie
-  if (parts.length >= 3) {
-    const firstPart = parts[0];
+  const rawParts = adresseDescriptive.split(',').map(s => s.trim()).filter(Boolean);
+  const lowerVille = ville.toLowerCase();
+  const lowerProvince = province.toLowerCase();
+
+  // Filtrer les éléments non pertinents (ville/province déjà présentes, codes pays, etc.)
+  const filteredParts = rawParts.filter(p => {
+    const n = p.toLowerCase();
+    if (!n) return false;
+    if (n === lowerVille || n === lowerProvince) return false;
+    if (n === 'gabon' || n === 'ga' || n === 'g9' || /^ga-?\d+$/i.test(p)) return false;
+    return true;
+  });
+
+  // Choisir la première partie significative
+  const firstPart = filteredParts[0] || rawParts[0] || '';
+
+  if (firstPart) {
     // Déterminer si c'est une adresse précise ou un quartier
-    // Une adresse précise contient généralement: numéros, "rue", "avenue", "BP", etc.
-    const isSpecificAddress = /\d+|rue|avenue|av\.|boulevard|bd\.|bp|boite|route/i.test(firstPart);
-    
-    return {
-      adresse: isSpecificAddress ? firstPart : undefined,
-      quartier: !isSpecificAddress ? firstPart : undefined,
-      ville,
-      province
-    };
-  }
-  
-  // Si un seul élément, c'est probablement un quartier ou une adresse
-  if (parts.length === 1) {
-    const firstPart = parts[0];
-    const isSpecificAddress = /\d+|rue|avenue|av\.|boulevard|bd\.|bp|boite|route/i.test(firstPart);
-    
+    // Éviter de confondre des codes courts (ex: "G9") avec une adresse
+    const isCodeLike = /^[A-Za-z]{0,2}\d{1,3}[A-Za-z]{0,2}$/i.test(firstPart);
+    const isSpecificAddress = !isCodeLike && ( /\d+/.test(firstPart) || /(rue|avenue|av\.|boulevard|bd\.|bp|boite|route)/i.test(firstPart) );
+
     return {
       adresse: isSpecificAddress ? firstPart : undefined,
       quartier: !isSpecificAddress ? firstPart : undefined,
