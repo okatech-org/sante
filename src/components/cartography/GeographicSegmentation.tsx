@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Navigation, RefreshCw } from "lucide-react";
 import { CartographyProvider } from "@/types/cartography";
+import { extractQuartier, parseAddress } from "@/utils/address-formatter";
 import { toast } from "sonner";
 
 interface GeographicSegmentationProps {
@@ -50,13 +51,7 @@ export default function GeographicSegmentation({
     const quartierSet = new Set(
       providers
         .filter(p => p.province === selectedProvince && p.ville === selectedCommune)
-        .map(p => {
-          // Extraire le quartier de l'adresse descriptive
-          const adresse = p.adresse_descriptive || '';
-          const parts = adresse.split(',').map(s => s.trim());
-          // Le quartier est généralement le premier élément de l'adresse
-          return parts.length > 1 ? parts[0] : null;
-        })
+        .map(p => extractQuartier(p.adresse_descriptive, p.ville, p.province))
         .filter(Boolean)
     );
     return Array.from(quartierSet).sort();
@@ -74,9 +69,7 @@ export default function GeographicSegmentation({
     }
     if (selectedQuartier) {
       filtered = filtered.filter(p => {
-        const adresse = p.adresse_descriptive || '';
-        const parts = adresse.split(',').map(s => s.trim());
-        const quartier = parts.length > 1 ? parts[0] : null;
+        const quartier = extractQuartier(p.adresse_descriptive, p.ville, p.province);
         return quartier === selectedQuartier;
       });
     }
@@ -224,9 +217,7 @@ export default function GeographicSegmentation({
                   if (!quartier) return null;
                   const count = providers.filter(p => {
                     if (p.province !== selectedProvince || p.ville !== selectedCommune) return false;
-                    const adresse = p.adresse_descriptive || '';
-                    const parts = adresse.split(',').map(s => s.trim());
-                    const q = parts.length > 1 ? parts[0] : null;
+                    const q = extractQuartier(p.adresse_descriptive, p.ville, p.province);
                     return q === quartier;
                   }).length;
                   return (
@@ -288,9 +279,7 @@ export default function GeographicSegmentation({
                         let match = p.province === selectedProvince;
                         if (selectedCommune) match = match && p.ville === selectedCommune;
                         if (selectedQuartier) {
-                          const adresse = p.adresse_descriptive || '';
-                          const parts = adresse.split(',').map(s => s.trim());
-                          const q = parts.length > 1 ? parts[0] : null;
+                          const q = extractQuartier(p.adresse_descriptive, p.ville, p.province);
                           match = match && q === selectedQuartier;
                         }
                         return match;
@@ -308,9 +297,7 @@ export default function GeographicSegmentation({
                         let match = p.province === selectedProvince;
                         if (selectedCommune) match = match && p.ville === selectedCommune;
                         if (selectedQuartier) {
-                          const adresse = p.adresse_descriptive || '';
-                          const parts = adresse.split(',').map(s => s.trim());
-                          const q = parts.length > 1 ? parts[0] : null;
+                          const q = extractQuartier(p.adresse_descriptive, p.ville, p.province);
                           match = match && q === selectedQuartier;
                         }
                         return match;
