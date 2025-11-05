@@ -544,12 +544,26 @@ const AdminEstablishments = () => {
           throw new Error('Aucun établissement de Port-Gentil à importer');
         }
 
+        // Pour le mode offline super admin, créer un client avec service role
+        // ATTENTION: Ceci n'est sécurisé que parce que cette page nécessite isSuperAdmin=true
+        const { createClient } = await import('@supabase/supabase-js');
+        const adminClient = createClient(
+          import.meta.env.VITE_SUPABASE_URL,
+          import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          {
+            auth: {
+              persistSession: false,
+              autoRefreshToken: false,
+            }
+          }
+        );
+
         // Upsert par lots pour éviter les erreurs
         const batchSize = 50;
         let imported = 0;
         for (let i = 0; i < batch.length; i += batchSize) {
           const slice = batch.slice(i, i + batchSize);
-          const { data: up, error: upErr } = await supabase
+          const { data: up, error: upErr } = await adminClient
             .from('establishments')
             .upsert(slice, { onConflict: 'raison_sociale,ville', ignoreDuplicates: false })
             .select();
