@@ -13,6 +13,28 @@ export interface AddressComponents {
 }
 
 /**
+ * Normalise le nom de province (codes G1..G9, GA-*)
+ */
+export function normalizeProvince(province: string, ville?: string): string {
+  const code = (province || '').trim().toLowerCase();
+  const map: Record<string, string> = {
+    'g1': 'Estuaire',
+    'g2': 'Haut-Ogooué',
+    'g3': 'Moyen-Ogooué',
+    'g4': 'Ngounié',
+    'g5': 'Nyanga',
+    'g6': 'Ogooué-Ivindo',
+    'g7': 'Ogooué-Lolo',
+    'g8': 'Ogooué-Maritime',
+    'g9': 'Woleu-Ntem',
+  };
+  if (map[code]) return map[code];
+  const m = code.match(/^ga-?(\d+)$/i);
+  if (m && map[`g${m[1]}`]) return map[`g${m[1]}`];
+  return province;
+}
+
+/**
  * Parse une adresse descriptive en composants
  */
 export function parseAddress(adresseDescriptive: string, ville: string, province: string): AddressComponents {
@@ -94,7 +116,8 @@ export function standardizeAddress(
   ville: string,
   province: string
 ): string {
-  const components = parseAddress(adresseDescriptive || '', ville, province);
+  const normalizedProvince = normalizeProvince(province, ville);
+  const components = parseAddress(adresseDescriptive || '', ville, normalizedProvince);
   return formatAddress(components);
 }
 
