@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { convertCartographyToEstablishment } from "@/utils/convert-establishments";
 import GABON_COMPLETE_ESTABLISHMENTS from "@/data/gabon-complete-establishments";
+import GABON_HEALTH_INSTITUTIONS from "@/data/gabon-health-institutions.json";
 
 /**
  * Interface pour les établissements avec page d'accueil
@@ -229,10 +230,8 @@ export class EstablishmentsService {
       // 3. Ajouter les établissements principaux détaillés (seulement les 14 principaux)
       const detailedEstablishments = GABON_COMPLETE_ESTABLISHMENTS;
       
-      // 4. Charger les institutions administratives
-      const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
-      const institutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
-      const institutionEstablishments = institutions.map((inst: CartographyProvider, index: number) =>
+      // 4. Charger les institutions sanitaires (8 institutions)
+      const institutionEstablishments = (GABON_HEALTH_INSTITUTIONS as CartographyProvider[]).map((inst, index) =>
         convertCartographyToEstablishment(inst, index + 1000)
       );
       
@@ -241,8 +240,15 @@ export class EstablishmentsService {
         ...detailedEstablishments,   // Priorité aux données détaillées (14)
         ...supabaseEstablishments,   // Données Supabase importées
         ...osmEstablishments,        // Données OSM réelles
-        ...institutionEstablishments // Institutions (16)
+        ...institutionEstablishments // Institutions sanitaires (8)
       ];
+      
+      console.log(`📊 Statistiques de chargement:
+        - Établissements détaillés: ${detailedEstablishments.length}
+        - Depuis Supabase: ${supabaseEstablishments.length}
+        - Depuis OSM: ${osmEstablishments.length}
+        - Institutions sanitaires: ${institutionEstablishments.length}
+      `);
       
       // Dédupliquer par nom (normaliser pour comparer)
       const uniqueMap = new Map<string, Establishment>();
