@@ -7,7 +7,6 @@ import { pharmacySlugFromName } from "@/lib/utils";
 import { CartographyProvider } from "@/types/cartography";
 import { supabase } from "@/integrations/supabase/client";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
-import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 import { convertCartographyToEstablishment } from "@/utils/convert-establishments";
 import GABON_COMPLETE_ESTABLISHMENTS from "@/data/gabon-complete-establishments";
 
@@ -135,37 +134,22 @@ export class EstablishmentsService {
     }
 
     try {
-      // 1. Charger les données depuis real-establishments (397 établissements)
-      const realEstablishments = REAL_ESTABLISHMENTS.map((provider, index) => 
-        convertCartographyToEstablishment(provider, index)
-      );
-      
-      // 2. Ajouter les établissements principaux détaillés (14)
-      const detailedEstablishments = GABON_COMPLETE_ESTABLISHMENTS;
-      
-      // 3. Charger les données OSM depuis Supabase
+      // 1. Charger les données OSM depuis Supabase (vraies données OpenStreetMap)
       const osmProviders = await getOSMProvidersFromSupabase();
       const osmEstablishments = osmProviders.map((provider, index) => 
         convertCartographyToEstablishment(provider, index + 500)
       );
       
-      // 4. Charger les institutions administratives
-      const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
-      const institutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
-      const institutionEstablishments = institutions.map((inst: CartographyProvider, index: number) =>
-        convertCartographyToEstablishment(inst, index + 1000)
-      );
-      
-      // 5. Charger les établissements depuis Supabase
+      // 2. Charger les établissements depuis Supabase (données importées)
       const { data: supabaseData } = await supabase
         .from('establishments')
-        .select('*');
+        .select('*')
+        .eq('statut', 'actif'); // Seulement les établissements actifs
       
       // Mapper les données Supabase au format Establishment
       const { establishmentsAPI } = await import('@/api/establishments.api');
       const supabaseEstablishments = supabaseData 
         ? await Promise.all(supabaseData.map(async (row: any) => {
-            // Utiliser un mapping simple car on veut garder les données brutes
             return {
               id: row.id,
               code: row.numero_rccm || row.id,
@@ -242,26 +226,34 @@ export class EstablishmentsService {
           }))
         : [];
       
-      // 6. Fusionner et dédupliquer (utiliser code comme clé unique)
+      // 3. Ajouter les établissements principaux détaillés (seulement les 14 principaux)
+      const detailedEstablishments = GABON_COMPLETE_ESTABLISHMENTS;
+      
+      // 4. Charger les institutions administratives
+      const institutionsResponse = await fetch('/src/data/gabon-health-institutions.json');
+      const institutions = institutionsResponse.ok ? await institutionsResponse.json() : [];
+      const institutionEstablishments = institutions.map((inst: CartographyProvider, index: number) =>
+        convertCartographyToEstablishment(inst, index + 1000)
+      );
+      
+      // 5. Fusionner et dédupliquer (utiliser code/nom comme clé unique)
       const allEstablishments: Establishment[] = [
-        ...detailedEstablishments, // Priorité aux données détaillées
-        ...supabaseEstablishments,  // Données Supabase en 2e
-        ...realEstablishments,
-        ...osmEstablishments,
-        ...institutionEstablishments
+        ...detailedEstablishments,   // Priorité aux données détaillées (14)
+        ...supabaseEstablishments,   // Données Supabase importées
+        ...osmEstablishments,        // Données OSM réelles
+        ...institutionEstablishments // Institutions (16)
       ];
       
-      // Dédupliquer par code et nom
+      // Dédupliquer par nom (normaliser pour comparer)
       const uniqueMap = new Map<string, Establishment>();
       allEstablishments.forEach(est => {
-        const key = est.code || est.name;
-        if (!uniqueMap.has(key)) {
-          uniqueMap.set(key, est);
+        const normalizedName = est.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (!uniqueMap.has(normalizedName)) {
+          uniqueMap.set(normalizedName, est);
         }
       });
       
-      // Limiter exactement à 397 établissements comme sur la carte
-      const finalEstablishments = Array.from(uniqueMap.values()).slice(0, 397);
+      const finalEstablishments = Array.from(uniqueMap.values());
       
       // Ajouter les informations de page d'accueil
       finalEstablishments.forEach(est => {
@@ -274,6 +266,8 @@ export class EstablishmentsService {
       
       this.cachedEstablishments = finalEstablishments;
       this.lastSync = new Date();
+      
+      console.log(`✅ Chargé ${finalEstablishments.length} établissements réels depuis Supabase et OSM`);
       
       return finalEstablishments;
     } catch (error) {
@@ -306,7 +300,7 @@ export class EstablishmentsService {
       return this.cachedProviders;
     } catch (error) {
       console.error('Erreur lors du chargement des providers:', error);
-      return REAL_ESTABLISHMENTS;
+      return [];
     }
   }
 

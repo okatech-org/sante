@@ -10,7 +10,6 @@ import { CartographyProvider } from "@/types/cartography";
 import { toast } from "sonner";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { supabase } from "@/integrations/supabase/client";
-import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -103,30 +102,16 @@ export default function HealthProvidersMap({
   // Charger les données depuis Supabase
   useEffect(() => {
     if (externalProviders && externalProviders.length) {
-      // On utilise les données externes, ne pas charger en local
+      // On utilise les données externes fournies par le parent
       setOsmProviders([]);
       setEstablishmentProviders([]);
       return;
     }
 
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        // Utiliser les vraies données (397 établissements)
-        setOsmProviders(REAL_ESTABLISHMENTS);
-        setEstablishmentProviders([]);
-
-        const totalCount = REAL_ESTABLISHMENTS.length;
-        toast.success(`${totalCount} établissements chargés`);
-      } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error("Erreur lors du chargement des données");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadData();
+    // Si pas de données externes, ne rien afficher
+    // (les données doivent être fournies par le parent)
+    setOsmProviders([]);
+    setEstablishmentProviders([]);
   }, [externalProviders]);
 
   // Initialiser la carte
