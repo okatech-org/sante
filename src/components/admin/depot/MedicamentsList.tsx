@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMedicaments, useClassesTherapeutiques, useMedicamentStats } from "@/hooks/useMedicaments";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,32 +19,29 @@ import { ImportMedicamentsButton } from "./ImportMedicamentsButton";
 export const MedicamentsList = () => {
   const [search, setSearch] = useState("");
   const [classeFilter, setClasseFilter] = useState<string>("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
-  const limit = 20000; // Limite totale de chargement
-  
-  // Valeur du select (utilise "all" pour afficher mais filtre avec "")
+  const [pageSize, setPageSize] = useState<number>(50); // 50, 100, 200
+  const [page, setPage] = useState<number>(0); // 0-based
+
   const selectValue = classeFilter || "all";
 
-  // Réinitialiser la page lors d'un changement de recherche ou filtre
   useEffect(() => {
-    setPage(1);
-  }, [search, classeFilter]);
-
-  const offset = (page - 1) * pageSize;
+    setPage(0);
+  }, [search, classeFilter, pageSize]);
 
   const { data: statsData } = useMedicamentStats();
   const { data: classes } = useClassesTherapeutiques();
   const { data, isLoading, error } = useMedicaments({
     limit: pageSize,
-    offset,
+    offset: page * pageSize,
     search: search || undefined,
     classe_therapeutique: classeFilter || undefined,
     statut: 'all',
   });
 
-  const totalCount = data?.total || 0;
-  const totalPages = Math.ceil(Math.min(totalCount, limit) / pageSize);
+  const total = data?.total || 0;
+  const startIndex = total === 0 ? 0 : page * pageSize + 1;
+  const endIndex = Math.min((page + 1) * pageSize, total);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   const formatPrice = (price: number | null) => {
     if (!price) return "N/A";
@@ -183,65 +180,38 @@ export const MedicamentsList = () => {
       {/* Tableau des médicaments */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>
-              Liste des médicaments ({totalCount})
-            </CardTitle>
-            
-            {/* Contrôles de pagination en haut */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                Afficher:
-              </span>
-              <Select
-                value={pageSize.toString()}
-                onValueChange={(value) => {
-                  setPageSize(Number(value));
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="w-20">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <CardTitle>
+            Liste des médicaments ({total})
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* Informations de pagination */}
-          <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
-            <div>
-              Affichage de {Math.min(offset + 1, totalCount)} à {Math.min(offset + pageSize, totalCount)} sur {totalCount}
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1 || isLoading}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Précédent
-              </Button>
-              <span className="text-sm font-medium">
-                Page {page} / {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page >= totalPages || isLoading}
-              >
-                Suivant
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+          {/* Pagination (haut) */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4 text-sm text-muted-foreground">
+            <p>Affichage de {startIndex} à {endIndex} sur {total} médicaments</p>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0 || isLoading}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">Page {page + 1} / {totalPages}</span>
+                <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1 || isLoading}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Par page</span>
+                <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                  <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value="200">200</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
+
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -271,22 +241,22 @@ export const MedicamentsList = () => {
                 </TableHeader>
                 <TableBody>
                   {data?.medicaments.map((med) => (
-                  <TableRow key={med.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-3">
-                        {med.image_url && (
-                          <img
-                            src={med.image_url}
-                            alt={med.nom_commercial || "Médicament"}
-                            className="h-10 w-10 object-contain rounded border"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        )}
-                        <span>{med.nom_commercial || "N/A"}</span>
-                      </div>
-                    </TableCell>
+                    <TableRow key={med.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-3">
+                          {med.image_url && (
+                            <img
+                              src={med.image_url}
+                              alt={med.nom_commercial || "Médicament"}
+                              className="h-10 w-10 object-contain rounded border"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          )}
+                          <span>{med.nom_commercial || "N/A"}</span>
+                        </div>
+                      </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {med.dci || "N/A"}
                       </TableCell>
@@ -308,50 +278,50 @@ export const MedicamentsList = () => {
                       <TableCell>
                         <div className="flex gap-1">
                           {med.est_generique && (
-                <Badge variant="secondary" className="text-xs">
-                  Générique
-                </Badge>
-              )}
-              {med.necessite_ordonnance && (
-                <Badge variant="outline" className="text-xs">
-                  Ord.
-                </Badge>
-              )}
-            </div>
-          </TableCell>
-        </TableRow>
+                            <Badge variant="secondary" className="text-xs">
+                              Générique
+                            </Badge>
+                          )}
+                          {med.necessite_ordonnance && (
+                            <Badge variant="outline" className="text-xs">
+                              Ord.
+                            </Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 </TableBody>
               </Table>
 
-              {/* Pagination en bas */}
-              <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                <div className="text-sm text-muted-foreground">
-                  Affichage de {Math.min(offset + 1, totalCount)} à {Math.min(offset + pageSize, totalCount)} sur {totalCount}
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1 || isLoading}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    Précédent
-                  </Button>
-                  <span className="text-sm font-medium">
-                    Page {page} / {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                    disabled={page >= totalPages || isLoading}
-                  >
-                    Suivant
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
+              {/* Pagination (bas) */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-4 pt-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  Affichage de {startIndex} à {endIndex} sur {total} médicaments
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0 || isLoading}>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      Page {page + 1} / {totalPages}
+                    </span>
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1 || isLoading}>
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Par page</span>
+                    <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                      <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                        <SelectItem value="200">200</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </>

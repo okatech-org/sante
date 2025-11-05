@@ -33,7 +33,7 @@ export default function AdminPharmacyStructure() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("pharmacies");
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(15);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   useEffect(() => {
     const run = async () => {
@@ -122,9 +122,9 @@ export default function AdminPharmacyStructure() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="25">25</SelectItem>
                     <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value="200">200</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
