@@ -38,7 +38,6 @@ export default function AdminCartography() {
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("name-asc");
 
-  const [establishmentProviders, setEstablishmentProviders] = useState<CartographyProvider[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
   const [adminInstitutions, setAdminInstitutions] = useState<CartographyProvider[]>([]);
 
@@ -65,105 +64,38 @@ export default function AdminCartography() {
     try {
       setIsLoading(true);
       
-      // Utiliser le service unifié pour obtenir tous les providers (397 établissements)
-      const allProviders = await establishmentsService.getAllProviders(true);
+      // Charger TOUS les providers depuis le service unifié (397 établissements)
+      const allProvidersData = await establishmentsService.getAllProviders(true);
       
       // Séparer les institutions pour l'affichage spécifique
-      const institutions = allProviders.filter(p => p.type === 'institution');
-      const otherProviders = allProviders.filter(p => p.type !== 'institution');
+      const institutions = allProvidersData.filter(p => p.type === 'institution');
+      const otherProviders = allProvidersData.filter(p => p.type !== 'institution');
       
       setAdminInstitutions(institutions);
       setOsmProviders(otherProviders);
 
-      // Charger les establishments depuis Supabase
-      const { data: estabData, error: estabError } = await supabase
-        .from('establishments')
-        .select('*');
-
-      if (estabError) throw estabError;
-
-      // Normaliser le type d'établissement vers les catégories CartographyProvider
-      const normalizeEstablishmentType = (type: string): CartographyProvider['type'] => {
-        // Mapper les types d'établissements vers les catégories d'affichage
-        const typeMap: Record<string, CartographyProvider['type']> = {
-          'chu': 'hopital',
-          'chr': 'hopital',
-          'hopital_departemental': 'hopital',
-          'hopital_confessionnel': 'hopital',
-          'polyclinique': 'clinique',
-          'clinique': 'clinique',
-          'centre_medical': 'cabinet_medical',
-          'institution': 'institution',
-        };
-        return typeMap[type] || 'cabinet_medical';
-      };
-
-      // Convertir les establishments au format CartographyProvider
-      const estabProviders: CartographyProvider[] = (estabData || []).map(estab => ({
-        id: estab.id,
-        nom: estab.raison_sociale,
-        type: normalizeEstablishmentType(estab.type_etablissement),
-        province: estab.province,
-        ville: estab.ville,
-        adresse: [estab.adresse_rue, estab.adresse_quartier, estab.adresse_arrondissement].filter(Boolean).join(', '),
-        adresse_descriptive: [estab.adresse_rue, estab.adresse_quartier, estab.ville, estab.province].filter(Boolean).join(', '),
-        coordonnees: estab.latitude && estab.longitude ? {
-          lat: typeof estab.latitude === 'string' ? parseFloat(estab.latitude) : estab.latitude,
-          lng: typeof estab.longitude === 'string' ? parseFloat(estab.longitude) : estab.longitude
-        } : undefined,
-        telephones: [estab.telephone_standard, estab.telephone_urgences].filter(Boolean) as string[],
-        email: estab.email || undefined,
-        site_web: estab.site_web || undefined,
-        ouvert_24_7: estab.service_urgences_actif || false,
-        cnamgs: estab.cnamgs_conventionne || false,
-        conventionnement: {
-          cnamgs: estab.cnamgs_conventionne || false,
-          cnss: false
-        },
-        secteur: (estab.secteur as any) || 'prive',
-        services: [],
-        specialites: [],
-        has_account: true,
-        source: 'Plateforme',
-        statut_operationnel: estab.statut === 'actif' ? 'operationnel' : 'inconnu',
-        nombre_lits: estab.nombre_lits_total
-      }));
-
-      setEstablishmentProviders(estabProviders);
-
-      // Combiner et calculer les statistiques (exclure les institutions OSM)
-      const filteredOSMData = dedupeProviders(otherProviders).filter(p => p.type !== 'institution');
-      const combined = [...filteredOSMData, ...institutions];
-      const seenIds = new Set();
-      const unique = combined.filter(p => {
-        if (seenIds.has(p.id)) return false;
-        seenIds.add(p.id);
-        return true;
-      });
-
-      // Heuristique de classification pour correspondre aux attentes
+      // Calculer les statistiques sur l'ensemble des données
       const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
       const clinicNameRegex = /(clinique|centre medical|polyclinique)/;
 
-      const hopitaux = unique.filter(p => p.type === 'hopital').length;
-      const pharmacies = unique.filter(p => p.type === 'pharmacie').length;
-      const laboratoires = unique.filter(p => p.type === 'laboratoire').length;
-      const imagerie = unique.filter(p => p.type === 'imagerie').length;
+      const hopitaux = allProvidersData.filter(p => p.type === 'hopital').length;
+      const pharmacies = allProvidersData.filter(p => p.type === 'pharmacie').length;
+      const laboratoires = allProvidersData.filter(p => p.type === 'laboratoire').length;
+      const imagerie = allProvidersData.filter(p => p.type === 'imagerie').length;
 
-      const cliniques = unique.filter(p => {
+      const cliniques = allProvidersData.filter(p => {
         const n = normalize(p.nom || '');
         return p.type === 'clinique' || (p.type === 'cabinet_medical' && clinicNameRegex.test(n));
       }).length;
 
-      // Cabinets = cabinets médicaux uniquement (exclut cabinets dentaires et ceux assimilés à des cliniques)
-      const cabinets = unique.filter(p => {
+      const cabinets = allProvidersData.filter(p => {
         if (p.type !== 'cabinet_medical') return false;
         const n = normalize(p.nom || '');
         return !clinicNameRegex.test(n);
       }).length;
 
       setStats({
-        total: unique.length,
+        total: allProvidersData.length,
         hopitaux,
         cliniques,
         pharmacies,
