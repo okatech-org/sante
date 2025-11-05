@@ -13,9 +13,15 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function ProfessionalSettings() {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const { language: appLanguage, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -34,6 +40,18 @@ export default function ProfessionalSettings() {
     phone: '',
   });
 
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [twoFactorSaving, setTwoFactorSaving] = useState(false);
+
+  const [prefTheme, setPrefTheme] = useState<'light'|'dark'|'system'>('system');
+  const [prefLanguage, setPrefLanguage] = useState<'fr'|'en'>('fr');
+
+  const [pwOpen, setPwOpen] = useState(false);
+  const [pwSaving, setPwSaving] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   useEffect(() => {
     const load = async () => {
       if (!user?.id) return;
@@ -41,7 +59,7 @@ export default function ProfessionalSettings() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('full_name, email, phone, notification_email, notification_sms, notification_push')
+          .select('full_name, email, phone, notification_email, notification_sms, notification_push, two_factor_enabled, theme, language')
           .eq('id', user.id)
           .maybeSingle();
         if (error) throw error;
@@ -57,6 +75,9 @@ export default function ProfessionalSettings() {
             sms: data.notification_sms ?? prev.sms,
             push: data.notification_push ?? prev.push,
           }));
+          setTwoFactorEnabled(Boolean(data.two_factor_enabled));
+          setPrefTheme((data.theme as any) || 'system');
+          setPrefLanguage((data.language as any) || 'fr');
         }
       } catch (e: any) {
         toast.error('Erreur lors du chargement des paramètres', { description: e.message });
@@ -88,14 +109,62 @@ export default function ProfessionalSettings() {
           notification_email: notifications.email,
           notification_sms: notifications.sms,
           notification_push: notifications.push,
+          two_factor_enabled: twoFactorEnabled,
+          theme: prefTheme,
+          language: prefLanguage,
         })
         .eq('id', user.id);
       if (error) throw error;
+      setTheme(prefTheme);
+      setLanguage(prefLanguage);
       toast.success('Paramètres enregistrés');
     } catch (e: any) {
       toast.error('Sauvegarde impossible', { description: e.message });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleToggle2FA = async (enabled: boolean) => {
+    if (!user?.id) return;
+    setTwoFactorSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ two_factor_enabled: enabled })
+        .eq('id', user.id);
+      if (error) throw error;
+      setTwoFactorEnabled(enabled);
+      toast.success(enabled ? '2FA activée' : '2FA désactivée');
+    } catch (e: any) {
+      toast.error('Erreur 2FA', { description: e.message });
+    } finally {
+      setTwoFactorSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword.length < 8) {
+      toast.error('Le nouveau mot de passe doit contenir au moins 8 caractères');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Les mots de passe ne correspondent pas');
+      return;
+    }
+    setPwSaving(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      toast.success('Mot de passe modifié');
+      setPwOpen(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (e: any) {
+      toast.error('Échec de modification', { description: e.message });
+    } finally {
+      setPwSaving(false);
     }
   };
 
@@ -309,12 +378,12 @@ export default function ProfessionalSettings() {
                     <Key className="h-5 w-5" />
                     <p className="font-medium">Mot de passe</p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setPwOpen(true)}>
                     Modifier
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Dernière modification : Il y a 30 jours
+                  Recommandation: 12+ caractères, chiffres et symboles
                 </p>
               </div>
               
@@ -324,29 +393,45 @@ export default function ProfessionalSettings() {
                     <Shield className="h-5 w-5" />
                     <p className="font-medium">Authentification à deux facteurs</p>
                   </div>
-                  <Badge variant="secondary">Activée</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Protection supplémentaire pour votre compte
-                </p>
-              </div>
-              
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Mail className="h-5 w-5" />
-                    <p className="font-medium">Email de récupération</p>
+                    {twoFactorSaving && <span className="text-xs text-muted-foreground">Mise à jour…</span>}
+                    <Switch
+                      checked={twoFactorEnabled}
+                      onCheckedChange={handleToggle2FA}
+                      disabled={twoFactorSaving || loading}
+                    />
                   </div>
-                  <Button variant="outline" size="sm">
-                    Configurer
-                  </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  directeur.backup@sante.ga
+                  Ajoutez une couche de sécurité supplémentaire à votre compte
                 </p>
               </div>
             </div>
           </Card>
+
+          {/* Change password dialog */}
+          <Dialog open={pwOpen} onOpenChange={setPwOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Changer le mot de passe</DialogTitle>
+                <DialogDescription>Définissez un nouveau mot de passe pour votre compte.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+                  <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="confirmPassword">Confirmer</Label>
+                  <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setPwOpen(false)}>Annuler</Button>
+                <Button onClick={handleChangePassword} disabled={pwSaving}>{pwSaving ? 'Modification…' : 'Modifier'}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         <TabsContent value="preferences" className="space-y-6">
@@ -363,9 +448,9 @@ export default function ProfessionalSettings() {
                   <p className="text-sm text-muted-foreground">Choisir le thème de l'interface</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">Clair</Button>
-                  <Button variant="secondary" size="sm">Sombre</Button>
-                  <Button variant="outline" size="sm">Auto</Button>
+                  <Button variant={prefTheme==='light'?'secondary':'outline'} size="sm" onClick={() => setPrefTheme('light')}>Clair</Button>
+                  <Button variant={prefTheme==='dark'?'secondary':'outline'} size="sm" onClick={() => setPrefTheme('dark')}>Sombre</Button>
+                  <Button variant={prefTheme==='system'?'secondary':'outline'} size="sm" onClick={() => setPrefTheme('system')}>Auto</Button>
                 </div>
               </div>
             </div>
@@ -380,17 +465,18 @@ export default function ProfessionalSettings() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="language">Langue</Label>
-                <select id="language" className="w-full p-2 border rounded-md">
-                  <option value="fr">Français</option>
-                  <option value="en">English</option>
-                </select>
+                <Select value={prefLanguage} onValueChange={(v) => setPrefLanguage(v as any)}>
+                  <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fr">Français</SelectItem>
+                    <SelectItem value="en">English</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="timezone">Fuseau horaire</Label>
-                <select id="timezone" className="w-full p-2 border rounded-md">
-                  <option value="Africa/Libreville">Libreville (UTC+1)</option>
-                </select>
+                <Label>Fuseau horaire</Label>
+                <Input value="Africa/Libreville (UTC+1)" disabled />
               </div>
             </div>
           </Card>
