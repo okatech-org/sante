@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,15 @@ import {
   Settings, User, Bell, Shield, Globe, 
   Palette, Key, Mail, Phone, Building2
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export default function ProfessionalSettings() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,
     sms: true,
@@ -21,6 +27,77 @@ export default function ProfessionalSettings() {
     messages: true,
     reports: false
   });
+
+  const [profile, setProfile] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+  });
+
+  useEffect(() => {
+    const load = async () => {
+      if (!user?.id) return;
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('full_name, email, phone, notification_email, notification_sms, notification_push')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (error) throw error;
+        if (data) {
+          setProfile({
+            fullName: data.full_name || '',
+            email: data.email || user.email || '',
+            phone: data.phone || '',
+          });
+          setNotifications((prev) => ({
+            ...prev,
+            email: data.notification_email ?? prev.email,
+            sms: data.notification_sms ?? prev.sms,
+            push: data.notification_push ?? prev.push,
+          }));
+        }
+      } catch (e: any) {
+        toast.error('Erreur lors du chargement des paramètres', { description: e.message });
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [user?.id]);
+
+  const handleSave = async () => {
+    if (!user?.id) return;
+    if (!profile.fullName.trim()) {
+      toast.error('Le nom complet est requis');
+      return;
+    }
+    if (!profile.email.trim() || !profile.email.includes('@')) {
+      toast.error('Email invalide');
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: profile.fullName,
+          email: profile.email,
+          phone: profile.phone,
+          notification_email: notifications.email,
+          notification_sms: notifications.sms,
+          notification_push: notifications.push,
+        })
+        .eq('id', user.id);
+      if (error) throw error;
+      toast.success('Paramètres enregistrés');
+    } catch (e: any) {
+      toast.error('Sauvegarde impossible', { description: e.message });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -35,8 +112,8 @@ export default function ProfessionalSettings() {
             Configuration de votre espace professionnel
           </p>
         </div>
-        <Button variant="outline">
-          Sauvegarder les modifications
+        <Button variant="outline" onClick={handleSave} disabled={saving || loading}>
+          {saving ? 'Enregistrement...' : 'Sauvegarder les modifications'}
         </Button>
       </div>
 
@@ -60,7 +137,12 @@ export default function ProfessionalSettings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="fullname">Nom complet</Label>
-                <Input id="fullname" defaultValue="Dr. Jules DJEKI" />
+                <Input
+                  id="fullname"
+                  value={profile.fullName}
+                  onChange={(e) => setProfile((p) => ({ ...p, fullName: e.target.value }))}
+                  disabled={loading}
+                />
               </div>
               
               <div className="space-y-2">
@@ -70,12 +152,23 @@ export default function ProfessionalSettings() {
               
               <div className="space-y-2">
                 <Label htmlFor="email">Email professionnel</Label>
-                <Input id="email" type="email" defaultValue="directeur.sogara@sante.ga" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={profile.email}
+                  onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))}
+                  disabled={loading}
+                />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="phone">Téléphone</Label>
-                <Input id="phone" defaultValue="+241 07 XX XX XX" />
+                <Input
+                  id="phone"
+                  value={profile.phone}
+                  onChange={(e) => setProfile((p) => ({ ...p, phone: e.target.value }))}
+                  disabled={loading}
+                />
               </div>
               
               <div className="space-y-2">
@@ -132,6 +225,7 @@ export default function ProfessionalSettings() {
                 <Switch
                   checked={notifications.email}
                   onCheckedChange={(checked) => setNotifications({...notifications, email: checked})}
+                  disabled={loading || saving}
                 />
               </div>
               
@@ -143,6 +237,7 @@ export default function ProfessionalSettings() {
                 <Switch
                   checked={notifications.sms}
                   onCheckedChange={(checked) => setNotifications({...notifications, sms: checked})}
+                  disabled={loading || saving}
                 />
               </div>
               
@@ -154,6 +249,7 @@ export default function ProfessionalSettings() {
                 <Switch
                   checked={notifications.push}
                   onCheckedChange={(checked) => setNotifications({...notifications, push: checked})}
+                  disabled={loading || saving}
                 />
               </div>
             </div>
