@@ -518,7 +518,7 @@ const AdminEstablishments = () => {
             service_urgences_actif: !!p.ouvert_24_7,
             cnamgs_conventionne: !!(p.conventionnement && p.conventionnement.cnamgs),
             nombre_lits_total: p.nombre_lits || 0,
-            numero_autorisation: null,
+            numero_autorisation: `AUTO-${p.nom?.substring(0, 10).toUpperCase() || 'IMPORT'}-${Date.now()}`,
             statut: 'actif' as const,
             date_inscription: new Date().toISOString().split('T')[0],
           }));
