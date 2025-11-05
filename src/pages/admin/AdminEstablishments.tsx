@@ -472,30 +472,28 @@ const AdminEstablishments = () => {
         return;
       }
 
-      // Pour l'authentification offline, utiliser directement l'import client
-      // Pour l'authentification Supabase, tenter la fonction edge d'abord
-      const { data: sessionResp } = await supabase.auth.getSession();
-      const token = sessionResp?.session?.access_token;
-      
-      if (token) {
-        // Tenter l'import via la fonction edge si on a un token
-        try {
-          const { data, error } = await supabase.functions.invoke('import-cartography-data', {
-            body: { scope: 'port-gentil' },
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          if (error) throw error;
-          toast({
-            title: 'Import terminé',
-            description: `${data?.imported || 0} établissements importés (${data?.errors || 0} erreurs)`,
-          });
-          await loadEstablishments();
-          setLoading(false);
-          return;
-        } catch (edgeError) {
-          console.log('Edge function failed, falling back to client import:', edgeError);
-          // Continue to fallback below
-        }
+      // Appeler l'edge function (qui utilise le service role key pour bypass RLS)
+      try {
+        const { data: sessionResp } = await supabase.auth.getSession();
+        const token = sessionResp?.session?.access_token;
+        
+        const { data, error } = await supabase.functions.invoke('import-cartography-data', {
+          body: { scope: 'port-gentil' },
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: 'Import terminé',
+          description: `${data?.imported || 0} établissements importés (${data?.errors || 0} erreurs)`,
+        });
+        await loadEstablishments();
+        setLoading(false);
+        return;
+      } catch (edgeError) {
+        console.log('Edge function failed, falling back to client import:', edgeError);
+        // Continue to fallback below
       }
       
       // Fallback: Import côté client (pour offline auth ou si edge function échoue)
