@@ -14,6 +14,7 @@ import { formatDistance } from "@/utils/distance";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
+import { standardizeAddress } from "@/utils/address-formatter";
 
 interface CartographyProviderModalProps {
   provider: CartographyProvider | null;
@@ -256,8 +257,9 @@ export default function CartographyProviderModal({
                   <MapPin className="h-3.5 w-3.5 text-primary" />
                   Localisation
                 </div>
-                <p className="text-xs leading-relaxed">{provider.adresse_descriptive}</p>
-                <p className="text-xs text-muted-foreground">{provider.ville}, {provider.province}</p>
+                <p className="text-xs leading-relaxed">
+                  {standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province)}
+                </p>
               </div>
 
               {/* Contact */}
