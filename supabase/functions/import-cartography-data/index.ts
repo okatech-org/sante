@@ -30,11 +30,10 @@ serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'super_admin')
-      .single()
+      .in('role', ['super_admin', 'admin'])
 
-    if (!roles) {
-      throw new Error('Accès refusé - super admin requis')
+    if (!roles || roles.length === 0) {
+      throw new Error('Accès refusé - privilèges administrateur requis')
     }
 
     // Charger les données de cartographie depuis le fichier JSON

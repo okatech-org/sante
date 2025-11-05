@@ -504,8 +504,8 @@ const AdminEstablishments = () => {
           .filter((p) => p && p.ville === 'Port-Gentil' && allowedTypes.includes(p.type))
           .map((p) => ({
             raison_sociale: p.nom,
-            type_etablissement: typeMapping[p.type] || 'centre_medical',
-            secteur: secteurMapping[p.secteur] || 'prive',
+            type_etablissement: (typeMapping[p.type] || 'centre_medical') as 'chu' | 'chr' | 'hopital_departemental' | 'hopital_confessionnel' | 'clinique' | 'polyclinique' | 'centre_medical',
+            secteur: (secteurMapping[p.secteur] || 'prive') as 'public' | 'prive' | 'parapublic' | 'confessionnel' | 'militaire',
             province: p.province || 'G4',
             ville: p.ville || 'Port-Gentil',
             adresse_rue: p.adresse_descriptive || null,
@@ -518,7 +518,8 @@ const AdminEstablishments = () => {
             service_urgences_actif: !!p.ouvert_24_7,
             cnamgs_conventionne: !!(p.conventionnement && p.conventionnement.cnamgs),
             nombre_lits_total: p.nombre_lits || 0,
-            statut: 'actif',
+            numero_autorisation: null,
+            statut: 'actif' as const,
             date_inscription: new Date().toISOString().split('T')[0],
           }));
 
