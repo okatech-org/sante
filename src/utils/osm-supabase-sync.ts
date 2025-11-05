@@ -2,18 +2,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { CartographyProvider } from "@/types/cartography";
 
 /**
- * Limites géographiques du Gabon
- * Lat: -3.98 à 2.32 | Lng: 8.70 à 14.52
+ * Limites géographiques strictes du Gabon (territoire national uniquement)
+ * Lat: -3.93 à 2.32 | Lng: 8.70 à 14.45
+ * Exclut Guinée-Équatoriale, Cameroun, Congo, et zones maritimes
  */
 const GABON_BOUNDS = {
-  minLat: -4.0,
-  maxLat: 2.35,
-  minLng: 8.65,
-  maxLng: 14.55
+  minLat: -3.93,
+  maxLat: 2.32,
+  minLng: 8.70,
+  maxLng: 14.45
 };
 
 /**
- * Vérifie si des coordonnées sont dans les limites du Gabon
+ * Vérifie si des coordonnées sont dans les limites strictes du Gabon
  */
 function isInGabon(lat: number, lng: number): boolean {
   return lat >= GABON_BOUNDS.minLat && 

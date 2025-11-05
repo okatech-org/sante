@@ -25,8 +25,26 @@ serve(async (req) => {
     
     console.log('Fetching OSM health providers for:', { province, city });
 
-    // Bbox pour le Gabon (précis)
-    const gabonBbox = "-4.0,8.5,2.5,14.5";
+    // Bbox pour le Gabon STRICT (territoire national uniquement, exclut Guinée-Équatoriale)
+    // Format: minLat,minLng,maxLat,maxLng
+    const gabonBbox = "-3.93,8.70,2.32,14.45";
+    
+    // Limites strictes pour filtrage
+    const GABON_BOUNDS = {
+      minLat: -3.93,
+      maxLat: 2.32,
+      minLng: 8.70,
+      maxLng: 14.45
+    };
+    
+    // Fonction pour vérifier si un point est au Gabon
+    const isInGabon = (lat: number, lng: number): boolean => {
+      return lat >= GABON_BOUNDS.minLat && 
+             lat <= GABON_BOUNDS.maxLat && 
+             lng >= GABON_BOUNDS.minLng && 
+             lng <= GABON_BOUNDS.maxLng;
+    };
+    
     
     // Fonction pour déterminer la province basée sur les coordonnées
     const getProvinceFromCoordinates = (lat: number, lng: number): string => {
@@ -232,9 +250,12 @@ serve(async (req) => {
         nombre_lits: beds || null,
         last_updated: new Date().toISOString()
       };
-    }).filter((p: any) => p.latitude && p.longitude);
+    })
+    .filter((p: any) => p.latitude && p.longitude)
+    .filter((p: any) => isInGabon(p.latitude, p.longitude)); // Filtrage strict: seulement le Gabon
 
-    console.log(`Transformed ${providers.length} providers with coordinates`);
+    console.log(`Transformed and filtered ${providers.length} providers within Gabon bounds`);
+
 
     if (saveToDatabase) {
       const { data: { user } } = await supabase.auth.getUser();
