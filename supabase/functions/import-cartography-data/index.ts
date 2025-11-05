@@ -23,23 +23,26 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization')
     
     if (authHeader && authHeader !== 'Bearer null' && authHeader !== 'Bearer undefined') {
-      // Si un token est fourni, le vérifier
+      // Si un token est fourni, tenter de l'identifier
       const token = authHeader.replace('Bearer ', '')
-      const { data: { user } } = await supabaseClient.auth.getUser(token)
+      const { data: { user }, error: userErr } = await supabaseClient.auth.getUser(token)
 
-      if (!user) {
-        throw new Error('Token invalide')
+      if (userErr) {
+        console.warn('JWT non reconnu, poursuite en mode non authentifié')
       }
 
-      const { data: roles } = await supabaseClient
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .in('role', ['super_admin', 'admin'])
+      if (user) {
+        const { data: roles } = await supabaseClient
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .in('role', ['super_admin', 'admin'])
 
-      if (!roles || roles.length === 0) {
-        throw new Error('Accès refusé - privilèges administrateur requis')
+        if (!roles || roles.length === 0) {
+          throw new Error('Accès refusé - privilèges administrateur requis')
+        }
       }
+      // Si pas d'utilisateur associé (token anon, etc.), on continue en mode offline
     }
     // Si pas de token, on autorise quand même (mode offline)
     // La sécurité est assurée côté client car seule la page admin peut appeler cette fonction
