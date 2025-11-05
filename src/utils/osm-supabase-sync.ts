@@ -2,6 +2,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { CartographyProvider } from "@/types/cartography";
 
 /**
+ * Limites géographiques du Gabon
+ * Lat: -3.98 à 2.32 | Lng: 8.70 à 14.52
+ */
+const GABON_BOUNDS = {
+  minLat: -4.0,
+  maxLat: 2.35,
+  minLng: 8.65,
+  maxLng: 14.55
+};
+
+/**
+ * Vérifie si des coordonnées sont dans les limites du Gabon
+ */
+function isInGabon(lat: number, lng: number): boolean {
+  return lat >= GABON_BOUNDS.minLat && 
+         lat <= GABON_BOUNDS.maxLat && 
+         lng >= GABON_BOUNDS.minLng && 
+         lng <= GABON_BOUNDS.maxLng;
+}
+
+
+/**
  * Synchronise les données OSM depuis Supabase
  */
 export async function syncOSMFromSupabase(): Promise<{
@@ -55,8 +77,8 @@ export async function getOSMProvidersFromSupabase(): Promise<CartographyProvider
       throw error;
     }
 
-    // Transformer au format CartographyProvider
-    return (data || []).map(p => ({
+    // Transformer au format CartographyProvider et filtrer par coordonnées (seulement le Gabon)
+    const providers = (data || []).map(p => ({
       id: p.id,
       osm_id: p.osm_id,
       type: p.type as CartographyProvider['type'],
@@ -84,6 +106,12 @@ export async function getOSMProvidersFromSupabase(): Promise<CartographyProvider
       source: 'OpenStreetMap',
       nombre_lits: p.nombre_lits,
     }));
+
+    // Filtrer uniquement les établissements du Gabon
+    return providers.filter(p => {
+      if (!p.coordonnees) return false;
+      return isInGabon(p.coordonnees.lat, p.coordonnees.lng);
+    });
   } catch (error) {
     console.error('Error in getOSMProvidersFromSupabase:', error);
     return [];

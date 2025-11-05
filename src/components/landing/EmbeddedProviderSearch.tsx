@@ -19,7 +19,7 @@ import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 import { filterProvidersEnhanced, sortProvidersEnhanced } from "@/utils/enhanced-cartography-filters";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
-import { standardizeAddress } from "@/utils/address-formatter";
+import { standardizeAddressWithName } from "@/utils/address-formatter";
 
 interface EmbeddedProviderSearchProps {
   showTitle?: boolean;
@@ -489,7 +489,7 @@ export default function EmbeddedProviderSearch({
                 <div>
                   <p className="text-sm text-muted-foreground">Adresse</p>
                   <p className="font-medium">
-                    {standardizeAddress(selectedProvider.adresse_descriptive, selectedProvider.ville, selectedProvider.province)}
+                    {standardizeAddressWithName(selectedProvider.adresse_descriptive, selectedProvider.ville, selectedProvider.province, selectedProvider.nom)}
                   </p>
                 </div>
 

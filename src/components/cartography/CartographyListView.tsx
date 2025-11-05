@@ -17,7 +17,7 @@ import {
 import { ChevronUp, ChevronDown, Phone, Navigation, Eye, MapPin, Calendar, FileText, Stethoscope } from "lucide-react";
 import { formatDistance } from "@/utils/distance";
 import { cn } from "@/lib/utils";
-import { standardizeAddress } from "@/utils/address-formatter";
+import { standardizeAddressWithName } from "@/utils/address-formatter";
 
 interface CartographyListViewProps {
   providers: CartographyProvider[];
@@ -226,7 +226,7 @@ export default function CartographyListView({
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 flex-shrink-0" />
                     <span className="truncate">
-                      {standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province)}
+                      {standardizeAddressWithName(provider.adresse_descriptive, provider.ville, provider.province, provider.nom)}
                     </span>
                   </div>
                 </div>
@@ -349,7 +349,7 @@ export default function CartographyListView({
                     <div className="text-sm">{provider.ville}</div>
                     <div className="text-xs text-muted-foreground">
                       {(() => {
-                        const formatted = standardizeAddress(provider.adresse_descriptive, provider.ville, provider.province);
+                        const formatted = standardizeAddressWithName(provider.adresse_descriptive, provider.ville, provider.province, provider.nom);
                         return formatted.length > 40 ? formatted.substring(0, 40) + '...' : formatted;
                       })()}
                     </div>
