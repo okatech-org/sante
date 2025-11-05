@@ -89,8 +89,8 @@ export const MedicamentsList = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{statsData?.total || 0}</div>
-            <p className="text-xs text-muted-foreground">Médicaments référencés</p>
+            <div className="text-2xl font-bold">{total}</div>
+            <p className="text-xs text-muted-foreground">Médicaments {search || classeFilter ? 'filtrés' : 'référencés'}</p>
           </CardContent>
         </Card>
 
