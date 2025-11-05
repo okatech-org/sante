@@ -10,6 +10,7 @@ import { Map, Building2, RefreshCw, Download, Shield, Database, Upload, MapPin, 
 import HealthProvidersMap from "@/components/landing/HealthProvidersMap";
 import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
 import CartographyListView from "@/components/cartography/CartographyListView";
+import GeographicSegmentation, { GeographicFilters } from "@/components/cartography/GeographicSegmentation";
 import { CartographyProvider } from "@/types/cartography";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { dedupeProviders } from "@/utils/cartography-dedupe";
@@ -37,6 +38,11 @@ export default function AdminCartography() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProvider, setSelectedProvider] = useState<CartographyProvider | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("name-asc");
+  const [geographicFilters, setGeographicFilters] = useState<GeographicFilters>({
+    province: null,
+    commune: null,
+    quartier: null
+  });
 
   const [reloadKey, setReloadKey] = useState(0);
   const [adminInstitutions, setAdminInstitutions] = useState<CartographyProvider[]>([]);
@@ -168,6 +174,23 @@ export default function AdminCartography() {
   const filteredProviders = useMemo(() => {
     let filtered = allProviders;
 
+    // Filtrer par géographie (Province, Commune, Quartier)
+    if (geographicFilters.province) {
+      filtered = filtered.filter(p => p.province === geographicFilters.province);
+    }
+    if (geographicFilters.commune) {
+      filtered = filtered.filter(p => p.ville === geographicFilters.commune);
+    }
+    if (geographicFilters.quartier) {
+      filtered = filtered.filter(p => {
+        const adresse = p.adresse_descriptive || '';
+        const parts = adresse.split(',').map(s => s.trim());
+        const quartier = parts.length > 1 ? parts[0] : null;
+        return quartier === geographicFilters.quartier;
+      });
+    }
+
+    // Filtrer par recherche textuelle
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p => 
@@ -197,7 +220,7 @@ export default function AdminCartography() {
     });
 
     return sorted;
-  }, [allProviders, searchQuery, sortBy]);
+  }, [allProviders, searchQuery, sortBy, geographicFilters]);
 
   if (!isSuperAdmin) {
     return (
@@ -268,14 +291,27 @@ export default function AdminCartography() {
           ))}
         </div>
 
-        {/* Recherche intelligente */}
-        <div className="flex justify-center">
-          <CartographySmartSearch
-            providers={allProviders}
-            onSearch={setSearchQuery}
-            onProviderSelect={setSelectedProvider}
-            searchQuery={searchQuery}
-          />
+        {/* Segmentation géographique + Recherche */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Segmentation géographique */}
+          <div className="lg:col-span-1">
+            <GeographicSegmentation 
+              providers={allProviders}
+              onFilterChange={setGeographicFilters}
+            />
+          </div>
+
+          {/* Recherche intelligente */}
+          <div className="lg:col-span-2 flex items-start">
+            <div className="w-full flex justify-center">
+              <CartographySmartSearch
+                providers={allProviders}
+                onSearch={setSearchQuery}
+                onProviderSelect={setSelectedProvider}
+                searchQuery={searchQuery}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Onglets Carte / Liste */}
