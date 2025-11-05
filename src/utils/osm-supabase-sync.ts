@@ -13,14 +13,64 @@ const GABON_BOUNDS = {
   maxLng: 14.45
 };
 
+// Polygon GeoJSON du Gabon (simplifié) pour un filtrage précis par point-dans-polygone
+// Source: johan/world.geo.json (simplifié)
+import GABON_GEOJSON from '@/utils/gabon-polygon.json';
+
+type Position = [number, number]; // [lng, lat]
+
+function pointInRing(point: Position, ring: Position[]): boolean {
+  // Algorithme du rayon (winding number) - version optimisée
+  const x = point[0];
+  const y = point[1];
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1];
+    const xj = ring[j][0], yj = ring[j][1];
+    const intersect = ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-12) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function pointInPolygon(lng: number, lat: number, polygon: any): boolean {
+  if (!polygon) return false;
+  const geom = polygon.type === 'Feature' ? polygon.geometry : polygon;
+  if (!geom) return false;
+
+  if (geom.type === 'Polygon') {
+    const [outer, ...holes] = geom.coordinates as Position[][];
+    if (!outer) return false;
+    if (!pointInRing([lng, lat] as Position, outer)) return false;
+    for (const hole of holes) {
+      if (pointInRing([lng, lat] as Position, hole)) return false; // dans un trou
+    }
+    return true;
+  }
+
+  if (geom.type === 'MultiPolygon') {
+    for (const poly of geom.coordinates as Position[][][]) {
+      const [outer, ...holes] = poly;
+      if (outer && pointInRing([lng, lat], outer)) {
+        let inHole = false;
+        for (const h of holes) if (pointInRing([lng, lat], h)) { inHole = true; break; }
+        if (!inHole) return true;
+      }
+    }
+  }
+  return false;
+}
+
 /**
  * Vérifie si des coordonnées sont dans les limites strictes du Gabon
  */
 function isInGabon(lat: number, lng: number): boolean {
-  return lat >= GABON_BOUNDS.minLat && 
-         lat <= GABON_BOUNDS.maxLat && 
-         lng >= GABON_BOUNDS.minLng && 
-         lng <= GABON_BOUNDS.maxLng;
+  // Préfiltre rapide par bbox, puis test polygonal strict
+  if (lat < GABON_BOUNDS.minLat || lat > GABON_BOUNDS.maxLat || lng < GABON_BOUNDS.minLng || lng > GABON_BOUNDS.maxLng) {
+    return false;
+  }
+  return pointInPolygon(lng, lat, GABON_GEOJSON);
 }
 
 
