@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Shield, Lock, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const GlassCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div
@@ -17,13 +20,44 @@ const GlassCard = ({ children, className = "" }: { children: React.ReactNode; cl
 );
 
 export default function LoginMinister() {
-  const [email, setEmail] = useState('ministre@sante.ga');
+  const [email, setEmail] = useState('ministre@sante.gouv.ga');
   const [password, setPassword] = useState('');
-  const { login, isLoading, error } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password });
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { data, error: signInError } = await signIn(email, password);
+      
+      if (signInError) {
+        setError(signInError.message || 'Email ou mot de passe incorrect');
+        toast.error('Erreur de connexion', {
+          description: signInError.message || 'Email ou mot de passe incorrect'
+        });
+        return;
+      }
+
+      if (data?.user) {
+        toast.success('Connexion réussie', {
+          description: `Bienvenue ${data.user.email}`
+        });
+        navigate('/ministry/dashboard');
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || 'Une erreur est survenue lors de la connexion';
+      setError(errorMessage);
+      toast.error('Erreur de connexion', {
+        description: errorMessage
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,7 +93,7 @@ export default function LoginMinister() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ministre@sante.ga"
+                placeholder="ministre@sante.gouv.ga"
                 className="pl-10 rounded-xl bg-white/80 border-white/40 dark:bg-slate-800/50 dark:border-white/10"
                 required
               />
@@ -120,8 +154,8 @@ export default function LoginMinister() {
       {import.meta.env.DEV && (
         <div className="fixed bottom-4 right-4 rounded-xl bg-slate-900/90 text-white px-4 py-3 text-xs shadow-lg">
           <p className="font-semibold mb-1">🔐 Identifiants de test</p>
-          <p className="text-slate-300">Email: ministre@sante.ga</p>
-          <p className="text-slate-300">Mot de passe: (à configurer)</p>
+          <p className="text-slate-300">Email: ministre@sante.gouv.ga</p>
+          <p className="text-slate-300">Mot de passe: Ministre2025!</p>
         </div>
       )}
     </div>

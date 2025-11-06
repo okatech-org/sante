@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SendToPharmacyModal } from "@/components/prescriptions/SendToPharmacyModal";
 
 export default function PatientPrescriptions() {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ export default function PatientPrescriptions() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
+  const [sendModalOpen, setSendModalOpen] = useState(false);
   
   const patientName = (user?.user_metadata as any)?.full_name || 'Patient';
 
@@ -325,6 +327,9 @@ export default function PatientPrescriptions() {
               <Button variant="outline" onClick={() => setSelectedPrescription(null)}>
                 Fermer
               </Button>
+              <Button onClick={() => setSendModalOpen(true)}>
+                Envoyer à une pharmacie
+              </Button>
               <Button onClick={() => generatePrescriptionPDF(selectedPrescription, patientName)}>
                 <Download className="w-4 h-4 mr-2" />
                 Télécharger PDF
@@ -332,6 +337,13 @@ export default function PatientPrescriptions() {
             </div>
           </div>
         </div>
+      )}
+      {selectedPrescription && (
+        <SendToPharmacyModal
+          open={sendModalOpen}
+          onOpenChange={setSendModalOpen}
+          prescriptionId={selectedPrescription.id}
+        />
       )}
     </PatientDashboardLayout>
   );

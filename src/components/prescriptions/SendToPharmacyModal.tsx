@@ -50,11 +50,26 @@ export function SendToPharmacyModal({ open, onOpenChange, prescriptionId }: Send
     try {
       const { data, error } = await supabase
         .from('pharmacies')
-        .select('*')
-        .order('name');
+        .select('*');
 
       if (error) throw error;
-      setPharmacies(data || []);
+      const mapped = (data || []).map((row: any) => {
+        const latitude = row.latitude ?? row.lat ?? null;
+        const longitude = row.longitude ?? row.lng ?? null;
+        return {
+          id: row.id,
+          name: row.name ?? row.nom_commercial ?? row.raison_sociale ?? 'Pharmacie',
+          address: row.address ?? row.adresse_complete ?? row.adresse ?? '',
+          city: row.city ?? row.ville ?? row.commune ?? '',
+          province: row.province ?? row.province_region ?? row.region ?? '',
+          phone: row.phone ?? row.telephone_principal ?? row.telephone ?? row.tel ?? null,
+          email: row.email ?? row.email_contact ?? null,
+          latitude: latitude !== null ? Number(latitude) : null,
+          longitude: longitude !== null ? Number(longitude) : null,
+        } as Pharmacy;
+      });
+      mapped.sort((a: Pharmacy, b: Pharmacy) => a.name.localeCompare(b.name));
+      setPharmacies(mapped);
     } catch (error) {
       console.error('Error loading pharmacies:', error);
       toast.error('Erreur lors du chargement des pharmacies');
@@ -73,7 +88,7 @@ export function SendToPharmacyModal({ open, onOpenChange, prescriptionId }: Send
             lng: position.coords.longitude,
           };
           setUserLocation(location);
-          calculateDistances(location);
+          loadNearbyFromServer(location).catch(() => calculateDistances(location));
           setLocationLoading(false);
           toast.success('Position détectée');
         },
@@ -86,6 +101,38 @@ export function SendToPharmacyModal({ open, onOpenChange, prescriptionId }: Send
     } else {
       toast.error('La géolocalisation n\'est pas supportée');
       setLocationLoading(false);
+    }
+  };
+
+  const loadNearbyFromServer = async (location: { lat: number; lng: number }) => {
+    try {
+      const { data, error } = await supabase.rpc('search_pharmacies_nearby', {
+        p_latitude: location.lat,
+        p_longitude: location.lng,
+        p_radius_km: 10,
+      });
+      if (error) throw error;
+      const mapped = (data || []).map((row: any) => {
+        const latitude = row.latitude ?? row.lat ?? null;
+        const longitude = row.longitude ?? row.lng ?? null;
+        const pharmacy: Pharmacy = {
+          id: row.id,
+          name: row.name ?? row.nom_commercial ?? row.raison_sociale ?? 'Pharmacie',
+          address: row.address ?? row.adresse_complete ?? row.adresse ?? '',
+          city: row.city ?? row.ville ?? row.commune ?? '',
+          province: row.province ?? row.province_region ?? row.region ?? '',
+          phone: row.phone ?? row.telephone_principal ?? row.telephone ?? row.tel ?? null,
+          email: row.email ?? row.email_contact ?? null,
+          latitude: latitude !== null ? Number(latitude) : null,
+          longitude: longitude !== null ? Number(longitude) : null,
+          distance: row.distance_km ?? row.distance ?? undefined,
+        };
+        return pharmacy;
+      });
+      mapped.sort((a: Pharmacy, b: Pharmacy) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
+      setPharmacies(mapped);
+    } catch (e) {
+      throw e;
     }
   };
 
