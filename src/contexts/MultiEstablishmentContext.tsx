@@ -100,10 +100,12 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       // Auto-sélection si un seul établissement
       if (data.length === 1) {
         await loadEstablishmentContext(data[0].establishment_id);
-        // Charger les rôles disponibles
-        const roles = data.map(e => e.role_in_establishment);
-        setAvailableRoles(roles);
-        setCurrentRole(roles[0] || 'doctor');
+        // Charger les rôles disponibles (avec priorité métier)
+        const roles = data.map(e => (e.role_in_establishment as string).toLowerCase());
+        const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+        const sortedRoles = roles.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b));
+        setAvailableRoles(sortedRoles);
+        setCurrentRole(sortedRoles[0] || 'doctor');
       } else if (data.length > 1) {
         // Sélectionner le premier admin ou le premier de la liste
         const adminEstablishment = data.find(e => e.is_admin);
@@ -113,9 +115,11 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         // Charger les rôles pour cet établissement
         const rolesForEstablishment = data
           .filter(e => e.establishment_id === firstEstablishment.establishment_id)
-          .map(e => e.role_in_establishment);
-        setAvailableRoles(rolesForEstablishment);
-        setCurrentRole(firstEstablishment.role_in_establishment);
+          .map(e => (e.role_in_establishment as string).toLowerCase());
+        const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+        const sortedRoles = rolesForEstablishment.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b));
+        setAvailableRoles(sortedRoles);
+        setCurrentRole(sortedRoles[0] || firstEstablishment.role_in_establishment);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des établissements:', error);

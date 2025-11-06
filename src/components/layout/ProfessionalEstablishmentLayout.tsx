@@ -72,10 +72,16 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
   const establishmentsList = Object.values(establishmentGroups);
 
-  // Utiliser le rôle actuel ou le premier rôle disponible
-  const activeRole = currentRole || 
-    (establishmentsList.length > 0 && establishmentsList[0].roles && establishmentsList[0].roles[0]?.role) || 
-    'receptionist';
+  // Déterminer le rôle actif avec une priorité métier (évite de tomber par défaut sur réceptionniste)
+  const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+  const firstGroupRoles: string[] =
+    (establishmentsList.length > 0 && establishmentsList[0].roles
+      ? establishmentsList[0].roles.map((r: any) => (r?.role || '').toLowerCase())
+      : []);
+  const preferredRole = firstGroupRoles.length
+    ? firstGroupRoles.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b))[0]
+    : undefined;
+  const activeRole = (currentRole || preferredRole || 'receptionist') as string;
   
   // Récupérer le menu selon le rôle actuel
   const menuSections: MenuSection[] = getMenuForRole(activeRole);
