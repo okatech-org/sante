@@ -206,11 +206,9 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle />
               <LanguageToggle />
-              <Link to="/demo">
-                <Button variant="outline" className="hover-scale">
-                  Démo
-                </Button>
-              </Link>
+              <Button variant="outline" className="hover-scale" onClick={() => navigate('/demo')}>
+                Démo
+              </Button>
               <Link to="/login/patient">
                 <Button variant="ghost" className="hover-scale">
                   Patient
