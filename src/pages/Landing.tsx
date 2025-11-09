@@ -218,6 +218,11 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle />
               <LanguageToggle />
+              <Link to="/demo">
+                <Button variant="outline" className="hover-scale">
+                  Démo
+                </Button>
+              </Link>
               <Link to="/login/patient">
                 <Button variant="ghost" className="hover-scale">
                   Patient
@@ -272,6 +277,11 @@ export default function Landing() {
                     </a>
                     
                     <div className="flex flex-col gap-3 mt-6">
+                      <Link to="/demo" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="outline" className="w-full">
+                          Démo
+                        </Button>
+                      </Link>
                       <Link to="/login/patient" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="outline" className="w-full">
                           Patient

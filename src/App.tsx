@@ -58,6 +58,7 @@ import SuperAdminLogin from "./pages/SuperAdminLogin";
 import Support from "./pages/Support";
 
 // Pages de démonstration
+import Demo from "./pages/Demo";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 import Sogara from "./pages/Sogara";
 
@@ -151,6 +152,7 @@ function App() {
                     <Route path="/support" element={<Support />} />
                     
                     {/* Routes de démonstration */}
+                    <Route path="/demo" element={<Demo />} />
                     <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
                     
                     {/* Route Sogara */}
