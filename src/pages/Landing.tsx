@@ -189,12 +189,6 @@ export default function Landing() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <a 
-                href="#services" 
-                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
-              >
-                Services
-              </a>
-              <a 
                 href="#about" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
@@ -247,13 +241,6 @@ export default function Landing() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <nav className="flex flex-col gap-6 mt-8">
-                    <a 
-                      href="#services" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
-                    >
-                      Services
-                    </a>
                     <a 
                       href="#about"
                       onClick={() => setMobileMenuOpen(false)} 
