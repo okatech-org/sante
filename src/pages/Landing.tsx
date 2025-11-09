@@ -194,12 +194,12 @@ export default function Landing() {
               >
                 Professionnels
               </Link>
-              <a 
-                href="#awareness" 
+              <Link 
+                to="/awareness" 
                 className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
               >
                 Sensibilisation
-              </a>
+              </Link>
             </nav>
 
             {/* Desktop Actions */}
@@ -242,13 +242,13 @@ export default function Landing() {
                     >
                       Professionnels
                     </Link>
-                    <a 
-                      href="#awareness"
+                    <Link 
+                      to="/awareness"
                       onClick={() => setMobileMenuOpen(false)} 
                       className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
                     >
                       Sensibilisation
-                    </a>
+                    </Link>
                     
                     <div className="flex flex-col gap-3 mt-6">
                       <Link to="/demo" onClick={() => setMobileMenuOpen(false)}>
