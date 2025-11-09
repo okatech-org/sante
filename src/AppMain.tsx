@@ -112,6 +112,7 @@ import AdminSystem from "./pages/admin/AdminSystem";
 import AdminCredentials from "./pages/admin/AdminCredentials";
 
 // Pages de démonstration
+import Demo from "./pages/Demo";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
 // Pages du Ministère de la Santé
@@ -373,8 +374,8 @@ function AppMain() {
                     <Route path="/support" element={<Support />} />
 
                     {/* Pages de démonstration */}
+                    <Route path="/demo" element={<Demo />} />
                     <Route path="/demo/doctor" element={<DemoDoctorDashboard />} />
-
                     {/* Routes SOGARA */}
                     {/* Page publique SOGARA */}
                     <Route path="/sogara" element={<SogaraPublic />} />
