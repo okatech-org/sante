@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Stethoscope, User, Pill, TestTube, Shield, UserCog, ArrowRight, Sparkles, Lock, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageToggle } from "@/components/language/LanguageToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import logoSante from "@/assets/logo_sante.png";
 
 type DemoStatus = 'active' | 'testing' | 'temporary';
@@ -173,9 +175,13 @@ export default function Demo() {
                 SANTE.GA
               </span>
             </div>
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Retour à l'accueil
-            </Button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <LanguageToggle />
+              <Button variant="outline" onClick={() => navigate('/')}>
+                Retour à l'accueil
+              </Button>
+            </div>
           </div>
         </div>
       </header>
