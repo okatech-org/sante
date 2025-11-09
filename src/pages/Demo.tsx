@@ -289,10 +289,6 @@ const Demo = () => {
                           </div>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        {t('demo.demo')}
-                      </Badge>
                     </div>
 
                     <div className="flex items-center gap-2 mb-6">
