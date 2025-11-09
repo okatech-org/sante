@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Building2, Lock, Mail, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Building2, Lock, Mail, AlertCircle, Shield } from "lucide-react";
 import { useMinistryAuth } from "@/hooks/useMinistry";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,9 +13,33 @@ const MinistryLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDemoAccount, setIsDemoAccount] = useState(false);
   const { login } = useMinistryAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Auto-fill from demo account
+  useEffect(() => {
+    const demoAccountData = sessionStorage.getItem('demoAccount');
+    if (demoAccountData) {
+      try {
+        const demoData = JSON.parse(demoAccountData);
+        setEmail(demoData.email);
+        setPassword(demoData.password);
+        setIsDemoAccount(true);
+        
+        // Clear sessionStorage after using it
+        sessionStorage.removeItem('demoAccount');
+        
+        toast({
+          title: "Compte démo chargé",
+          description: "Les identifiants ont été remplis automatiquement",
+        });
+      } catch (error) {
+        console.error('Error parsing demo account data:', error);
+      }
+    }
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +95,16 @@ const MinistryLogin = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {isDemoAccount && (
+              <Alert className="mb-6 bg-primary/10 border-primary/20">
+                <Shield className="h-4 w-4" />
+                <AlertTitle>Compte de démonstration</AlertTitle>
+                <AlertDescription>
+                  Les identifiants ont été remplis automatiquement. Vous pouvez vous connecter directement.
+                </AlertDescription>
+              </Alert>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Officiel</Label>

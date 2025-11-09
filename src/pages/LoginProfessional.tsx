@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Mail, Lock, ArrowLeft, AlertCircle } from "lucide-react";
+import { Heart, Mail, Lock, ArrowLeft, AlertCircle, Shield } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,6 +17,7 @@ import { sanitizeAuthError, logError } from "@/lib/errorHandler";
 export default function LoginProfessional() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDemoAccount, setIsDemoAccount] = useState(false);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -26,6 +27,28 @@ export default function LoginProfessional() {
       rememberMe: false,
     },
   });
+
+  // Auto-fill from demo account
+  useEffect(() => {
+    const demoAccountData = sessionStorage.getItem('demoAccount');
+    if (demoAccountData) {
+      try {
+        const { email, password } = JSON.parse(demoAccountData);
+        form.setValue('identifier', email);
+        form.setValue('password', password);
+        setIsDemoAccount(true);
+        
+        // Clear sessionStorage after using it
+        sessionStorage.removeItem('demoAccount');
+        
+        toast.info("Compte démo chargé", {
+          description: "Les identifiants ont été remplis automatiquement",
+        });
+      } catch (error) {
+        console.error('Error parsing demo account data:', error);
+      }
+    }
+  }, [form]);
 
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
@@ -109,13 +132,23 @@ export default function LoginProfessional() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Espace Professionnel</AlertTitle>
-            <AlertDescription>
-              Cet espace est réservé aux professionnels de santé inscrits et validés.
-            </AlertDescription>
-          </Alert>
+          {isDemoAccount ? (
+            <Alert className="bg-primary/10 border-primary/20">
+              <Shield className="h-4 w-4" />
+              <AlertTitle>Compte de démonstration</AlertTitle>
+              <AlertDescription>
+                Les identifiants ont été remplis automatiquement. Vous pouvez vous connecter directement.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Espace Professionnel</AlertTitle>
+              <AlertDescription>
+                Cet espace est réservé aux professionnels de santé inscrits et validés.
+              </AlertDescription>
+            </Alert>
+          )}
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

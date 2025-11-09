@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Heart, Mail, Lock, ArrowLeft, Eye, EyeOff, Shield, Clock, Users, CheckCircle, UserPlus } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { loginSchema, LoginData } from "@/lib/validation";
 import { authService } from "@/lib/auth";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ export default function LoginPatient() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isDemoAccount, setIsDemoAccount] = useState(false);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -26,6 +28,29 @@ export default function LoginPatient() {
       rememberMe: false,
     },
   });
+
+  // Auto-fill from demo account
+  useEffect(() => {
+    const demoAccountData = sessionStorage.getItem('demoAccount');
+    if (demoAccountData) {
+      try {
+        const { email, password } = JSON.parse(demoAccountData);
+        form.setValue('identifier', email);
+        form.setValue('password', password);
+        setIsDemoAccount(true);
+        setShowPassword(true);
+        
+        // Clear sessionStorage after using it
+        sessionStorage.removeItem('demoAccount');
+        
+        toast.info("Compte démo chargé", {
+          description: "Les identifiants ont été remplis automatiquement",
+        });
+      } catch (error) {
+        console.error('Error parsing demo account data:', error);
+      }
+    }
+  }, [form]);
 
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
@@ -185,6 +210,16 @@ export default function LoginPatient() {
                 Accédez à votre espace santé personnel
               </p>
             </div>
+
+            {/* Alert pour compte démo */}
+            {isDemoAccount && (
+              <Alert className="mb-6 bg-primary/10 border-primary/20">
+                <Shield className="h-4 w-4" />
+                <AlertDescription>
+                  Compte de démonstration chargé. Vous pouvez vous connecter directement.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* Formulaire */}
             <Form {...form}>
