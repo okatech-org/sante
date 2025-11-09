@@ -331,7 +331,7 @@ export default function ForProfessionals() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/register/pro">
-                <Button size="lg" className="shadow-xl text-base px-8 py-6 h-auto group hover-scale">
+                <Button size="lg" className="shadow-xl text-base px-8 py-6 h-auto group hover-scale bg-accent hover:bg-accent/90 text-accent-foreground">
                   Commencer maintenant
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
