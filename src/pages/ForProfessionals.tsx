@@ -347,7 +347,9 @@ export default function ForProfessionals() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              SANTE.GA est fait pour vous
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-aurora">
+                SANTE.GA est fait pour vous
+              </span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Que vous soyez médecin, établissement de santé ou pharmacie
