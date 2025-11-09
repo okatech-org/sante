@@ -41,6 +41,7 @@ export default function ForProfessionals() {
     {
       icon: Calendar,
       image: agendaImage,
+      colorTheme: "primary", // Turquoise
       title: "Gestion d'Agenda Intelligente",
       description: "Optimisez votre planning avec notre système de gestion de rendez-vous automatisé",
       features: [
@@ -53,6 +54,7 @@ export default function ForProfessionals() {
     {
       icon: Users,
       image: recordsImage,
+      colorTheme: "secondary", // Bleu électrique
       title: "Dossiers Patients Numériques",
       description: "Accédez instantanément à l'historique complet de vos patients",
       features: [
@@ -65,6 +67,7 @@ export default function ForProfessionals() {
     {
       icon: Video,
       image: teleconsultImage,
+      colorTheme: "accent", // Rose vibrant
       title: "Téléconsultation Intégrée",
       description: "Consultez vos patients à distance avec notre solution de vidéoconférence sécurisée",
       features: [
@@ -77,6 +80,7 @@ export default function ForProfessionals() {
     {
       icon: CreditCard,
       image: paymentImage,
+      colorTheme: "warning", // Jaune doré
       title: "Paiements Simplifiés",
       description: "Recevez vos paiements rapidement et suivez votre comptabilité facilement",
       features: [
@@ -391,7 +395,13 @@ export default function ForProfessionals() {
             {benefits.map((benefit, index) => (
               <Card 
                 key={index} 
-                className="card-interactive group overflow-hidden bg-card/50 backdrop-blur-sm border-border/50"
+                className={`card-interactive group overflow-hidden bg-card/50 backdrop-blur-sm border-2 ${
+                  benefit.colorTheme === 'primary' ? 'border-primary/30' :
+                  benefit.colorTheme === 'secondary' ? 'border-secondary/30' :
+                  benefit.colorTheme === 'accent' ? 'border-accent/30' :
+                  benefit.colorTheme === 'warning' ? 'border-warning/30' :
+                  'border-border/50'
+                }`}
               >
                 {/* Image */}
                 <div className="h-56 overflow-hidden relative">
@@ -400,12 +410,24 @@ export default function ForProfessionals() {
                     alt={benefit.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-card/90 to-transparent ${
+                    benefit.colorTheme === 'primary' ? 'via-primary/10' :
+                    benefit.colorTheme === 'secondary' ? 'via-secondary/10' :
+                    benefit.colorTheme === 'accent' ? 'via-accent/10' :
+                    benefit.colorTheme === 'warning' ? 'via-warning/10' :
+                    ''
+                  }`} />
                 </div>
                 
                 <CardHeader>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${
+                      benefit.colorTheme === 'primary' ? 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground' :
+                      benefit.colorTheme === 'secondary' ? 'bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-secondary-foreground' :
+                      benefit.colorTheme === 'accent' ? 'bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground' :
+                      benefit.colorTheme === 'warning' ? 'bg-warning/10 text-warning group-hover:bg-warning group-hover:text-warning-foreground' :
+                      'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground'
+                    }`}>
                       <benefit.icon className="w-6 h-6" />
                     </div>
                     <div>
@@ -418,7 +440,13 @@ export default function ForProfessionals() {
                   <ul className="space-y-2">
                     {benefit.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                          benefit.colorTheme === 'primary' ? 'text-primary' :
+                          benefit.colorTheme === 'secondary' ? 'text-secondary' :
+                          benefit.colorTheme === 'accent' ? 'text-accent' :
+                          benefit.colorTheme === 'warning' ? 'text-warning' :
+                          'text-primary'
+                        }`} />
                         <span className="text-sm text-muted-foreground">{feature}</span>
                       </li>
                     ))}
