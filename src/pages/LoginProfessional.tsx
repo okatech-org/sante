@@ -134,11 +134,25 @@ export default function LoginProfessional() {
         <CardContent className="space-y-6">
           {isDemoAccount ? (
             <Alert className="bg-primary/10 border-primary/20">
-              <Shield className="h-4 w-4" />
-              <AlertTitle>Compte de démonstration</AlertTitle>
-              <AlertDescription>
-                Les identifiants ont été remplis automatiquement. Vous pouvez vous connecter directement.
-              </AlertDescription>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex gap-2 flex-1">
+                  <Shield className="h-4 w-4 mt-0.5" />
+                  <div className="flex-1">
+                    <AlertTitle>Compte de démonstration</AlertTitle>
+                    <AlertDescription>
+                      Les identifiants ont été remplis automatiquement. Vous pouvez vous connecter directement.
+                    </AlertDescription>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => form.handleSubmit(onSubmit)()}
+                  className="flex-shrink-0"
+                >
+                  Connexion auto
+                </Button>
+              </div>
             </Alert>
           ) : (
             <Alert>
