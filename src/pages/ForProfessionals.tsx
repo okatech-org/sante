@@ -309,7 +309,7 @@ export default function ForProfessionals() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8 z-10 mt-20">
+      <section className="relative py-16 md:py-20 px-4 sm:px-6 lg:px-8 z-10 mt-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-4xl mx-auto animate-fade-in">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 backdrop-blur-sm animate-float">
@@ -342,9 +342,9 @@ export default function ForProfessionals() {
       </section>
 
       {/* Target Audience */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-8 md:py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-aurora">
                 SANTE.GA est fait pour vous
@@ -375,9 +375,9 @@ export default function ForProfessionals() {
       </section>
 
       {/* Main Benefits */}
-      <section className="relative z-10 py-16 md:py-24 bg-muted/20">
+      <section className="relative z-10 py-10 md:py-16 bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
+          <div className="text-center mb-8 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Tous les outils dont vous avez besoin
             </h2>
@@ -454,7 +454,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Additional Features */}
-      <section className="relative z-10 py-16 md:py-20">
+      <section className="relative z-10 py-10 md:py-14">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {additionalFeatures.map((feature, index) => (
@@ -476,9 +476,9 @@ export default function ForProfessionals() {
       </section>
 
       {/* Pricing Section */}
-      <section className="relative z-10 py-16 md:py-24 bg-muted/20">
+      <section className="relative z-10 py-10 md:py-16 bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
+          <div className="text-center mb-8 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Choisissez votre formule
             </h2>
@@ -562,7 +562,7 @@ export default function ForProfessionals() {
           </div>
 
           {/* Special Offer Note */}
-          <div className="mt-12 max-w-4xl mx-auto">
+          <div className="mt-8 max-w-4xl mx-auto">
             <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-primary/20 card-interactive backdrop-blur-sm">
               <CardContent className="p-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -579,7 +579,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-20 md:py-28">
+      <section className="relative z-10 py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border rounded-2xl p-10 md:p-16 backdrop-blur-sm animate-fade-in">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
@@ -601,7 +601,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Footer */}
-      <footer className="relative py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/20 border-t z-10">
+      <footer className="relative py-8 md:py-14 px-4 sm:px-6 lg:px-8 bg-muted/20 border-t z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-6 mb-6">
             <div className="md:col-span-2">
