@@ -28,6 +28,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import logoSante from "@/assets/logo_sante.png";
+import agendaImage from "@/assets/pro-agenda-management.jpg";
+import recordsImage from "@/assets/pro-digital-records.jpg";
+import teleconsultImage from "@/assets/pro-teleconsultation.jpg";
+import paymentImage from "@/assets/pro-payment-system.jpg";
 
 export default function ForProfessionals() {
   const { t } = useLanguage();
@@ -36,6 +40,7 @@ export default function ForProfessionals() {
   const benefits = [
     {
       icon: Calendar,
+      image: agendaImage,
       title: "Gestion d'Agenda Intelligente",
       description: "Optimisez votre planning avec notre système de gestion de rendez-vous automatisé",
       features: [
@@ -47,6 +52,7 @@ export default function ForProfessionals() {
     },
     {
       icon: Users,
+      image: recordsImage,
       title: "Dossiers Patients Numériques",
       description: "Accédez instantanément à l'historique complet de vos patients",
       features: [
@@ -58,6 +64,7 @@ export default function ForProfessionals() {
     },
     {
       icon: Video,
+      image: teleconsultImage,
       title: "Téléconsultation Intégrée",
       description: "Consultez vos patients à distance avec notre solution de vidéoconférence sécurisée",
       features: [
@@ -69,6 +76,7 @@ export default function ForProfessionals() {
     },
     {
       icon: CreditCard,
+      image: paymentImage,
       title: "Paiements Simplifiés",
       description: "Recevez vos paiements rapidement et suivez votre comptabilité facilement",
       features: [
@@ -379,6 +387,16 @@ export default function ForProfessionals() {
                 key={index} 
                 className="card-interactive group overflow-hidden bg-card/50 backdrop-blur-sm border-border/50"
               >
+                {/* Image */}
+                <div className="h-56 overflow-hidden relative">
+                  <img 
+                    src={benefit.image} 
+                    alt={benefit.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent" />
+                </div>
+                
                 <CardHeader>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
