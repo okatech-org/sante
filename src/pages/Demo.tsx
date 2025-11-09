@@ -1,14 +1,29 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Building2, Users, Stethoscope, User, Pill, TestTube, Shield, UserCog, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+type DemoStatus = 'active' | 'testing' | 'temporary';
+
+interface DemoAccount {
+  id: string;
+  title: string;
+  email: string;
+  password: string;
+  icon: any;
+  target: string;
+  color: string;
+  status: DemoStatus;
+  statusLabel: string;
+}
 
 export default function Demo() {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  const demoAccounts = [
+  const demoAccounts: DemoAccount[] = [
     {
       id: 'patient',
       title: 'Patient',
@@ -16,7 +31,9 @@ export default function Demo() {
       password: 'Patient2025!',
       icon: User,
       target: '/dashboard/patient',
-      color: 'primary'
+      color: 'primary',
+      status: 'active',
+      statusLabel: 'Actif'
     },
     {
       id: 'doctor',
@@ -25,7 +42,9 @@ export default function Demo() {
       password: 'Doctor2025!',
       icon: Stethoscope,
       target: '/professional/doctor-dashboard',
-      color: 'secondary'
+      color: 'secondary',
+      status: 'active',
+      statusLabel: 'Actif'
     },
     {
       id: 'nurse',
@@ -34,7 +53,9 @@ export default function Demo() {
       password: 'Nurse2025!',
       icon: Users,
       target: '/dashboard/professional',
-      color: 'accent'
+      color: 'accent',
+      status: 'testing',
+      statusLabel: 'En test'
     },
     {
       id: 'sogara_admin',
@@ -43,7 +64,9 @@ export default function Demo() {
       password: 'Sogara2025!',
       icon: Building2,
       target: '/establishments/sogara/admin',
-      color: 'success'
+      color: 'success',
+      status: 'active',
+      statusLabel: 'Actif'
     },
     {
       id: 'pharmacy',
@@ -52,7 +75,9 @@ export default function Demo() {
       password: 'Pharmacy2025!',
       icon: Pill,
       target: '/dashboard/professional',
-      color: 'warning'
+      color: 'warning',
+      status: 'testing',
+      statusLabel: 'En test'
     },
     {
       id: 'laboratory',
@@ -61,7 +86,9 @@ export default function Demo() {
       password: 'Lab2025!',
       icon: TestTube,
       target: '/dashboard/professional',
-      color: 'primary'
+      color: 'primary',
+      status: 'testing',
+      statusLabel: 'En test'
     },
     {
       id: 'hospital_admin',
@@ -70,7 +97,9 @@ export default function Demo() {
       password: 'Hospital2025!',
       icon: UserCog,
       target: '/admin',
-      color: 'secondary'
+      color: 'secondary',
+      status: 'temporary',
+      statusLabel: 'Temporaire'
     },
     {
       id: 'minister',
@@ -79,9 +108,37 @@ export default function Demo() {
       password: 'Ministre2025!',
       icon: Shield,
       target: '/ministry/dashboard',
-      color: 'accent'
+      color: 'accent',
+      status: 'active',
+      statusLabel: 'Actif'
     }
   ];
+
+  const getStatusBadgeVariant = (status: DemoStatus) => {
+    switch (status) {
+      case 'active':
+        return 'default'; // Green/Primary
+      case 'testing':
+        return 'secondary'; // Blue/Secondary
+      case 'temporary':
+        return 'outline'; // Gray/Outline
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusBadgeClass = (status: DemoStatus) => {
+    switch (status) {
+      case 'active':
+        return 'bg-success/10 text-success border-success/20 hover:bg-success/20';
+      case 'testing':
+        return 'bg-warning/10 text-warning border-warning/20 hover:bg-warning/20';
+      case 'temporary':
+        return 'bg-muted text-muted-foreground border-border hover:bg-muted/80';
+      default:
+        return '';
+    }
+  };
 
   const handleQuickLogin = (account: typeof demoAccounts[0]) => {
     // Store demo account info in sessionStorage for auto-login
@@ -142,7 +199,14 @@ export default function Demo() {
                       <Icon className={`w-6 h-6 ${colors.text}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-base leading-tight">{account.title}</CardTitle>
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <CardTitle className="text-base leading-tight">{account.title}</CardTitle>
+                        <Badge 
+                          className={`text-xs font-medium ${getStatusBadgeClass(account.status)} flex-shrink-0`}
+                        >
+                          {account.statusLabel}
+                        </Badge>
+                      </div>
                       <CardDescription className="text-xs break-all mt-1">
                         {account.email}
                       </CardDescription>
@@ -186,6 +250,23 @@ export default function Demo() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-muted-foreground">
+              <div>
+                <p className="font-semibold text-foreground mb-2">Légende des statuts :</p>
+                <div className="flex flex-wrap gap-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-success/10 text-success border-success/20">Actif</Badge>
+                    <span className="text-xs">Compte pleinement fonctionnel</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-warning/10 text-warning border-warning/20">En test</Badge>
+                    <span className="text-xs">Fonctionnalités en développement</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-muted text-muted-foreground border-border">Temporaire</Badge>
+                    <span className="text-xs">Accès limité dans le temps</span>
+                  </div>
+                </div>
+              </div>
               <p>
                 • Ces comptes sont uniquement à des fins de démonstration et de test
               </p>
