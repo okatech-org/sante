@@ -134,8 +134,9 @@ export default function ForProfessionals() {
   const pricingPlans = [
     {
       name: "Essentiel",
-      price: "9 900",
+      price: "49 500",
       period: "FCFA/mois",
+      trial: "Essai 7 jours gratuit",
       features: [
         "Agenda en ligne",
         "Gestion de 50 patients",
@@ -145,8 +146,9 @@ export default function ForProfessionals() {
     },
     {
       name: "Professionnel",
-      price: "24 900",
+      price: "149 500",
       period: "FCFA/mois",
+      trial: "Essai 14 jours gratuit",
       features: [
         "Tous les avantages Essentiel",
         "Patients illimités",
@@ -158,15 +160,30 @@ export default function ForProfessionals() {
       recommended: true
     },
     {
-      name: "Premium",
-      price: "Sur devis",
-      period: "pour établissements",
+      name: "Labo et Pharmacie",
+      price: "249 000",
+      period: "FCFA/mois",
+      trial: "Essai 7 jours gratuit",
       features: [
         "Tous les avantages Professionnel",
-        "Multi-praticiens",
-        "API et intégrations",
-        "Formation personnalisée",
-        "Support dédié 24/7"
+        "Gestion de stock",
+        "Gestion de commandes",
+        "Analyses de laboratoire",
+        "Multi-utilisateurs",
+        "Support prioritaire"
+      ]
+    },
+    {
+      name: "Grande structures",
+      price: "Sur devis",
+      period: "hôpital, clinique etc...",
+      features: [
+        "Solutions personnalisées",
+        "Multi-praticiens illimités",
+        "API et intégrations complètes",
+        "Formation sur mesure",
+        "Support dédié 24/7",
+        "Infrastructure dédiée"
       ]
     }
   ];
@@ -388,7 +405,7 @@ export default function ForProfessionals() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {pricingPlans.map((plan, index) => (
               <Card 
                 key={index} 
@@ -407,6 +424,11 @@ export default function ForProfessionals() {
                     <span className="text-4xl font-bold text-primary">{plan.price}</span>
                     <span className="text-muted-foreground text-sm ml-2">{plan.period}</span>
                   </div>
+                  {plan.trial && (
+                    <div className="bg-secondary/20 text-secondary-foreground px-3 py-2 rounded-lg text-sm font-medium">
+                      {plan.trial}
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3 mb-6">
@@ -425,6 +447,21 @@ export default function ForProfessionals() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Special Offer Note */}
+          <div className="mt-10 max-w-4xl mx-auto">
+            <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-primary/20">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Award className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Offre spéciale formation</h3>
+                </div>
+                <p className="text-muted-foreground">
+                  <strong className="text-foreground">1 mois d'essai gratuit</strong> avec la souscription au pack formation à l'utilisation de l'application santé.ga
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
