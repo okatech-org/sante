@@ -413,7 +413,7 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
+            <Link to="/awareness#news" className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
               <div className="h-48 overflow-hidden">
                 <img 
                   src={awarenessNews} 
@@ -428,9 +428,9 @@ export default function Landing() {
                 </p>
                 <div className="text-primary font-medium">Lire les actualités →</div>
               </div>
-            </div>
+            </Link>
 
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
+            <Link to="/awareness#tutorials" className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
               <div className="h-48 overflow-hidden">
                 <img 
                   src={awarenessTutorials} 
@@ -445,9 +445,9 @@ export default function Landing() {
                 </p>
                 <div className="text-secondary font-medium">Voir les tutoriels →</div>
               </div>
-            </div>
+            </Link>
 
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
+            <Link to="/awareness#first-aid" className="block rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-card border border-border/40 cursor-pointer group">
               <div className="h-48 overflow-hidden">
                 <img 
                   src={awarenessFirstAid} 
@@ -462,7 +462,7 @@ export default function Landing() {
                 </p>
                 <div className="text-accent font-medium">Consulter le guide →</div>
               </div>
-            </div>
+            </Link>
           </div>
 
           <div className="text-center mt-12">
