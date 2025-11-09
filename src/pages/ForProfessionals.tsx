@@ -590,7 +590,7 @@ export default function ForProfessionals() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register/pro">
-                <Button size="lg" className="w-full sm:w-auto shadow-xl text-base px-8 py-6 h-auto hover-scale group">
+                <Button size="lg" className="w-full sm:w-auto shadow-xl text-base px-8 py-6 h-auto hover-scale group bg-accent hover:bg-accent/90 text-accent-foreground">
                   Créer mon compte professionnel
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
