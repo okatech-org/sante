@@ -145,6 +145,7 @@ export default function ForProfessionals() {
       price: "49 500",
       period: "FCFA/mois",
       trial: "Essai 7 jours gratuit",
+      colorTheme: "secondary", // Bleu électrique
       features: [
         "Agenda en ligne",
         "Gestion de 50 patients",
@@ -157,6 +158,7 @@ export default function ForProfessionals() {
       price: "149 500",
       period: "FCFA/mois",
       trial: "Essai 14 jours gratuit",
+      colorTheme: "primary", // Turquoise
       features: [
         "Tous les avantages Essentiel",
         "Patients illimités",
@@ -172,6 +174,7 @@ export default function ForProfessionals() {
       price: "249 000",
       period: "FCFA/mois",
       trial: "Essai 7 jours gratuit",
+      colorTheme: "accent", // Rose vibrant
       features: [
         "Tous les avantages Professionnel",
         "Gestion de stock",
@@ -185,6 +188,7 @@ export default function ForProfessionals() {
       name: "Grande structures",
       price: "Sur devis",
       period: "hôpital, clinique etc...",
+      colorTheme: "warning", // Jaune doré
       features: [
         "Solutions personnalisées",
         "Multi-praticiens illimités",
@@ -462,23 +466,39 @@ export default function ForProfessionals() {
             {pricingPlans.map((plan, index) => (
               <Card 
                 key={index} 
-                className={`card-interactive bg-card/50 backdrop-blur-sm border-border/50 ${
-                  plan.recommended ? 'ring-2 ring-primary shadow-xl scale-105' : ''
-                }`}
+                className={`card-interactive bg-card/50 backdrop-blur-sm border-2 ${
+                  plan.colorTheme === 'primary' ? 'border-primary/40 shadow-primary/20' :
+                  plan.colorTheme === 'secondary' ? 'border-secondary/40 shadow-secondary/20' :
+                  plan.colorTheme === 'accent' ? 'border-accent/40 shadow-accent/20' :
+                  plan.colorTheme === 'warning' ? 'border-warning/40 shadow-warning/20' :
+                  'border-border/50'
+                } ${plan.recommended ? 'ring-2 ring-primary shadow-xl scale-105' : ''}`}
               >
                 {plan.recommended && (
-                  <div className="bg-primary text-primary-foreground text-center py-2 text-sm font-semibold rounded-t-xl">
+                  <div className={`bg-${plan.colorTheme} text-${plan.colorTheme}-foreground text-center py-2 text-sm font-semibold rounded-t-xl`}>
                     Recommandé
                   </div>
                 )}
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
                   <div className="mb-4">
-                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
+                    <span className={`text-4xl font-bold ${
+                      plan.colorTheme === 'primary' ? 'text-primary' :
+                      plan.colorTheme === 'secondary' ? 'text-secondary' :
+                      plan.colorTheme === 'accent' ? 'text-accent' :
+                      plan.colorTheme === 'warning' ? 'text-warning' :
+                      'text-primary'
+                    }`}>{plan.price}</span>
                     <span className="text-muted-foreground text-sm ml-2">{plan.period}</span>
                   </div>
                   {plan.trial && (
-                    <div className="bg-secondary/20 text-secondary-foreground px-3 py-2 rounded-lg text-sm font-medium">
+                    <div className={`px-3 py-2 rounded-lg text-sm font-medium ${
+                      plan.colorTheme === 'primary' ? 'bg-primary/20 text-primary' :
+                      plan.colorTheme === 'secondary' ? 'bg-secondary/20 text-secondary' :
+                      plan.colorTheme === 'accent' ? 'bg-accent/20 text-accent' :
+                      plan.colorTheme === 'warning' ? 'bg-warning/20 text-warning' :
+                      'bg-secondary/20 text-secondary-foreground'
+                    }`}>
                       {plan.trial}
                     </div>
                   )}
@@ -487,13 +507,27 @@ export default function ForProfessionals() {
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                          plan.colorTheme === 'primary' ? 'text-primary' :
+                          plan.colorTheme === 'secondary' ? 'text-secondary' :
+                          plan.colorTheme === 'accent' ? 'text-accent' :
+                          plan.colorTheme === 'warning' ? 'text-warning' :
+                          'text-primary'
+                        }`} />
                         <span className="text-sm text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link to="/register/pro" className="block">
-                    <Button className="w-full shadow-lg hover-scale" variant={plan.recommended ? "default" : "secondary"}>
+                    <Button 
+                      className={`w-full shadow-lg hover-scale ${
+                        plan.colorTheme === 'secondary' ? 'bg-secondary hover:bg-secondary/90 text-secondary-foreground' :
+                        plan.colorTheme === 'accent' ? 'bg-accent hover:bg-accent/90 text-accent-foreground' :
+                        plan.colorTheme === 'warning' ? 'bg-warning hover:bg-warning/90 text-warning-foreground' :
+                        ''
+                      }`}
+                      variant={plan.colorTheme === 'primary' || plan.recommended ? "default" : undefined}
+                    >
                       Choisir {plan.name}
                     </Button>
                   </Link>
