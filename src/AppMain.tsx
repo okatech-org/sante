@@ -113,6 +113,7 @@ import AdminCredentials from "./pages/admin/AdminCredentials";
 
 // Pages de démonstration
 import Demo from "./pages/Demo";
+import Etablissements from "./pages/Etablissements";
 import DemoDoctorDashboard from "./pages/demo/DemoDoctorDashboard";
 
 // Pages du Ministère de la Santé
@@ -169,6 +170,8 @@ function AppMain() {
                     {/* Routes publiques */}
                     <Route path="/" element={<Index />} />
                     <Route path="/landing" element={<Landing />} />
+                    <Route path="/demo" element={<Demo />} />
+                    <Route path="/etablissements" element={<Etablissements />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/how-it-works" element={<HowItWorks />} />
