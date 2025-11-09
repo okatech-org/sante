@@ -195,12 +195,6 @@ export default function ForProfessionals() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <Link to="/services" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                {t('landing.services') || 'Services'}
-              </Link>
-              <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                {t('nav.about') || 'À propos'}
-              </Link>
               <Link to="/for-professionals" className="text-primary transition-colors text-sm font-medium">
                 Professionnels
               </Link>
@@ -235,12 +229,6 @@ export default function ForProfessionals() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px]">
                   <nav className="flex flex-col gap-4 mt-8">
-                    <Link to="/services" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
-                      {t('landing.services') || 'Services'}
-                    </Link>
-                    <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
-                      {t('nav.about') || 'À Propos'}
-                    </Link>
                     <Link to="/for-professionals" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-primary transition-colors">
                       Professionnels
                     </Link>
