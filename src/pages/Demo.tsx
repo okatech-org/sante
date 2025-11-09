@@ -22,6 +22,8 @@ interface DemoAccount {
 export default function Demo() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  
+  console.log('Demo page mounted');
 
   const demoAccounts: DemoAccount[] = [
     {

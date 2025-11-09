@@ -206,7 +206,14 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-3">
               <ThemeToggle />
               <LanguageToggle />
-              <Button variant="outline" className="hover-scale" onClick={() => navigate('/demo')}>
+              <Button 
+                variant="outline" 
+                className="hover-scale" 
+                onClick={() => {
+                  console.log('Navigating to /demo...');
+                  navigate('/demo');
+                }}
+              >
                 Démo
               </Button>
               <Link to="/login/patient">
@@ -249,11 +256,17 @@ export default function Landing() {
                     </Link>
                     
                     <div className="flex flex-col gap-3 mt-6">
-                      <Link to="/demo" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full">
-                          Démo
-                        </Button>
-                      </Link>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => {
+                          console.log('Mobile: Navigating to /demo...');
+                          setMobileMenuOpen(false);
+                          navigate('/demo');
+                        }}
+                      >
+                        Démo
+                      </Button>
                       <Link to="/login/patient" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="outline" className="w-full">
                           Patient
