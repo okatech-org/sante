@@ -261,7 +261,7 @@ export default function ForProfessionals() {
                   </Button>
                 </Link>
                 <Link to="/register/pro">
-                  <Button className="shadow-lg">
+                  <Button className="shadow-lg bg-accent hover:bg-accent/90 text-accent-foreground">
                     Créer mon compte
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -294,7 +294,7 @@ export default function ForProfessionals() {
                         </Button>
                       </Link>
                       <Link to="/register/pro" onClick={() => setMobileMenuOpen(false)}>
-                        <Button className="w-full shadow-lg">
+                        <Button className="w-full shadow-lg bg-accent hover:bg-accent/90 text-accent-foreground">
                           Créer mon compte
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
