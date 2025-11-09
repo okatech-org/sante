@@ -31,91 +31,91 @@ export default function Demo() {
   const demoAccounts: DemoAccount[] = [
     {
       id: 'patient',
-      title: 'Patient',
+      title: t('demo.account.patient'),
       email: 'patient.demo@sante.ga',
       password: 'Patient2025!',
       icon: User,
       target: '/dashboard/patient',
       color: 'primary',
       status: 'active',
-      statusLabel: 'Actif'
+      statusLabel: t('demo.status.active')
     },
     {
       id: 'doctor',
-      title: 'Médecin',
+      title: t('demo.account.doctor'),
       email: 'dr.demo@sante.ga',
       password: 'Doctor2025!',
       icon: Stethoscope,
       target: '/professional/doctor-dashboard',
       color: 'secondary',
       status: 'active',
-      statusLabel: 'Actif'
+      statusLabel: t('demo.status.active')
     },
     {
       id: 'nurse',
-      title: 'Infirmier(ère)',
+      title: t('demo.account.nurse'),
       email: 'infirmier.demo@sante.ga',
       password: 'Nurse2025!',
       icon: Users,
       target: '/dashboard/professional',
       color: 'accent',
       status: 'testing',
-      statusLabel: 'En test'
+      statusLabel: t('demo.status.testing')
     },
     {
       id: 'sogara_admin',
-      title: 'Administration CMST SOGARA',
+      title: t('demo.account.sogaraAdmin'),
       email: 'sogara.demo@sante.ga',
       password: 'Sogara2025!',
       icon: Building2,
       target: '/establishments/sogara/admin',
       color: 'success',
       status: 'active',
-      statusLabel: 'Actif'
+      statusLabel: t('demo.status.active')
     },
     {
       id: 'pharmacy',
-      title: 'Pharmacie',
+      title: t('demo.account.pharmacy'),
       email: 'pharmacie.demo@sante.ga',
       password: 'Pharmacy2025!',
       icon: Pill,
       target: '/dashboard/professional',
       color: 'warning',
       status: 'testing',
-      statusLabel: 'En test'
+      statusLabel: t('demo.status.testing')
     },
     {
       id: 'laboratory',
-      title: 'Laboratoire',
+      title: t('demo.account.laboratory'),
       email: 'labo.demo@sante.ga',
       password: 'Lab2025!',
       icon: TestTube,
       target: '/dashboard/professional',
       color: 'primary',
       status: 'testing',
-      statusLabel: 'En test'
+      statusLabel: t('demo.status.testing')
     },
     {
       id: 'hospital_admin',
-      title: 'Administration Hôpital',
+      title: t('demo.account.hospitalAdmin'),
       email: 'admin.hopital@sante.ga',
       password: 'Hospital2025!',
       icon: UserCog,
       target: '/admin',
       color: 'secondary',
       status: 'temporary',
-      statusLabel: 'Temporaire'
+      statusLabel: t('demo.status.temporary')
     },
     {
       id: 'minister',
-      title: 'Ministère de la Santé',
+      title: t('demo.account.minister'),
       email: 'ministre@sante.gouv.ga',
       password: 'Ministre2025!',
       icon: Shield,
       target: '/ministry/dashboard',
       color: 'accent',
       status: 'active',
-      statusLabel: 'Actif'
+      statusLabel: t('demo.status.active')
     }
   ];
 
@@ -179,7 +179,7 @@ export default function Demo() {
               <ThemeToggle />
               <LanguageToggle />
               <Button variant="outline" onClick={() => navigate('/')}>
-                Retour à l'accueil
+                {t('demo.returnHome')}
               </Button>
             </div>
           </div>
@@ -191,32 +191,32 @@ export default function Demo() {
         <div className="max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20 backdrop-blur-sm animate-scale-in">
             <Sparkles className="w-4 h-4 text-secondary" />
-            <span className="text-foreground">Environnement de Démonstration</span>
+            <span className="text-foreground">{t('demo.environment')}</span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in">
-            {t('demo.title') || 'Comptes de'}
+            {t('demo.title')}
             <span className="block sm:inline mt-2 sm:mt-0 sm:ml-3 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              Démonstration
+              {t('demo.titleHighlight')}
             </span>
           </h1>
           
           <p className="text-lg sm:text-xl mb-4 text-muted-foreground max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            {t('demo.subtitle') || 'Testez SANTE.GA avec nos comptes de démonstration. Cliquez sur un compte pour vous connecter automatiquement.'}
+            {t('demo.subtitle')}
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-success" />
-              <span>Accès instantané</span>
+              <span>{t('demo.badge.instant')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Lock className="w-5 h-5 text-primary" />
-              <span>Données fictives</span>
+              <span>{t('demo.badge.fictional')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-secondary" />
-              <span>Environnement sécurisé</span>
+              <span>{t('demo.badge.secure')}</span>
             </div>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="backdrop-blur-sm bg-muted/30 rounded-lg p-3 space-y-1 border border-border/20">
-                    <p className="text-xs text-muted-foreground font-medium">Mot de passe:</p>
+                    <p className="text-xs text-muted-foreground font-medium">{t('demo.password')}</p>
                     <code className="text-xs font-mono text-foreground break-all block bg-background/50 px-2 py-1 rounded">{account.password}</code>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -279,14 +279,14 @@ export default function Demo() {
                       onClick={() => handleQuickLogin(account)}
                     >
                       <ArrowRight className="h-4 w-4 mr-2 group-hover/btn:translate-x-1 transition-transform" />
-                      <span>Connexion rapide</span>
+                      <span>{t('demo.quickLogin')}</span>
                     </Button>
                     <Button 
                       variant="outline"
                       className="w-full hover:bg-muted/50"
                       onClick={() => navigate(account.target)}
                     >
-                      Accéder au dashboard
+                      {t('demo.accessDashboard')}
                     </Button>
                   </div>
                 </CardContent>
@@ -303,27 +303,27 @@ export default function Demo() {
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-primary" />
                 </div>
-                Informations importantes
+                {t('demo.info.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-muted-foreground">
               <div className="bg-gradient-to-r from-muted/30 to-muted/10 rounded-lg p-4 border border-border/20">
                 <p className="font-semibold text-foreground mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-success" />
-                  Légende des statuts :
+                  {t('demo.info.statusLegend')}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="flex items-center gap-2 bg-background/50 p-2 rounded-md">
-                    <Badge className="bg-success/10 text-success border-success/20">Actif</Badge>
-                    <span className="text-xs">Pleinement fonctionnel</span>
+                    <Badge className="bg-success/10 text-success border-success/20">{t('demo.status.active')}</Badge>
+                    <span className="text-xs">{t('demo.info.fullyFunctional')}</span>
                   </div>
                   <div className="flex items-center gap-2 bg-background/50 p-2 rounded-md">
-                    <Badge className="bg-warning/10 text-warning border-warning/20">En test</Badge>
-                    <span className="text-xs">En développement</span>
+                    <Badge className="bg-warning/10 text-warning border-warning/20">{t('demo.status.testing')}</Badge>
+                    <span className="text-xs">{t('demo.info.inDevelopment')}</span>
                   </div>
                   <div className="flex items-center gap-2 bg-background/50 p-2 rounded-md">
-                    <Badge className="bg-muted text-muted-foreground border-border">Temporaire</Badge>
-                    <span className="text-xs">Accès limité</span>
+                    <Badge className="bg-muted text-muted-foreground border-border">{t('demo.status.temporary')}</Badge>
+                    <span className="text-xs">{t('demo.info.limitedAccess')}</span>
                   </div>
                 </div>
               </div>
@@ -332,32 +332,32 @@ export default function Demo() {
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/0 border border-primary/10">
                   <Lock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Comptes de démonstration</p>
-                    <p className="text-xs">Uniquement à des fins de test et de découverte de la plateforme</p>
+                    <p className="font-medium text-foreground mb-1">{t('demo.info.demoAccounts')}</p>
+                    <p className="text-xs">{t('demo.info.demoDesc')}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-secondary/5 to-secondary/0 border border-secondary/10">
                   <Shield className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Données fictives</p>
-                    <p className="text-xs">Les informations peuvent être réinitialisées à tout moment</p>
+                    <p className="font-medium text-foreground mb-1">{t('demo.info.fictionalData')}</p>
+                    <p className="text-xs">{t('demo.info.fictionalDesc')}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-accent/5 to-accent/0 border border-accent/10">
                   <ArrowRight className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Connexion rapide</p>
-                    <p className="text-xs">Remplit automatiquement les champs de connexion pour un accès instantané</p>
+                    <p className="font-medium text-foreground mb-1">{t('demo.quickLogin')}</p>
+                    <p className="text-xs">{t('demo.info.quickLoginDesc')}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-warning/5 to-warning/0 border border-warning/10">
                   <Users className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Compte réel</p>
-                    <p className="text-xs">Utilisez les pages d'inscription standard pour créer un véritable compte</p>
+                    <p className="font-medium text-foreground mb-1">{t('demo.info.realAccount')}</p>
+                    <p className="text-xs">{t('demo.info.realAccountDesc')}</p>
                   </div>
                 </div>
               </div>
@@ -371,9 +371,9 @@ export default function Demo() {
       {/* Footer CTA */}
       <section className="relative py-12 px-4 sm:px-6 lg:px-8 border-t bg-gradient-to-r from-muted/20 to-muted/5">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Prêt à créer votre compte ?</h3>
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">{t('demo.cta.title')}</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Inscrivez-vous gratuitement et accédez à tous les services de santé du Gabon
+            {t('demo.cta.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -381,14 +381,14 @@ export default function Demo() {
               className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
               onClick={() => navigate('/register/patient')}
             >
-              Créer un compte Patient
+              {t('demo.cta.patient')}
             </Button>
             <Button 
               size="lg"
               variant="outline"
               onClick={() => navigate('/register/professional')}
             >
-              Inscription Professionnel
+              {t('demo.cta.professional')}
             </Button>
           </div>
         </div>
