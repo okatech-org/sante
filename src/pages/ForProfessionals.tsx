@@ -595,11 +595,6 @@ export default function ForProfessionals() {
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/messages">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-lg text-base px-8 py-6 h-auto hover-scale">
-                  Contacter notre équipe
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
