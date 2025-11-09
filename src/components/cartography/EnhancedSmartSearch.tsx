@@ -440,7 +440,7 @@ export default function EnhancedSmartSearch({
           
           <Button
             onClick={() => handleSmartSearch(inputValue)}
-            className="h-12"
+            className="h-12 text-primary-foreground"
           >
             <Search className="w-4 h-4 mr-2" />
             Rechercher
