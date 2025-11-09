@@ -317,7 +317,7 @@ export default function ForProfessionals() {
               <span>Plateforme certifiée pour professionnels de santé</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 lg:whitespace-nowrap">
               Modernisez votre{" "}
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-aurora">
                 pratique médicale
