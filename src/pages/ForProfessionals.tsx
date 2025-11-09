@@ -189,55 +189,74 @@ export default function ForProfessionals() {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+    <div className="min-h-screen">
+      {/* Background avec pattern subtil et animations - identique à Landing */}
+      <div className="fixed inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20 animate-fade-in">
+        <div 
+          className="absolute inset-0 opacity-[0.03] animate-pulse" 
+          style={{
+            backgroundImage: 'radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1px), radial-gradient(circle at 75% 75%, currentColor 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            animationDuration: '4s'
+          }}
+        />
+      </div>
 
-      {/* Header/Navigation */}
-      <nav className="relative z-10 border-b bg-background/95 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      {/* Header Navigation avec effet glassmorphism - identique à Landing */}
+      <header className="fixed top-0 w-full z-[1100] border-b transition-all duration-500 bg-card/95 border-border/60 shadow-lg backdrop-blur-2xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center -gap-1 group">
-              <img src={logoSante} alt="Logo" className="w-12 h-12 object-contain group-hover:scale-110 transition-transform" />
-              <div className="flex flex-col">
-                <span className="text-xl font-bold">
+            <Link to="/" className="flex items-center space-x-3 hover-scale group">
+              <img 
+                src={logoSante} 
+                alt="SANTE.GA Logo" 
+                className="h-16 w-auto object-contain group-hover:scale-110 transition-transform"
+              />
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">
                   <span className="text-foreground">SANTE</span>
                   <span className="text-primary">.GA</span>
-                </span>
-                <span className="text-[10px] text-muted-foreground">Votre santé, notre priorité</span>
+                </h1>
+                <p className="text-xs text-muted-foreground">{t('landing.footer.tagline') || "Votre santé, notre priorité"}</p>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-              <Link to="/for-professionals" className="text-primary transition-colors text-sm font-medium">
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link 
+                to="/" 
+                className="story-link font-medium text-foreground/80 hover:text-primary transition-all duration-300 py-2"
+              >
+                Accueil
+              </Link>
+              <Link 
+                to="/for-professionals" 
+                className="font-medium text-primary py-2"
+              >
                 Professionnels
               </Link>
-              <Link to="/awareness" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
-                Sensibilisation
-              </Link>
-              <div className="flex items-center gap-3 ml-4">
-                <ThemeToggle />
+              <div className="flex items-center gap-3">
                 <LanguageToggle />
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    {t('landing.cta.login') || 'Se connecter'}
+                <ThemeToggle />
+                <Link to="/login/pro">
+                  <Button variant="outline" className="shadow-md">
+                    Connexion Pro
                   </Button>
                 </Link>
-                <Link to="/register">
-                  <Button size="sm" className="shadow-lg">
-                    {t('landing.hero.patient') || "S'inscrire"}
+                <Link to="/register/pro">
+                  <Button className="shadow-lg">
+                    Créer mon compte
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
-            </div>
+            </nav>
 
             {/* Mobile Menu */}
-            <div className="flex md:hidden items-center gap-2">
-              <ThemeToggle />
+            <div className="md:hidden flex items-center gap-3">
               <LanguageToggle />
+              <ThemeToggle />
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -246,16 +265,22 @@ export default function ForProfessionals() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px]">
                   <nav className="flex flex-col gap-4 mt-8">
+                    <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
+                      Accueil
+                    </Link>
                     <Link to="/for-professionals" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-primary transition-colors">
                       Professionnels
                     </Link>
-                    <Link to="/awareness" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors">
-                      Sensibilisation
-                    </Link>
-                    <div className="flex flex-col gap-3 mt-6 pt-6 border-t">
-                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full">
-                          {t('landing.cta.login') || 'Se connecter'}
+                    <div className="pt-4 border-t">
+                      <Link to="/login/pro" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="outline" className="w-full mb-3">
+                          Connexion Pro
+                        </Button>
+                      </Link>
+                      <Link to="/register/pro" onClick={() => setMobileMenuOpen(false)}>
+                        <Button className="w-full shadow-lg">
+                          Créer mon compte
+                          <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                       </Link>
                     </div>
@@ -265,32 +290,42 @@ export default function ForProfessionals() {
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 container mx-auto px-4 py-12 md:py-20">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <ShieldCheck className="w-5 h-5 text-primary" />
-            <span className="bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
-              Rejoignez la plateforme E-Santé Nationale
-            </span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-foreground">Pour les </span>
-            <span className="text-primary">Professionnels de Santé</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            Modernisez votre pratique et développez votre activité avec SANTE.GA
-          </p>
-          <div>
-            <Link to="/register/pro">
-              <Button size="lg" className="shadow-lg hover:shadow-xl text-base px-8 py-6 h-auto">
-                Rejoindre SANTE.GA
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+      <section className="relative py-24 md:py-32 px-4 sm:px-6 lg:px-8 z-10 mt-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-4xl mx-auto animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 backdrop-blur-sm animate-float">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Plateforme certifiée pour professionnels de santé</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+              Modernisez votre{" "}
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-aurora">
+                pratique médicale
+              </span>
+            </h1>
+            
+            <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+              Rejoignez la première plateforme e-santé nationale du Gabon. 
+              Gérez vos patients, vos rendez-vous et développez votre activité en toute simplicité.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link to="/register/pro">
+                <Button size="lg" className="shadow-xl text-base px-8 py-6 h-auto group hover-scale">
+                  Commencer maintenant
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/messages">
+                <Button size="lg" variant="outline" className="shadow-lg text-base px-8 py-6 h-auto hover-scale">
+                  Demander une démo
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -327,9 +362,9 @@ export default function ForProfessionals() {
       </section>
 
       {/* Main Benefits */}
-      <section className="relative z-10 py-12 md:py-16 bg-muted/30">
+      <section className="relative z-10 py-16 md:py-24 bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Tous les outils dont vous avez besoin
             </h2>
@@ -342,11 +377,11 @@ export default function ForProfessionals() {
             {benefits.map((benefit, index) => (
               <Card 
                 key={index} 
-                className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group overflow-hidden"
+                className="card-interactive group overflow-hidden bg-card/50 backdrop-blur-sm border-border/50"
               >
                 <CardHeader>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
                       <benefit.icon className="w-6 h-6" />
                     </div>
                     <div>
@@ -360,7 +395,7 @@ export default function ForProfessionals() {
                     {benefit.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
+                        <span className="text-sm text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -372,16 +407,16 @@ export default function ForProfessionals() {
       </section>
 
       {/* Additional Features */}
-      <section className="relative z-10 py-12 md:py-16">
+      <section className="relative z-10 py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {additionalFeatures.map((feature, index) => (
               <Card 
                 key={index} 
-                className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                className="card-interactive group bg-card/50 backdrop-blur-sm border-border/50"
               >
                 <CardHeader>
-                  <div className="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-3 group-hover:bg-secondary group-hover:text-secondary-foreground transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-3 group-hover:bg-secondary group-hover:text-secondary-foreground transition-all duration-300 group-hover:scale-110">
                     <feature.icon className="w-6 h-6" />
                   </div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -394,9 +429,9 @@ export default function ForProfessionals() {
       </section>
 
       {/* Pricing Section */}
-      <section className="relative z-10 py-12 md:py-16 bg-muted/30">
+      <section className="relative z-10 py-16 md:py-24 bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Choisissez votre formule
             </h2>
@@ -409,8 +444,8 @@ export default function ForProfessionals() {
             {pricingPlans.map((plan, index) => (
               <Card 
                 key={index} 
-                className={`hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${
-                  plan.recommended ? 'ring-2 ring-primary shadow-lg' : ''
+                className={`card-interactive bg-card/50 backdrop-blur-sm border-border/50 ${
+                  plan.recommended ? 'ring-2 ring-primary shadow-xl scale-105' : ''
                 }`}
               >
                 {plan.recommended && (
@@ -435,12 +470,12 @@ export default function ForProfessionals() {
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
+                        <span className="text-sm text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link to="/register/pro" className="block">
-                    <Button className="w-full shadow-lg" variant={plan.recommended ? "default" : "secondary"}>
+                    <Button className="w-full shadow-lg hover-scale" variant={plan.recommended ? "default" : "secondary"}>
                       Choisir {plan.name}
                     </Button>
                   </Link>
@@ -450,11 +485,11 @@ export default function ForProfessionals() {
           </div>
 
           {/* Special Offer Note */}
-          <div className="mt-10 max-w-4xl mx-auto">
-            <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-primary/20">
+          <div className="mt-12 max-w-4xl mx-auto">
+            <Card className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-primary/20 card-interactive backdrop-blur-sm">
               <CardContent className="p-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Award className="w-5 h-5 text-primary" />
+                  <Award className="w-5 h-5 text-primary animate-float" />
                   <h3 className="text-lg font-semibold">Offre spéciale formation</h3>
                 </div>
                 <p className="text-muted-foreground">
@@ -467,24 +502,24 @@ export default function ForProfessionals() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-16 md:py-20">
+      <section className="relative z-10 py-20 md:py-28">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center bg-primary/5 border rounded-2xl p-8 md:p-12">
+          <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border rounded-2xl p-10 md:p-16 backdrop-blur-sm animate-fade-in">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Prêt à rejoindre SANTE.GA ?
             </h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto text-muted-foreground">
+            <p className="text-lg mb-10 max-w-2xl mx-auto text-muted-foreground">
               Plus de 500 professionnels nous font déjà confiance
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register/pro">
-                <Button size="lg" className="w-full sm:w-auto shadow-lg text-base px-8 py-6 h-auto">
+                <Button size="lg" className="w-full sm:w-auto shadow-xl text-base px-8 py-6 h-auto hover-scale group">
                   Créer mon compte professionnel
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/messages">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-lg text-base px-8 py-6 h-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto shadow-lg text-base px-8 py-6 h-auto hover-scale">
                   Contacter notre équipe
                 </Button>
               </Link>
@@ -494,7 +529,7 @@ export default function ForProfessionals() {
       </section>
 
       {/* Footer */}
-      <footer className="relative py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t z-10">
+      <footer className="relative py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-muted/20 border-t z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-6 mb-6">
             <div className="md:col-span-2">
