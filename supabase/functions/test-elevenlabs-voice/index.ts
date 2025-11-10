@@ -1,13 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-const GREETING_TEXT = "Bonjour Monsieur le Ministre, je suis iAsted, votre assistant vocal. Comment puis-je vous aider aujourd'hui dans l'analyse du secteur de la santé ?";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -15,41 +12,11 @@ serve(async (req) => {
   }
 
   try {
+    const { voiceId, model, text } = await req.json();
     const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
-    
+
     if (!ELEVENLABS_API_KEY) {
       throw new Error('ELEVENLABS_API_KEY not configured');
-    }
-
-    // Get user preferences for voice settings
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        auth: {
-          persistSession: false,
-        },
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    );
-
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    let voiceId = '9BWtsMINqrJLrRacOk9x'; // Default: Aria
-    let model = 'eleven_multilingual_v2';
-
-    if (user) {
-      const { data: prefs } = await supabaseClient
-        .from('user_preferences')
-        .select('elevenlabs_voice_id, elevenlabs_model')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (prefs) {
-        voiceId = prefs.elevenlabs_voice_id || voiceId;
-        model = prefs.elevenlabs_model || model;
-      }
     }
 
     const response = await fetch(
@@ -62,8 +29,8 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: GREETING_TEXT,
-          model_id: model,
+          text: text || 'Bonjour, je suis iAsted.',
+          model_id: model || 'eleven_multilingual_v2',
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.5,
@@ -71,6 +38,12 @@ serve(async (req) => {
         }),
       }
     );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('ElevenLabs API error:', errorText);
+      throw new Error(`ElevenLabs API error: ${response.status}`);
+    }
 
     const audioBlob = await response.arrayBuffer();
     
@@ -86,7 +59,7 @@ serve(async (req) => {
     const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
 
     return new Response(
-      JSON.stringify({ audioUrl, text: GREETING_TEXT }),
+      JSON.stringify({ audioUrl }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

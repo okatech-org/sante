@@ -106,14 +106,16 @@ serve(async (req) => {
 
     const conversationHistory = messages || [];
 
-    // Check user preferences for focus mode
+    // Check user preferences for focus mode and voice settings
     const { data: prefs } = await supabaseClient
       .from('user_preferences')
-      .select('voice_focus_mode')
+      .select('voice_focus_mode, elevenlabs_voice_id, elevenlabs_model')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     const focusModeEnabled = prefs?.voice_focus_mode || false;
+    const voiceId = prefs?.elevenlabs_voice_id || '9BWtsMINqrJLrRacOk9x';
+    const voiceModel = prefs?.elevenlabs_model || 'eleven_multilingual_v2';
 
     // Detect if we should resume or start focus mode
     let focusContext = '';
@@ -179,7 +181,9 @@ serve(async (req) => {
       message,
       conversationHistory,
       knowledgeContext,
-      focusContext
+      focusContext,
+      voiceId,
+      voiceModel
     );
 
     // Save messages
@@ -227,9 +231,16 @@ async function generateResponse(
   userMessage: string,
   history: any[],
   knowledgeContext: string,
-  focusContext: string
+  focusContext: string,
+  voiceId: string = '9BWtsMINqrJLrRacOk9x',
+  model: string = 'eleven_multilingual_v2'
 ) {
   const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+  const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
+
+  if (!ELEVENLABS_API_KEY) {
+    throw new Error('ELEVENLABS_API_KEY not configured');
+  }
 
   const messages = [
     {
@@ -240,7 +251,7 @@ async function generateResponse(
     { role: 'user', content: userMessage }
   ];
 
-  // Get text response
+  // Get text response from OpenAI
   const textResponse = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -257,19 +268,26 @@ async function generateResponse(
   const textData = await textResponse.json();
   const responseText = textData.choices[0].message.content;
 
-  // Generate audio
-  const audioResponse = await fetch('https://api.openai.com/v1/audio/speech', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'tts-1',
-      voice: 'alloy',
-      input: responseText
-    })
-  });
+  // Generate audio with ElevenLabs
+  const audioResponse = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    {
+      method: 'POST',
+      headers: {
+        'Accept': 'audio/mpeg',
+        'xi-api-key': ELEVENLABS_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: responseText,
+        model_id: model,
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.5,
+        },
+      }),
+    }
+  );
 
   const audioBlob = await audioResponse.arrayBuffer();
   

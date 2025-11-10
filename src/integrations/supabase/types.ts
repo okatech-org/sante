@@ -2735,6 +2735,8 @@ export type Database = {
       user_preferences: {
         Row: {
           created_at: string | null
+          elevenlabs_model: string | null
+          elevenlabs_voice_id: string | null
           id: string
           updated_at: string | null
           user_id: string
@@ -2742,6 +2744,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          elevenlabs_model?: string | null
+          elevenlabs_voice_id?: string | null
           id?: string
           updated_at?: string | null
           user_id: string
@@ -2749,6 +2753,8 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          elevenlabs_model?: string | null
+          elevenlabs_voice_id?: string | null
           id?: string
           updated_at?: string | null
           user_id?: string

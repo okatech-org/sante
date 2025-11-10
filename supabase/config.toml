@@ -1,5 +1,8 @@
 project_id = "bolidzesitkkfojdyuyg"
 
+[functions.test-elevenlabs-voice]
+verify_jwt = true
+
 [functions.import-medicaments-fr]
 verify_jwt = false
 

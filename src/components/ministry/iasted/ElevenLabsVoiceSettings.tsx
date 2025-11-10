@@ -62,7 +62,7 @@ export const ElevenLabsVoiceSettings = () => {
         .from('user_preferences')
         .select('elevenlabs_voice_id, elevenlabs_model')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (data) {
         if (data.elevenlabs_voice_id) setSelectedVoice(data.elevenlabs_voice_id);

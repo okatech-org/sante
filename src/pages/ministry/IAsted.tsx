@@ -6,6 +6,7 @@ import { IAstedVoiceButton } from '@/components/ministry/iasted/IAstedVoiceButto
 import { IAstedChat } from '@/components/ministry/iasted/IAstedChat';
 import { IAstedTranscript } from '@/components/ministry/iasted/IAstedTranscript';
 import { VoiceSettings } from '@/components/ministry/iasted/VoiceSettings';
+import { ElevenLabsVoiceSettings } from '@/components/ministry/iasted/ElevenLabsVoiceSettings';
 import { FocusSessionsPanel } from '@/components/ministry/iasted/FocusSessionsPanel';
 
 const IAsted = () => {
@@ -91,18 +92,9 @@ const IAsted = () => {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <div className="max-w-2xl">
+            <div className="max-w-2xl space-y-6">
+              <ElevenLabsVoiceSettings />
               <VoiceSettings />
-
-              {/* Additional Settings (placeholder) */}
-              <Card className="p-6 mt-6">
-                <h3 className="text-lg font-semibold text-zinc-900 mb-4">
-                  Autres Paramètres
-                </h3>
-                <p className="text-sm text-zinc-500">
-                  Fonctionnalité à venir...
-                </p>
-              </Card>
             </div>
           </TabsContent>
         </Tabs>
