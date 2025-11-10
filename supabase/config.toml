@@ -20,3 +20,6 @@ verify_jwt = true
 
 [functions.generate-decree-with-ai]
 verify_jwt = true
+
+[functions.create-demo-doctor]
+verify_jwt = false
