@@ -124,7 +124,9 @@ export function CreateConsultationModal({
       // Créer la date et l'heure combinées
       const [hours, minutes] = formData.time.split(':');
       const appointmentDate = new Date(formData.date);
-      appointmentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      // Récupérer les infos du patient sélectionné
+      const selectedPatient = patients.find(p => p.id === formData.patientId);
 
       // Créer le rendez-vous/consultation
       const { data, error: insertError } = await supabase
@@ -132,12 +134,16 @@ export function CreateConsultationModal({
         .insert({
           professional_id: professionalId,
           patient_id: formData.patientId,
-          appointment_date: appointmentDate.toISOString(),
-          type: formData.type,
+          appointment_date: format(appointmentDate, 'yyyy-MM-dd'),
+          appointment_time: formData.time,
+          appointment_type: formData.type,
           reason: formData.reason,
           notes: formData.notes,
           status: 'completed', // Directement marquée comme complétée
-          duration_minutes: 30
+          duration_minutes: 30,
+          patient_name: selectedPatient?.full_name || '',
+          patient_phone: selectedPatient?.phone || '',
+          patient_email: selectedPatient?.email || ''
         })
         .select()
         .single();

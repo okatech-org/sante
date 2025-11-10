@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 interface DashboardStats {
   today: {
@@ -44,14 +45,13 @@ export const useProfessionalStats = (professionalId: string | undefined) => {
         // Consultations aujourd'hui par type
         const { data: todayByType } = await supabase
           .from('appointments')
-          .select('type')
+          .select('appointment_type')
           .eq('professional_id', professionalId)
-          .gte('appointment_date', today.toISOString())
-          .lt('appointment_date', new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString())
-          .in('status', ['termine', 'en_cours']);
+          .eq('appointment_date', format(today, 'yyyy-MM-dd'))
+          .in('status', ['completed', 'confirmed']);
 
-        const todayConsultations = todayByType?.filter(a => a.type === 'consultation').length || 0;
-        const todayTeleconsultations = todayByType?.filter(a => a.type === 'teleconsultation').length || 0;
+        const todayConsultations = todayByType?.filter(a => a.appointment_type === 'consultation').length || 0;
+        const todayTeleconsultations = todayByType?.filter(a => a.appointment_type === 'teleconsultation').length || 0;
 
         // Stats du mois
         const { count: monthAppointments } = await supabase

@@ -17,62 +17,65 @@ export type Database = {
       appointments: {
         Row: {
           appointment_date: string
-          created_at: string | null
+          appointment_time: string
+          appointment_type: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          created_at: string
           duration_minutes: number
           id: string
           notes: string | null
+          patient_email: string | null
           patient_id: string
+          patient_name: string
+          patient_phone: string
           professional_id: string
           reason: string | null
-          reminder_sent: boolean | null
           status: string
-          type: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           appointment_date: string
-          created_at?: string | null
+          appointment_time: string
+          appointment_type?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          created_at?: string
           duration_minutes?: number
           id?: string
           notes?: string | null
+          patient_email?: string | null
           patient_id: string
+          patient_name: string
+          patient_phone: string
           professional_id: string
           reason?: string | null
-          reminder_sent?: boolean | null
           status?: string
-          type: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           appointment_date?: string
-          created_at?: string | null
+          appointment_time?: string
+          appointment_type?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          created_at?: string
           duration_minutes?: number
           id?: string
           notes?: string | null
+          patient_email?: string | null
           patient_id?: string
+          patient_name?: string
+          patient_phone?: string
           professional_id?: string
           reason?: string | null
-          reminder_sent?: boolean | null
           status?: string
-          type?: string
-          updated_at?: string | null
+          updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_patient_id_fkey"
-            columns: ["patient_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_professional_id_fkey"
-            columns: ["professional_id"]
-            isOneToOne: false
-            referencedRelation: "professionals"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       cnamgs_verifications: {
         Row: {
@@ -1446,13 +1449,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "payments_appointment_id_fkey"
-            columns: ["appointment_id"]
-            isOneToOne: false
-            referencedRelation: "appointments"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "payments_professional_id_fkey"
             columns: ["professional_id"]
             isOneToOne: false
@@ -1878,36 +1874,37 @@ export type Database = {
         Row: {
           created_at: string
           day_of_week: number
+          duration_minutes: number
+          end_time: string
           id: string
+          is_active: boolean
           professional_id: string
-          time_slots: Json
+          start_time: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           day_of_week: number
+          duration_minutes?: number
+          end_time: string
           id?: string
+          is_active?: boolean
           professional_id: string
-          time_slots: Json
+          start_time: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           day_of_week?: number
+          duration_minutes?: number
+          end_time?: string
           id?: string
+          is_active?: boolean
           professional_id?: string
-          time_slots?: Json
+          start_time?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "professional_availability_professional_id_fkey"
-            columns: ["professional_id"]
-            isOneToOne: false
-            referencedRelation: "professionals"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       professional_conventions: {
         Row: {
@@ -2851,13 +2848,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "teleconsultation_sessions_appointment_id_fkey"
-            columns: ["appointment_id"]
-            isOneToOne: false
-            referencedRelation: "appointments"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "teleconsultation_sessions_professional_id_fkey"
             columns: ["professional_id"]
             isOneToOne: false
@@ -3305,6 +3295,18 @@ export type Database = {
         Returns: boolean
       }
       geomfromewkt: { Args: { "": string }; Returns: unknown }
+      get_available_slots: {
+        Args: {
+          p_end_date: string
+          p_professional_id: string
+          p_start_date: string
+        }
+        Returns: {
+          is_available: boolean
+          slot_date: string
+          slot_time: string
+        }[]
+      }
       get_medicament_enriched: {
         Args: { p_medicament_id: string; p_pharmacie_id?: string }
         Returns: Json

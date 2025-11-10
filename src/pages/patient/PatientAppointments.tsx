@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import drDemoAvatar from "@/assets/dr-demo-avatar.jpg";
+import { AppointmentSlotPicker } from "@/components/appointments/AppointmentSlotPicker";
+import { AppointmentConfirmDialog } from "@/components/appointments/AppointmentConfirmDialog";
 
 export default function PatientAppointments() {
   const { user } = useAuth();
@@ -30,58 +32,37 @@ export default function PatientAppointments() {
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  
+  // Nouveaux états pour le système de créneaux
+  const [showSlotPicker, setShowSlotPicker] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedProfessional, setSelectedProfessional] = useState<{id: string; name: string} | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{date: Date; time: string} | null>(null);
 
   // Vérifier si on doit ouvrir le modal de prise de RDV
   useEffect(() => {
-    const providerId = searchParams.get('provider');
+    const providerId = searchParams.get('providerId');
     if (providerId) {
-      // Créer un provider temporaire pour CMST SOGARA
-      if (providerId === 'cmst-sogara') {
-        setProvider({
-          id: 'cmst-sogara',
-          name: 'CMST SOGARA',
-          avatar: '/logo_sogara.png',
-          specialty: 'Centre Médical',
-          phone: '+241 01 55 26 21',
-          location: 'Port-Gentil',
-          address: 'Route de la Sogara, Port-Gentil',
-          consultationPrice: 30000,
-          cnamgsPrice: 25000,
-          cnamgsConventioned: true,
-          onlineBooking: true,
-          rating: 4.8,
-          consultations: 150
-        } as any);
-        setShowBookingModal(true);
-        
-        // Nettoyer l'URL
-        navigate('/appointments', { replace: true });
+      // Vérifier si l'utilisateur est connecté
+      if (!user) {
+        toast.error("Vous devez être connecté pour prendre rendez-vous");
+        navigate('/login/patient?redirect=/appointments?providerId=' + providerId);
+        return;
       }
-      
+
       // Créer un provider temporaire pour Dr Démo
       if (providerId === 'dr-demo-cabinet-001') {
-        setProvider({
+        setSelectedProfessional({
           id: 'dr-demo-cabinet-001',
-          name: 'Dr. Démo',
-          avatar: drDemoAvatar,
-          specialty: 'Médecine Générale',
-          phone: '+241 01 23 45 67',
-          location: 'Libreville',
-          address: 'Boulevard Triomphal, Louis, 1er Arrondissement',
-          consultationPrice: 25000,
-          cnamgsPrice: 20000,
-          cnamgsConventioned: true,
-          onlineBooking: true,
-          rating: 5.0,
-          consultations: 999
-        } as any);
-        setShowBookingModal(true);
+          name: 'Dr. Jean-Pierre Démo'
+        });
+        setShowSlotPicker(true);
         
         // Nettoyer l'URL
         navigate('/appointments', { replace: true });
       }
     }
-  }, [searchParams, setProvider, navigate]);
+  }, [searchParams, user, navigate]);
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -101,6 +82,33 @@ export default function PatientAppointments() {
 
     loadAppointments();
   }, [user?.id]);
+
+  // Handlers pour le système de créneaux
+  const handleSlotSelect = (date: Date, time: string) => {
+    setSelectedSlot({ date, time });
+    setShowSlotPicker(false);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmClose = () => {
+    setShowConfirmDialog(false);
+    setSelectedSlot(null);
+  };
+
+  const handleConfirmSuccess = () => {
+    setShowConfirmDialog(false);
+    setSelectedSlot(null);
+    setSelectedProfessional(null);
+    // Recharger les rendez-vous
+    if (user?.id) {
+      patientService.getAppointments(user.id).then(setAppointments);
+    }
+  };
+
+  const handleCancelSlotPicker = () => {
+    setShowSlotPicker(false);
+    setSelectedProfessional(null);
+  };
 
   // Séparer les rendez-vous futurs et passés
   const now = new Date();
@@ -335,7 +343,35 @@ export default function PatientAppointments() {
         </Card>
       </div>
 
-      {/* Modal de prise de rendez-vous */}
+      {/* Sélection de créneaux */}
+      {showSlotPicker && selectedProfessional && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <h2 className="text-2xl font-bold mb-4">Choisir un créneau</h2>
+            <AppointmentSlotPicker
+              professionalId={selectedProfessional.id}
+              professionalName={selectedProfessional.name}
+              onSlotSelect={handleSlotSelect}
+              onCancel={handleCancelSlotPicker}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation du rendez-vous */}
+      {showConfirmDialog && selectedProfessional && selectedSlot && (
+        <AppointmentConfirmDialog
+          isOpen={showConfirmDialog}
+          onClose={handleConfirmClose}
+          onConfirm={handleConfirmSuccess}
+          professionalId={selectedProfessional.id}
+          professionalName={selectedProfessional.name}
+          selectedDate={selectedSlot.date}
+          selectedTime={selectedSlot.time}
+        />
+      )}
+
+      {/* Ancien modal de prise de rendez-vous (à garder pour compatibilité) */}
       <BookingModal 
         open={showBookingModal} 
         onClose={() => setShowBookingModal(false)} 
