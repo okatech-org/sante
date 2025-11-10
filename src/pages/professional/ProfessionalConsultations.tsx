@@ -1,20 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   Stethoscope, Search, Calendar, Clock, User, FileText,
-  Plus, Filter, ChevronRight, Loader2, AlertCircle
+  Plus, Filter, ChevronRight, Loader2, AlertCircle, Download
 } from 'lucide-react';
 import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
-import { useConsultations } from '@/hooks/useConsultations';
+import { useConsultations, Consultation } from '@/hooks/useConsultations';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ConsultationDetailsModal } from '@/components/professional/ConsultationDetailsModal';
+import { ConsultationFilters, FilterValues } from '@/components/professional/ConsultationFilters';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function ProfessionalConsultations() {
   const { currentRole } = useMultiEstablishment();
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<FilterValues>({ type: '' });
+  const [professionalId, setProfessionalId] = useState<string>('');
   const { consultations, stats, loading, error } = useConsultations();
+
+  // Récupérer l'ID du professionnel
+  useEffect(() => {
+    const fetchProfessionalId = async () => {
+      const { data } = await supabase
+        .from('professionals')
+        .select('id')
+        .single();
+      if (data) setProfessionalId(data.id);
+    };
+    fetchProfessionalId();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -25,11 +45,50 @@ export default function ProfessionalConsultations() {
     return badges[status as keyof typeof badges] || badges.scheduled;
   };
 
-  const filteredConsultations = consultations.filter(c =>
-    c.patient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.notes?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredConsultations = consultations.filter(c => {
+    // Search filter
+    const matchesSearch = !searchTerm || 
+      c.patient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.notes?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Type filter
+    const matchesType = !filters.type || c.type === filters.type;
+    
+    // Date filters
+    const consultationDate = new Date(c.date);
+    const matchesDateFrom = !filters.dateFrom || consultationDate >= filters.dateFrom;
+    const matchesDateTo = !filters.dateTo || consultationDate <= filters.dateTo;
+    
+    // Prescription filter
+    const matchesPrescription = filters.hasPrescription === undefined || 
+      c.prescription === filters.hasPrescription;
+
+    return matchesSearch && matchesType && matchesDateFrom && matchesDateTo && matchesPrescription;
+  });
+
+  const handleExportCSV = () => {
+    const csv = [
+      ['Date', 'Heure', 'Patient', 'Type', 'Diagnostic', 'Ordonnance', 'Notes'],
+      ...filteredConsultations.map(c => [
+        c.date,
+        c.time,
+        c.patient,
+        c.type,
+        c.diagnosis || '',
+        c.prescription ? 'Oui' : 'Non',
+        c.notes || ''
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `consultations-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    toast.success('Export CSV réussi');
+  };
 
   if (loading) {
     return (
@@ -59,10 +118,16 @@ export default function ProfessionalConsultations() {
             Gérez vos consultations et suivis patients
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nouvelle consultation
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportCSV} className="gap-2">
+            <Download className="h-4 w-4" />
+            Exporter
+          </Button>
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nouvelle consultation
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -117,12 +182,30 @@ export default function ProfessionalConsultations() {
               className="pl-10"
             />
           </div>
-          <Button variant="outline" className="gap-2">
+          <Button 
+            variant={showFilters ? "default" : "outline"} 
+            className="gap-2"
+            onClick={() => setShowFilters(!showFilters)}
+          >
             <Filter className="h-4 w-4" />
             Filtres
           </Button>
         </div>
       </Card>
+
+      {/* Filtres avancés */}
+      {showFilters && (
+        <ConsultationFilters
+          onFilterChange={(newFilters) => {
+            setFilters(newFilters);
+            setShowFilters(false);
+          }}
+          onReset={() => {
+            setFilters({ type: '' });
+            setShowFilters(false);
+          }}
+        />
+      )}
 
       {/* Liste des consultations */}
       <div className="space-y-4">
@@ -173,7 +256,11 @@ export default function ProfessionalConsultations() {
                   </div>
                 </div>
                 
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setSelectedConsultation(consultation)}
+                >
                   <ChevronRight className="h-5 w-5" />
                 </Button>
               </div>
@@ -182,17 +269,27 @@ export default function ProfessionalConsultations() {
         })}
       </div>
 
-      {filteredConsultations.length === 0 && (
+      {filteredConsultations.length === 0 && !loading && (
         <Card className="p-12">
           <div className="text-center">
             <Stethoscope className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Aucune consultation trouvée</h3>
             <p className="text-muted-foreground">
-              Aucune consultation ne correspond à votre recherche
+              {searchTerm || Object.values(filters).some(v => v) 
+                ? "Aucune consultation ne correspond à votre recherche" 
+                : "Aucune consultation enregistrée"}
             </p>
           </div>
         </Card>
       )}
+
+      {/* Modal de détails */}
+      <ConsultationDetailsModal
+        consultation={selectedConsultation}
+        open={!!selectedConsultation}
+        onOpenChange={(open) => !open && setSelectedConsultation(null)}
+        professionalId={professionalId}
+      />
     </div>
   );
 }
