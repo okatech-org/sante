@@ -37,6 +37,7 @@ import SogaraDashboard from "./pages/establishments/sogara/admin/SogaraDashboard
 
 // Pages de profil
 import Profile from "./pages/Profile";
+import ProfessionalProfile from "./pages/ProfessionalProfile";
 
 // Pages de services
 import MedicalRecord from "./pages/MedicalRecord";
@@ -131,6 +132,8 @@ function App() {
                     
                     {/* Routes de profil */}
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/professional/:id" element={<ProfessionalProfile />} />
+                    <Route path="/professionnel/:id" element={<ProfessionalProfile />} />
                     
                     {/* Routes de services */}
                     <Route path="/medical-record" element={<MedicalRecord />} />

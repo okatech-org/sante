@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CartographyProvider, Coordonnees } from "@/types/cartography";
-import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle, Video, Calendar, FileText, ShoppingCart, Package } from "lucide-react";
+import { Phone, Navigation, Share2, Clock, MapPin, Mail, AlertCircle, Video, Calendar, FileText, ShoppingCart, Package, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistance } from "@/utils/distance";
@@ -137,6 +137,21 @@ export default function CartographyProviderModal({
         {/* Scrollable content */}
         <div className="overflow-y-auto max-h-[60vh] sm:max-h-[65vh]">
           <div className="p-4 sm:p-5 space-y-4">
+            {/* Profil professionnel - Pour cabinet_medical avec compte */}
+            {provider.type === 'cabinet_medical' && hasAccount && (
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-3 sm:p-4 border border-primary/20">
+                <Button
+                  size="sm"
+                  onClick={() => navigate(`/professional/${provider.id}`)}
+                  className="w-full gap-2"
+                  variant="outline"
+                >
+                  <User className="h-3.5 w-3.5" />
+                  <span className="text-xs">Voir le profil complet</span>
+                </Button>
+              </div>
+            )}
+
             {/* Actions RDV - Pour établissements médicaux */}
             {(provider.type === 'hopital' || provider.type === 'clinique' || 
               provider.type === 'cabinet_medical' || provider.type === 'cabinet_dentaire') && (
