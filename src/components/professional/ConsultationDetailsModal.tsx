@@ -9,6 +9,7 @@ import {
 import { Consultation } from "@/hooks/useConsultations";
 import { useState } from "react";
 import { ElectronicPrescriptionModal } from "./ElectronicPrescriptionModal";
+import { toast } from "sonner";
 
 interface ConsultationDetailsModalProps {
   consultation: Consultation | null;
@@ -30,7 +31,103 @@ export function ConsultationDetailsModal({
   const date = new Date(consultation.date);
 
   const handlePrint = () => {
-    window.print();
+    // Créer une fenêtre d'impression avec contenu formaté
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Consultation - ${consultation.patient}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+            .section { margin-bottom: 25px; }
+            .section-title { font-weight: bold; font-size: 16px; color: #333; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+            .info-row { display: flex; margin-bottom: 8px; }
+            .label { font-weight: bold; min-width: 150px; }
+            .value { color: #555; }
+            .content-box { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px; }
+            @media print { body { padding: 20px; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Consultation Médicale</h1>
+            <p>${date.toLocaleDateString('fr-FR', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })} - ${consultation.time}</p>
+          </div>
+          
+          <div class="section">
+            <div class="section-title">Informations Patient</div>
+            <div class="info-row">
+              <span class="label">Patient:</span>
+              <span class="value">${consultation.patient}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Type:</span>
+              <span class="value">${consultation.type}</span>
+            </div>
+          </div>
+
+          ${consultation.diagnosis ? `
+            <div class="section">
+              <div class="section-title">Diagnostic</div>
+              <div class="content-box">${consultation.diagnosis}</div>
+            </div>
+          ` : ''}
+
+          ${consultation.notes ? `
+            <div class="section">
+              <div class="section-title">Notes de Consultation</div>
+              <div class="content-box">${consultation.notes.replace(/\n/g, '<br>')}</div>
+            </div>
+          ` : ''}
+
+          ${consultation.examens && consultation.examens.length > 0 ? `
+            <div class="section">
+              <div class="section-title">Examens Prescrits</div>
+              <ul>
+                ${consultation.examens.map(exam => `<li>${exam}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${consultation.prescription ? `
+            <div class="section">
+              <div class="section-title">Ordonnance</div>
+              <p style="color: green;">✓ Ordonnance créée</p>
+            </div>
+          ` : ''}
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 250);
+      toast.success('Ouverture de l\'aperçu d\'impression');
+    } else {
+      toast.error('Impossible d\'ouvrir la fenêtre d\'impression');
+    }
+  };
+
+  const handleExportPDF = async () => {
+    toast.info('Génération du PDF en cours...', {
+      duration: 2000
+    });
+    
+    // Utiliser l'impression pour générer le PDF
+    // L'utilisateur peut choisir "Enregistrer en PDF" dans la boîte de dialogue d'impression
+    handlePrint();
   };
 
   return (
@@ -186,7 +283,7 @@ export function ConsultationDetailsModal({
               <Printer className="h-4 w-4 mr-2" />
               Imprimer
             </Button>
-            <Button variant="outline" className="flex-1">
+            <Button variant="outline" onClick={handleExportPDF} className="flex-1">
               <Download className="h-4 w-4 mr-2" />
               Exporter PDF
             </Button>

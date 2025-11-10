@@ -12,6 +12,7 @@ import { useConsultations, Consultation } from '@/hooks/useConsultations';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ConsultationDetailsModal } from '@/components/professional/ConsultationDetailsModal';
 import { ConsultationFilters, FilterValues } from '@/components/professional/ConsultationFilters';
+import { CreateConsultationModal } from '@/components/professional/CreateConsultationModal';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -20,8 +21,10 @@ export default function ProfessionalConsultations() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [filters, setFilters] = useState<FilterValues>({ type: '' });
   const [professionalId, setProfessionalId] = useState<string>('');
+  const [exportLoading, setExportLoading] = useState(false);
   const { consultations, stats, loading, error } = useConsultations();
 
   // Récupérer l'ID du professionnel
@@ -68,26 +71,50 @@ export default function ProfessionalConsultations() {
   });
 
   const handleExportCSV = () => {
-    const csv = [
-      ['Date', 'Heure', 'Patient', 'Type', 'Diagnostic', 'Ordonnance', 'Notes'],
-      ...filteredConsultations.map(c => [
-        c.date,
-        c.time,
-        c.patient,
-        c.type,
-        c.diagnosis || '',
-        c.prescription ? 'Oui' : 'Non',
-        c.notes || ''
-      ])
-    ].map(row => row.join(',')).join('\n');
+    setExportLoading(true);
+    
+    try {
+      if (filteredConsultations.length === 0) {
+        toast.error('Aucune consultation à exporter');
+        return;
+      }
 
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `consultations-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    toast.success('Export CSV réussi');
+      const csv = [
+        ['Date', 'Heure', 'Patient', 'Type', 'Diagnostic', 'Ordonnance', 'Notes'],
+        ...filteredConsultations.map(c => [
+          c.date,
+          c.time,
+          c.patient,
+          c.type,
+          c.diagnosis || '',
+          c.prescription ? 'Oui' : 'Non',
+          (c.notes || '').replace(/,/g, ';') // Escape commas in notes
+        ])
+      ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); // UTF-8 BOM
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `consultations-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Export CSV réussi', {
+        description: `${filteredConsultations.length} consultation(s) exportée(s)`
+      });
+    } catch (err) {
+      console.error('Error exporting CSV:', err);
+      toast.error('Erreur lors de l\'export CSV');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    window.location.reload();
   };
 
   if (loading) {
@@ -119,11 +146,29 @@ export default function ProfessionalConsultations() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportCSV} className="gap-2">
-            <Download className="h-4 w-4" />
-            Exporter
+          <Button 
+            variant="outline" 
+            onClick={handleExportCSV} 
+            disabled={exportLoading || filteredConsultations.length === 0}
+            className="gap-2"
+          >
+            {exportLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Export...
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4" />
+                Exporter
+              </>
+            )}
           </Button>
-          <Button className="gap-2">
+          <Button 
+            className="gap-2"
+            onClick={() => setShowCreateModal(true)}
+            disabled={!professionalId}
+          >
             <Plus className="h-4 w-4" />
             Nouvelle consultation
           </Button>
@@ -289,6 +334,14 @@ export default function ProfessionalConsultations() {
         open={!!selectedConsultation}
         onOpenChange={(open) => !open && setSelectedConsultation(null)}
         professionalId={professionalId}
+      />
+
+      {/* Modal de création */}
+      <CreateConsultationModal
+        open={showCreateModal}
+        onOpenChange={setShowCreateModal}
+        professionalId={professionalId}
+        onSuccess={handleRefresh}
       />
     </div>
   );
