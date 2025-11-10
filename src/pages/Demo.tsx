@@ -209,7 +209,7 @@ const Demo = () => {
       id: 'patient',
       title: 'demo.account.patient',
       email: 'iasted@me.com',
-      password: 'Patient2025!',
+      password: 'Patient01*',
       icon: User,
       target: '/dashboard/patient',
       color: 'primary',
