@@ -367,9 +367,9 @@ export default function ProfessionalAppointments() {
         </div>
 
         <TabsContent value="calendar" className="space-y-0">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-6">
             {/* Calendrier mensuel - Enhanced Visual Hierarchy */}
-            <Card className="lg:col-span-1 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
+            <Card className="p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
               <div className="space-y-5">
                 <div className="flex items-start justify-between pb-5 border-b-2 border-border">
                   <div className="space-y-1.5">
@@ -432,7 +432,7 @@ export default function ProfessionalAppointments() {
             </Card>
 
             {/* Liste des rendez-vous du jour sélectionné - Enhanced Visual Hierarchy */}
-            <Card className="lg:col-span-2 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
+            <Card className="p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
               <div className="space-y-6">
                 <div className="flex items-start justify-between pb-5 border-b-2 border-border">
                   <div className="space-y-3">
