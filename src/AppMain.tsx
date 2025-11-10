@@ -122,6 +122,7 @@ import MinistryDashboard from "./pages/ministry/MinistryDashboard";
 import MinisterDashboard from "./pages/ministry/MinisterDashboard";
 import LoginMinister from "./pages/ministry/LoginMinister";
 import MinistryLogin from "./pages/ministry/MinistryLogin";
+import IAsted from "./pages/ministry/IAsted";
 
 // Pages SOGARA
 import SogaraPublic from "./pages/establishments/sogara/SogaraPublic";
@@ -399,6 +400,9 @@ function AppMain() {
                     <Route path="/gouv/dashboard" element={<MinisterDashboard />} />
                     <Route path="/minister/dashboard" element={<MinisterDashboard />} />
                     <Route path="/ministre/dashboard" element={<MinisterDashboard />} />
+                    <Route path="/ministry/iasted" element={<IAsted />} />
+                    <Route path="/ministere/iasted" element={<IAsted />} />
+                    <Route path="/gouv/iasted" element={<IAsted />} />
                     
                     {/* Connexion Personnel SOGARA */}
                     <Route path="/login/sogara" element={<SogaraLogin />} />

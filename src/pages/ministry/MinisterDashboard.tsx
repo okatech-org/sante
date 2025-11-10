@@ -1029,7 +1029,13 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => {
+                    if (item.id === "iasted") {
+                      navigate("/ministry/iasted");
+                    } else {
+                      setActiveTab(item.id);
+                    }
+                  }}
                   className={cn(
                     "group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
                     !sidebarExpanded && "justify-center",
@@ -2604,9 +2610,9 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
 
       {/* Bouton flottant iAsted */}
       <IAstedButton 
-        onClick={() => setActiveTab("iasted")}
+        onClick={() => navigate("/ministry/iasted")}
         size="md"
-        isInterfaceOpen={activeTab === "iasted"}
+        isInterfaceOpen={false}
       />
     </div>
   );
