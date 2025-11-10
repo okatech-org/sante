@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone, RefreshCw, Settings2 } from "lucide-react";
+import { Map, List, LayoutGrid, Filter, MapPin, Locate, ArrowDown, Info, Menu, X, Home, Stethoscope, Calendar, FileText, Phone, RefreshCw, Settings2, ChevronRight } from "lucide-react";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import logoSante from "@/assets/logo_sante.png";
@@ -132,6 +132,10 @@ export default function Cartography() {
     filtered = sortProviders(filtered, sortBy);
     setFilteredProviders(filtered);
   }, [providers, filters, sortBy]);
+
+  // Déterminer le rôle de l'utilisateur pour l'affichage
+  const isAdmin = hasRole('super_admin') || hasRole('admin');
+  const isPatient = hasRole('patient');
 
   const content = (
     <div className="min-h-screen">
@@ -298,6 +302,21 @@ export default function Cartography() {
 
       {/* Main Content */}
       <div className="space-y-6 p-2 sm:p-4 md:p-6">
+        {/* Breadcrumb pour les patients */}
+        {isPatient && !isAdmin && (
+          <div className="flex items-center gap-2 text-sm">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard/patient')}
+              className="gap-2 hover:bg-primary/10"
+            >
+              <ChevronRight className="h-4 w-4 rotate-180" />
+              Retour au tableau de bord
+            </Button>
+          </div>
+        )}
+        
         {/* Hero Section avec recherche guidée */}
       <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-primary/10 via-background to-accent/10 border shadow-lg md:shadow-2xl">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
@@ -550,10 +569,6 @@ export default function Cartography() {
       </div>
     </div>
   );
-
-  // Déterminer le layout selon le rôle de l'utilisateur
-  const isAdmin = hasRole('super_admin') || hasRole('admin');
-  const isPatient = hasRole('patient');
 
   // Pour les patients, utiliser le layout patient
   if (isPatient && !isAdmin) {
