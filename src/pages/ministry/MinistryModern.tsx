@@ -9,6 +9,7 @@ import {
   Eye, ChevronLeft, ChevronRight, Sparkles, Zap, Award, Globe,
   HeartHandshake, Menu, Home, Info, Briefcase, FileBarChart, BookOpen, Contact
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import heroImage from "@/assets/ministry-hero.jpg";
 import consultationImage from "@/assets/ministry-consultation.jpg";
 import maternalImage from "@/assets/ministry-maternal.jpg";
@@ -117,13 +118,17 @@ const MinistryModern = () => {
       
       {/* Navbar Horizontale Moderne */}
       <motion.nav 
-        className="fixed top-0 left-0 right-0 z-50"
+        className="fixed top-0 left-0 right-0 z-50 border-b border-border/50"
         style={{ 
-          backgroundColor: `rgba(255, 255, 255, ${navBgOpacity})`,
-          backdropFilter: "blur(10px)"
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)"
         }}
       >
-        <div className="container mx-auto px-4">
+        <motion.div 
+          className="absolute inset-0 bg-background/80"
+          style={{ opacity: navBgOpacity }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="flex items-center justify-between h-20">
             {/* Logo & Titre */}
             <motion.div 
@@ -162,13 +167,14 @@ const MinistryModern = () => {
               })}
             </div>
 
-            {/* Bouton CTA */}
+            {/* Bouton CTA & Theme Toggle */}
             <motion.div 
               className="hidden md:flex items-center gap-3"
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
+              <ThemeToggle />
               <Button 
                 variant="outline" 
                 size="sm"
@@ -194,13 +200,13 @@ const MinistryModern = () => {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              className="lg:hidden bg-background/95 backdrop-blur-xl border-t"
+              className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border relative z-10"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="container mx-auto px-4 py-4">
+              <div className="container mx-auto px-4 py-4 space-y-2">
                 {menuItems.map((item, index) => {
                   const Icon = item.icon;
                   return (
@@ -215,6 +221,9 @@ const MinistryModern = () => {
                     </a>
                   );
                 })}
+                <div className="px-4 pt-2">
+                  <ThemeToggle />
+                </div>
               </div>
             </motion.div>
           )}
@@ -235,8 +244,9 @@ const MinistryModern = () => {
           <img 
             src={heroImage} 
             alt="Ministère de la Santé - Gabon" 
-            className="w-full h-full object-cover brightness-110"
+            className="w-full h-full object-cover brightness-[0.85] dark:brightness-[0.6]"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20 dark:to-background/40" />
         </motion.div>
         
         <div className="relative h-full flex items-center justify-center">
@@ -254,10 +264,10 @@ const MinistryModern = () => {
                 transition={{ delay: 0.5, duration: 0.8 }}
                 className="mb-8"
               >
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-2xl mb-4">
                   Ministère de la Santé Publique
                 </h1>
-                <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                <p className="text-lg md:text-xl lg:text-2xl text-white/95 drop-shadow-lg max-w-3xl mx-auto">
                   Pour une couverture sanitaire universelle au Gabon
                 </p>
               </motion.div>
@@ -278,7 +288,7 @@ const MinistryModern = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="backdrop-blur-sm bg-white/90 text-foreground border-2 border-white px-8 py-6 text-lg rounded-sm hover:bg-white"
+                  className="backdrop-blur-sm bg-background/95 dark:bg-background/90 border-2 border-border dark:border-white/30 px-8 py-6 text-lg rounded-sm hover:bg-background"
                 >
                   En savoir plus
                 </Button>
@@ -293,7 +303,7 @@ const MinistryModern = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1.5, duration: 0.8 }}
               >
-                <div className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-md p-6">
+                <div className="bg-background/40 dark:bg-background/60 backdrop-blur-2xl border border-border/50 dark:border-white/20 rounded-md p-6 shadow-2xl">
                   <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-4">
                     {[
                       { icon: Users, value: "1.8M", label: "Population", color: "text-blue-500" },
@@ -313,10 +323,10 @@ const MinistryModern = () => {
                       >
                         <div className="flex flex-col items-center gap-2">
                           <stat.icon className={cn("h-6 w-6", stat.color)} />
-                          <div className="font-bold text-2xl text-foreground" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                          <div className="font-bold text-2xl text-foreground drop-shadow-md">
                             {stat.value}
                           </div>
-                          <div className="text-xs text-foreground/70 font-medium">{stat.label}</div>
+                          <div className="text-xs text-foreground/80 dark:text-foreground/70 font-medium">{stat.label}</div>
                         </div>
                       </motion.div>
                     ))}
@@ -369,7 +379,7 @@ const MinistryModern = () => {
             {/* Bloc unique avec toutes les informations */}
             <div className="absolute bottom-6 left-6 right-6">
               <motion.div 
-                className="bg-background/30 backdrop-blur-2xl border border-white/30 rounded-md p-6"
+                className="bg-background/40 dark:bg-background/60 backdrop-blur-2xl border border-border/50 dark:border-white/20 rounded-md p-6 shadow-2xl"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -377,7 +387,7 @@ const MinistryModern = () => {
               >
                 {/* Titre principal */}
                 <div className="text-center mb-5">
-                  <h3 className="text-2xl font-bold mb-2">Plan National de Développement Sanitaire</h3>
+                  <h3 className="text-2xl font-bold mb-2 text-foreground drop-shadow-md">Plan National de Développement Sanitaire</h3>
                 </div>
 
                 {/* Axes stratégiques */}
@@ -394,8 +404,8 @@ const MinistryModern = () => {
                       <div className="flex flex-col items-center gap-2">
                         <axis.icon className={cn("h-6 w-6", axis.color)} />
                         <div className="text-foreground font-medium text-center leading-tight">
-                          <div className="font-bold text-xs mb-0.5" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>{axis.title}</div>
-                          <div className="text-[10px] text-foreground/70">{axis.desc}</div>
+                          <div className="font-bold text-xs mb-0.5 drop-shadow-sm">{axis.title}</div>
+                          <div className="text-[10px] text-foreground/80 dark:text-foreground/70">{axis.desc}</div>
                       </div>
                       </div>
                 </motion.div>
@@ -724,7 +734,7 @@ const MinistryModern = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCurrentPublication((prev) => (prev - 1 + publications.length) % publications.length)}
-                className="p-3 rounded-full bg-background shadow-lg border-2 hover:border-primary/30 transition-all"
+                className="p-3 rounded-full bg-background shadow-lg border-2 border-border hover:border-primary/30 transition-all"
               >
                 <ChevronLeft className="h-5 w-5" />
               </motion.button>
@@ -810,7 +820,7 @@ const MinistryModern = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCurrentPublication((prev) => (prev + 1) % publications.length)}
-                className="p-3 rounded-full bg-background shadow-lg border-2 hover:border-primary/30 transition-all"
+                className="p-3 rounded-full bg-background shadow-lg border-2 border-border hover:border-primary/30 transition-all"
               >
                 <ChevronRight className="h-5 w-5" />
               </motion.button>
@@ -915,10 +925,10 @@ const MinistryModern = () => {
             </div>
             
             <div className="flex flex-wrap justify-center gap-8 text-sm">
-              <a href="#" className="hover:text-white transition-colors">Mentions légales</a>
-              <a href="#" className="hover:text-white transition-colors">Politique de confidentialité</a>
-              <a href="#" className="hover:text-white transition-colors">Accessibilité</a>
-              <a href="#" className="hover:text-white transition-colors">Plan du site</a>
+              <a href="#" className="hover:text-secondary-foreground transition-colors">Mentions légales</a>
+              <a href="#" className="hover:text-secondary-foreground transition-colors">Politique de confidentialité</a>
+              <a href="#" className="hover:text-secondary-foreground transition-colors">Accessibilité</a>
+              <a href="#" className="hover:text-secondary-foreground transition-colors">Plan du site</a>
             </div>
             
             <div className="pt-6 border-t border-secondary-foreground/20">
@@ -927,7 +937,7 @@ const MinistryModern = () => {
               </p>
               <p className="text-sm text-secondary-foreground/70 mt-2">
                 Propulsé par{" "}
-                <span className="font-semibold text-white">SANTE.GA</span>
+                <span className="font-semibold text-secondary-foreground">SANTE.GA</span>
               </p>
             </div>
           </motion.div>
