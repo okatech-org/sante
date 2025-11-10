@@ -67,6 +67,7 @@ import { ProfessionalEstablishmentLayout } from "./components/layout/Professiona
 import SelectEstablishment from "./pages/professional/SelectEstablishment";
 import SelectRole from "./pages/professional/SelectRole";
 import EstablishmentsManager from "./pages/professional/EstablishmentsManager";
+import JoinEstablishment from "./pages/professional/JoinEstablishment";
 import RequireProfessional from "./components/auth/RequireProfessional";
 
 // Pages Patient
@@ -337,6 +338,11 @@ function AppMain() {
                     <Route path="/professional/select-establishment" element={<SelectEstablishment />} />
                     <Route path="/professional/select-role/:establishmentId" element={<SelectRole />} />
                     <Route path="/professional/establishments" element={<EstablishmentsManager />} />
+                    <Route path="/professional/join-establishment" element={
+                      <ProfessionalEstablishmentLayout>
+                        <JoinEstablishment />
+                      </ProfessionalEstablishmentLayout>
+                    } />
 
                     {/* Routes de profil */}
                     <Route path="/profile/patient" element={<Profile />} />
