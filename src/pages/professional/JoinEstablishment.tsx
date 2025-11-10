@@ -75,11 +75,14 @@ export default function JoinEstablishment() {
   const [requestRole, setRequestRole] = useState('');
   const [requestMessage, setRequestMessage] = useState('');
   const [professionalId, setProfessionalId] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
 
-  // Charger le professional_id de l'utilisateur
+  // Charger le professional_id de l'utilisateur et pré-charger les établissements
   useEffect(() => {
     loadProfessionalId();
     loadMyRequests();
+    getUserLocation();
+    loadNearbyEstablishments();
   }, [user]);
 
   const loadProfessionalId = async () => {
@@ -98,6 +101,70 @@ export default function JoinEstablishment() {
     }
 
     setProfessionalId(data.id);
+  };
+
+  const getUserLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.log('Géolocalisation non disponible:', error);
+        }
+      );
+    }
+  };
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // Rayon de la Terre en km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  const loadNearbyEstablishments = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('establishments')
+        .select('id, raison_sociale, type_etablissement, ville, province, latitude, longitude')
+        .limit(50);
+
+      if (error) {
+        console.error('Erreur chargement établissements:', error);
+        return;
+      }
+
+      let sortedData = data || [];
+
+      // Trier par proximité si géolocalisation disponible
+      if (userLocation && sortedData.length > 0) {
+        sortedData = sortedData
+          .map(est => ({
+            ...est,
+            distance: est.latitude && est.longitude
+              ? calculateDistance(userLocation.lat, userLocation.lon, est.latitude, est.longitude)
+              : Infinity
+          }))
+          .sort((a, b) => a.distance - b.distance)
+          .slice(0, 20);
+      } else {
+        sortedData = sortedData.slice(0, 20);
+      }
+
+      setEstablishments(sortedData);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const loadMyRequests = async () => {
@@ -150,7 +217,7 @@ export default function JoinEstablishment() {
 
   const searchEstablishments = async () => {
     if (!searchTerm.trim()) {
-      toast.error('Veuillez saisir un terme de recherche');
+      loadNearbyEstablishments();
       return;
     }
 
@@ -289,6 +356,12 @@ export default function JoinEstablishment() {
                   )}
                 </Button>
               </div>
+              {userLocation && establishments.length > 0 && !searchTerm && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  <MapPin className="h-3 w-3 inline mr-1" />
+                  Établissements triés par proximité
+                </p>
+              )}
             </div>
 
             {/* Tabs Liste / Carte */}
