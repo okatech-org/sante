@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
-import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { SuperAdminLayoutSimple } from "@/components/layout/SuperAdminLayoutSimple";
+import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import CartographySmartSearch from "@/components/cartography/CartographySmartSearch";
 import EnhancedSmartSearch from "@/components/cartography/EnhancedSmartSearch";
 import CartographyFilterPanel from "@/components/cartography/CartographyFilterPanel";
@@ -30,7 +31,7 @@ import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 export default function Cartography() {
-  const { isSuperAdmin, user } = useOfflineAuth();
+  const { user, hasRole } = useAuth();
   const navigate = useNavigate();
   const [providers, setProviders] = useState<CartographyProvider[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<CartographyProvider[]>([]);
@@ -550,8 +551,21 @@ export default function Cartography() {
     </div>
   );
 
+  // Déterminer le layout selon le rôle de l'utilisateur
+  const isAdmin = hasRole('super_admin') || hasRole('admin');
+  const isPatient = hasRole('patient');
+
+  // Pour les patients, utiliser le layout patient
+  if (isPatient && !isAdmin) {
+    return (
+      <PatientDashboardLayout>
+        {content}
+      </PatientDashboardLayout>
+    );
+  }
+
   // Pour les admins, utiliser le layout admin
-  if (isSuperAdmin || user?.user_metadata?.roles?.includes('admin')) {
+  if (isAdmin) {
     return (
       <SuperAdminLayoutSimple>
         {content}
@@ -559,7 +573,7 @@ export default function Cartography() {
     );
   }
 
-  // Pour les autres utilisateurs, afficher sans layout admin
+  // Pour les autres utilisateurs (non connectés), afficher sans layout
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       {content}
