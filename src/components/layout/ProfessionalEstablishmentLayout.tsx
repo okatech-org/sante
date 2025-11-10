@@ -179,16 +179,36 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         </div>
 
         {/* User profile */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-sm">
-              {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <p className="text-sm font-medium">{fullName}</p>
-            <p className="text-xs text-muted-foreground">Professionnel de santé</p>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+            <Avatar className="h-10 w-10">
+              <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-sm">
+                {fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <p className="text-sm font-medium">{fullName}</p>
+              <p className="text-xs text-muted-foreground">Professionnel de santé</p>
+            </div>
           </div>
+
+          {/* Établissement actif */}
+          {currentEstablishment && (
+            <div className="px-3 py-2 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center gap-2 mb-1">
+                <Building2 className="h-3 w-3 text-primary" />
+                <span className="text-xs font-medium text-primary">Établissement actif</span>
+              </div>
+              <p className="text-sm font-medium text-foreground truncate">
+                {currentEstablishment.establishment_name}
+              </p>
+              {currentEstablishment.department && (
+                <p className="text-xs text-muted-foreground">
+                  {currentEstablishment.department}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -218,54 +238,95 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
             Établissements
           </h3>
           
-          {/* CMST SOGARA avec hiérarchie */}
-          <div className="mb-3">
-            <div className="flex items-center gap-2 px-3 py-2">
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">CMST SOGARA</span>
+          {/* Liste dynamique des établissements */}
+          {establishmentsList.length > 0 ? (
+            <div className="space-y-2">
+              {establishmentsList.map((est: any) => {
+                const isCurrentEstablishment = currentEstablishment?.establishment_id === est.id;
+                
+                return (
+                  <div key={est.id} className="mb-3">
+                    {/* Nom de l'établissement */}
+                    <div className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-lg transition-colors",
+                      isCurrentEstablishment ? "bg-primary/10" : ""
+                    )}>
+                      <Building2 className={cn(
+                        "h-4 w-4",
+                        isCurrentEstablishment ? "text-primary" : "text-muted-foreground"
+                      )} />
+                      <span className={cn(
+                        "text-sm font-medium flex-1",
+                        isCurrentEstablishment ? "text-primary" : "text-foreground"
+                      )}>
+                        {est.name}
+                      </span>
+                      {isCurrentEstablishment && (
+                        <Badge variant="secondary" className="text-xs">Actif</Badge>
+                      )}
+                    </div>
+                    
+                    {/* Rôles de l'utilisateur dans cet établissement */}
+                    <div className="ml-6 mt-1 space-y-1">
+                      {est.roles.map((roleItem: any) => {
+                        const Icon = getRoleIcon(roleItem.role);
+                        const roleLabel = ROLE_LABELS[roleItem.role] || roleItem.role.toUpperCase();
+                        const isActiveRole = isCurrentEstablishment && activeRole === roleItem.role;
+                        
+                        // Ne pas afficher réceptionniste comme rôle cliquable
+                        if (roleItem.role === 'receptionist') {
+                          return null;
+                        }
+                        
+                        return (
+                          <button
+                            key={`${est.id}-${roleItem.role}`}
+                            onClick={async () => {
+                              // Si c'est un autre établissement, le sélectionner d'abord
+                              if (!isCurrentEstablishment) {
+                                await selectEstablishment(roleItem.staffId, roleItem.role);
+                                navigate('/professional/dashboard');
+                                setMobileOpen(false);
+                              } else {
+                                // Même établissement, juste changer de rôle
+                                await handleRoleChange(roleItem.role);
+                              }
+                            }}
+                            className={cn(
+                              "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
+                              isActiveRole
+                                ? "bg-primary text-primary-foreground font-medium"
+                                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            )}
+                          >
+                            <Icon className="h-4 w-4" />
+                            <span className="flex-1 text-left">{roleLabel}</span>
+                            {roleItem.isAdmin && (
+                              <Badge variant="outline" className="text-xs">Admin</Badge>
+                            )}
+                            {isActiveRole && (
+                              isRoleMenuExpanded ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            
-            {/* Rôles de l'utilisateur dans l'établissement */}
-            <div className="ml-6 space-y-1">
-              {establishmentsList.length > 0 && establishmentsList[0].roles ? (
-                establishmentsList[0].roles.map((roleItem: any) => {
-                  const Icon = getRoleIcon(roleItem.role);
-                  const roleLabel = ROLE_LABELS[roleItem.role] || roleItem.role.toUpperCase();
-                  
-                  // Pour les réceptionnistes, ne pas afficher le rôle mais les menus seront ajoutés séparément
-                  if (roleItem.role === 'receptionist') {
-                    return null;
-                  }
-                  
-                  return (
-              <button
-                      key={roleItem.role}
-                      onClick={() => handleRoleChange(roleItem.role)}
-                className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                        activeRole === roleItem.role
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                      <Icon className="h-4 w-4" />
-                      <span className="flex-1 text-left">{roleLabel}</span>
-                      {activeRole === roleItem.role && (
-                  isRoleMenuExpanded ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )
-                )}
-              </button>
-                  );
-                })
-              ) : null}
-            </div>
-          </div>
+          ) : (
+            <p className="text-sm text-muted-foreground px-3 py-2">
+              Aucun établissement
+            </p>
+          )}
 
-          {/* Rejoindre un établissement */}
-          <div className="mt-4">
+          {/* Actions */}
+          <div className="mt-4 space-y-2">
             <Button
               variant="outline"
               className="w-full justify-start border-dashed border-2 hover:bg-primary/5"
@@ -277,11 +338,8 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
               <Building2 className="h-4 w-4 mr-2" />
               + Rejoindre un établissement
             </Button>
-          </div>
 
-          {/* Changer d'établissement (si plusieurs) */}
-          {establishments.length > 1 && (
-            <div className="mt-2">
+            {establishments.length > 1 && (
               <Button
                 variant="outline"
                 className="w-full justify-start hover:bg-primary/5"
@@ -293,8 +351,8 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                 <Building2 className="h-4 w-4 mr-2" />
                 Changer d'établissement
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Menus spécifiques pour réceptionniste */}
