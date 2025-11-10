@@ -44,6 +44,7 @@ import Appointments from "./pages/Appointments";
 import Teleconsultations from "./pages/professional/Teleconsultations";
 import Prescriptions from "./pages/Prescriptions";
 import ProfessionalConsultations from "./pages/professional/Consultations";
+import ProfessionalPayments from "./pages/professional/ProfessionalPayments";
 
 // Pages d'administration
 import AdminDashboard from "./pages/AdminDashboard";
@@ -136,6 +137,7 @@ function App() {
                     <Route path="/appointments" element={<Appointments />} />
                     <Route path="/professional/teleconsultations" element={<Teleconsultations />} />
                     <Route path="/professional/consultations" element={<ProfessionalConsultations />} />
+                    <Route path="/professional/payments" element={<ProfessionalPayments />} />
                     <Route path="/prescriptions" element={<Prescriptions />} />
                     
                     {/* Routes d'administration */}

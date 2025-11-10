@@ -1359,6 +1359,115 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_methods: {
+        Row: {
+          config: Json | null
+          created_at: string
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          type: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          type: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          appointment_id: string | null
+          completed_at: string | null
+          created_at: string
+          currency: string
+          error_message: string | null
+          id: string
+          patient_id: string
+          payment_details: Json | null
+          payment_method: string
+          professional_id: string
+          status: string
+          teleconsultation_id: string | null
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          appointment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          id?: string
+          patient_id: string
+          payment_details?: Json | null
+          payment_method: string
+          professional_id: string
+          status?: string
+          teleconsultation_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          id?: string
+          patient_id?: string
+          payment_details?: Json | null
+          payment_method?: string
+          professional_id?: string
+          status?: string
+          teleconsultation_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_teleconsultation_id_fkey"
+            columns: ["teleconsultation_id"]
+            isOneToOne: false
+            referencedRelation: "teleconsultation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pharmacie_employes: {
         Row: {
           commentaire: string | null
