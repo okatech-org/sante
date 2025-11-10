@@ -199,6 +199,45 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_sessions: {
+        Row: {
+          created_at: string | null
+          focus_depth: number | null
+          focus_mode: boolean | null
+          focus_started_at: string | null
+          focus_topic: string | null
+          id: string
+          is_active: boolean | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          focus_depth?: number | null
+          focus_mode?: boolean | null
+          focus_started_at?: string | null
+          focus_topic?: string | null
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          focus_depth?: number | null
+          focus_mode?: boolean | null
+          focus_started_at?: string | null
+          focus_topic?: string | null
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       electronic_prescriptions: {
         Row: {
           additional_notes: string | null
@@ -910,6 +949,45 @@ export type Database = {
           },
         ]
       }
+      knowledge_base_entries: {
+        Row: {
+          content: string
+          conversations_sources: string[] | null
+          created_at: string | null
+          id: string
+          keywords: string[] | null
+          nb_references: number | null
+          relevance_score: number | null
+          themes: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          conversations_sources?: string[] | null
+          created_at?: string | null
+          id?: string
+          keywords?: string[] | null
+          nb_references?: number | null
+          relevance_score?: number | null
+          themes?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          conversations_sources?: string[] | null
+          created_at?: string | null
+          id?: string
+          keywords?: string[] | null
+          nb_references?: number | null
+          relevance_score?: number | null
+          themes?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       medical_history: {
         Row: {
           condition_name: string
@@ -1100,6 +1178,41 @@ export type Database = {
             columns: ["parent_message_id"]
             isOneToOne: false
             referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages_iasted: {
+        Row: {
+          audio_url: string | null
+          content: string
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_iasted_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversation_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -2616,6 +2729,30 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          voice_focus_mode: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          voice_focus_mode?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          voice_focus_mode?: boolean | null
         }
         Relationships: []
       }
