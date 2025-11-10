@@ -56,6 +56,29 @@ export default function PatientAppointments() {
         // Nettoyer l'URL
         navigate('/appointments', { replace: true });
       }
+      
+      // Créer un provider temporaire pour Dr Démo
+      if (providerId === 'dr-demo-cabinet-001') {
+        setProvider({
+          id: 'dr-demo-cabinet-001',
+          name: 'Dr. Démo',
+          avatar: null,
+          specialty: 'Médecine Générale',
+          phone: '+241 01 23 45 67',
+          location: 'Libreville',
+          address: 'Boulevard Triomphal, Louis, 1er Arrondissement',
+          consultationPrice: 25000,
+          cnamgsPrice: 20000,
+          cnamgsConventioned: true,
+          onlineBooking: true,
+          rating: 5.0,
+          consultations: 999
+        } as any);
+        setShowBookingModal(true);
+        
+        // Nettoyer l'URL
+        navigate('/appointments', { replace: true });
+      }
     }
   }, [searchParams, setProvider, navigate]);
 

@@ -363,8 +363,30 @@ function getProvinceForCity(city: string): string {
   return cityProvinceMap[city] || "Estuaire";
 }
 
+// Dr Démo - Médecin de démonstration
+const DR_DEMO: CartographyProvider = {
+  id: "dr-demo-cabinet-001",
+  nom: "Cabinet Médical Dr. Démo",
+  type: "cabinet_medical",
+  ville: "Libreville",
+  province: "Estuaire",
+  adresse_descriptive: "Boulevard Triomphal, Louis, 1er Arrondissement, Près du Palais Présidentiel",
+  coordonnees: { lat: 0.4162, lng: 9.4673 },
+  telephones: ["+241 01 23 45 67"],
+  horaires: "Lundi-Vendredi: 08h-17h, Samedi: 09h-13h",
+  services: ["Consultation générale", "Téléconsultation", "Médecine générale"],
+  specialites: ["Médecine Générale"],
+  conventionnement: { cnamgs: true, cnss: true },
+  ouvert_24_7: false,
+  secteur: "prive",
+  equipements_specialises: [],
+  notes: "Médecin de démonstration disponible pour tester la plateforme e-Santé Gabon",
+  has_account: true,
+  distance: undefined
+};
+
 // Export des données
-export const REAL_ESTABLISHMENTS = generateEstablishments();
+export const REAL_ESTABLISHMENTS = [DR_DEMO, ...generateEstablishments()];
 
 // Export de la fonction pour régénérer si besoin
 export { generateEstablishments };
