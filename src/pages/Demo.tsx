@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, User, Clock, CheckCircle2, Info, ArrowLeft, MapPin, Home, LogIn, Pill, TestTube, Shield } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Building2, User, Clock, CheckCircle2, Info, ArrowLeft, MapPin, Home, LogIn, Pill, TestTube, Shield, Sparkles, Lock } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
@@ -48,6 +48,16 @@ const Demo = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [openModalId, setOpenModalId] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Detect scroll
+  useState(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
 
   const establishments: Establishment[] = [
     {
@@ -230,30 +240,65 @@ const Demo = () => {
     }
   ];
 
-  const handleQuickLogin = (email: string, password: string) => {
+  const handleQuickLogin = (email: string, password: string, targetId?: string) => {
     sessionStorage.setItem('demoAccount', JSON.stringify({
       email,
       password
     }));
-    navigate('/login/professional');
+    if (targetId === 'ministere-sante') {
+      navigate('/ministry/login');
+    } else {
+      navigate('/login/professional');
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/20">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b backdrop-blur-xl bg-card/95 shadow-lg">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            <div className="flex items-center gap-3" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-              <img src={logoSante} alt="SANTE.GA" className="h-10 md:h-12 w-auto" />
-              <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                SANTE.GA
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
+    <div className="min-h-screen">
+      {/* Background avec pattern subtil et animations - identique à Landing */}
+      <div className="fixed inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20 animate-fade-in">
+        <div 
+          className="absolute inset-0 opacity-[0.03] animate-pulse" 
+          style={{
+            backgroundImage: 'radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1px), radial-gradient(circle at 75% 75%, currentColor 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            animationDuration: '4s'
+          }}
+        />
+      </div>
+
+      {/* Header Navigation avec effet glassmorphism - identique à Landing */}
+      <header className={`fixed top-0 w-full z-[1100] border-b transition-all duration-500 ${
+        scrolled 
+          ? 'bg-card/95 border-border/60 shadow-lg backdrop-blur-2xl' 
+          : 'bg-card/60 border-border/40 backdrop-blur-xl shadow-sm'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3 hover-scale group">
+              <img 
+                src={logoSante} 
+                alt="SANTE.GA Logo" 
+                className="h-16 w-auto object-contain group-hover:scale-110 transition-transform"
+              />
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">
+                  <span className="text-foreground">SANTE</span>
+                  <span className="text-primary">.GA</span>
+                </h1>
+                <p className="text-xs text-muted-foreground">{t('landing.footer.tagline')}</p>
+              </div>
+            </Link>
+            
+            {/* Actions */}
+            <div className="flex items-center gap-3">
               <ThemeToggle />
               <LanguageToggle />
-              <Button variant="outline" onClick={() => navigate('/')}>
+              <Button 
+                variant="outline" 
+                className="hover-scale" 
+                onClick={() => navigate('/')}
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t('demo.returnHome')}
               </Button>
@@ -262,129 +307,145 @@ const Demo = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-12 md:pt-20 pb-8 md:pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <Badge className="mb-6 px-4 py-2 gap-2">
-            <CheckCircle2 className="h-4 w-4" />
-            {t('demo.environment')}
-          </Badge>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            {t('demo.title')}
-            <span className="block sm:inline mt-2 sm:mt-0 sm:ml-3 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              {t('demo.titleHighlight')}
-            </span>
-          </h1>
-          
-          <p className="text-lg sm:text-xl mb-4 text-muted-foreground max-w-3xl mx-auto">
-            {t('demo.subtitle')}
-          </p>
-        </div>
-      </section>
+      {/* Content with padding for fixed header */}
+      <div className="relative pt-20">
+        {/* Hero Section - Style Landing */}
+        <section className="relative py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-full text-sm font-semibold mb-8 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm animate-scale-in shadow-lg">
+              <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              <span className="text-foreground">{t('demo.environment')}</span>
+            </div>
+            
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight animate-fade-in">
+              {t('demo.title')}{' '}
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                {t('demo.titleHighlight')}
+              </span>
+            </h1>
+            
+            <p className="text-xl sm:text-2xl mb-8 text-muted-foreground max-w-4xl mx-auto animate-fade-in leading-relaxed" style={{ animationDelay: '0.1s' }}>
+              {t('demo.subtitle')}
+            </p>
+            
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-12 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-success/10 border border-success/20">
+                <CheckCircle2 className="w-5 h-5 text-success" />
+                <span className="font-medium">{t('demo.badge.instant')}</span>
+              </div>
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-primary/10 border border-primary/20">
+                <Lock className="w-5 h-5 text-primary" />
+                <span className="font-medium">{t('demo.badge.fictional')}</span>
+              </div>
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-secondary/10 border border-secondary/20">
+                <Shield className="w-5 h-5 text-secondary" />
+                <span className="font-medium">{t('demo.badge.secure')}</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* Establishments Section */}
-      <section className="relative py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {establishments.map((establishment) => {
-              const EstIcon = establishment.icon;
-              return (
-                <Card 
-                  key={establishment.id} 
-                  className={`overflow-hidden border-2 transition-all duration-300 ${
-                    establishment.available 
-                      ? 'hover:shadow-2xl' 
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
-                >
-                  <div className={`bg-gradient-to-r ${establishment.color} to-background p-6 relative`}>
-                    {!establishment.available && (
-                      <Badge className="absolute top-4 right-4 bg-muted text-muted-foreground">
-                        {t('demo.comingSoon')}
-                      </Badge>
-                    )}
-                    
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-xl shadow-lg ${
+        {/* Establishments Section */}
+        <section className="relative py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {establishments.map((establishment) => {
+                const EstIcon = establishment.icon;
+                return (
+                  <Card 
+                    key={establishment.id} 
+                    className={`group overflow-hidden border-2 transition-all duration-500 hover:shadow-2xl ${
+                      establishment.available 
+                        ? 'hover:-translate-y-2 cursor-pointer' 
+                        : 'opacity-60'
+                    }`}
+                  >
+                    <div className={`bg-gradient-to-br ${establishment.color} to-background p-8 relative`}>
+                      {!establishment.available && (
+                        <Badge className="absolute top-4 right-4 bg-muted text-muted-foreground shadow-lg">
+                          {t('demo.comingSoon')}
+                        </Badge>
+                      )}
+                      
+                      <div className="mb-6">
+                        <div className={`inline-flex p-4 rounded-2xl shadow-xl mb-4 transition-transform duration-300 group-hover:scale-110 ${
                           establishment.available 
-                            ? 'bg-primary/10' 
+                            ? 'bg-gradient-to-br from-primary/20 to-primary/10' 
                             : 'bg-muted/30'
                         }`}>
-                          <EstIcon className={`h-8 w-8 ${
+                          <EstIcon className={`h-10 w-10 ${
                             establishment.available 
                               ? 'text-primary' 
                               : 'text-muted-foreground'
                           }`} />
                         </div>
-                        <div>
-                          <h2 className={`text-2xl font-bold mb-1 ${
-                            establishment.available 
-                              ? 'text-foreground' 
-                              : 'text-muted-foreground'
-                          }`}>
-                            {establishment.name}
-                          </h2>
-                          <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                            <MapPin className="h-3 w-3" />
-                            <span>{establishment.location}</span>
-                          </div>
+                        
+                        <h2 className={`text-2xl font-bold mb-2 ${
+                          establishment.available 
+                            ? 'text-foreground' 
+                            : 'text-muted-foreground'
+                        }`}>
+                          {establishment.name}
+                        </h2>
+                        
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
+                          <MapPin className="h-4 w-4" />
+                          <span>{establishment.location}</span>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-2 mb-6">
-                      <Badge variant="outline" className="text-xs">{establishment.category}</Badge>
-                      <Badge variant="outline" className="text-xs gap-1">
-                        <User className="h-3 w-3" />
-                        {establishment.accounts.length} {t('common.accounts')}
-                      </Badge>
-                    </div>
+                      <div className="flex flex-wrap items-center gap-2 mb-6">
+                        <Badge variant="outline" className="text-xs font-medium">{establishment.category}</Badge>
+                        <Badge variant="outline" className="text-xs gap-1 font-medium">
+                          <User className="h-3 w-3" />
+                          {establishment.accounts.length} {t('common.accounts')}
+                        </Badge>
+                      </div>
 
-                    <div className="flex gap-3">
-                      <Button
-                        variant="outline"
-                        className="flex-1 gap-2 h-11"
-                        onClick={() => navigate(`/establishment/${establishment.id}/public`)}
-                        disabled={!establishment.available}
-                      >
-                        <Home className="h-4 w-4" />
-                        {t('demo.homePage')}
-                      </Button>
-                      
-                      <Dialog open={openModalId === establishment.id} onOpenChange={(open) => setOpenModalId(open ? establishment.id : null)}>
-                        <DialogTrigger asChild>
-                          <Button 
-                            className="flex-1 gap-2 h-11"
-                            disabled={!establishment.available}
-                          >
-                            <LogIn className="h-4 w-4" />
-                            {t('demo.accessAccounts')}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle className="text-2xl flex items-center gap-3">
-                              <EstIcon className="h-6 w-6 text-primary" />
-                              {t('demo.modalTitle')} - {establishment.name}
-                            </DialogTitle>
-                            <DialogDescription>{t('demo.modalDescription')}</DialogDescription>
-                          </DialogHeader>
+                      <div className="flex gap-3">
+                        <Button
+                          variant="outline"
+                          className="flex-1 gap-2 h-12 hover-scale"
+                          onClick={() => navigate(`/establishment/${establishment.id}/public`)}
+                          disabled={!establishment.available}
+                        >
+                          <Home className="h-4 w-4" />
+                          {t('demo.homePage')}
+                        </Button>
+                        
+                        <Dialog open={openModalId === establishment.id} onOpenChange={(open) => setOpenModalId(open ? establishment.id : null)}>
+                          <DialogTrigger asChild>
+                            <Button 
+                              className="flex-1 gap-2 h-12 hover-scale shadow-lg hover:shadow-xl bg-gradient-to-r from-primary to-primary/90"
+                              disabled={!establishment.available}
+                            >
+                              <LogIn className="h-4 w-4" />
+                              {t('demo.accessAccounts')}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle className="text-3xl flex items-center gap-3">
+                                <div className="p-3 rounded-xl bg-primary/10">
+                                  <EstIcon className="h-7 w-7 text-primary" />
+                                </div>
+                                <span>{establishment.name}</span>
+                              </DialogTitle>
+                              <DialogDescription className="text-base">{t('demo.modalDescription')}</DialogDescription>
+                            </DialogHeader>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                            {establishment.accounts.map((account, index) => (
-                              <Card key={index} className="p-6 hover:shadow-lg transition-all border-2">
-                                <div className="flex items-start justify-between mb-4">
-                                  <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-lg bg-primary/10">
-                                      <User className="h-5 w-5 text-primary" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                              {establishment.accounts.map((account, index) => (
+                                <Card key={index} className="p-6 hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50">
+                                  <div className="flex items-start gap-4 mb-4">
+                                    <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
+                                      <User className="h-6 w-6 text-primary" />
                                     </div>
-                                    <div>
-                                      <h3 className="font-semibold text-lg text-foreground">
+                                    <div className="flex-1">
+                                      <h3 className="font-bold text-lg text-foreground mb-2">
                                         {t(`demo.${account.title}`)}
                                       </h3>
-                                      <div className="flex gap-2 mt-1">
+                                      <div className="flex gap-2">
                                         <Badge variant="secondary" className="text-xs gap-1">
                                           <CheckCircle2 className="h-3 w-3" />
                                           {t(`demo.${account.status}`)}
@@ -392,206 +453,202 @@ const Demo = () => {
                                       </div>
                                     </div>
                                   </div>
-                                </div>
 
-                                <div className="space-y-3 mb-4">
-                                  <div className="flex items-center gap-2 text-sm">
-                                    <User className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-muted-foreground font-mono text-xs">{account.email}</span>
+                                  <div className="space-y-4 mb-6">
+                                    <div className="flex items-center gap-3 text-sm p-3 rounded-lg bg-muted/50">
+                                      <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                      <span className="text-muted-foreground font-mono text-xs break-all">{account.email}</span>
+                                    </div>
+                                    
+                                    <div className="p-4 bg-gradient-to-br from-muted/80 to-muted/40 rounded-xl border border-border/50">
+                                      <p className="text-sm font-semibold text-muted-foreground mb-2">
+                                        {t('demo.password')}
+                                      </p>
+                                      <code className="text-base font-mono text-foreground font-bold">{account.password}</code>
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      {account.badges.map((badge, idx) => (
+                                        <Badge key={idx} variant="outline" className="text-xs">
+                                          {t(`demo.${badge}`)}
+                                        </Badge>
+                                      ))}
+                                    </div>
                                   </div>
-                                  
-                                  <div className="p-3 bg-muted/50 rounded-lg">
-                                    <p className="text-sm font-medium text-muted-foreground mb-1">
-                                      {t('demo.password')}
-                                    </p>
-                                    <code className="text-sm font-mono text-foreground">{account.password}</code>
-                                  </div>
 
-                                  <div className="flex items-center gap-2 flex-wrap">
-                                    {account.badges.map((badge, idx) => (
-                                      <Badge key={idx} variant="outline" className="text-xs">
-                                        {t(`demo.${badge}`)}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                <Button 
-                                  className="w-full gap-2"
-                                  onClick={() => {
-                                    sessionStorage.setItem('demoAccount', JSON.stringify({
-                                      email: account.email,
-                                      password: account.password
-                                    }));
-                                    if (establishment.id === 'ministere-sante') {
-                                      navigate('/ministry/login');
-                                    } else {
-                                      navigate('/login/professional');
-                                    }
-                                  }}
-                                >
-                                  <Clock className="h-4 w-4" />
-                                  {t('demo.quickLogin')}
-                                </Button>
-                              </Card>
-                            ))}
-                          </div>
-
-                          <Card className="mt-6 bg-muted/20 border-muted">
-                            <div className="p-6">
-                              <div className="flex items-center gap-2 mb-4">
-                                <Info className="h-5 w-5 text-primary" />
-                                <h4 className="font-semibold text-foreground">{t('demo.info.title')}</h4>
-                              </div>
-                              <ul className="space-y-2 text-sm text-muted-foreground">
-                                <li className="flex items-start gap-2">
-                                  <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                                  <span>{t('demo.info.demoDesc')}</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                                  <span>{t('demo.info.fictionalDesc')}</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                  <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                                  <span>{t('demo.info.quickLoginDesc')}</span>
-                                </li>
-                              </ul>
+                                  <Button 
+                                    className="w-full gap-2 h-12 hover-scale shadow-lg bg-gradient-to-r from-accent to-accent/90"
+                                    onClick={() => handleQuickLogin(account.email, account.password, establishment.id)}
+                                  >
+                                    <Clock className="h-4 w-4" />
+                                    {t('demo.quickLogin')}
+                                  </Button>
+                                </Card>
+                              ))}
                             </div>
-                          </Card>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Individual Demo Accounts */}
-      <section className="relative py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Comptes individuels</h2>
-            <p className="text-muted-foreground">Testez différents rôles individuels sur la plateforme</p>
+                            <Card className="mt-8 bg-gradient-to-br from-muted/50 to-muted/20 border-2">
+                              <div className="p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="p-2 rounded-lg bg-primary/10">
+                                    <Info className="h-5 w-5 text-primary" />
+                                  </div>
+                                  <h4 className="font-bold text-lg text-foreground">{t('demo.info.title')}</h4>
+                                </div>
+                                <ul className="space-y-3 text-sm text-muted-foreground">
+                                  <li className="flex items-start gap-3">
+                                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                                    <span>{t('demo.info.demoDesc')}</span>
+                                  </li>
+                                  <li className="flex items-start gap-3">
+                                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                                    <span>{t('demo.info.fictionalDesc')}</span>
+                                  </li>
+                                  <li className="flex items-start gap-3">
+                                    <CheckCircle2 className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
+                                    <span>{t('demo.info.quickLoginDesc')}</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </Card>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {individualAccounts.map((account) => {
-              const Icon = account.icon;
-              return (
-                <Card 
-                  key={account.id} 
-                  className={`p-6 transition-all duration-300 border-2 ${
-                    account.available 
-                      ? 'hover:shadow-xl' 
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
-                >
-                  <div className="relative">
-                    {!account.available && (
-                      <Badge className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs">
-                        {t('demo.comingSoon')}
-                      </Badge>
-                    )}
-                    
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-lg ${
+        </section>
+
+        {/* Individual Demo Accounts */}
+        <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent to-muted/20">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                Comptes individuels
+              </h2>
+              <p className="text-xl text-muted-foreground">Testez différents rôles individuels sur la plateforme</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {individualAccounts.map((account) => {
+                const Icon = account.icon;
+                return (
+                  <Card 
+                    key={account.id} 
+                    className={`group p-8 transition-all duration-500 border-2 ${
+                      account.available 
+                        ? 'hover:shadow-2xl hover:-translate-y-2 cursor-pointer' 
+                        : 'opacity-60'
+                    }`}
+                  >
+                    <div className="relative">
+                      {!account.available && (
+                        <Badge className="absolute -top-4 -right-4 bg-muted text-muted-foreground text-xs shadow-lg">
+                          {t('demo.comingSoon')}
+                        </Badge>
+                      )}
+                      
+                      <div className="mb-6">
+                        <div className={`inline-flex p-4 rounded-2xl shadow-xl mb-4 transition-transform duration-300 group-hover:scale-110 ${
                           account.available 
-                            ? 'bg-primary/10' 
+                            ? 'bg-gradient-to-br from-primary/20 to-primary/10' 
                             : 'bg-muted/30'
                         }`}>
-                          <Icon className={`h-6 w-6 ${
+                          <Icon className={`h-8 w-8 ${
                             account.available 
                               ? 'text-primary' 
                               : 'text-muted-foreground'
                           }`} />
                         </div>
-                        <div>
-                          <h3 className={`font-semibold text-base ${
-                            account.available 
-                              ? 'text-foreground' 
-                              : 'text-muted-foreground'
-                          }`}>
-                            {t(account.title)}
-                          </h3>
-                          <Badge variant="secondary" className="text-xs mt-1">
-                            {account.statusLabel}
-                          </Badge>
+                        
+                        <h3 className={`font-bold text-xl mb-2 ${
+                          account.available 
+                            ? 'text-foreground' 
+                            : 'text-muted-foreground'
+                        }`}>
+                          {t(account.title)}
+                        </h3>
+                        
+                        <Badge variant="secondary" className="text-xs">
+                          {account.statusLabel}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-4 mb-6">
+                        <div className={`text-xs font-mono p-3 rounded-lg bg-muted/50 ${
+                          account.available 
+                            ? 'text-muted-foreground' 
+                            : 'text-muted-foreground/60'
+                        }`}>
+                          {account.email}
+                        </div>
+                        
+                        <div className="p-4 bg-gradient-to-br from-muted/80 to-muted/40 rounded-xl border border-border/50">
+                          <p className="text-xs text-muted-foreground mb-1 font-semibold">{t('demo.password')}</p>
+                          <code className="text-sm font-mono font-bold">{account.password}</code>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="space-y-3 mb-4">
-                      <div className={`text-xs font-mono ${
-                        account.available 
-                          ? 'text-muted-foreground' 
-                          : 'text-muted-foreground/60'
-                      }`}>
-                        {account.email}
-                      </div>
-                      <div className="p-3 bg-muted/50 rounded-lg">
-                        <p className="text-xs text-muted-foreground mb-1">{t('demo.password')}</p>
-                        <code className="text-xs font-mono">{account.password}</code>
-                      </div>
-                    </div>
-                    
-                    <Button 
-                      className="w-full"
-                      disabled={!account.available}
-                      onClick={() => {
-                        if (account.available) {
-                          sessionStorage.setItem('demoAccount', JSON.stringify({
-                            email: account.email,
-                            password: account.password
-                          }));
-                          if (account.id === 'patient') {
-                            navigate('/login/patient');
-                          } else {
-                            navigate('/login/professional');
+                      
+                      <Button 
+                        className="w-full gap-2 h-12 hover-scale shadow-lg bg-gradient-to-r from-accent to-accent/90"
+                        disabled={!account.available}
+                        onClick={() => {
+                          if (account.available) {
+                            sessionStorage.setItem('demoAccount', JSON.stringify({
+                              email: account.email,
+                              password: account.password
+                            }));
+                            if (account.id === 'patient') {
+                              navigate('/login/patient');
+                            } else {
+                              navigate('/login/professional');
+                            }
                           }
-                        }
-                      }}
-                    >
-                      <Clock className="h-4 w-4 mr-2" />
-                      {t('demo.quickLogin')}
-                    </Button>
-                  </div>
-                </Card>
-              );
-            })}
+                        }}
+                      >
+                        <Clock className="h-4 w-4" />
+                        {t('demo.quickLogin')}
+                      </Button>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA Section */}
-      <section className="relative py-12 px-4 sm:px-6 lg:px-8 border-t bg-gradient-to-r from-muted/20 to-muted/5 mt-12">
-        <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">{t('demo.cta.title')}</h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            {t('demo.cta.subtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-primary to-primary/80"
-              onClick={() => navigate('/register/patient')}
-            >
-              {t('demo.cta.patient')}
-            </Button>
-            <Button 
-              size="lg"
-              variant="outline"
-              onClick={() => navigate('/register/professional')}
-            >
-              {t('demo.cta.professional')}
-            </Button>
+        {/* CTA Section - Style Landing */}
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 border-t bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
+          <div className="max-w-5xl mx-auto text-center">
+            <h3 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+              {t('demo.cta.title')}
+            </h3>
+            <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+              {t('demo.cta.subtitle')}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button 
+                size="lg"
+                className="h-14 px-8 text-lg hover-scale shadow-2xl bg-gradient-to-r from-primary to-primary/90"
+                onClick={() => navigate('/register/patient')}
+              >
+                {t('demo.cta.patient')}
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="h-14 px-8 text-lg hover-scale"
+                onClick={() => navigate('/register/professional')}
+              >
+                {t('demo.cta.professional')}
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }
