@@ -411,6 +411,8 @@ const Demo = () => {
                               navigate('/ministry');
                             } else if (establishment.id === 'cmst-sogara') {
                               navigate('/sogara');
+                            } else if (establishment.id === 'pharmacie-centrale') {
+                              navigate('/pharmacies/pharmacie-du-marche-port-gentil-4');
                             } else {
                               navigate(`/establishment/${establishment.id}/public`);
                             }
