@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { LanguageToggle } from "@/components/language/LanguageToggle";
 import { useOfflineAuth } from "@/contexts/OfflineAuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function Header() {
   const { user, signOut } = useOfflineAuth();

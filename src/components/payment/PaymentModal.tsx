@@ -110,6 +110,23 @@ export function PaymentModal({
 
       if (paymentError) throw paymentError;
 
+      // Send success notification
+      await supabase.functions.invoke('send-payment-notifications', {
+        body: {
+          userId: user.id,
+          title: 'Paiement réussi',
+          message: `Votre paiement de ${amount.toLocaleString()} XAF a été traité avec succès.`,
+          type: 'payment_success',
+          paymentId: transactionId,
+          metadata: {
+            amount,
+            currency: 'XAF',
+            paymentMethod: selectedMethod,
+            transactionId
+          }
+        }
+      });
+
       setPaymentStatus('success');
       
       toast.success("Paiement effectué avec succès", {
@@ -126,6 +143,30 @@ export function PaymentModal({
     } catch (error: any) {
       console.error('Payment error:', error);
       setPaymentStatus('error');
+      
+      // Send failure notification
+      try {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          await supabase.functions.invoke('send-payment-notifications', {
+            body: {
+              userId: currentUser.id,
+              title: 'Paiement échoué',
+              message: `Le paiement de ${amount.toLocaleString()} XAF n'a pas pu être traité. ${error.message}`,
+              type: 'payment_failed',
+              paymentId: '',
+              metadata: {
+                amount,
+                currency: 'XAF',
+                error: error.message
+              }
+            }
+          });
+        }
+      } catch (notifError) {
+        console.error('Error sending failure notification:', notifError);
+      }
+      
       toast.error("Erreur de paiement", {
         description: error.message || "Une erreur est survenue lors du paiement"
       });
