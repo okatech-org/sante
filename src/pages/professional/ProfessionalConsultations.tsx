@@ -30,10 +30,15 @@ export default function ProfessionalConsultations() {
   // Récupérer l'ID du professionnel
   useEffect(() => {
     const fetchProfessionalId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
       const { data } = await supabase
         .from('professionals')
         .select('id')
+        .eq('user_id', user.id)
         .single();
+      
       if (data) setProfessionalId(data.id);
     };
     fetchProfessionalId();
