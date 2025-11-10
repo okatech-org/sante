@@ -368,94 +368,94 @@ export default function ProfessionalAppointments() {
 
         <TabsContent value="calendar" className="space-y-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Calendrier mensuel - Enhanced UX */}
+            {/* Calendrier mensuel - Enhanced Visual Hierarchy */}
             <Card className="lg:col-span-1 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
               <div className="space-y-5">
-                <div className="flex items-start justify-between pb-4 border-b border-border/50">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold flex items-center gap-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                      <Calendar className="h-6 w-6 text-primary" />
+                <div className="flex items-start justify-between pb-5 border-b-2 border-border">
+                  <div className="space-y-1.5">
+                    <h3 className="text-2xl font-extrabold flex items-center gap-3 text-foreground">
+                      <Calendar className="h-7 w-7 text-primary" />
                       Calendrier
                     </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Sélectionnez une date pour voir les rendez-vous
+                    <p className="text-sm text-muted-foreground font-medium pl-10">
+                      Sélectionnez une date
                     </p>
                   </div>
-                  <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 font-semibold shadow-sm">
-                    <Clock className="h-3.5 w-3.5" />
-                    {appointments.length} RDV
+                  <Badge variant="secondary" className="gap-2 px-4 py-2 font-bold shadow-md text-base">
+                    <Clock className="h-4 w-4" />
+                    {appointments.length}
                   </Badge>
                 </div>
                 
-                <div className="p-2 rounded-xl bg-muted/30 transition-all duration-300 hover:bg-muted/40">
+                <div className="p-3 rounded-2xl bg-muted/40 transition-all duration-300 hover:bg-muted/50">
                   <CalendarComponent
                     mode="single"
                     selected={selectedDate}
                     onSelect={(date) => date && setSelectedDate(date)}
                     locale={fr}
-                    className="rounded-xl border-0 pointer-events-auto w-full lg:text-base [&_button]:transition-all [&_button]:duration-200"
+                    className="rounded-xl border-0 pointer-events-auto w-full [&_button]:transition-all [&_button]:duration-200 [&_.rdp-caption]:text-lg [&_.rdp-caption]:font-bold [&_.rdp-day]:text-base [&_.rdp-day]:font-medium"
                     modifiers={{
                       today: new Date(),
                       hasAppointments: daysWithAppointments
                     }}
                     modifiersClassNames={{
-                      today: 'bg-accent text-accent-foreground font-bold ring-2 ring-accent ring-offset-2 shadow-md scale-105',
-                      hasAppointments: 'relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-primary after:shadow-sm font-semibold hover:after:scale-125'
+                      today: 'bg-accent text-accent-foreground font-black ring-[3px] ring-accent ring-offset-2 shadow-lg scale-110 text-lg',
+                      hasAppointments: 'relative after:absolute after:bottom-0.5 after:left-1/2 after:-translate-x-1/2 after:w-2 after:h-2 after:rounded-full after:bg-primary after:shadow-md font-bold hover:after:scale-125 after:ring-1 after:ring-primary/50'
                     }}
                   />
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-border/50">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></span>
+                <div className="space-y-3 pt-5 border-t-2 border-border">
+                  <p className="text-sm font-bold text-foreground/70 uppercase tracking-widest flex items-center gap-2">
+                    <span className="h-0.5 flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
                     Légende
-                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></span>
+                    <span className="h-0.5 flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
                   </p>
-                  <div className="space-y-2.5 bg-muted/20 p-3 rounded-lg">
-                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
-                      <div className="w-4 h-4 rounded-full bg-accent ring-2 ring-accent ring-offset-2 ring-offset-background shadow-sm"></div>
-                      <span className="text-foreground/80 group-hover:text-foreground">Aujourd'hui</span>
+                  <div className="space-y-3 bg-muted/30 p-4 rounded-xl border border-border/50">
+                    <div className="flex items-center gap-3 text-sm font-semibold group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-5 h-5 rounded-full bg-accent ring-[3px] ring-accent ring-offset-2 ring-offset-background shadow-md"></div>
+                      <span className="text-foreground/90 group-hover:text-foreground">Aujourd'hui</span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
-                      <div className="w-4 h-4 rounded-full bg-primary shadow-md"></div>
-                      <span className="text-foreground/80 group-hover:text-foreground">Jour sélectionné</span>
+                    <div className="flex items-center gap-3 text-sm font-semibold group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-5 h-5 rounded-full bg-primary shadow-lg"></div>
+                      <span className="text-foreground/90 group-hover:text-foreground">Jour sélectionné</span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
-                      <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center shadow-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                    <div className="flex items-center gap-3 text-sm font-semibold group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center shadow-md bg-background">
+                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
                       </div>
-                      <span className="text-foreground/80 group-hover:text-foreground">Jours avec rendez-vous</span>
+                      <span className="text-foreground/90 group-hover:text-foreground">Jours avec rendez-vous</span>
                     </div>
                   </div>
                 </div>
               </div>
             </Card>
 
-            {/* Liste des rendez-vous du jour sélectionné - Enhanced UX */}
+            {/* Liste des rendez-vous du jour sélectionné - Enhanced Visual Hierarchy */}
             <Card className="lg:col-span-2 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
-              <div className="space-y-5">
-                <div className="flex items-start justify-between pb-4 border-b border-border/50">
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-bold capitalize bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <div className="space-y-6">
+                <div className="flex items-start justify-between pb-5 border-b-2 border-border">
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-extrabold capitalize text-foreground">
                       {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
                     </h3>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
-                        <Clock className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-semibold text-primary">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2.5 bg-primary/15 px-4 py-2 rounded-full border-2 border-primary/30">
+                        <Clock className="h-5 w-5 text-primary" />
+                        <span className="text-base font-bold text-primary">
                           {selectedDayAppointments.length} rendez-vous
                         </span>
                       </div>
                       {selectedDayAppointments.length > 0 && (
-                        <Badge variant="outline" className="gap-1">
+                        <Badge variant="outline" className="gap-1.5 font-semibold px-3 py-1.5 text-sm">
                           {selectedDayAppointments.filter(a => a.status === 'confirmed').length} confirmés
                         </Badge>
                       )}
                     </div>
                   </div>
                   {selectedDayAppointments.length > 0 && (
-                    <Button size="sm" className="gap-2 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
-                      <Plus className="h-4 w-4" />
+                    <Button size="lg" className="gap-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 font-bold">
+                      <Plus className="h-5 w-5" />
                       Ajouter
                     </Button>
                   )}
@@ -525,48 +525,48 @@ export default function ProfessionalAppointments() {
                                   )}
                                 </div>
 
-                                {/* Informations patient */}
-                                <div className="space-y-2">
-                                  <h4 className="font-bold text-xl mb-1 group-hover:text-primary transition-colors duration-200 tracking-tight">
+                                {/* Informations patient - HIÉRARCHIE VISUELLE PRINCIPALE */}
+                                <div className="space-y-3 py-2">
+                                  <h4 className="font-extrabold text-3xl leading-tight tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
                                     {apt.patient}
                                   </h4>
-                                  <div className="flex items-center gap-2 bg-background/60 backdrop-blur-sm px-3 py-2 rounded-lg border border-border/50 w-fit">
-                                    <Video className="h-4 w-4 text-primary" />
-                                    <span className="text-sm font-medium text-foreground/80">{apt.type}</span>
+                                  <div className="flex items-center gap-2.5 bg-background/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border-2 border-border/60 w-fit shadow-sm">
+                                    <Video className="h-5 w-5 text-primary" />
+                                    <span className="text-base font-bold text-foreground/90">{apt.type}</span>
                                   </div>
                                 </div>
 
                                 {/* Coordonnées */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                                  <div className="flex items-center gap-3 text-foreground/80 bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-border transition-all duration-200 hover:shadow-md group/contact">
-                                    <Phone className="h-4 w-4 shrink-0 text-primary group-hover/contact:scale-110 transition-transform" />
-                                    <span className="truncate font-medium">{apt.phone}</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  <div className="flex items-center gap-3 text-foreground bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm px-4 py-3 rounded-xl border-2 border-border/60 hover:border-primary/50 transition-all duration-200 hover:shadow-lg group/contact">
+                                    <Phone className="h-5 w-5 shrink-0 text-primary group-hover/contact:scale-110 transition-transform" />
+                                    <span className="truncate font-semibold text-base">{apt.phone}</span>
                                   </div>
-                                  <div className="flex items-center gap-3 text-foreground/80 bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-border transition-all duration-200 hover:shadow-md group/location">
-                                    <MapPin className="h-4 w-4 shrink-0 text-primary group-hover/location:scale-110 transition-transform" />
-                                    <span className="truncate font-medium">{apt.location}</span>
+                                  <div className="flex items-center gap-3 text-foreground bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm px-4 py-3 rounded-xl border-2 border-border/60 hover:border-primary/50 transition-all duration-200 hover:shadow-lg group/location">
+                                    <MapPin className="h-5 w-5 shrink-0 text-primary group-hover/location:scale-110 transition-transform" />
+                                    <span className="truncate font-semibold text-base">{apt.location}</span>
                                   </div>
                                 </div>
 
                                 {/* Notes */}
                                 {apt.notes && (
-                                  <div className="p-4 bg-gradient-to-br from-muted/60 to-muted/40 backdrop-blur-sm rounded-xl border border-border/50 text-sm flex gap-3 hover:shadow-md transition-all duration-200">
+                                  <div className="p-4 bg-gradient-to-br from-muted/70 to-muted/50 backdrop-blur-sm rounded-xl border-2 border-border/60 flex gap-3 hover:shadow-lg transition-all duration-200">
                                     <FileText className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                                    <span className="text-foreground/80 font-medium leading-relaxed">{apt.notes}</span>
+                                    <span className="text-foreground/90 font-semibold leading-relaxed">{apt.notes}</span>
                                   </div>
                                 )}
                               </div>
 
-                              {/* Actions */}
+                              {/* Actions - Enhanced Buttons */}
                               <div className="flex flex-col gap-3 shrink-0">
                                 {apt.status === 'pending' && (
                                   <>
                                     <Button 
-                                      size="sm" 
-                                      className="gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 font-semibold"
+                                      size="lg" 
+                                      className="gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 font-bold text-base px-6"
                                       onClick={() => handleConfirmAppointment(apt.id)}
                                     >
-                                      <CheckCircle className="h-4 w-4" />
+                                      <CheckCircle className="h-5 w-5" />
                                       <span className="hidden sm:inline">Confirmer</span>
                                     </Button>
                                     <Button 
