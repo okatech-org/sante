@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +19,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function ProfessionalConsultations() {
   const { currentRole } = useMultiEstablishment();
+  const [searchParams] = useSearchParams();
+  const appointmentId = searchParams.get('appointmentId');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -26,6 +29,13 @@ export default function ProfessionalConsultations() {
   const [professionalId, setProfessionalId] = useState<string>('');
   const [exportLoading, setExportLoading] = useState(false);
   const { consultations, stats, loading, error } = useConsultations();
+
+  // Ouvrir automatiquement le modal si appointmentId est présent
+  useEffect(() => {
+    if (appointmentId && professionalId) {
+      setShowCreateModal(true);
+    }
+  }, [appointmentId, professionalId]);
 
   // Récupérer l'ID du professionnel
   useEffect(() => {
@@ -347,6 +357,7 @@ export default function ProfessionalConsultations() {
         onOpenChange={setShowCreateModal}
         professionalId={professionalId}
         onSuccess={handleRefresh}
+        appointmentId={appointmentId || undefined}
       />
     </div>
   );

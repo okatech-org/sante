@@ -57,12 +57,12 @@ export const useConsultations = () => {
           .select(`
             id,
             appointment_date,
-            type,
+            appointment_type,
             reason,
             notes,
             status,
             patient_id,
-            profiles!appointments_patient_id_fkey(full_name)
+            patient_name
           `)
           .eq("professional_id", professional.id)
           .eq("status", "completed")
@@ -86,8 +86,8 @@ export const useConsultations = () => {
             id: apt.id,
             date: date.toISOString().split("T")[0],
             time: date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-            patient: apt.profiles?.full_name || "Patient",
-            type: apt.type === "teleconsultation" ? "Téléconsultation" : "Consultation de suivi",
+            patient: apt.patient_name || "Patient",
+            type: apt.appointment_type === "teleconsultation" ? "Téléconsultation" : "Consultation générale",
             diagnosis: apt.reason || null,
             prescription: prescriptionSet.has(apt.id),
             examens: [],

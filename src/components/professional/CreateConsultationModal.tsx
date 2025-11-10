@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ interface CreateConsultationModalProps {
   onOpenChange: (open: boolean) => void;
   professionalId: string;
   onSuccess?: () => void;
+  appointmentId?: string;
 }
 
 interface ConsultationFormData {
@@ -35,12 +36,14 @@ export function CreateConsultationModal({
   open,
   onOpenChange,
   professionalId,
-  onSuccess
+  onSuccess,
+  appointmentId
 }: CreateConsultationModalProps) {
   const [loading, setLoading] = useState(false);
   const [searchingPatients, setSearchingPatients] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [patients, setPatients] = useState<any[]>([]);
+  const [loadingAppointment, setLoadingAppointment] = useState(false);
   
   const [formData, setFormData] = useState<ConsultationFormData>({
     patientId: '',
@@ -53,6 +56,43 @@ export function CreateConsultationModal({
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Charger les données du rendez-vous si appointmentId est fourni
+  useEffect(() => {
+    if (!appointmentId || !open) return;
+
+    const loadAppointment = async () => {
+      setLoadingAppointment(true);
+      try {
+        const { data: appointment, error: aptError } = await supabase
+          .from('appointments')
+          .select('*')
+          .eq('id', appointmentId)
+          .single();
+
+        if (aptError) throw aptError;
+
+        if (appointment) {
+          setFormData({
+            patientId: appointment.patient_id,
+            patientSearch: appointment.patient_name,
+            type: appointment.appointment_type,
+            date: new Date(appointment.appointment_date),
+            time: appointment.appointment_time,
+            reason: appointment.reason || '',
+            notes: appointment.notes || ''
+          });
+        }
+      } catch (err) {
+        console.error('Error loading appointment:', err);
+        toast.error('Erreur lors du chargement du rendez-vous');
+      } finally {
+        setLoadingAppointment(false);
+      }
+    };
+
+    loadAppointment();
+  }, [appointmentId, open]);
 
   // Recherche de patients
   const searchPatients = async (query: string) => {
@@ -201,18 +241,28 @@ export function CreateConsultationModal({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Nouvelle Consultation</DialogTitle>
+          <DialogTitle>
+            {appointmentId ? 'Démarrer la consultation' : 'Nouvelle Consultation'}
+          </DialogTitle>
         </DialogHeader>
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+        {loadingAppointment && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
         )}
 
+        {!loadingAppointment && (
+          <>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
         <div className="space-y-4">
-          {/* Recherche patient */}
+          {/* Recherche patient - désactivé si vient d'un RDV */}
           <div className="space-y-2">
             <Label>Patient *</Label>
             <Input
@@ -222,7 +272,7 @@ export function CreateConsultationModal({
                 setFormData({ ...formData, patientSearch: e.target.value });
                 searchPatients(e.target.value);
               }}
-              disabled={loading}
+              disabled={loading || !!appointmentId}
             />
             {validationErrors.patient && (
               <p className="text-sm text-destructive">{validationErrors.patient}</p>
@@ -386,13 +436,15 @@ export function CreateConsultationModal({
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Création...
+                {appointmentId ? 'Enregistrement...' : 'Création...'}
               </>
             ) : (
-              "Créer la consultation"
+              appointmentId ? "Enregistrer la consultation" : "Créer la consultation"
             )}
           </Button>
         </DialogFooter>
+        </>
+        )}
       </DialogContent>
     </Dialog>
   );
