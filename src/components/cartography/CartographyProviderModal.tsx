@@ -237,10 +237,25 @@ export default function CartographyProviderModal({
 
     setLoading(true);
     try {
+      // Mapper l'ID fictif du Dr Démo vers son vrai ID professionnel
+      let actualProfessionalId = provider.id;
+      if (provider.id === 'dr-demo-cabinet-001') {
+        // Récupérer l'ID du Dr Demo depuis la base
+        const { data: drDemo } = await supabase
+          .from('professionals')
+          .select('id')
+          .eq('email', 'demo.medecin@sante.ga')
+          .maybeSingle();
+        
+        if (drDemo) {
+          actualProfessionalId = drDemo.id;
+        }
+      }
+
       // Créer le rendez-vous dans la base de données
       const { error } = await supabase.from('appointments').insert({
         patient_id: user.id,
-        professional_id: provider.id,
+        professional_id: actualProfessionalId,
         appointment_date: format(selectedSlot.date, 'yyyy-MM-dd'),
         appointment_time: selectedSlot.time,
         duration_minutes: 30,

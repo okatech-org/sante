@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,15 +11,81 @@ import {
   ChevronLeft, ChevronRight, CheckCircle, XCircle,
   AlertCircle, Phone, Mail, MapPin, Video, FileText
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 export default function ProfessionalAppointments() {
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('calendar');
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [professionalId, setProfessionalId] = useState<string | null>(null);
 
-  // Données fictives des RDV
-  const appointments = [
+  // Charger l'ID du professionnel et les rendez-vous
+  useEffect(() => {
+    const loadData = async () => {
+      if (!user?.id) return;
+      
+      try {
+        // Récupérer l'ID du professionnel
+        const { data: professional, error: profError } = await supabase
+          .from('professionals')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (profError) throw profError;
+        
+        if (!professional) {
+          toast.error("Profil professionnel non trouvé");
+          return;
+        }
+
+        setProfessionalId(professional.id);
+
+        // Charger les rendez-vous
+        const { data: appointmentsData, error: aptsError } = await supabase
+          .from('appointments')
+          .select('*')
+          .eq('professional_id', professional.id)
+          .order('appointment_date', { ascending: true })
+          .order('appointment_time', { ascending: true });
+
+        if (aptsError) throw aptsError;
+
+        // Transformer les données pour correspondre au format attendu
+        const transformedData = (appointmentsData || []).map(apt => ({
+          id: apt.id,
+          patient: apt.patient_name || 'Patient inconnu',
+          date: apt.appointment_date,
+          time: apt.appointment_time,
+          duration: apt.duration_minutes || 30,
+          type: apt.appointment_type === 'teleconsultation' ? 'Téléconsultation' : 'Consultation générale',
+          status: apt.status === 'scheduled' ? 'confirmed' : apt.status,
+          location: 'Cabinet médical',
+          phone: apt.patient_phone || '',
+          email: apt.patient_email || '',
+          notes: apt.reason || apt.notes || '',
+          isNew: false
+        }));
+
+        setAppointments(transformedData);
+      } catch (error: any) {
+        console.error('Erreur chargement données:', error);
+        toast.error('Erreur lors du chargement des rendez-vous');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [user?.id]);
+
+  // Les anciennes données fictives sont supprimées
+  const mockAppointments = [
     {
       id: 1,
       patient: 'Marie MOUSSAVOU',
@@ -125,7 +193,8 @@ export default function ProfessionalAppointments() {
     }
   ];
 
-  const todayAppointments = appointments.filter(apt => apt.date === '2025-01-31');
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const todayAppointments = appointments.filter(apt => apt.date === today);
 
   const stats = {
     today: todayAppointments.length,
