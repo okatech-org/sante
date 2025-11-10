@@ -115,7 +115,8 @@ const Demo = () => {
           email: "m.bounda@sogara.sante.ga",
           password: "Nurse2025!",
           status: "active",
-          badges: ["readOnly", "active"]
+          badges: ["readOnly", "active"],
+          available: false
         },
         {
           title: "receptionAccount",
