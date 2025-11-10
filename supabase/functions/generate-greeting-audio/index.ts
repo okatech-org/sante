@@ -30,7 +30,16 @@ serve(async (req) => {
     });
 
     const audioBlob = await response.arrayBuffer();
-    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBlob)));
+    
+    // Convert ArrayBuffer to base64 in chunks to avoid stack overflow
+    const uint8Array = new Uint8Array(audioBlob);
+    let binaryString = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+      const chunk = uint8Array.slice(i, i + chunkSize);
+      binaryString += String.fromCharCode(...chunk);
+    }
+    const audioBase64 = btoa(binaryString);
     const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
 
     return new Response(
