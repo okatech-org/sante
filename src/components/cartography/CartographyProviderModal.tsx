@@ -72,6 +72,39 @@ export default function CartographyProviderModal({
     notes: ""
   });
 
+  // Charger les informations du profil utilisateur
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('full_name, phone')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Erreur chargement profil:', error);
+          return;
+        }
+
+        if (profile) {
+          setFormData(prev => ({
+            ...prev,
+            patientName: profile.full_name || prev.patientName,
+            patientPhone: profile.phone || prev.patientPhone,
+            patientEmail: user.email || prev.patientEmail
+          }));
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    };
+
+    loadUserProfile();
+  }, [user]);
+
   // Charger les créneaux disponibles pour une date
   useEffect(() => {
     if (selectedDate && bookingStep === 'slot' && provider) {
