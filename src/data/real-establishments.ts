@@ -52,6 +52,27 @@ function generateEstablishments(): CartographyProvider[] {
   const establishments: CartographyProvider[] = [];
   let idCounter = 1;
 
+  // Ajouter Dr Démo comme premier établissement
+  establishments.push({
+    id: 'demo-001',
+    nom: 'Cabinet Médical Dr. Démo',
+    type: 'cabinet_medical' as any,
+    province: 'Estuaire',
+    ville: 'Libreville',
+    adresse_descriptive: 'Boulevard Triomphal, Quartier Louis',
+    coordonnees: { lat: 0.4162, lng: 9.4673 },
+    telephones: ['+241 01 23 45 67'],
+    ouvert_24_7: false,
+    conventionnement: { cnamgs: true, cnss: true },
+    secteur: 'prive',
+    services: ['Consultations', 'Téléconsultations', 'Médecine générale'],
+    specialites: ['Médecine Générale'],
+    source: 'Database',
+    has_account: true, // Inscrit sur la plateforme
+    horaires: 'Lun-Ven: 08:00-17:00, Sam: 09:00-13:00',
+    notes: 'Médecin de démonstration - Consultations de médecine générale et téléconsultations disponibles'
+  });
+
   // Distribution par ville (favorisant Libreville et Port-Gentil)
   const cityDistribution = {
     Libreville: 0.45,
