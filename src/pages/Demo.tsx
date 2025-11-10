@@ -220,7 +220,7 @@ const Demo = () => {
     {
       id: 'doctor',
       title: 'demo.account.doctor',
-      email: 'dr.demo@sante.ga',
+      email: 'medecin.demo@sante.ga',
       password: 'Doctor2025!',
       icon: User,
       target: '/professional/doctor-dashboard',
