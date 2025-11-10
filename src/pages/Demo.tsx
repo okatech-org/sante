@@ -89,7 +89,7 @@ const Demo = () => {
     {
       id: 'cmst-sogara',
       name: 'CMST SOGARA',
-      location: 'Libreville, Gabon',
+      location: 'Route de la Sogara, Port-Gentil, Ogooué-Maritime',
       category: 'Centre Médical',
       icon: Building2,
       available: true,
