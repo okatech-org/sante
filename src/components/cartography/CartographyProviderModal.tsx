@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +14,9 @@ import { cn } from "@/lib/utils";
 import { formatDistance } from "@/utils/distance";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { handleAppointmentRedirect } from "@/utils/appointment-redirect";
 import { standardizeAddressWithName } from "@/utils/address-formatter";
+import { AppointmentSlotPicker } from "@/components/appointments/AppointmentSlotPicker";
+import { AppointmentConfirmDialog } from "@/components/appointments/AppointmentConfirmDialog";
 
 interface CartographyProviderModalProps {
   provider: CartographyProvider | null;
@@ -48,6 +50,11 @@ export default function CartographyProviderModal({
 }: CartographyProviderModalProps) {
   const navigate = useNavigate();
   const { user, userRoles } = useAuth();
+  
+  // États pour le système de réservation
+  const [showSlotPicker, setShowSlotPicker] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<{date: Date; time: string} | null>(null);
   
   if (!provider) return null;
   
@@ -95,6 +102,49 @@ export default function CartographyProviderModal({
     } catch {
       toast.error("Impossible de copier");
     }
+  };
+
+  // Handlers pour le système de réservation
+  const handleBookAppointment = () => {
+    if (!user) {
+      toast.error("Vous devez être connecté pour prendre rendez-vous");
+      navigate('/login/patient', { 
+        state: { 
+          from: `/cartography`,
+          message: 'Connectez-vous pour prendre rendez-vous' 
+        } 
+      });
+      return;
+    }
+
+    if (!hasAccount) {
+      toast.error("Cet établissement n'est pas inscrit sur la plateforme");
+      return;
+    }
+
+    setShowSlotPicker(true);
+  };
+
+  const handleSlotSelect = (date: Date, time: string) => {
+    setSelectedSlot({ date, time });
+    setShowSlotPicker(false);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmClose = () => {
+    setShowConfirmDialog(false);
+    setSelectedSlot(null);
+  };
+
+  const handleConfirmSuccess = () => {
+    setShowConfirmDialog(false);
+    setSelectedSlot(null);
+    toast.success("Rendez-vous confirmé avec succès !");
+    onClose();
+  };
+
+  const handleCancelSlotPicker = () => {
+    setShowSlotPicker(false);
   };
 
   return (
@@ -163,7 +213,7 @@ export default function CartographyProviderModal({
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     size="sm"
-                    onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
+                    onClick={handleBookAppointment}
                     disabled={!hasAccount}
                     className={cn(!hasAccount && "opacity-50")}
                   >
@@ -173,7 +223,7 @@ export default function CartographyProviderModal({
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
+                    onClick={handleBookAppointment}
                     disabled={!hasAccount}
                     className={cn(!hasAccount && "opacity-50")}
                   >
@@ -246,7 +296,7 @@ export default function CartographyProviderModal({
                 </h3>
                 <Button
                   size="sm"
-                  onClick={() => hasAccount ? handleAppointmentRedirect({ user, userRoles, navigate, establishmentId: provider.id }) : null}
+                  onClick={handleBookAppointment}
                   disabled={!hasAccount}
                   className={cn(
                     "w-full bg-purple-600 hover:bg-purple-700",
@@ -418,6 +468,36 @@ export default function CartographyProviderModal({
           </div>
         </div>
       </DialogContent>
+
+      {/* Sélection de créneaux */}
+      {showSlotPicker && (
+        <Dialog open={showSlotPicker} onOpenChange={handleCancelSlotPicker}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Choisir un créneau - {provider.nom}</DialogTitle>
+            </DialogHeader>
+            <AppointmentSlotPicker
+              professionalId={provider.id}
+              professionalName={provider.nom}
+              onSlotSelect={handleSlotSelect}
+              onCancel={handleCancelSlotPicker}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Confirmation du rendez-vous */}
+      {showConfirmDialog && selectedSlot && (
+        <AppointmentConfirmDialog
+          isOpen={showConfirmDialog}
+          onClose={handleConfirmClose}
+          onConfirm={handleConfirmSuccess}
+          professionalId={provider.id}
+          professionalName={provider.nom}
+          selectedDate={selectedSlot.date}
+          selectedTime={selectedSlot.time}
+        />
+      )}
     </Dialog>
   );
 }
