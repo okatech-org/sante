@@ -243,19 +243,24 @@ export type Database = {
           additional_notes: string | null
           consultation_id: string | null
           created_at: string | null
+          delivery_status: string | null
           diagnosis: string | null
+          digital_signature: string | null
           dispensed_at: string | null
           expiry_date: string | null
           id: string
           issued_date: string
           medications: Json
           patient_id: string
+          pharmacy_id: string | null
           prescription_number: string
           professional_id: string
           qr_code_data: string | null
           sent_at: string | null
+          sent_to_pharmacy: boolean | null
           sent_to_pharmacy_id: string | null
           signature_data: string | null
+          signature_timestamp: string | null
           status: string
           teleconsultation_id: string | null
           updated_at: string | null
@@ -264,19 +269,24 @@ export type Database = {
           additional_notes?: string | null
           consultation_id?: string | null
           created_at?: string | null
+          delivery_status?: string | null
           diagnosis?: string | null
+          digital_signature?: string | null
           dispensed_at?: string | null
           expiry_date?: string | null
           id?: string
           issued_date?: string
           medications: Json
           patient_id: string
+          pharmacy_id?: string | null
           prescription_number: string
           professional_id: string
           qr_code_data?: string | null
           sent_at?: string | null
+          sent_to_pharmacy?: boolean | null
           sent_to_pharmacy_id?: string | null
           signature_data?: string | null
+          signature_timestamp?: string | null
           status?: string
           teleconsultation_id?: string | null
           updated_at?: string | null
@@ -285,19 +295,24 @@ export type Database = {
           additional_notes?: string | null
           consultation_id?: string | null
           created_at?: string | null
+          delivery_status?: string | null
           diagnosis?: string | null
+          digital_signature?: string | null
           dispensed_at?: string | null
           expiry_date?: string | null
           id?: string
           issued_date?: string
           medications?: Json
           patient_id?: string
+          pharmacy_id?: string | null
           prescription_number?: string
           professional_id?: string
           qr_code_data?: string | null
           sent_at?: string | null
+          sent_to_pharmacy?: boolean | null
           sent_to_pharmacy_id?: string | null
           signature_data?: string | null
+          signature_timestamp?: string | null
           status?: string
           teleconsultation_id?: string | null
           updated_at?: string | null
@@ -308,6 +323,13 @@ export type Database = {
             columns: ["consultation_id"]
             isOneToOne: false
             referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "electronic_prescriptions_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
             referencedColumns: ["id"]
           },
           {
@@ -1661,6 +1683,51 @@ export type Database = {
             columns: ["professional_id"]
             isOneToOne: false
             referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescription_pharmacy_log: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          pharmacy_id: string
+          prescription_id: string
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pharmacy_id: string
+          prescription_id: string
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pharmacy_id?: string
+          prescription_id?: string
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_pharmacy_log_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescription_pharmacy_log_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "electronic_prescriptions"
             referencedColumns: ["id"]
           },
         ]
@@ -3027,6 +3094,10 @@ export type Database = {
         Returns: string
       }
       generate_prescription_number: { Args: never; Returns: string }
+      generate_prescription_qr_data: {
+        Args: { prescription_id: string }
+        Returns: string
+      }
       geometry: { Args: { "": string }; Returns: unknown }
       geometry_above: {
         Args: { geom1: unknown; geom2: unknown }
