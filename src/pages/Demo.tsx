@@ -130,7 +130,7 @@ const Demo = () => {
     {
       id: 'pharmacie-centrale',
       name: 'Pharmacie Centrale',
-      location: 'Libreville, Gabon',
+      location: 'Centre-ville, Port-Gentil, Ogooué-Maritime',
       category: 'Pharmacie',
       icon: Pill,
       available: true,
