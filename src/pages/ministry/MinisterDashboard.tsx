@@ -2109,7 +2109,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-6 rounded-full px-2 text-[10px] hover:bg-emerald-500/10 hover:text-emerald-600"
+                                  className="h-6 rounded-full px-2 text-[10px] hover:bg-slate-500/10 hover:text-slate-600"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setProvinceDetailModal(province);
@@ -2126,7 +2126,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                                       className={cn(
                                         province.priority === "haute" && "bg-red-500/15 text-red-500",
                                         province.priority === "moyenne" && "bg-amber-500/15 text-amber-500",
-                                        province.priority === "basse" && "bg-emerald-500/15 text-emerald-500"
+                                        province.priority === "basse" && "bg-slate-500/15 text-slate-500"
                                       )}
                                     >
                                       Priorité {province.priority}
@@ -2253,18 +2253,18 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
 
                                   {activeCartography === "infrastructure" && (
                                     <>
-                                      <div className="rounded-xl bg-emerald-500/10 p-4">
-                                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
+                                      <div className="rounded-xl bg-slate-500/10 p-4">
+                                        <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                                           Infrastructures et Équipements
                                         </p>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                           <div>
                                             <p className="text-slate-500 dark:text-slate-400">Hôpitaux (CHU/CHR)</p>
-                                            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{province.hospitals}</p>
+                                            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">{province.hospitals}</p>
                                           </div>
                                           <div>
                                             <p className="text-slate-500 dark:text-slate-400">Centres de santé</p>
-                                            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{province.healthCenters}</p>
+                                            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">{province.healthCenters}</p>
                                           </div>
                                           <div>
                                             <p className="text-slate-500 dark:text-slate-400">Pharmacies</p>
@@ -2297,7 +2297,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                                           ).map((need) => (
                                             <span
                                               key={need}
-                                              className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400"
+                                              className="rounded-full border border-slate-400/40 bg-slate-500/10 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400"
                                             >
                                               {need}
                                             </span>
@@ -2367,7 +2367,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       Ordre du jour, décisions et suivi des réunions gouvernementales
                     </p>
                   </div>
-                  <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600">
+                  <Button className="rounded-full bg-slate-500 hover:bg-slate-600">
                     <Clock className="mr-2 h-4 w-4" />
                     Nouvelle réunion
                   </Button>
@@ -2402,7 +2402,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       <div key={idx} className="rounded-2xl border border-white/30 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-semibold text-slate-900 dark:text-white">{decision.titre}</h4>
-                          <CheckSquare className="h-4 w-4 text-emerald-500" />
+                          <CheckSquare className="h-4 w-4 text-slate-500" />
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">{decision.date}</p>
                       </div>
@@ -2468,7 +2468,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           setChatInput("Analyse les provinces prioritaires et donne-moi des recommandations");
                           setTimeout(handleSendMessage, 100);
                         }}
-                        className="justify-start rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+                        className="justify-start rounded-xl bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700"
                       >
                         <Sparkles className="mr-2 h-4 w-4" />
                         Recommandations IA
@@ -2512,7 +2512,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           <div className={cn(
                             "rounded-2xl px-4 py-3 max-w-[80%] text-sm",
                             msg.role === "user"
-                              ? "bg-emerald-500 text-white"
+                              ? "bg-slate-500 text-white"
                               : "bg-white/70 text-slate-900 dark:bg-white/10 dark:text-slate-100"
                           )}>
                             <p className="whitespace-pre-line">{msg.content}</p>
@@ -2560,7 +2560,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
             <TabsContent value="rapports" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-[0.55fr_1.45fr] xl:grid-cols-[0.45fr_1.55fr]">
                 <GlassCard className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-500/15 text-slate-400">
                     <Shield className="h-7 w-7" />
                   </div>
                   <div className="space-y-1">
@@ -2571,7 +2571,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/70 dark:bg-white/10">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <span className="h-2 w-2 rounded-full bg-slate-500" />
                     </span>
                     Bibliothèque officielle
                   </div>
