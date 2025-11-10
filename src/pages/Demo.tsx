@@ -61,6 +61,31 @@ const Demo = () => {
 
   const establishments: Establishment[] = [
     {
+      id: 'ministere-sante',
+      name: 'Ministère de la Santé',
+      location: 'Libreville, Gabon',
+      category: 'Administration Publique',
+      icon: Shield,
+      available: true,
+      color: 'from-purple-500/10 via-purple-400/5',
+      accounts: [
+        {
+          title: "adminAccount",
+          email: "ministre@sante.gouv.ga",
+          password: "Ministre2025!",
+          status: "active",
+          badges: ["fullAccess", "active"]
+        },
+        {
+          title: "doctorAccount",
+          email: "dg.sante@gouv.ga",
+          password: "DG2025!",
+          status: "active",
+          badges: ["fullAccess", "active"]
+        }
+      ]
+    },
+    {
       id: 'cmst-sogara',
       name: 'CMST SOGARA',
       location: 'Libreville, Gabon',
@@ -125,31 +150,6 @@ const Demo = () => {
       ]
     },
     {
-      id: 'laboratoire-national',
-      name: 'Laboratoire National',
-      location: 'Libreville, Gabon',
-      category: 'Laboratoire d\'analyses',
-      icon: TestTube,
-      available: false,
-      color: 'from-muted/20 via-muted/10',
-      accounts: [
-        {
-          title: "adminAccount",
-          email: "labo.demo@sante.ga",
-          password: "Lab2025!",
-          status: "active",
-          badges: ["fullAccess", "active"]
-        },
-        {
-          title: "doctorAccount",
-          email: "biologiste.demo@sante.ga",
-          password: "Bio2025!",
-          status: "active",
-          badges: ["fullAccess", "active"]
-        }
-      ]
-    },
-    {
       id: 'chu-libreville',
       name: 'CHU Libreville',
       location: 'Libreville, Gabon',
@@ -175,25 +175,25 @@ const Demo = () => {
       ]
     },
     {
-      id: 'ministere-sante',
-      name: 'Ministère de la Santé',
+      id: 'laboratoire-national',
+      name: 'Laboratoire National',
       location: 'Libreville, Gabon',
-      category: 'Administration Publique',
-      icon: Shield,
-      available: true,
-      color: 'from-purple-500/10 via-purple-400/5',
+      category: 'Laboratoire d\'analyses',
+      icon: TestTube,
+      available: false,
+      color: 'from-muted/20 via-muted/10',
       accounts: [
         {
           title: "adminAccount",
-          email: "ministre@sante.gouv.ga",
-          password: "Ministre2025!",
+          email: "labo.demo@sante.ga",
+          password: "Lab2025!",
           status: "active",
           badges: ["fullAccess", "active"]
         },
         {
           title: "doctorAccount",
-          email: "dg.sante@gouv.ga",
-          password: "DG2025!",
+          email: "biologiste.demo@sante.ga",
+          password: "Bio2025!",
           status: "active",
           badges: ["fullAccess", "active"]
         }
