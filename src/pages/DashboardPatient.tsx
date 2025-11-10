@@ -189,32 +189,22 @@ export default function DashboardPatient() {
                 </div>
               </div>
 
-              {/* Actions cartographie */}
-              <div className="grid grid-cols-2 gap-3">
-                <div 
-                  onClick={() => navigate('/cartography')}
-                  className="bg-muted/30 rounded-xl p-3 cursor-pointer hover:bg-muted/50 transition-all group"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-[#00d4ff] group-hover:scale-110 transition-transform" />
-                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium">Carte des soins</p>
+              {/* Action recherche de professionnels */}
+              <div 
+                onClick={() => navigate('/cartography')}
+                className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 cursor-pointer hover:from-primary/15 hover:to-primary/10 transition-all group border border-primary/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <MapPin className="w-5 h-5 text-primary" />
                   </div>
-                  <p className="text-xs sm:text-sm font-semibold text-foreground">
-                    Voir la carte
-                  </p>
-                </div>
-
-                <div 
-                  onClick={() => navigate('/cartography')}
-                  className="bg-muted/30 rounded-xl p-3 cursor-pointer hover:bg-muted/50 transition-all group"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-[#0088ff] group-hover:scale-110 transition-transform" />
-                    <p className="text-[10px] sm:text-xs text-muted-foreground font-medium">Recherche avancée</p>
+                  <div className="flex-1">
+                    <p className="text-xs text-muted-foreground font-medium">Rechercher un professionnel</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      Carte & prise de RDV
+                    </p>
                   </div>
-                  <p className="text-xs sm:text-sm font-semibold text-foreground">
-                    Trouver un professionnel
-                  </p>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
