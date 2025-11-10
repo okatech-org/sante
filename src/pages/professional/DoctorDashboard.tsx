@@ -6,6 +6,9 @@ import { useProfessionalStats } from '@/hooks/useProfessionalStats';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { RecentPatientsCard } from '@/components/professional/RecentPatientsCard';
+import { TodayConsultationsCard } from '@/components/professional/TodayConsultationsCard';
+import { RecentPrescriptionsCard } from '@/components/professional/RecentPrescriptionsCard';
 import { 
   Stethoscope, Calendar, Users,
   Clock, Activity, TrendingUp 
@@ -124,42 +127,51 @@ export default function DoctorDashboard() {
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold">Prochains rendez-vous</h2>
-        </div>
-        <div className="grid grid-cols-1 gap-3">
-          {upcomingAppointments.length === 0 ? (
-            <Card className="p-6 text-center text-muted-foreground">Aucun rendez-vous à venir</Card>
-          ) : (
-            upcomingAppointments.map((rdv) => {
-              const d = new Date(rdv.appointment_date);
-              return (
-                <Card key={rdv.id} className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-primary" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TodayConsultationsCard professionalId={professionalId} />
+        <RecentPrescriptionsCard professionalId={professionalId} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RecentPatientsCard professionalId={professionalId} />
+        
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold">Prochains rendez-vous</h2>
+          </div>
+          <Card className="p-6">
+            {upcomingAppointments.length === 0 ? (
+              <p className="text-center text-muted-foreground py-4">Aucun rendez-vous à venir</p>
+            ) : (
+              <div className="space-y-3">
+                {upcomingAppointments.map((rdv) => {
+                  const d = new Date(rdv.appointment_date);
+                  return (
+                    <div key={rdv.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <Calendar className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">{rdv.patient?.full_name || 'Patient'}</p>
+                          <p className="text-xs text-muted-foreground">{rdv.type}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold">{rdv.patient?.full_name || 'Patient'}</p>
-                        <p className="text-xs text-muted-foreground">{rdv.type}</p>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium">
-                        {d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </Card>
         </div>
       </div>
     </div>
