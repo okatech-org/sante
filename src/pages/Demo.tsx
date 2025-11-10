@@ -406,7 +406,15 @@ const Demo = () => {
                         <Button
                           variant="outline"
                           className="flex-1 gap-2 h-12 hover-scale"
-                          onClick={() => navigate(establishment.id === 'ministere-sante' ? '/ministry' : `/establishment/${establishment.id}/public`)}
+                          onClick={() => {
+                            if (establishment.id === 'ministere-sante') {
+                              navigate('/ministry');
+                            } else if (establishment.id === 'cmst-sogara') {
+                              navigate('/sogara');
+                            } else {
+                              navigate(`/establishment/${establishment.id}/public`);
+                            }
+                          }}
                           disabled={!establishment.available}
                         >
                           <Home className="h-4 w-4" />
