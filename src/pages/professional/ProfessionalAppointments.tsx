@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -20,7 +21,7 @@ import {
 import { 
   Calendar, Clock, User, Search, Plus, Filter,
   ChevronLeft, ChevronRight, CheckCircle, XCircle,
-  AlertCircle, Phone, Mail, MapPin, Video, FileText
+  AlertCircle, Phone, Mail, MapPin, Video, FileText, Stethoscope
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
@@ -28,6 +29,7 @@ import { fr } from 'date-fns/locale';
 
 export default function ProfessionalAppointments() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('calendar');
@@ -583,9 +585,17 @@ export default function ProfessionalAppointments() {
                                 {apt.status === 'confirmed' && (
                                   <>
                                     <Button 
+                                      size="lg" 
+                                      className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 font-bold text-base px-6"
+                                      onClick={() => navigate(`/professional/consultations/new?appointmentId=${apt.id}`)}
+                                    >
+                                      <Stethoscope className="h-5 w-5" />
+                                      <span className="hidden sm:inline">Consulter</span>
+                                    </Button>
+                                    <Button 
                                       size="sm" 
                                       variant="outline"
-                                      className="gap-2"
+                                      className="gap-2 hover:bg-muted"
                                     >
                                       <User className="h-4 w-4" />
                                       <span className="hidden sm:inline">Détails</span>
@@ -593,7 +603,7 @@ export default function ProfessionalAppointments() {
                                     <Button 
                                       size="sm" 
                                       variant="outline"
-                                      className="gap-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                                      className="gap-2 border-destructive/50 text-destructive hover:bg-destructive hover:text-white"
                                       onClick={() => openCancelDialog(apt.id)}
                                     >
                                       <XCircle className="h-4 w-4" />
