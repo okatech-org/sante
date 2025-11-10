@@ -6,6 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { PatientDashboardLayout } from "@/components/layout/PatientDashboardLayout";
 import { patientService, type PatientProfile } from "@/services/patientService";
 import { toast } from "sonner";
+import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
+import { calculateDistance } from "@/utils/distance";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPatient() {
   const { user, userRoles, loading, hasAnyRole } = useAuth();
@@ -15,8 +18,10 @@ export default function DashboardPatient() {
   const [stats, setStats] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [nearbyProfessionals, setNearbyProfessionals] = useState(0);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   
-  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || user?.email?.split('@')[0] || 'Patient';
+  const fullName = profileData?.full_name || (user?.user_metadata as any)?.full_name || user?.email?.split('@')[0] || 'Dr Démo';
 
   // Garde d'authentification et de rôles
   useEffect(() => {
@@ -41,6 +46,33 @@ export default function DashboardPatient() {
       return;
     }
   }, [user, userRoles, loading, navigate, hasAnyRole]);
+
+  // Obtenir la géolocalisation et calculer les professionnels à proximité
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          setUserLocation(location);
+          
+          // Compter les professionnels dans un rayon de 10km
+          const nearby = REAL_ESTABLISHMENTS.filter(provider => {
+            if (!provider.coordonnees) return false;
+            const distance = calculateDistance(location, provider.coordonnees);
+            return distance <= 10; // 10km
+          });
+          
+          setNearbyProfessionals(nearby.length);
+        },
+        (error) => {
+          console.log('Géolocalisation non disponible:', error);
+        }
+      );
+    }
+  }, []);
 
   // Charger les données du patient depuis le service
   useEffect(() => {
@@ -192,17 +224,27 @@ export default function DashboardPatient() {
               {/* Action recherche de professionnels */}
               <div 
                 onClick={() => navigate('/cartography')}
-                className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 cursor-pointer hover:from-primary/15 hover:to-primary/10 transition-all group border border-primary/20"
+                className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-4 cursor-pointer hover:from-primary/15 hover:to-primary/10 transition-all group border border-primary/20 relative overflow-hidden"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform relative">
                     <MapPin className="w-5 h-5 text-primary" />
+                    {nearbyProfessionals > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-1 bg-green-600 hover:bg-green-600 text-white text-[10px] font-bold">
+                        {nearbyProfessionals}
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-muted-foreground font-medium">Rechercher un professionnel</p>
                     <p className="text-sm font-semibold text-foreground">
                       Carte & prise de RDV
                     </p>
+                    {nearbyProfessionals > 0 && (
+                      <p className="text-[10px] text-green-600 font-medium mt-0.5">
+                        {nearbyProfessionals} établissement{nearbyProfessionals > 1 ? 's' : ''} à proximité
+                      </p>
+                    )}
                   </div>
                   <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </div>
