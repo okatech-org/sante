@@ -107,19 +107,24 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         setAvailableRoles(sortedRoles);
         setCurrentRole(sortedRoles[0] || 'doctor');
       } else if (data.length > 1) {
-        // Sélectionner le premier admin ou le premier de la liste
-        const adminEstablishment = data.find(e => e.is_admin);
-        const firstEstablishment = adminEstablishment || data[0];
-        await loadEstablishmentContext(firstEstablishment.establishment_id);
+        // Vérifier si un établissement a été mémorisé
+        const lastSelectedStaffId = localStorage.getItem('last_selected_establishment');
+        const lastSelected = lastSelectedStaffId 
+          ? data.find(e => e.staff_id === lastSelectedStaffId)
+          : null;
+        
+        // Utiliser l'établissement mémorisé ou sélectionner le premier admin ou le premier de la liste
+        const targetEstablishment = lastSelected || data.find(e => e.is_admin) || data[0];
+        await loadEstablishmentContext(targetEstablishment.establishment_id);
         
         // Charger les rôles pour cet établissement
         const rolesForEstablishment = data
-          .filter(e => e.establishment_id === firstEstablishment.establishment_id)
+          .filter(e => e.establishment_id === targetEstablishment.establishment_id)
           .map(e => (e.role_in_establishment as string).toLowerCase());
         const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
         const sortedRoles = rolesForEstablishment.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b));
         setAvailableRoles(sortedRoles);
-        setCurrentRole(sortedRoles[0] || firstEstablishment.role_in_establishment);
+        setCurrentRole(sortedRoles[0] || targetEstablishment.role_in_establishment);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des établissements:', error);
@@ -190,6 +195,9 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
     const selectedRole = role || selectedEstablishment.role_in_establishment;
     setCurrentRole(selectedRole);
     localStorage.setItem('current_role', selectedRole);
+    
+    // Mémoriser l'établissement sélectionné pour auto-sélection future
+    localStorage.setItem('last_selected_establishment', staffRoleId);
   }, [establishments, loadEstablishmentContext]);
 
   // Changer d'établissement (alias de selectEstablishment)

@@ -17,15 +17,20 @@ export function useProfessionalSetup() {
 
     // Si le professionnel n'a qu'un établissement, aller directement au dashboard
     if (establishments.length === 1) {
-      // Cas spécial pour SOGARA avec le dashboard dédié
-      if (establishments[0].establishmentId === 'a1b2c3d4-e5f6-7890-abcd-ef1234567890') {
-        navigate('/professional');
-      } else {
-        navigate('/professional');
-      }
+      navigate('/professional/dashboard');
     } else if (establishments.length > 1) {
-      // Plusieurs établissements : page de sélection
-      navigate('/professional/select-establishment');
+      // Vérifier si un établissement a été mémorisé
+      const lastSelectedStaffId = localStorage.getItem('last_selected_establishment');
+      const hasLastSelected = lastSelectedStaffId && establishments.some(e => e.staff_id === lastSelectedStaffId);
+      
+      if (hasLastSelected) {
+        // Établissement mémorisé trouvé, rediriger vers le dashboard
+        // (le contexte va auto-charger cet établissement)
+        navigate('/professional/dashboard');
+      } else {
+        // Aucun établissement mémorisé, afficher la page de sélection
+        navigate('/professional/select-establishment');
+      }
     } else {
       // Aucun établissement : créer le profil
       navigate('/professional/setup');

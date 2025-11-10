@@ -278,6 +278,23 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
               + Rejoindre un établissement
             </Button>
           </div>
+
+          {/* Changer d'établissement (si plusieurs) */}
+          {establishments.length > 1 && (
+            <div className="mt-2">
+              <Button
+                variant="outline"
+                className="w-full justify-start hover:bg-primary/5"
+                onClick={() => {
+                  navigate('/professional/select-establishment');
+                  setMobileOpen(false);
+                }}
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Changer d'établissement
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Menus spécifiques pour réceptionniste */}
