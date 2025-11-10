@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { getOSMProvidersFromSupabase } from "@/utils/osm-supabase-sync";
 import { supabase } from "@/integrations/supabase/client";
 import { standardizeAddressWithName } from "@/utils/address-formatter";
+import { REAL_ESTABLISHMENTS } from "@/data/real-establishments";
 
 // Fix pour les icônes Leaflet
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -89,30 +90,23 @@ export default function HealthProvidersMap({
       });
     }
 
-    const combined = [...osmProviders, ...establishmentProviders];
+    // Si pas de données externes, utiliser REAL_ESTABLISHMENTS
+    const allProviders = REAL_ESTABLISHMENTS;
     const seenIds = new Set<string>();
     
-    return combined.filter(provider => {
+    return allProviders.filter(provider => {
       if (!provider.coordonnees) return false;
       if (seenIds.has(provider.id)) return false;
       seenIds.add(provider.id);
       return true;
     });
-  }, [externalProviders, osmProviders, establishmentProviders]);
+  }, [externalProviders]);
 
-  // Charger les données depuis Supabase
+  // Charger les données depuis REAL_ESTABLISHMENTS au démarrage
   useEffect(() => {
-    if (externalProviders && externalProviders.length) {
-      // On utilise les données externes fournies par le parent
-      setOsmProviders([]);
-      setEstablishmentProviders([]);
-      return;
+    if (!externalProviders || !externalProviders.length) {
+      toast.success(`${REAL_ESTABLISHMENTS.length} établissements chargés sur la carte`);
     }
-
-    // Si pas de données externes, ne rien afficher
-    // (les données doivent être fournies par le parent)
-    setOsmProviders([]);
-    setEstablishmentProviders([]);
   }, [externalProviders]);
 
   // Initialiser la carte
