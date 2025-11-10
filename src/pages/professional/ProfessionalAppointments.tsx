@@ -392,11 +392,13 @@ export default function ProfessionalAppointments() {
                   selected={selectedDate}
                   onSelect={(date) => date && setSelectedDate(date)}
                   locale={fr}
-                  className="rounded-lg border-0 pointer-events-auto w-full"
+                  className="rounded-lg border-0 pointer-events-auto w-full lg:text-base"
                   modifiers={{
+                    today: new Date(),
                     hasAppointments: daysWithAppointments
                   }}
                   modifiersClassNames={{
+                    today: 'bg-accent text-accent-foreground font-bold ring-2 ring-accent ring-offset-2',
                     hasAppointments: 'relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary font-semibold'
                   }}
                 />
@@ -404,6 +406,10 @@ export default function ProfessionalAppointments() {
                 <div className="space-y-2 pt-4 border-t">
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Légende</p>
                   <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-3 h-3 rounded-full bg-accent ring-2 ring-accent"></div>
+                      <span className="text-muted-foreground">Aujourd'hui</span>
+                    </div>
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-3 h-3 rounded-full bg-primary"></div>
                       <span className="text-muted-foreground">Jour sélectionné</span>
