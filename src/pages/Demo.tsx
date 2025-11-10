@@ -242,7 +242,7 @@ const Demo = () => {
       password
     }));
     if (targetId === 'ministere-sante') {
-      navigate('/ministry/login');
+      navigate('/ministry');
     } else {
       navigate('/login/professional');
     }
