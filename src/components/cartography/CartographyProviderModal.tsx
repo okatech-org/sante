@@ -71,6 +71,55 @@ export default function CartographyProviderModal({
     reason: "",
     notes: ""
   });
+
+  // Charger les créneaux disponibles pour une date
+  useEffect(() => {
+    if (selectedDate && bookingStep === 'slot' && provider) {
+      loadAvailableSlots(selectedDate);
+    }
+  }, [selectedDate, bookingStep, provider]);
+
+  const loadAvailableSlots = async (date: Date) => {
+    if (!provider) return;
+    
+    try {
+      const dayOfWeek = date.getDay(); // 0 = dimanche, 6 = samedi
+      
+      const { data, error } = await supabase
+        .from('professional_availability')
+        .select('start_time, end_time')
+        .eq('professional_id', provider.id)
+        .eq('day_of_week', dayOfWeek)
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      // Générer les créneaux de 30 minutes
+      const slots: string[] = [];
+      if (data && data.length > 0) {
+        for (const availability of data) {
+          const start = availability.start_time;
+          const end = availability.end_time;
+          
+          let current = start;
+          while (current < end) {
+            slots.push(current);
+            // Ajouter 30 minutes
+            const [hours, minutes] = current.split(':').map(Number);
+            const totalMinutes = hours * 60 + minutes + 30;
+            const newHours = Math.floor(totalMinutes / 60);
+            const newMinutes = totalMinutes % 60;
+            current = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:00`;
+          }
+        }
+      }
+
+      setAvailableSlots(slots);
+    } catch (error) {
+      console.error('Erreur chargement créneaux:', error);
+      toast.error("Erreur lors du chargement des disponibilités");
+    }
+  };
   
   if (!provider) return null;
   
@@ -133,52 +182,6 @@ export default function CartographyProviderModal({
     setBookingStep('slot');
   };
 
-  // Charger les créneaux disponibles pour une date
-  useEffect(() => {
-    if (selectedDate && bookingStep === 'slot') {
-      loadAvailableSlots(selectedDate);
-    }
-  }, [selectedDate, bookingStep]);
-
-  const loadAvailableSlots = async (date: Date) => {
-    try {
-      const dayOfWeek = date.getDay(); // 0 = dimanche, 6 = samedi
-      
-      const { data, error } = await supabase
-        .from('professional_availability')
-        .select('start_time, end_time')
-        .eq('professional_id', provider.id)
-        .eq('day_of_week', dayOfWeek)
-        .eq('is_active', true);
-
-      if (error) throw error;
-
-      // Générer les créneaux de 30 minutes
-      const slots: string[] = [];
-      if (data && data.length > 0) {
-        for (const availability of data) {
-          const start = availability.start_time;
-          const end = availability.end_time;
-          
-          let current = start;
-          while (current < end) {
-            slots.push(current);
-            // Ajouter 30 minutes
-            const [hours, minutes] = current.split(':').map(Number);
-            const totalMinutes = hours * 60 + minutes + 30;
-            const newHours = Math.floor(totalMinutes / 60);
-            const newMinutes = totalMinutes % 60;
-            current = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:00`;
-          }
-        }
-      }
-
-      setAvailableSlots(slots);
-    } catch (error) {
-      console.error('Erreur chargement créneaux:', error);
-      toast.error("Erreur lors du chargement des disponibilités");
-    }
-  };
 
   const handleSlotSelect = (time: string) => {
     if (selectedDate) {
