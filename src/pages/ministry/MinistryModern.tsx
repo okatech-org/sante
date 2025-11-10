@@ -97,11 +97,11 @@ const MinistryModern = () => {
   ];
 
   const strategicAxes = [
-    { icon: Target, title: "Gouvernance & Leadership", desc: "Renforcement du secteur santé", delay: 0.1, color: "text-blue-500" },
-    { icon: Building2, title: "Offre de Soins", desc: "Infrastructures & qualité", delay: 0.2, color: "text-green-500" },
-    { icon: Users, title: "Ressources Humaines", desc: "Formation & gestion", delay: 0.3, color: "text-purple-500" },
-    { icon: TrendingUp, title: "Financement", desc: "Couverture Universelle", delay: 0.4, color: "text-orange-500" },
-    { icon: Shield, title: "Promotion & Prévention", desc: "Santé publique", delay: 0.5, color: "text-pink-500" }
+    { icon: Target, title: "Gouvernance & Leadership", desc: "Renforcement du secteur santé", delay: 0.1, color: "text-slate-600 dark:text-slate-400" },
+    { icon: Building2, title: "Offre de Soins", desc: "Infrastructures & qualité", delay: 0.2, color: "text-zinc-600 dark:text-zinc-400" },
+    { icon: Users, title: "Ressources Humaines", desc: "Formation & gestion", delay: 0.3, color: "text-gray-600 dark:text-gray-400" },
+    { icon: TrendingUp, title: "Financement", desc: "Couverture Universelle", delay: 0.4, color: "text-neutral-600 dark:text-neutral-400" },
+    { icon: Shield, title: "Promotion & Prévention", desc: "Santé publique", delay: 0.5, color: "text-stone-600 dark:text-stone-400" }
   ];
 
   const menuItems = [
@@ -306,12 +306,12 @@ const MinistryModern = () => {
                 <div className="bg-background/40 dark:bg-background/60 backdrop-blur-2xl border border-border/50 dark:border-white/20 rounded-md p-6 shadow-2xl">
                   <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-6 gap-4">
                     {[
-                      { icon: Users, value: "1.8M", label: "Population", color: "text-blue-500" },
-                      { icon: HeartHandshake, value: "78%", label: "Couverture", color: "text-green-500" },
-                      { icon: Building2, value: "238", label: "Établissements", color: "text-purple-500" },
-                      { icon: Stethoscope, value: "8.4K", label: "Professionnels", color: "text-orange-500" },
-                      { icon: Activity, value: "145K", label: "Consultations", color: "text-pink-500" },
-                      { icon: Globe, value: "12K", label: "Téléconsultations", color: "text-indigo-500" }
+                      { icon: Users, value: "1.8M", label: "Population", color: "text-slate-700 dark:text-slate-300" },
+                      { icon: HeartHandshake, value: "78%", label: "Couverture", color: "text-zinc-700 dark:text-zinc-300" },
+                      { icon: Building2, value: "238", label: "Établissements", color: "text-gray-700 dark:text-gray-300" },
+                      { icon: Stethoscope, value: "8.4K", label: "Professionnels", color: "text-neutral-700 dark:text-neutral-300" },
+                      { icon: Activity, value: "145K", label: "Consultations", color: "text-stone-700 dark:text-stone-300" },
+                      { icon: Globe, value: "12K", label: "Téléconsultations", color: "text-slate-600 dark:text-slate-400" }
                     ].map((stat, index) => (
                       <motion.div
                         key={index}
@@ -427,7 +427,7 @@ const MinistryModern = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Badge className="mb-4 bg-success/10 text-success border-success/20">
+            <Badge className="mb-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
               <Award className="w-4 h-4 mr-2" />
               Programmes Prioritaires
             </Badge>
@@ -456,7 +456,7 @@ const MinistryModern = () => {
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                     />
                     <div className="absolute top-4 left-4">
-                      <Badge className="bg-success text-white border-0">
+                      <Badge className="bg-slate-700 dark:bg-slate-600 text-white border-0">
                         <CheckCircle2 className="h-3 w-3 mr-1" />
                         72% accompli
                       </Badge>
@@ -464,8 +464,8 @@ const MinistryModern = () => {
                   </div>
                   <CardContent className="p-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-12 h-12 bg-success/20 rounded-sm flex items-center justify-center">
-                        <Shield className="h-6 w-6 text-success" />
+                      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-sm flex items-center justify-center">
+                        <Shield className="h-6 w-6 text-slate-700 dark:text-slate-300" />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold">Lutte contre le Paludisme</h3>
@@ -483,7 +483,7 @@ const MinistryModern = () => {
                       </div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div 
-                          className="h-full bg-gradient-to-r from-success to-success/80"
+                          className="h-full bg-gradient-to-r from-slate-600 to-slate-500 dark:from-slate-500 dark:to-slate-400"
                           initial={{ width: 0 }}
                           whileInView={{ width: "72%" }}
                           viewport={{ once: true }}
@@ -495,14 +495,14 @@ const MinistryModern = () => {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
-                          <TrendingUp className="h-6 w-6 text-success" />
+                          <TrendingUp className="h-6 w-6 text-slate-600 dark:text-slate-400" />
                           <div className="text-2xl font-bold text-foreground">15 Mds</div>
                           <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
                       </div>
                       </div>
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
-                          <MapPin className="h-6 w-6 text-primary" />
+                          <MapPin className="h-6 w-6 text-slate-600 dark:text-slate-400" />
                           <div className="text-2xl font-bold text-foreground">9/9</div>
                           <div className="text-xs text-muted-foreground font-medium">Provinces</div>
                         </div>
@@ -529,7 +529,7 @@ const MinistryModern = () => {
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                     />
                     <div className="absolute top-4 left-4">
-                      <Badge className="bg-accent text-white border-0">
+                      <Badge className="bg-zinc-700 dark:bg-zinc-600 text-white border-0">
                         <Activity className="h-3 w-3 mr-1" />
                         68% accompli
                       </Badge>
@@ -537,8 +537,8 @@ const MinistryModern = () => {
                   </div>
                   <CardContent className="p-8">
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-12 h-12 bg-accent/20 rounded-sm flex items-center justify-center">
-                        <Heart className="h-6 w-6 text-accent" />
+                      <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-sm flex items-center justify-center">
+                        <Heart className="h-6 w-6 text-zinc-700 dark:text-zinc-300" />
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold">Santé Maternelle et Infantile</h3>
@@ -556,7 +556,7 @@ const MinistryModern = () => {
                       </div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <motion.div 
-                          className="h-full bg-gradient-to-r from-accent to-accent/80"
+                          className="h-full bg-gradient-to-r from-zinc-600 to-zinc-500 dark:from-zinc-500 dark:to-zinc-400"
                           initial={{ width: 0 }}
                           whileInView={{ width: "68%" }}
                           viewport={{ once: true }}
@@ -568,14 +568,14 @@ const MinistryModern = () => {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
-                          <TrendingUp className="h-6 w-6 text-accent" />
+                          <TrendingUp className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />
                           <div className="text-2xl font-bold text-foreground">25 Mds</div>
                           <div className="text-xs text-muted-foreground font-medium">Budget FCFA</div>
                       </div>
                       </div>
                       <div className="text-center">
                         <div className="flex flex-col items-center gap-2">
-                          <Target className="h-6 w-6 text-secondary" />
+                          <Target className="h-6 w-6 text-zinc-600 dark:text-zinc-400" />
                           <div className="text-2xl font-bold text-foreground">-50%</div>
                           <div className="text-xs text-muted-foreground font-medium">Objectif 2028</div>
                         </div>
@@ -591,7 +591,7 @@ const MinistryModern = () => {
 
       {/* Cartographie Interactive Modernisée */}
       <section id="cartographie" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5" />
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900/20" />
         
         <div className="container mx-auto px-4 relative">
           <div className="grid md:grid-cols-3 gap-12 items-start">
@@ -640,11 +640,11 @@ const MinistryModern = () => {
               {/* Bloc unique de contact avec même hauteur que la carte */}
               <Card className="border-0 overflow-hidden h-[500px] bg-gradient-to-br from-background to-muted/20">
                 <CardContent className="p-8 h-full flex flex-col">
-                  {/* Informations de contact */}
+                   {/* Informations de contact */}
                   <div className="flex-1 space-y-6">
                     {/* Adresse */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-primary p-3 rounded-sm text-primary-foreground flex-shrink-0">
+                      <div className="bg-slate-700 dark:bg-slate-600 p-3 rounded-sm text-white flex-shrink-0">
                         <MapPin className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -658,7 +658,7 @@ const MinistryModern = () => {
 
                     {/* Téléphone */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-success p-3 rounded-sm text-success-foreground flex-shrink-0">
+                      <div className="bg-zinc-700 dark:bg-zinc-600 p-3 rounded-sm text-white flex-shrink-0">
                         <Phone className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -672,7 +672,7 @@ const MinistryModern = () => {
 
                     {/* Email */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-secondary p-3 rounded-sm text-secondary-foreground flex-shrink-0">
+                      <div className="bg-gray-700 dark:bg-gray-600 p-3 rounded-sm text-white flex-shrink-0">
                         <Mail className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -685,7 +685,7 @@ const MinistryModern = () => {
 
                     {/* Horaires */}
                     <div className="flex items-start gap-4">
-                      <div className="bg-accent p-3 rounded-sm text-accent-foreground flex-shrink-0">
+                      <div className="bg-neutral-700 dark:bg-neutral-600 p-3 rounded-sm text-white flex-shrink-0">
                         <Clock className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
@@ -847,7 +847,7 @@ const MinistryModern = () => {
 
       {/* CTA Final Section */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5" />
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900/20" />
         
         <motion.div 
           className="container mx-auto px-4 relative"
@@ -863,7 +863,7 @@ const MinistryModern = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <Badge className="mb-6 px-6 py-2 text-base bg-primary text-primary-foreground border-0 rounded-sm">
+              <Badge className="mb-6 px-6 py-2 text-base bg-slate-700 dark:bg-slate-600 text-white border-0 rounded-sm">
                 <Zap className="w-4 h-4 mr-2" />
                 Ensemble pour la santé
               </Badge>
