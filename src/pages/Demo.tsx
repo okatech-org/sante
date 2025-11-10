@@ -444,7 +444,7 @@ const Demo = () => {
                               <DialogDescription className="text-base">{t('demo.modalDescription')}</DialogDescription>
                             </DialogHeader>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
                               {establishment.accounts.map((account, index) => (
                                 <Card key={index} className="p-6 hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50">
                                   <div className="flex items-start gap-4 mb-4">
