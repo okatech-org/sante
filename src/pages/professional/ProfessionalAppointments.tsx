@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,12 +23,12 @@ import {
   AlertCircle, Phone, Mail, MapPin, Video, FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 export default function ProfessionalAppointments() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('calendar');
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -161,125 +162,39 @@ export default function ProfessionalAppointments() {
     setCancelDialogOpen(true);
   };
 
-  // Les anciennes données fictives sont supprimées
-  const mockAppointments = [
-    {
-      id: 1,
-      patient: 'Marie MOUSSAVOU',
-      date: '2025-01-31',
-      time: '09:00',
-      duration: 30,
-      type: 'Consultation générale',
-      status: 'confirmed',
-      doctor: 'Dr. Jules DJEKI',
-      location: 'Cabinet 1',
-      phone: '+241 07 12 34 56',
-      email: 'marie.moussavou@gmail.com',
-      notes: 'Contrôle de routine',
-      isNew: false
-    },
-    {
-      id: 2,
-      patient: 'Jean NZENGUE',
-      date: '2025-01-31',
-      time: '09:30',
-      duration: 45,
-      type: 'Suivi cardiologie',
-      status: 'confirmed',
-      doctor: 'Dr. Paul NGUEMA',
-      location: 'Cabinet 3 - Cardiologie',
-      phone: '+241 07 23 45 67',
-      email: 'jean.nzengue@gmail.com',
-      notes: 'ECG prévu',
-      isNew: false
-    },
-    {
-      id: 3,
-      patient: 'Sophie KOMBILA',
-      date: '2025-01-31',
-      time: '10:30',
-      duration: 30,
-      type: 'Consultation pédiatrie',
-      status: 'pending',
-      doctor: 'Dr. Sophie MBOUMBA',
-      location: 'Cabinet 2 - Pédiatrie',
-      phone: '+241 07 34 56 78',
-      email: 'sophie.kombila@gmail.com',
-      notes: 'Vaccination',
-      isNew: true
-    },
-    {
-      id: 4,
-      patient: 'Pierre OBAME',
-      date: '2025-01-31',
-      time: '11:00',
-      duration: 60,
-      type: 'Consultation chirurgie',
-      status: 'confirmed',
-      doctor: 'Dr. André MOUSSAVOU',
-      location: 'Bureau Chirurgie',
-      phone: '+241 07 45 67 89',
-      email: 'pierre.obame@gmail.com',
-      notes: 'Consultation pré-opératoire',
-      isNew: false
-    },
-    {
-      id: 5,
-      patient: 'André NGUEMA',
-      date: '2025-01-31',
-      time: '14:00',
-      duration: 30,
-      type: 'Téléconsultation',
-      status: 'confirmed',
-      doctor: 'Dr. Jules DJEKI',
-      location: 'En ligne',
-      phone: '+241 07 56 78 90',
-      email: 'andre.nguema@gmail.com',
-      notes: 'Suivi traitement',
-      isNew: false
-    },
-    {
-      id: 6,
-      patient: 'Sylvie NTOUTOUME',
-      date: '2025-01-31',
-      time: '15:00',
-      duration: 30,
-      type: 'Consultation générale',
-      status: 'cancelled',
-      doctor: 'Dr. Marie OKEMBA',
-      location: 'Cabinet 1',
-      phone: '+241 07 67 89 01',
-      email: 'sylvie.ntoutoume@gmail.com',
-      notes: 'Annulé par le patient',
-      isNew: false
-    },
-    {
-      id: 7,
-      patient: 'Bernard MBA',
-      date: '2025-01-31',
-      time: '16:00',
-      duration: 45,
-      type: 'Consultation spécialisée',
-      status: 'pending',
-      doctor: 'Dr. Paul NGUEMA',
-      location: 'Cabinet 3 - Cardiologie',
-      phone: '+241 07 78 90 12',
-      email: 'bernard.mba@gmail.com',
-      notes: 'Nouveau patient',
-      isNew: true
-    }
-  ];
+  // Récupérer les rendez-vous du jour sélectionné
+  const selectedDayAppointments = appointments.filter(apt => 
+    isSameDay(new Date(apt.date), selectedDate)
+  );
+
+  // Trouver tous les jours qui ont des rendez-vous
+  const daysWithAppointments = appointments.map(apt => new Date(apt.date));
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const todayAppointments = appointments.filter(apt => apt.date === today);
+
+  // Calculer les statistiques réelles
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const monthAppointments = appointments.filter(apt => {
+    const aptDate = new Date(apt.date);
+    return aptDate.getMonth() === currentMonth && aptDate.getFullYear() === currentYear;
+  });
 
   const stats = {
     today: todayAppointments.length,
     confirmed: todayAppointments.filter(apt => apt.status === 'confirmed').length,
     pending: todayAppointments.filter(apt => apt.status === 'pending').length,
     cancelled: todayAppointments.filter(apt => apt.status === 'cancelled').length,
-    thisWeek: 32,
-    thisMonth: 145
+    thisWeek: appointments.filter(apt => {
+      const aptDate = new Date(apt.date);
+      const today = new Date();
+      const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 7);
+      return aptDate >= weekStart && aptDate < weekEnd;
+    }).length,
+    thisMonth: monthAppointments.length
   };
 
   const getStatusBadge = (status: string) => {
@@ -299,13 +214,10 @@ export default function ProfessionalAppointments() {
     return 'bg-gray-100 text-gray-700';
   };
 
-  const filteredAppointments = todayAppointments.filter(apt =>
+  const filteredAppointments = appointments.filter(apt =>
     apt.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    apt.doctor.toLowerCase().includes(searchTerm.toLowerCase()) ||
     apt.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8h à 19h
 
   return (
     <div className="space-y-6">
@@ -399,108 +311,158 @@ export default function ProfessionalAppointments() {
         </TabsList>
 
         <TabsContent value="calendar" className="space-y-4">
-          {/* Contrôles du calendrier */}
-          <Card className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon">
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Calendrier mensuel */}
+            <Card className="lg:col-span-1 p-6">
+              <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold">Vendredi 31 janvier 2025</h3>
-                  <p className="text-sm text-muted-foreground">{stats.today} rendez-vous</p>
+                  <h3 className="text-lg font-semibold mb-1">Calendrier</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Sélectionnez une date pour voir les rendez-vous
+                  </p>
+                </div>
+                
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  locale={fr}
+                  className="rounded-md border pointer-events-auto"
+                  modifiers={{
+                    hasAppointments: daysWithAppointments
+                  }}
+                  modifiersClassNames={{
+                    hasAppointments: 'bg-primary/10 font-bold text-primary'
+                  }}
+                />
+
+                <div className="space-y-2 pt-4 border-t">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-4 h-4 rounded bg-primary/10 border border-primary/20"></div>
+                    <span className="text-muted-foreground">Jours avec RDV</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-4 h-4 rounded bg-primary"></div>
+                    <span className="text-muted-foreground">Jour sélectionné</span>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-2">
-                <Button 
-                  variant={viewMode === 'day' ? 'default' : 'outline'} 
-                  size="sm"
-                  onClick={() => setViewMode('day')}
-                >
-                  Jour
-                </Button>
-                <Button 
-                  variant={viewMode === 'week' ? 'default' : 'outline'} 
-                  size="sm"
-                  onClick={() => setViewMode('week')}
-                >
-                  Semaine
-                </Button>
-                <Button 
-                  variant={viewMode === 'month' ? 'default' : 'outline'} 
-                  size="sm"
-                  onClick={() => setViewMode('month')}
-                >
-                  Mois
-                </Button>
-              </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Vue calendrier jour */}
-          <Card className="p-6">
-            <div className="space-y-2">
-              {hours.map((hour) => {
-                const hourAppointments = todayAppointments.filter(apt => {
-                  const aptHour = parseInt(apt.time.split(':')[0]);
-                  return aptHour === hour;
-                });
+            {/* Liste des rendez-vous du jour sélectionné */}
+            <Card className="lg:col-span-2 p-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedDayAppointments.length} rendez-vous
+                  </p>
+                </div>
 
-                return (
-                  <div key={hour} className="flex gap-4 min-h-[80px] border-b last:border-0">
-                    <div className="w-16 text-sm text-muted-foreground font-medium pt-2">
-                      {hour}:00
-                    </div>
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                      {hourAppointments.map((apt) => {
+                {selectedDayAppointments.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Aucun rendez-vous ce jour</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {selectedDayAppointments
+                      .sort((a, b) => a.time.localeCompare(b.time))
+                      .map((apt) => {
                         const statusBadge = getStatusBadge(apt.status);
                         const StatusIcon = statusBadge.icon;
 
                         return (
                           <div
                             key={apt.id}
-                            className={`p-3 rounded-lg border-l-4 ${
-                              apt.status === 'confirmed' ? 'border-l-green-500 bg-green-50' :
-                              apt.status === 'pending' ? 'border-l-orange-500 bg-orange-50' :
-                              apt.status === 'cancelled' ? 'border-l-red-500 bg-red-50' :
-                              'border-l-gray-500 bg-gray-50'
-                            } hover:shadow-md transition-shadow cursor-pointer`}
+                            className={`p-4 rounded-lg border-l-4 ${
+                              apt.status === 'confirmed' ? 'border-l-green-500 bg-green-50/50' :
+                              apt.status === 'pending' ? 'border-l-orange-500 bg-orange-50/50' :
+                              apt.status === 'cancelled' ? 'border-l-red-500 bg-red-50/50' :
+                              'border-l-gray-500 bg-gray-50/50'
+                            } hover:shadow-md transition-shadow`}
                           >
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4" />
-                                <span className="text-sm font-semibold">{apt.time}</span>
-                                {apt.isNew && (
-                                  <Badge variant="default" className="text-xs">Nouveau</Badge>
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    <span className="font-semibold">{apt.time}</span>
+                                    <span className="text-sm text-muted-foreground">
+                                      ({apt.duration} min)
+                                    </span>
+                                  </div>
+                                  <Badge variant={statusBadge.variant} className="gap-1">
+                                    <StatusIcon className="h-3 w-3" />
+                                    {statusBadge.label}
+                                  </Badge>
+                                  {apt.isNew && (
+                                    <Badge variant="default">Nouveau</Badge>
+                                  )}
+                                </div>
+
+                                <h4 className="font-semibold mb-1">{apt.patient}</h4>
+                                <p className="text-sm text-muted-foreground mb-2">{apt.type}</p>
+
+                                <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <Phone className="h-3 w-3" />
+                                    {apt.phone}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3" />
+                                    {apt.location}
+                                  </div>
+                                </div>
+
+                                {apt.notes && (
+                                  <div className="mt-2 p-2 bg-background/50 rounded text-sm">
+                                    <FileText className="h-3 w-3 inline mr-1" />
+                                    {apt.notes}
+                                  </div>
                                 )}
                               </div>
-                              <StatusIcon className={`h-4 w-4 ${statusBadge.color}`} />
-                            </div>
-                            <p className="font-medium text-sm mb-1">{apt.patient}</p>
-                            <p className="text-xs text-muted-foreground mb-1">{apt.type}</p>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <User className="h-3 w-3" />
-                              {apt.doctor}
-                            </div>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                              <MapPin className="h-3 w-3" />
-                              {apt.location}
+
+                              <div className="flex gap-2 ml-4">
+                                {apt.status === 'pending' && (
+                                  <>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => handleConfirmAppointment(apt.id)}
+                                    >
+                                      Confirmer
+                                    </Button>
+                                    <Button 
+                                      size="sm" 
+                                      variant="destructive"
+                                      onClick={() => openCancelDialog(apt.id)}
+                                    >
+                                      Annuler
+                                    </Button>
+                                  </>
+                                )}
+                                {apt.status === 'confirmed' && (
+                                  <Button 
+                                    size="sm" 
+                                    variant="destructive"
+                                    onClick={() => openCancelDialog(apt.id)}
+                                  >
+                                    Annuler
+                                  </Button>
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
                       })}
-                    </div>
                   </div>
-                );
-              })}
-            </div>
-          </Card>
+                )}
+              </div>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="list" className="space-y-4">
@@ -546,14 +508,10 @@ export default function ProfessionalAppointments() {
                           )}
                         </div>
                         
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mt-3">
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Clock className="h-4 w-4" />
                             {apt.time} ({apt.duration} min)
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <User className="h-4 w-4" />
-                            {apt.doctor}
                           </div>
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <MapPin className="h-4 w-4" />
@@ -647,16 +605,16 @@ export default function ProfessionalAppointments() {
                               <span className="font-semibold">{apt.time}</span>
                               <Badge variant="outline">{apt.duration} min</Badge>
                             </div>
-                            <h4 className="font-semibold">{apt.patient}</h4>
+                             <h4 className="font-semibold">{apt.patient}</h4>
                             <p className="text-sm text-muted-foreground">{apt.type}</p>
                             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
-                                <User className="h-3 w-3" />
-                                {apt.doctor}
-                              </span>
-                              <span className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
                                 {apt.location}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Phone className="h-3 w-3" />
+                                {apt.phone}
                               </span>
                             </div>
                           </div>
