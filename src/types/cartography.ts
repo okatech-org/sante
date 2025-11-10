@@ -51,6 +51,7 @@ export interface CartographyProvider {
   source?: string; // Source des données (ex: 'OpenStreetMap', 'Manuel', etc.)
   osm_id?: number | string; // ID OpenStreetMap si applicable
   nombre_lits?: number; // Nombre de lits disponibles
+  avatar_url?: string; // URL de l'avatar du professionnel (pour les cabinets médicaux)
 }
 
 export interface Province {

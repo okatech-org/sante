@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import drDemoAvatar from "@/assets/dr-demo-avatar.jpg";
 
 export default function PatientAppointments() {
   const { user } = useAuth();
@@ -62,7 +63,7 @@ export default function PatientAppointments() {
         setProvider({
           id: 'dr-demo-cabinet-001',
           name: 'Dr. Démo',
-          avatar: null,
+          avatar: drDemoAvatar,
           specialty: 'Médecine Générale',
           phone: '+241 01 23 45 67',
           location: 'Libreville',

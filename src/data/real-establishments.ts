@@ -1,4 +1,5 @@
 import { CartographyProvider } from "@/types/cartography";
+import drDemoAvatar from "@/assets/dr-demo-avatar.jpg";
 
 /**
  * Données réelles des établissements de santé du Gabon
@@ -382,7 +383,8 @@ const DR_DEMO: CartographyProvider = {
   equipements_specialises: [],
   notes: "Médecin de démonstration disponible pour tester la plateforme e-Santé Gabon",
   has_account: true,
-  distance: undefined
+  distance: undefined,
+  avatar_url: drDemoAvatar
 };
 
 // Export des données
