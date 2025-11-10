@@ -25,25 +25,50 @@ serve(async (req) => {
 
     console.log('Creating demo doctor account...');
 
-    // Vérifier si l'utilisateur existe déjà
-    const { data: existingUser, error: existingError } = await supabaseAdmin.auth.admin.listUsers();
-    
+    // Vérifier si l'utilisateur existe déjà de manière robuste
     const demoEmail = 'demo.medecin@sante.ga';
-    const userExists = existingUser?.users?.some(u => u.email === demoEmail);
 
-    let userId: string;
+    let userId: string | undefined;
+    let existingUserObj: any = null;
 
-    if (userExists) {
+    // 1) Essayer via la table profiles (contient l'ID auth.users)
+    const { data: profileByEmail } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('email', demoEmail)
+      .maybeSingle();
+
+    if (profileByEmail?.id) {
+      userId = profileByEmail.id;
+      const { data: byId } = await supabaseAdmin.auth.admin.getUserById(profileByEmail.id as string);
+      if (byId?.user) existingUserObj = byId.user;
+    }
+
+    // 2) Fallback: parcourir les pages d'utilisateurs si non trouvé
+    if (!existingUserObj) {
+      for (let page = 1; page <= 10; page++) {
+        const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+        const found = list?.users?.find((u: any) => u.email?.toLowerCase() === demoEmail);
+        if (found) {
+          existingUserObj = found;
+          userId = found.id;
+          break;
+        }
+        if (!list?.users?.length) break;
+      }
+    }
+
+    if (existingUserObj && userId) {
       console.log('User already exists, updating password...');
-      const existingUserData = existingUser?.users?.find(u => u.email === demoEmail);
-      userId = existingUserData!.id;
-
-      // Mettre à jour le mot de passe
+      // Mettre à jour le mot de passe et confirmer l'email
       const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
         userId,
-        { password: 'Doctor2025!' }
+        {
+          password: 'Doctor2025!',
+          email_confirm: true,
+          user_metadata: { full_name: 'Dr. Demo Cardiologue' }
+        }
       );
-
       if (updateError) {
         throw new Error(`Error updating password: ${updateError.message}`);
       }
@@ -58,17 +83,56 @@ serve(async (req) => {
           full_name: 'Dr. Demo Cardiologue'
         }
       });
-
       if (createError) {
-        throw new Error(`Error creating user: ${createError.message}`);
+        const msg = (createError.message || '').toLowerCase();
+        if (msg.includes('already') && msg.includes('registered')) {
+          console.log('User already registered, resolving by lookup and updating password...');
+          // Tenter via profiles
+          if (!userId) {
+            const { data: prof } = await supabaseAdmin
+              .from('profiles')
+              .select('id')
+              .eq('email', demoEmail)
+              .maybeSingle();
+            if (prof?.id) userId = prof.id as string;
+          }
+          // Tenter via professionals
+          if (!userId) {
+            const { data: pro } = await supabaseAdmin
+              .from('professionals')
+              .select('user_id')
+              .eq('email', demoEmail)
+              .maybeSingle();
+            if (pro?.user_id) userId = pro.user_id as string;
+          }
+          // Fallback: parcourir les pages d'utilisateurs
+          if (!userId) {
+            for (let page = 1; page <= 100; page++) {
+              const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+              const found = list?.users?.find((u: any) => (u.email || '').toLowerCase() === demoEmail);
+              if (found) { userId = found.id; break; }
+              if (!list?.users?.length) break;
+            }
+          }
+          if (!userId) {
+            throw new Error(`Email exists but no user id found for ${demoEmail}`);
+          }
+          const { error: updateExistingError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+            password: 'Doctor2025!',
+            email_confirm: true,
+            user_metadata: { full_name: 'Dr. Demo Cardiologue' }
+          });
+          if (updateExistingError) {
+            throw new Error(`Error updating existing user password: ${updateExistingError.message}`);
+          }
+        } else {
+          throw new Error(`Error creating user: ${createError.message}`);
+        }
       }
-
-      if (!newUser.user) {
-        throw new Error('User creation failed');
+      if (newUser?.user) {
+        userId = newUser.user.id;
+        console.log('User created successfully:', userId);
       }
-
-      userId = newUser.user.id;
-      console.log('User created successfully:', userId);
     }
 
     // Créer ou mettre à jour le profil
