@@ -76,14 +76,6 @@ const Demo = () => {
           password: "Ministre2025!",
           status: "active",
           badges: ["fullAccess", "active"]
-        },
-        {
-          title: "doctorAccount",
-          email: "dg.sante@gouv.ga",
-          password: "DG2025!",
-          status: "active",
-          badges: ["fullAccess", "active"],
-          available: false
         }
       ]
     },
