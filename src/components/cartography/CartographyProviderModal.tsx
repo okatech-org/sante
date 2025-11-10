@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { CartographyProvider, Coordonnees } from "@/types/cartography";
 import { 
   Phone, Navigation, Share2, Clock, MapPin, AlertCircle, Video, Calendar, FileText, 
@@ -23,7 +24,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { standardizeAddressWithName } from "@/utils/address-formatter";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, parseISO, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
 
 interface CartographyProviderModalProps {
@@ -55,9 +56,11 @@ export default function CartographyProviderModal({
   // États pour le processus de réservation
   const [bookingStep, setBookingStep] = useState<BookingStep>('info');
   const [appointmentType, setAppointmentType] = useState<'physical' | 'video'>('physical');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedSlot, setSelectedSlot] = useState<{date: Date; time: string} | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'airtel' | 'card' | 'onsite'>('onsite');
   const [loading, setLoading] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   
   // Formulaire de détails patient
   const [formData, setFormData] = useState({
@@ -130,9 +133,58 @@ export default function CartographyProviderModal({
     setBookingStep('slot');
   };
 
-  const handleSlotSelect = (date: Date, time: string) => {
-    setSelectedSlot({ date, time });
-    setBookingStep('details');
+  // Charger les créneaux disponibles pour une date
+  useEffect(() => {
+    if (selectedDate && bookingStep === 'slot') {
+      loadAvailableSlots(selectedDate);
+    }
+  }, [selectedDate, bookingStep]);
+
+  const loadAvailableSlots = async (date: Date) => {
+    try {
+      const dayOfWeek = date.getDay(); // 0 = dimanche, 6 = samedi
+      
+      const { data, error } = await supabase
+        .from('professional_availability')
+        .select('start_time, end_time')
+        .eq('professional_id', provider.id)
+        .eq('day_of_week', dayOfWeek)
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      // Générer les créneaux de 30 minutes
+      const slots: string[] = [];
+      if (data && data.length > 0) {
+        for (const availability of data) {
+          const start = availability.start_time;
+          const end = availability.end_time;
+          
+          let current = start;
+          while (current < end) {
+            slots.push(current);
+            // Ajouter 30 minutes
+            const [hours, minutes] = current.split(':').map(Number);
+            const totalMinutes = hours * 60 + minutes + 30;
+            const newHours = Math.floor(totalMinutes / 60);
+            const newMinutes = totalMinutes % 60;
+            current = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:00`;
+          }
+        }
+      }
+
+      setAvailableSlots(slots);
+    } catch (error) {
+      console.error('Erreur chargement créneaux:', error);
+      toast.error("Erreur lors du chargement des disponibilités");
+    }
+  };
+
+  const handleSlotSelect = (time: string) => {
+    if (selectedDate) {
+      setSelectedSlot({ date: selectedDate, time });
+      setBookingStep('details');
+    }
   };
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
@@ -520,23 +572,52 @@ export default function CartographyProviderModal({
       </div>
 
       <div className="space-y-4">
+        {/* Calendrier */}
         <div className="border rounded-lg p-4">
-          <p className="text-sm text-muted-foreground mb-4">Créneaux disponibles</p>
-          <div className="grid grid-cols-2 gap-2">
-            {['09:00', '09:30', '10:00', '10:30', '14:00', '14:30', '15:00', '15:30'].map((time) => (
-              <Button
-                key={time}
-                variant="outline"
-                size="sm"
-                onClick={() => handleSlotSelect(new Date(), time)}
-                className="justify-start"
-              >
-                <Clock className="h-3 w-3 mr-2" />
-                {time}
-              </Button>
-            ))}
-          </div>
+          <p className="text-sm font-semibold mb-3">Choisissez une date</p>
+          <CalendarComponent
+            mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
+            disabled={(date) => {
+              // Désactiver les dates passées et les dimanches
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              return date < today || date.getDay() === 0;
+            }}
+            locale={fr}
+            className={cn("pointer-events-auto")}
+          />
         </div>
+
+        {/* Créneaux horaires */}
+        {selectedDate && (
+          <div className="border rounded-lg p-4">
+            <p className="text-sm font-semibold mb-3">
+              Créneaux pour le {format(selectedDate, 'EEEE d MMMM', { locale: fr })}
+            </p>
+            {availableSlots.length > 0 ? (
+              <div className="grid grid-cols-3 gap-2">
+                {availableSlots.map((time) => (
+                  <Button
+                    key={time}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSlotSelect(time)}
+                    className="justify-center"
+                  >
+                    <Clock className="h-3 w-3 mr-1" />
+                    {time.substring(0, 5)}
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Aucun créneau disponible ce jour
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
