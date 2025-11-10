@@ -222,104 +222,169 @@ export default function ProfessionalAppointments() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Calendar className="h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Calendar className="h-5 w-5 text-primary" />
+            </div>
             Agenda & Rendez-vous
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Gestion des rendez-vous du CMST SOGARA
+          <p className="text-sm text-muted-foreground mt-1 ml-13">
+            {format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" className="gap-2 flex-1 sm:flex-none">
             <Filter className="h-4 w-4" />
-            Filtres
+            <span className="hidden sm:inline">Filtres</span>
           </Button>
-          <Button className="gap-2">
+          <Button className="gap-2 flex-1 sm:flex-none bg-primary hover:bg-primary/90">
             <Plus className="h-4 w-4" />
             Nouveau RDV
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Aujourd'hui</p>
-              <p className="text-2xl font-bold">{stats.today}</p>
+      {/* Stats Cards - Improved Design */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-            <Calendar className="h-6 w-6 text-blue-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Aujourd'hui</p>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.today}</p>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Confirmés</p>
-              <p className="text-2xl font-bold">{stats.confirmed}</p>
+        
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-green-500 bg-gradient-to-br from-green-50/50 to-transparent dark:from-green-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
             </div>
-            <CheckCircle className="h-6 w-6 text-green-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Confirmés</p>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.confirmed}</p>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">En attente</p>
-              <p className="text-2xl font-bold">{stats.pending}</p>
+        
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50/50 to-transparent dark:from-orange-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center">
+                <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+              </div>
             </div>
-            <AlertCircle className="h-6 w-6 text-orange-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">En attente</p>
+              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats.pending}</p>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Annulés</p>
-              <p className="text-2xl font-bold">{stats.cancelled}</p>
+        
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-red-500 bg-gradient-to-br from-red-50/50 to-transparent dark:from-red-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
+                <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
             </div>
-            <XCircle className="h-6 w-6 text-red-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Annulés</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.cancelled}</p>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Cette semaine</p>
-              <p className="text-2xl font-bold">{stats.thisWeek}</p>
+        
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50/50 to-transparent dark:from-purple-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
+                <Calendar className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
-            <Calendar className="h-6 w-6 text-purple-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Semaine</p>
+              <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.thisWeek}</p>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">Ce mois</p>
-              <p className="text-2xl font-bold">{stats.thisMonth}</p>
+        
+        <Card className="p-4 hover:shadow-lg transition-all duration-200 border-l-4 border-l-indigo-500 bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-950/20">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                <Calendar className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              </div>
             </div>
-            <Calendar className="h-6 w-6 text-indigo-500" />
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">Ce mois</p>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{stats.thisMonth}</p>
+            </div>
           </div>
         </Card>
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="calendar">Calendrier</TabsTrigger>
-          <TabsTrigger value="list">Liste</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
-        </TabsList>
+      {/* Tabs - Improved Design */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <div className="flex items-center justify-between">
+          <TabsList className="bg-muted/50 p-1 h-auto">
+            <TabsTrigger value="calendar" className="gap-2 data-[state=active]:bg-background">
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Calendrier</span>
+            </TabsTrigger>
+            <TabsTrigger value="list" className="gap-2 data-[state=active]:bg-background">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Liste</span>
+            </TabsTrigger>
+            <TabsTrigger value="timeline" className="gap-2 data-[state=active]:bg-background">
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">Timeline</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          {activeTab === 'list' && (
+            <div className="flex items-center gap-2">
+              <div className="relative w-64 hidden sm:block">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher un patient..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          )}
+        </div>
 
-        <TabsContent value="calendar" className="space-y-4">
+        <TabsContent value="calendar" className="space-y-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Calendrier mensuel */}
-            <Card className="lg:col-span-1 p-6">
+            {/* Calendrier mensuel - Improved */}
+            <Card className="lg:col-span-1 p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">Calendrier</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Sélectionnez une date pour voir les rendez-vous
-                  </p>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-primary" />
+                      Calendrier
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Sélectionnez une date
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="gap-1">
+                    <Clock className="h-3 w-3" />
+                    {appointments.length} RDV
+                  </Badge>
                 </div>
                 
                 <CalendarComponent
@@ -327,47 +392,72 @@ export default function ProfessionalAppointments() {
                   selected={selectedDate}
                   onSelect={(date) => date && setSelectedDate(date)}
                   locale={fr}
-                  className="rounded-md border pointer-events-auto"
+                  className="rounded-lg border-0 pointer-events-auto w-full"
                   modifiers={{
                     hasAppointments: daysWithAppointments
                   }}
                   modifiersClassNames={{
-                    hasAppointments: 'bg-primary/10 font-bold text-primary'
+                    hasAppointments: 'relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary font-semibold'
                   }}
                 />
 
                 <div className="space-y-2 pt-4 border-t">
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-4 h-4 rounded bg-primary/10 border border-primary/20"></div>
-                    <span className="text-muted-foreground">Jours avec RDV</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-4 h-4 rounded bg-primary"></div>
-                    <span className="text-muted-foreground">Jour sélectionné</span>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Légende</p>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-3 h-3 rounded-full bg-primary"></div>
+                      <span className="text-muted-foreground">Jour sélectionné</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-3 h-3 rounded-full border-2 border-primary flex items-center justify-center">
+                        <div className="w-1 h-1 rounded-full bg-primary"></div>
+                      </div>
+                      <span className="text-muted-foreground">Jours avec rendez-vous</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </Card>
 
-            {/* Liste des rendez-vous du jour sélectionné */}
-            <Card className="lg:col-span-2 p-6">
+            {/* Liste des rendez-vous du jour sélectionné - Improved */}
+            <Card className="lg:col-span-2 p-6 shadow-md hover:shadow-lg transition-shadow">
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedDayAppointments.length} rendez-vous
-                  </p>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold capitalize">
+                      {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
+                    </h3>
+                    <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                      <Clock className="h-4 w-4" />
+                      {selectedDayAppointments.length} rendez-vous programmé{selectedDayAppointments.length > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  {selectedDayAppointments.length > 0 && (
+                    <Button size="sm" variant="outline" className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Ajouter
+                    </Button>
+                  )}
                 </div>
 
                 {selectedDayAppointments.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Aucun rendez-vous ce jour</p>
+                  <div className="text-center py-16 space-y-4">
+                    <div className="h-20 w-20 rounded-full bg-muted/30 mx-auto flex items-center justify-center">
+                      <Calendar className="h-10 w-10 text-muted-foreground/50" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-medium text-muted-foreground">Aucun rendez-vous ce jour</p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Votre agenda est libre pour cette journée
+                      </p>
+                    </div>
+                    <Button className="gap-2 mt-4">
+                      <Plus className="h-4 w-4" />
+                      Créer un rendez-vous
+                    </Button>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                     {selectedDayAppointments
                       .sort((a, b) => a.time.localeCompare(b.time))
                       .map((apt) => {
@@ -377,81 +467,119 @@ export default function ProfessionalAppointments() {
                         return (
                           <div
                             key={apt.id}
-                            className={`p-4 rounded-lg border-l-4 ${
-                              apt.status === 'confirmed' ? 'border-l-green-500 bg-green-50/50' :
-                              apt.status === 'pending' ? 'border-l-orange-500 bg-orange-50/50' :
-                              apt.status === 'cancelled' ? 'border-l-red-500 bg-red-50/50' :
-                              'border-l-gray-500 bg-gray-50/50'
-                            } hover:shadow-md transition-shadow`}
+                            className={`group relative p-5 rounded-xl border-l-4 transition-all duration-200 cursor-pointer ${
+                              apt.status === 'confirmed' 
+                                ? 'border-l-green-500 bg-gradient-to-r from-green-50/50 to-transparent hover:from-green-50 dark:from-green-950/20 dark:hover:from-green-950/30' 
+                                : apt.status === 'pending' 
+                                ? 'border-l-orange-500 bg-gradient-to-r from-orange-50/50 to-transparent hover:from-orange-50 dark:from-orange-950/20 dark:hover:from-orange-950/30'
+                                : apt.status === 'cancelled' 
+                                ? 'border-l-red-500 bg-gradient-to-r from-red-50/50 to-transparent hover:from-red-50 dark:from-red-950/20 dark:hover:from-red-950/30'
+                                : 'border-l-gray-500 bg-gradient-to-r from-gray-50/50 to-transparent hover:from-gray-50 dark:from-gray-950/20 dark:hover:from-gray-950/30'
+                            } hover:shadow-lg border border-border/50`}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <div className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4" />
-                                    <span className="font-semibold">{apt.time}</span>
-                                    <span className="text-sm text-muted-foreground">
-                                      ({apt.duration} min)
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 space-y-3">
+                                {/* En-tête avec heure et statut */}
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <div className="flex items-center gap-2 bg-background/80 px-3 py-1.5 rounded-lg border">
+                                    <Clock className="h-4 w-4 text-primary" />
+                                    <span className="font-bold text-base">{apt.time}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      • {apt.duration} min
                                     </span>
                                   </div>
-                                  <Badge variant={statusBadge.variant} className="gap-1">
-                                    <StatusIcon className="h-3 w-3" />
+                                  <Badge variant={statusBadge.variant} className="gap-1.5 px-2.5 py-1">
+                                    <StatusIcon className="h-3.5 w-3.5" />
                                     {statusBadge.label}
                                   </Badge>
                                   {apt.isNew && (
-                                    <Badge variant="default">Nouveau</Badge>
+                                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
+                                      Nouveau
+                                    </Badge>
                                   )}
                                 </div>
 
-                                <h4 className="font-semibold mb-1">{apt.patient}</h4>
-                                <p className="text-sm text-muted-foreground mb-2">{apt.type}</p>
+                                {/* Informations patient */}
+                                <div>
+                                  <h4 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
+                                    {apt.patient}
+                                  </h4>
+                                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                                    <Video className="h-3.5 w-3.5" />
+                                    {apt.type}
+                                  </p>
+                                </div>
 
-                                <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                                  <div className="flex items-center gap-1">
-                                    <Phone className="h-3 w-3" />
-                                    {apt.phone}
+                                {/* Coordonnées */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                                  <div className="flex items-center gap-2 text-muted-foreground bg-background/50 px-2 py-1.5 rounded">
+                                    <Phone className="h-3.5 w-3.5 shrink-0" />
+                                    <span className="truncate">{apt.phone}</span>
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="h-3 w-3" />
-                                    {apt.location}
+                                  <div className="flex items-center gap-2 text-muted-foreground bg-background/50 px-2 py-1.5 rounded">
+                                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                                    <span className="truncate">{apt.location}</span>
                                   </div>
                                 </div>
 
+                                {/* Notes */}
                                 {apt.notes && (
-                                  <div className="mt-2 p-2 bg-background/50 rounded text-sm">
-                                    <FileText className="h-3 w-3 inline mr-1" />
-                                    {apt.notes}
+                                  <div className="p-3 bg-background/70 backdrop-blur rounded-lg border text-sm flex gap-2">
+                                    <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                                    <span className="text-muted-foreground">{apt.notes}</span>
                                   </div>
                                 )}
                               </div>
 
-                              <div className="flex gap-2 ml-4">
+                              {/* Actions */}
+                              <div className="flex flex-col gap-2 shrink-0">
                                 {apt.status === 'pending' && (
                                   <>
                                     <Button 
                                       size="sm" 
-                                      variant="outline"
+                                      className="gap-2 bg-green-600 hover:bg-green-700 text-white"
                                       onClick={() => handleConfirmAppointment(apt.id)}
                                     >
-                                      Confirmer
+                                      <CheckCircle className="h-4 w-4" />
+                                      <span className="hidden sm:inline">Confirmer</span>
                                     </Button>
                                     <Button 
                                       size="sm" 
-                                      variant="destructive"
+                                      variant="outline"
+                                      className="gap-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
                                       onClick={() => openCancelDialog(apt.id)}
                                     >
-                                      Annuler
+                                      <XCircle className="h-4 w-4" />
+                                      <span className="hidden sm:inline">Annuler</span>
                                     </Button>
                                   </>
                                 )}
                                 {apt.status === 'confirmed' && (
-                                  <Button 
-                                    size="sm" 
-                                    variant="destructive"
-                                    onClick={() => openCancelDialog(apt.id)}
-                                  >
-                                    Annuler
-                                  </Button>
+                                  <>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      className="gap-2"
+                                    >
+                                      <User className="h-4 w-4" />
+                                      <span className="hidden sm:inline">Détails</span>
+                                    </Button>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      className="gap-2 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                                      onClick={() => openCancelDialog(apt.id)}
+                                    >
+                                      <XCircle className="h-4 w-4" />
+                                      <span className="hidden sm:inline">Annuler</span>
+                                    </Button>
+                                  </>
+                                )}
+                                {apt.status === 'cancelled' && (
+                                  <Badge variant="outline" className="gap-1">
+                                    <XCircle className="h-3 w-3" />
+                                    Annulé
+                                  </Badge>
                                 )}
                               </div>
                             </div>
@@ -466,12 +594,12 @@ export default function ProfessionalAppointments() {
         </TabsContent>
 
         <TabsContent value="list" className="space-y-4">
-          {/* Search */}
-          <Card className="p-4">
+          {/* Search - Mobile */}
+          <Card className="p-4 sm:hidden">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Rechercher par patient, médecin ou type..."
+                placeholder="Rechercher un patient..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"

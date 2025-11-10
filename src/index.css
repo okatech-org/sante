@@ -177,7 +177,8 @@ All colors MUST be HSL.
   
   /* Custom scrollbar pour une meilleure UX */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -185,7 +186,13 @@ All colors MUST be HSL.
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-full hover:bg-muted-foreground/50;
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
+  }
+  
+  /* Firefox scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.2) hsl(var(--muted) / 0.3);
   }
 }
 
