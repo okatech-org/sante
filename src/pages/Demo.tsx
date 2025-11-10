@@ -18,6 +18,7 @@ interface EstablishmentAccount {
   password: string;
   status: string;
   badges: string[];
+  available?: boolean;
 }
 
 interface Establishment {
@@ -99,7 +100,8 @@ const Demo = () => {
           email: "sogara.demo@sante.ga",
           password: "Sogara2025!",
           status: "active",
-          badges: ["fullAccess", "active"]
+          badges: ["fullAccess", "active"],
+          available: false
         },
         {
           title: "doctorAccount",
@@ -445,14 +447,33 @@ const Demo = () => {
                             </DialogHeader>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-                              {establishment.accounts.map((account, index) => (
-                                <Card key={index} className="p-6 hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50">
+                              {establishment.accounts.map((account, index) => {
+                                const isAvailable = account.available !== false;
+                                return (
+                                <Card key={index} className={`p-6 transition-all duration-300 border-2 ${
+                                  isAvailable 
+                                    ? 'hover:shadow-xl hover:border-primary/50' 
+                                    : 'opacity-60 cursor-not-allowed'
+                                }`}>
+                                  {!isAvailable && (
+                                    <Badge className="absolute top-4 right-4 bg-muted text-muted-foreground">
+                                      {t('demo.comingSoon')}
+                                    </Badge>
+                                  )}
                                   <div className="flex items-start gap-4 mb-4">
-                                    <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
-                                      <User className="h-6 w-6 text-primary" />
+                                    <div className={`p-3 rounded-xl ${
+                                      isAvailable 
+                                        ? 'bg-gradient-to-br from-primary/20 to-primary/10' 
+                                        : 'bg-muted/30'
+                                    }`}>
+                                      <User className={`h-6 w-6 ${
+                                        isAvailable ? 'text-primary' : 'text-muted-foreground'
+                                      }`} />
                                     </div>
                                     <div className="flex-1">
-                                      <h3 className="font-bold text-lg text-foreground mb-2">
+                                      <h3 className={`font-bold text-lg mb-2 ${
+                                        isAvailable ? 'text-foreground' : 'text-muted-foreground'
+                                      }`}>
                                         {t(`demo.${account.title}`)}
                                       </h3>
                                       <div className="flex gap-2">
@@ -489,12 +510,14 @@ const Demo = () => {
                                   <Button 
                                     className="w-full gap-2 h-12 hover-scale shadow-lg bg-gradient-to-r from-accent to-accent/90"
                                     onClick={() => handleQuickLogin(account.email, account.password, establishment.id)}
+                                    disabled={!isAvailable}
                                   >
                                     <Clock className="h-4 w-4" />
                                     {t('demo.quickLogin')}
                                   </Button>
                                 </Card>
-                              ))}
+                                );
+                              })}
                             </div>
 
                             <Card className="mt-8 bg-gradient-to-br from-muted/50 to-muted/20 border-2">
