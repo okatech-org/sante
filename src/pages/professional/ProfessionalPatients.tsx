@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   Users, Search, Plus, User, Phone, Mail,
-  Calendar, FileText, Activity, MoreVertical
+  Calendar, FileText, Activity, MoreVertical, Loader2, AlertCircle
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -13,103 +13,41 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { usePatients } from '@/hooks/usePatients';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function ProfessionalPatients() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { patients, stats, loading, error } = usePatients(searchTerm);
 
-  // Données fictives des patients
-  const patients = [
-    {
-      id: 1,
-      name: 'Marie MOUSSAVOU',
-      matricule: 'PAT-2025-001',
-      age: 35,
-      gender: 'F',
-      phone: '+241 07 12 34 56',
-      email: 'marie.moussavou@gmail.com',
-      lastVisit: '2025-01-28',
-      consultations: 12,
-      status: 'active',
-      insurance: 'CNAMGS'
-    },
-    {
-      id: 2,
-      name: 'Jean NZENGUE',
-      matricule: 'PAT-2025-002',
-      age: 42,
-      gender: 'M',
-      phone: '+241 07 23 45 67',
-      email: 'jean.nzengue@gmail.com',
-      lastVisit: '2025-01-30',
-      consultations: 8,
-      status: 'active',
-      insurance: 'CNSS'
-    },
-    {
-      id: 3,
-      name: 'Sophie KOMBILA',
-      matricule: 'PAT-2025-003',
-      age: 28,
-      gender: 'F',
-      phone: '+241 07 34 56 78',
-      email: 'sophie.kombila@gmail.com',
-      lastVisit: '2025-01-25',
-      consultations: 5,
-      status: 'active',
-      insurance: 'Privé'
-    },
-    {
-      id: 4,
-      name: 'Pierre OBAME',
-      matricule: 'PAT-2025-004',
-      age: 55,
-      gender: 'M',
-      phone: '+241 07 45 67 89',
-      email: 'pierre.obame@gmail.com',
-      lastVisit: '2025-01-15',
-      consultations: 23,
-      status: 'active',
-      insurance: 'CNAMGS'
-    },
-    {
-      id: 5,
-      name: 'André NGUEMA',
-      matricule: 'PAT-2025-005',
-      age: 60,
-      gender: 'M',
-      phone: '+241 07 56 78 90',
-      email: 'andre.nguema@gmail.com',
-      lastVisit: '2024-12-20',
-      consultations: 30,
-      status: 'inactive',
-      insurance: 'CNSS'
-    }
-  ];
+  const filteredPatients = patients;
 
-  const filteredPatients = patients.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.matricule.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.phone.includes(searchTerm)
-  );
-
-  const stats = {
-    total: patients.length,
-    active: patients.filter(p => p.status === 'active').length,
-    new: 2,
-    thisMonth: 12
-  };
-
-  const getInsuranceBadge = (insurance: string) => {
+  const getInsuranceBadge = (insurance: string | null) => {
     const badges = {
       'CNAMGS': 'bg-blue-100 text-blue-700',
       'CNSS': 'bg-green-100 text-green-700',
       'Privé': 'bg-purple-100 text-purple-700'
     };
-    return badges[insurance as keyof typeof badges] || 'bg-gray-100 text-gray-700';
+    return badges[(insurance || 'Privé') as keyof typeof badges] || 'bg-gray-100 text-gray-700';
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -151,7 +89,7 @@ export default function ProfessionalPatients() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Nouveaux</p>
-              <p className="text-2xl font-bold">{stats.new}</p>
+              <p className="text-2xl font-bold">{stats.newThisMonth}</p>
               <p className="text-xs text-muted-foreground mt-1">Ce mois</p>
             </div>
             <User className="h-8 w-8 text-orange-500" />
@@ -160,9 +98,9 @@ export default function ProfessionalPatients() {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Consultations</p>
-              <p className="text-2xl font-bold">{stats.thisMonth}</p>
-              <p className="text-xs text-muted-foreground mt-1">Ce mois</p>
+              <p className="text-sm text-muted-foreground">RDV à venir</p>
+              <p className="text-2xl font-bold">{stats.upcomingAppointments}</p>
+              <p className="text-xs text-muted-foreground mt-1">Planifiés</p>
             </div>
             <FileText className="h-8 w-8 text-purple-500" />
           </div>
@@ -192,53 +130,63 @@ export default function ProfessionalPatients() {
                   <User className="h-7 w-7 text-primary" />
                 </div>
                 
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold">{patient.name}</h3>
-                    <Badge variant="outline">{patient.matricule}</Badge>
-                    <Badge className={getInsuranceBadge(patient.insurance)}>
-                      {patient.insurance}
-                    </Badge>
-                    {patient.status === 'active' && (
-                      <Badge variant="secondary">Actif</Badge>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-lg font-semibold">{patient.name}</h3>
+                      {patient.cnamgs && (
+                        <Badge variant="outline">CNAMGS: {patient.cnamgs}</Badge>
+                      )}
+                      <Badge className={getInsuranceBadge(patient.cnamgs ? 'CNAMGS' : 'Privé')}>
+                        {patient.cnamgs ? 'CNAMGS' : 'Privé'}
+                      </Badge>
+                      {patient.status === 'suivi_actif' && (
+                        <Badge variant="secondary">Actif</Badge>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-3">
+                      <div>
+                        <p className="text-muted-foreground mb-1">Contact</p>
+                        <p className="font-medium flex items-center gap-1">
+                          <Phone className="h-3 w-3" />
+                          {patient.phone}
+                        </p>
+                      </div>
+                      {patient.lastVisit && (
+                        <div>
+                          <p className="text-muted-foreground mb-1">Dernière visite</p>
+                          <p className="font-medium flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(patient.lastVisit).toLocaleDateString('fr-FR')}
+                          </p>
+                        </div>
+                      )}
+                      {patient.nextVisit && (
+                        <div>
+                          <p className="text-muted-foreground mb-1">Prochain RDV</p>
+                          <p className="font-medium flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(patient.nextVisit).toLocaleDateString('fr-FR')}
+                          </p>
+                        </div>
+                      )}
+                      {patient.conditions && patient.conditions.length > 0 && (
+                        <div>
+                          <p className="text-muted-foreground mb-1">Conditions</p>
+                          <p className="font-medium text-xs">{patient.conditions.join(', ')}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {patient.email && (
+                      <div className="mt-3">
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
+                          {patient.email}
+                        </p>
+                      </div>
                     )}
                   </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-3">
-                    <div>
-                      <p className="text-muted-foreground mb-1">Âge</p>
-                      <p className="font-medium">{patient.age} ans ({patient.gender})</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1">Téléphone</p>
-                      <p className="font-medium flex items-center gap-1">
-                        <Phone className="h-3 w-3" />
-                        {patient.phone}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1">Dernière visite</p>
-                      <p className="font-medium flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(patient.lastVisit).toLocaleDateString('fr-FR')}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground mb-1">Consultations</p>
-                      <p className="font-medium flex items-center gap-1">
-                        <FileText className="h-3 w-3" />
-                        {patient.consultations}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3">
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <Mail className="h-3 w-3" />
-                      {patient.email}
-                    </p>
-                  </div>
-                </div>
               </div>
               
               <DropdownMenu>

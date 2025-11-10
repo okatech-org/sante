@@ -5,63 +5,16 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   Stethoscope, Search, Calendar, Clock, User, FileText,
-  Plus, Filter, ChevronRight
+  Plus, Filter, ChevronRight, Loader2, AlertCircle
 } from 'lucide-react';
 import { useMultiEstablishment } from '@/contexts/MultiEstablishmentContext';
-import { ROLE_LABELS } from '@/config/menuDefinitions';
+import { useConsultations } from '@/hooks/useConsultations';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function ProfessionalConsultations() {
   const { currentRole } = useMultiEstablishment();
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Données fictives pour la démo
-  const consultations = [
-    {
-      id: 1,
-      patient: 'Marie MOUSSAVOU',
-      date: '2025-01-31',
-      time: '09:00',
-      type: 'Consultation générale',
-      status: 'completed',
-      motif: 'Contrôle de routine'
-    },
-    {
-      id: 2,
-      patient: 'Jean NZENGUE',
-      date: '2025-01-31',
-      time: '10:30',
-      type: 'Suivi post-opératoire',
-      status: 'completed',
-      motif: 'Suivi chirurgie'
-    },
-    {
-      id: 3,
-      patient: 'Pierre OBAME',
-      date: '2025-01-31',
-      time: '14:00',
-      type: 'Consultation spécialisée',
-      status: 'in_progress',
-      motif: 'Douleurs thoraciques'
-    },
-    {
-      id: 4,
-      patient: 'Sophie KOMBILA',
-      date: '2025-01-31',
-      time: '15:30',
-      type: 'Consultation générale',
-      status: 'scheduled',
-      motif: 'Céphalées persistantes'
-    },
-    {
-      id: 5,
-      patient: 'André NGUEMA',
-      date: '2025-01-31',
-      time: '16:00',
-      type: 'Téléconsultation',
-      status: 'scheduled',
-      motif: 'Renouvellement ordonnance'
-    }
-  ];
+  const { consultations, stats, loading, error } = useConsultations();
 
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -73,12 +26,28 @@ export default function ProfessionalConsultations() {
   };
 
   const filteredConsultations = consultations.filter(c =>
-    c.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.motif.toLowerCase().includes(searchTerm.toLowerCase())
+    c.patient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.diagnosis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.notes?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -102,7 +71,7 @@ export default function ProfessionalConsultations() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Aujourd'hui</p>
-              <p className="text-2xl font-bold">5</p>
+              <p className="text-2xl font-bold">{stats.today}</p>
             </div>
             <Calendar className="h-8 w-8 text-blue-500" />
           </div>
@@ -110,8 +79,8 @@ export default function ProfessionalConsultations() {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Terminées</p>
-              <p className="text-2xl font-bold">2</p>
+              <p className="text-sm text-muted-foreground">Ce mois</p>
+              <p className="text-2xl font-bold">{stats.month}</p>
             </div>
             <Stethoscope className="h-8 w-8 text-green-500" />
           </div>
@@ -119,17 +88,17 @@ export default function ProfessionalConsultations() {
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">En cours</p>
-              <p className="text-2xl font-bold">1</p>
+              <p className="text-sm text-muted-foreground">Prescriptions</p>
+              <p className="text-2xl font-bold">{stats.prescriptions}</p>
             </div>
-            <Clock className="h-8 w-8 text-orange-500" />
+            <FileText className="h-8 w-8 text-orange-500" />
           </div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Planifiées</p>
-              <p className="text-2xl font-bold">2</p>
+              <p className="text-sm text-muted-foreground">Patients uniques</p>
+              <p className="text-2xl font-bold">{stats.uniquePatients}</p>
             </div>
             <User className="h-8 w-8 text-purple-500" />
           </div>
@@ -158,7 +127,7 @@ export default function ProfessionalConsultations() {
       {/* Liste des consultations */}
       <div className="space-y-4">
         {filteredConsultations.map((consultation) => {
-          const statusBadge = getStatusBadge(consultation.status);
+          const date = new Date(consultation.date);
           
           return (
             <Card key={consultation.id} className="p-6 hover:shadow-lg transition-shadow">
@@ -171,28 +140,35 @@ export default function ProfessionalConsultations() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-semibold">{consultation.patient}</h3>
-                      <Badge variant={statusBadge.variant}>
-                        {statusBadge.label}
-                      </Badge>
+                      {consultation.prescription && (
+                        <Badge variant="secondary">
+                          <FileText className="h-3 w-3 mr-1" />
+                          Ordonnance
+                        </Badge>
+                      )}
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        {new Date(consultation.date).toLocaleDateString('fr-FR')}
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {consultation.time}
+                        {date.toLocaleDateString('fr-FR')}
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
                         <Stethoscope className="h-4 w-4" />
                         {consultation.type}
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <FileText className="h-4 w-4" />
-                        {consultation.motif}
-                      </div>
+                      {consultation.diagnosis && (
+                        <div className="flex items-center gap-2 text-muted-foreground col-span-2">
+                          <FileText className="h-4 w-4" />
+                          <span className="font-medium">Diagnostic:</span> {consultation.diagnosis}
+                        </div>
+                      )}
+                      {consultation.notes && (
+                        <div className="flex items-center gap-2 text-muted-foreground col-span-2">
+                          <FileText className="h-4 w-4" />
+                          {consultation.notes}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
