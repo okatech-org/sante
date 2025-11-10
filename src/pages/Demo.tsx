@@ -73,10 +73,10 @@ const Demo = () => {
         {
           title: "adminAccount",
           email: "ministre@sante.gouv.ga",
-          password: "MinistryGab2025!",
+          password: "Ministre2025!",
           status: "active",
           badges: ["fullAccess", "active"],
-          available: true
+          available: false
         },
         {
           title: "doctorAccount",
