@@ -368,78 +368,93 @@ export default function ProfessionalAppointments() {
 
         <TabsContent value="calendar" className="space-y-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Calendrier mensuel - Improved */}
-            <Card className="lg:col-span-1 p-6 shadow-md hover:shadow-lg transition-shadow">
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-primary" />
+            {/* Calendrier mensuel - Enhanced UX */}
+            <Card className="lg:col-span-1 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
+              <div className="space-y-5">
+                <div className="flex items-start justify-between pb-4 border-b border-border/50">
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold flex items-center gap-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                      <Calendar className="h-6 w-6 text-primary" />
                       Calendrier
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Sélectionnez une date
+                    <p className="text-xs text-muted-foreground">
+                      Sélectionnez une date pour voir les rendez-vous
                     </p>
                   </div>
-                  <Badge variant="outline" className="gap-1">
-                    <Clock className="h-3 w-3" />
+                  <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 font-semibold shadow-sm">
+                    <Clock className="h-3.5 w-3.5" />
                     {appointments.length} RDV
                   </Badge>
                 </div>
                 
-                <CalendarComponent
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  locale={fr}
-                  className="rounded-lg border-0 pointer-events-auto w-full lg:text-base"
-                  modifiers={{
-                    today: new Date(),
-                    hasAppointments: daysWithAppointments
-                  }}
-                  modifiersClassNames={{
-                    today: 'bg-accent text-accent-foreground font-bold ring-2 ring-accent ring-offset-2',
-                    hasAppointments: 'relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary font-semibold'
-                  }}
-                />
+                <div className="p-2 rounded-xl bg-muted/30 transition-all duration-300 hover:bg-muted/40">
+                  <CalendarComponent
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    locale={fr}
+                    className="rounded-xl border-0 pointer-events-auto w-full lg:text-base [&_button]:transition-all [&_button]:duration-200"
+                    modifiers={{
+                      today: new Date(),
+                      hasAppointments: daysWithAppointments
+                    }}
+                    modifiersClassNames={{
+                      today: 'bg-accent text-accent-foreground font-bold ring-2 ring-accent ring-offset-2 shadow-md scale-105',
+                      hasAppointments: 'relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-primary after:shadow-sm font-semibold hover:after:scale-125'
+                    }}
+                  />
+                </div>
 
-                <div className="space-y-2 pt-4 border-t">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Légende</p>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-3 h-3 rounded-full bg-accent ring-2 ring-accent"></div>
-                      <span className="text-muted-foreground">Aujourd'hui</span>
+                <div className="space-y-3 pt-4 border-t border-border/50">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></span>
+                    Légende
+                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></span>
+                  </p>
+                  <div className="space-y-2.5 bg-muted/20 p-3 rounded-lg">
+                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-4 h-4 rounded-full bg-accent ring-2 ring-accent ring-offset-2 ring-offset-background shadow-sm"></div>
+                      <span className="text-foreground/80 group-hover:text-foreground">Aujourd'hui</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      <span className="text-muted-foreground">Jour sélectionné</span>
+                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-4 h-4 rounded-full bg-primary shadow-md"></div>
+                      <span className="text-foreground/80 group-hover:text-foreground">Jour sélectionné</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-3 h-3 rounded-full border-2 border-primary flex items-center justify-center">
-                        <div className="w-1 h-1 rounded-full bg-primary"></div>
+                    <div className="flex items-center gap-3 text-xs font-medium group cursor-default hover:translate-x-1 transition-transform duration-200">
+                      <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center shadow-sm">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
                       </div>
-                      <span className="text-muted-foreground">Jours avec rendez-vous</span>
+                      <span className="text-foreground/80 group-hover:text-foreground">Jours avec rendez-vous</span>
                     </div>
                   </div>
                 </div>
               </div>
             </Card>
 
-            {/* Liste des rendez-vous du jour sélectionné - Improved */}
-            <Card className="lg:col-span-2 p-6 shadow-md hover:shadow-lg transition-shadow">
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold capitalize">
+            {/* Liste des rendez-vous du jour sélectionné - Enhanced UX */}
+            <Card className="lg:col-span-2 p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 animate-fade-in backdrop-blur-sm bg-card/95">
+              <div className="space-y-5">
+                <div className="flex items-start justify-between pb-4 border-b border-border/50">
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold capitalize bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                       {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
                     </h3>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                      <Clock className="h-4 w-4" />
-                      {selectedDayAppointments.length} rendez-vous programmé{selectedDayAppointments.length > 1 ? 's' : ''}
-                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-semibold text-primary">
+                          {selectedDayAppointments.length} rendez-vous
+                        </span>
+                      </div>
+                      {selectedDayAppointments.length > 0 && (
+                        <Badge variant="outline" className="gap-1">
+                          {selectedDayAppointments.filter(a => a.status === 'confirmed').length} confirmés
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   {selectedDayAppointments.length > 0 && (
-                    <Button size="sm" variant="outline" className="gap-2">
+                    <Button size="sm" className="gap-2 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105">
                       <Plus className="h-4 w-4" />
                       Ajouter
                     </Button>
@@ -447,103 +462,108 @@ export default function ProfessionalAppointments() {
                 </div>
 
                 {selectedDayAppointments.length === 0 ? (
-                  <div className="text-center py-16 space-y-4">
-                    <div className="h-20 w-20 rounded-full bg-muted/30 mx-auto flex items-center justify-center">
-                      <Calendar className="h-10 w-10 text-muted-foreground/50" />
+                  <div className="text-center py-20 space-y-6 animate-fade-in">
+                    <div className="relative mx-auto w-24 h-24">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 animate-pulse"></div>
+                      <div className="relative h-full w-full rounded-full bg-muted/40 backdrop-blur-sm flex items-center justify-center border-2 border-border/50">
+                        <Calendar className="h-12 w-12 text-muted-foreground/60" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-lg font-medium text-muted-foreground">Aucun rendez-vous ce jour</p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">
-                        Votre agenda est libre pour cette journée
+                    <div className="space-y-2">
+                      <p className="text-xl font-semibold text-foreground/80">Aucun rendez-vous ce jour</p>
+                      <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                        Votre agenda est libre pour cette journée. Profitez-en pour planifier de nouveaux rendez-vous.
                       </p>
                     </div>
-                    <Button className="gap-2 mt-4">
+                    <Button className="gap-2 mt-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
                       <Plus className="h-4 w-4" />
                       Créer un rendez-vous
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                     {selectedDayAppointments
                       .sort((a, b) => a.time.localeCompare(b.time))
-                      .map((apt) => {
+                      .map((apt, index) => {
                         const statusBadge = getStatusBadge(apt.status);
                         const StatusIcon = statusBadge.icon;
 
                         return (
                           <div
                             key={apt.id}
-                            className={`group relative p-5 rounded-xl border-l-4 transition-all duration-200 cursor-pointer ${
+                            className={`group relative p-6 rounded-2xl border-l-[6px] transition-all duration-300 cursor-pointer animate-fade-in backdrop-blur-sm ${
                               apt.status === 'confirmed' 
-                                ? 'border-l-green-500 bg-gradient-to-r from-green-50/50 to-transparent hover:from-green-50 dark:from-green-950/20 dark:hover:from-green-950/30' 
+                                ? 'border-l-green-500 bg-gradient-to-r from-green-50/70 via-green-50/30 to-transparent hover:from-green-50 hover:shadow-green-500/20 dark:from-green-950/30 dark:via-green-950/15 dark:hover:from-green-950/40' 
                                 : apt.status === 'pending' 
-                                ? 'border-l-orange-500 bg-gradient-to-r from-orange-50/50 to-transparent hover:from-orange-50 dark:from-orange-950/20 dark:hover:from-orange-950/30'
+                                ? 'border-l-orange-500 bg-gradient-to-r from-orange-50/70 via-orange-50/30 to-transparent hover:from-orange-50 hover:shadow-orange-500/20 dark:from-orange-950/30 dark:via-orange-950/15 dark:hover:from-orange-950/40'
                                 : apt.status === 'cancelled' 
-                                ? 'border-l-red-500 bg-gradient-to-r from-red-50/50 to-transparent hover:from-red-50 dark:from-red-950/20 dark:hover:from-red-950/30'
-                                : 'border-l-gray-500 bg-gradient-to-r from-gray-50/50 to-transparent hover:from-gray-50 dark:from-gray-950/20 dark:hover:from-gray-950/30'
-                            } hover:shadow-lg border border-border/50`}
+                                ? 'border-l-red-500 bg-gradient-to-r from-red-50/70 via-red-50/30 to-transparent hover:from-red-50 hover:shadow-red-500/20 dark:from-red-950/30 dark:via-red-950/15 dark:hover:from-red-950/40'
+                                : 'border-l-gray-500 bg-gradient-to-r from-gray-50/70 via-gray-50/30 to-transparent hover:from-gray-50 hover:shadow-gray-500/20 dark:from-gray-950/30 dark:via-gray-950/15 dark:hover:from-gray-950/40'
+                            } hover:shadow-xl hover:scale-[1.02] border-2 border-border/50 hover:border-border`}
+                            style={{ animationDelay: `${index * 50}ms` }}
                           >
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="flex-1 space-y-3">
+                            <div className="flex items-start justify-between gap-6">
+                              <div className="flex-1 space-y-4">
                                 {/* En-tête avec heure et statut */}
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <div className="flex items-center gap-2 bg-background/80 px-3 py-1.5 rounded-lg border">
-                                    <Clock className="h-4 w-4 text-primary" />
-                                    <span className="font-bold text-base">{apt.time}</span>
-                                    <span className="text-xs text-muted-foreground">
-                                      • {apt.duration} min
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                  <div className="flex items-center gap-2.5 bg-gradient-to-br from-primary/10 to-primary/5 px-4 py-2 rounded-xl border-2 border-primary/20 shadow-sm hover:shadow-md transition-all duration-200 group-hover:scale-105">
+                                    <Clock className="h-5 w-5 text-primary animate-pulse" />
+                                    <span className="font-bold text-lg tracking-tight">{apt.time}</span>
+                                    <div className="w-px h-4 bg-border"></div>
+                                    <span className="text-sm text-muted-foreground font-medium">
+                                      {apt.duration} min
                                     </span>
                                   </div>
-                                  <Badge variant={statusBadge.variant} className="gap-1.5 px-2.5 py-1">
-                                    <StatusIcon className="h-3.5 w-3.5" />
+                                  <Badge variant={statusBadge.variant} className="gap-2 px-3 py-1.5 text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200">
+                                    <StatusIcon className="h-4 w-4" />
                                     {statusBadge.label}
                                   </Badge>
                                   {apt.isNew && (
-                                    <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
-                                      Nouveau
+                                    <Badge className="bg-gradient-to-r from-primary/15 to-accent/15 text-primary hover:from-primary/25 hover:to-accent/25 px-3 py-1.5 shadow-sm animate-pulse">
+                                      ✨ Nouveau
                                     </Badge>
                                   )}
                                 </div>
 
                                 {/* Informations patient */}
-                                <div>
-                                  <h4 className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
+                                <div className="space-y-2">
+                                  <h4 className="font-bold text-xl mb-1 group-hover:text-primary transition-colors duration-200 tracking-tight">
                                     {apt.patient}
                                   </h4>
-                                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                                    <Video className="h-3.5 w-3.5" />
-                                    {apt.type}
-                                  </p>
+                                  <div className="flex items-center gap-2 bg-background/60 backdrop-blur-sm px-3 py-2 rounded-lg border border-border/50 w-fit">
+                                    <Video className="h-4 w-4 text-primary" />
+                                    <span className="text-sm font-medium text-foreground/80">{apt.type}</span>
+                                  </div>
                                 </div>
 
                                 {/* Coordonnées */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                                  <div className="flex items-center gap-2 text-muted-foreground bg-background/50 px-2 py-1.5 rounded">
-                                    <Phone className="h-3.5 w-3.5 shrink-0" />
-                                    <span className="truncate">{apt.phone}</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                                  <div className="flex items-center gap-3 text-foreground/80 bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-border transition-all duration-200 hover:shadow-md group/contact">
+                                    <Phone className="h-4 w-4 shrink-0 text-primary group-hover/contact:scale-110 transition-transform" />
+                                    <span className="truncate font-medium">{apt.phone}</span>
                                   </div>
-                                  <div className="flex items-center gap-2 text-muted-foreground bg-background/50 px-2 py-1.5 rounded">
-                                    <MapPin className="h-3.5 w-3.5 shrink-0" />
-                                    <span className="truncate">{apt.location}</span>
+                                  <div className="flex items-center gap-3 text-foreground/80 bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-border transition-all duration-200 hover:shadow-md group/location">
+                                    <MapPin className="h-4 w-4 shrink-0 text-primary group-hover/location:scale-110 transition-transform" />
+                                    <span className="truncate font-medium">{apt.location}</span>
                                   </div>
                                 </div>
 
                                 {/* Notes */}
                                 {apt.notes && (
-                                  <div className="p-3 bg-background/70 backdrop-blur rounded-lg border text-sm flex gap-2">
-                                    <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                                    <span className="text-muted-foreground">{apt.notes}</span>
+                                  <div className="p-4 bg-gradient-to-br from-muted/60 to-muted/40 backdrop-blur-sm rounded-xl border border-border/50 text-sm flex gap-3 hover:shadow-md transition-all duration-200">
+                                    <FileText className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                                    <span className="text-foreground/80 font-medium leading-relaxed">{apt.notes}</span>
                                   </div>
                                 )}
                               </div>
 
                               {/* Actions */}
-                              <div className="flex flex-col gap-2 shrink-0">
+                              <div className="flex flex-col gap-3 shrink-0">
                                 {apt.status === 'pending' && (
                                   <>
                                     <Button 
                                       size="sm" 
-                                      className="gap-2 bg-green-600 hover:bg-green-700 text-white"
+                                      className="gap-2 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 font-semibold"
                                       onClick={() => handleConfirmAppointment(apt.id)}
                                     >
                                       <CheckCircle className="h-4 w-4" />
