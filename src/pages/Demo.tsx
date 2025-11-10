@@ -82,7 +82,8 @@ const Demo = () => {
           email: "dg.sante@gouv.ga",
           password: "DG2025!",
           status: "active",
-          badges: ["fullAccess", "active"]
+          badges: ["fullAccess", "active"],
+          available: false
         }
       ]
     },
