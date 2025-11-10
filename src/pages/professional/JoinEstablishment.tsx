@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import {
   Building2,
@@ -19,7 +20,9 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Map as MapIcon,
+  List
 } from 'lucide-react';
 import {
   Select,
@@ -36,6 +39,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import EstablishmentsMap from '@/components/maps/EstablishmentsMap';
 
 interface Establishment {
   id: string;
@@ -154,7 +158,7 @@ export default function JoinEstablishment() {
     try {
       const { data, error } = await supabase
         .from('establishments')
-        .select('id, raison_sociale, type_etablissement, ville, province')
+        .select('id, raison_sociale, type_etablissement, ville, province, latitude, longitude')
         .or(`raison_sociale.ilike.%${searchTerm}%,ville.ilike.%${searchTerm}%,province.ilike.%${searchTerm}%`)
         .limit(20);
 
@@ -259,7 +263,7 @@ export default function JoinEstablishment() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recherche d'établissements */}
+        {/* Recherche d'établissements avec vue Liste/Carte */}
         <Card className="p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Search className="h-5 w-5" />
@@ -287,33 +291,57 @@ export default function JoinEstablishment() {
               </div>
             </div>
 
-            {/* Résultats */}
+            {/* Tabs Liste / Carte */}
             {establishments.length > 0 && (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {establishments.map((est) => (
-                  <Card
-                    key={est.id}
-                    className="p-4 hover:border-primary cursor-pointer transition-colors"
-                    onClick={() => setSelectedEstablishment(est)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{est.raison_sociale}</h3>
-                        <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{est.ville}, {est.province}</span>
+              <Tabs defaultValue="list" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="list" className="flex items-center gap-2">
+                    <List className="h-4 w-4" />
+                    Liste
+                  </TabsTrigger>
+                  <TabsTrigger value="map" className="flex items-center gap-2">
+                    <MapIcon className="h-4 w-4" />
+                    Carte
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Vue Liste */}
+                <TabsContent value="list" className="space-y-2 max-h-96 overflow-y-auto mt-4">
+                  {establishments.map((est) => (
+                    <Card
+                      key={est.id}
+                      className="p-4 hover:border-primary cursor-pointer transition-colors"
+                      onClick={() => setSelectedEstablishment(est)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{est.raison_sociale}</h3>
+                          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>{est.ville}, {est.province}</span>
+                          </div>
+                          <Badge variant="outline" className="mt-2 text-xs">
+                            {est.type_etablissement}
+                          </Badge>
                         </div>
-                        <Badge variant="outline" className="mt-2 text-xs">
-                          {est.type_etablissement}
-                        </Badge>
+                        <Button size="sm" variant="outline">
+                          Sélectionner
+                        </Button>
                       </div>
-                      <Button size="sm" variant="outline">
-                        Sélectionner
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                    </Card>
+                  ))}
+                </TabsContent>
+
+                {/* Vue Carte */}
+                <TabsContent value="map" className="mt-4">
+                  <EstablishmentsMap
+                    establishments={establishments}
+                    onEstablishmentClick={(est) => setSelectedEstablishment(est)}
+                    selectedEstablishmentId={selectedEstablishment?.id}
+                    height="400px"
+                  />
+                </TabsContent>
+              </Tabs>
             )}
           </div>
         </Card>
