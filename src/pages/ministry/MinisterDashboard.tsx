@@ -603,10 +603,10 @@ const objectifsData: NationalObjective[] = [
 
 const statusStyles: Record<DecretDocument["status"], string> = {
   brouillon: "bg-slate-500/10 text-slate-500",
-  revision: "bg-blue-500/10 text-blue-500",
-  validation: "bg-amber-500/10 text-amber-500",
-  signe: "bg-emerald-500/10 text-emerald-500",
-  publie: "bg-purple-500/10 text-purple-500",
+  revision: "bg-zinc-500/10 text-zinc-500",
+  validation: "bg-gray-500/10 text-gray-500",
+  signe: "bg-slate-700/10 text-slate-700",
+  publie: "bg-neutral-700/10 text-neutral-700",
 };
 
 const priorityStyles: Record<DecretDocument["priority"], string> = {
@@ -617,14 +617,14 @@ const priorityStyles: Record<DecretDocument["priority"], string> = {
 };
 
 const objectiveCategoryStyles: Record<NationalObjective["category"], string> = {
-  politique: "bg-blue-500/10 text-blue-500",
-  economique: "bg-emerald-500/10 text-emerald-500",
-  sanitaire: "bg-rose-500/10 text-rose-500",
+  politique: "bg-slate-500/10 text-slate-600",
+  economique: "bg-zinc-500/10 text-zinc-600",
+  sanitaire: "bg-gray-500/10 text-gray-600",
 };
 
 const objectiveStatusStyles: Record<NationalObjective["status"], string> = {
-  en_cours: "bg-blue-500/10 text-blue-500",
-  atteint: "bg-emerald-500/10 text-emerald-500",
+  en_cours: "bg-slate-500/10 text-slate-600",
+  atteint: "bg-slate-700/10 text-slate-700",
   en_retard: "bg-red-500/10 text-red-500",
 };
 
@@ -637,7 +637,7 @@ const GlassCard = ({ children, className }: { children: ReactNode; className?: s
       className
     )}
   >
-    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent opacity-60 dark:from-emerald-500/10 dark:via-transparent dark:to-transparent" />
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent opacity-60 dark:from-slate-500/10 dark:via-transparent dark:to-transparent" />
     <div className="relative">{children}</div>
   </div>
 );
@@ -945,7 +945,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
   const strokeDashoffset = circumference - (coverageRate / 100) * circumference;
 
   const getTrendClass = (trend: Trend) => {
-    if (trend === "up") return "text-emerald-500";
+    if (trend === "up") return "text-slate-700 dark:text-slate-400";
     if (trend === "down") return "text-red-500";
     return "text-slate-500";
   };
@@ -996,10 +996,10 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
           <GlassCard className="p-4">
             <div className="flex flex-col items-center gap-3">
               <div className="relative">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 dark:from-slate-500 dark:via-slate-600 dark:to-slate-700 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                   AM
                 </div>
-                <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+                <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-slate-700 dark:bg-slate-500 border-2 border-white dark:border-slate-900" />
               </div>
               
               {sidebarExpanded && (
@@ -1034,8 +1034,8 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                     "group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
                     !sidebarExpanded && "justify-center",
                     isActive
-                      ? "bg-emerald-500 text-white shadow-[0_10px_25px_rgba(16,185,129,0.3)]"
-                      : "text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-500 dark:text-slate-400"
+                      ? "bg-slate-700 dark:bg-slate-600 text-white shadow-[0_10px_25px_rgba(100,116,139,0.3)]"
+                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
                   )}
                   title={!sidebarExpanded ? item.label : undefined}
                 >
@@ -1044,7 +1044,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                     <span className="truncate">{item.label}</span>
                   )}
                   {!sidebarExpanded && isActive && (
-                    <span className="absolute left-full ml-2 px-3 py-1.5 bg-emerald-500 text-white text-xs rounded-lg shadow-lg whitespace-nowrap">
+                    <span className="absolute left-full ml-2 px-3 py-1.5 bg-slate-700 dark:bg-slate-600 text-white text-xs rounded-lg shadow-lg whitespace-nowrap">
                       {item.label}
                     </span>
                   )}
@@ -1057,7 +1057,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
           <GlassCard className="p-2">
             <button
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
-              className="w-full rounded-xl p-2.5 hover:bg-emerald-500/10 transition flex items-center justify-center"
+              className="w-full rounded-xl p-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center"
               title={sidebarExpanded ? "Réduire" : "Étendre"}
             >
               {sidebarExpanded ? (
@@ -1097,7 +1097,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
         <main className="flex-1 space-y-4 pb-8">
           <GlassCard className="flex items-center justify-between gap-3 rounded-3xl p-4 lg:hidden">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-700/15 dark:bg-slate-600/20 text-slate-700 dark:text-slate-400">
                 <Shield className="h-6 w-6" />
               </div>
               <div>
@@ -1116,7 +1116,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="flex shrink-0 items-center justify-center gap-2 rounded-full bg-transparent px-4 py-2 text-sm font-medium data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+                  className="flex shrink-0 items-center justify-center gap-2 rounded-full bg-transparent px-4 py-2 text-sm font-medium data-[state=active]:bg-slate-700 data-[state=active]:text-white dark:data-[state=active]:bg-slate-600"
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
@@ -1178,7 +1178,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                             className={cn(
                               "rounded-full px-4 py-1 text-xs font-semibold transition",
                               usagePeriod === period.value
-                                ? "bg-emerald-500 text-white shadow"
+                                ? "bg-slate-700 dark:bg-slate-600 text-white shadow"
                                 : "bg-white/80 text-slate-600 hover:bg-white dark:bg-white/10 dark:text-slate-300"
                             )}
                           >
@@ -1188,7 +1188,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       </div>
                     </div>
                     {lastPoint && (
-                      <div className="rounded-3xl bg-white/70 px-5 py-4 text-sm font-medium text-emerald-500 shadow-sm dark:bg-white/5">
+                      <div className="rounded-3xl bg-white/70 px-5 py-4 text-sm font-medium text-slate-700 dark:text-slate-400 shadow-sm dark:bg-white/5">
                         <span className="mr-2 inline-flex items-center gap-1">
                           <ArrowUpRight className="h-3 w-3" />
                           {lastPoint.delta >= 0 ? "+" : ""}
@@ -1206,7 +1206,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           <stop offset="100%" stopColor="rgba(255,255,255,0)" />
                         </linearGradient>
                         <linearGradient id="usageGradientDark" x1="0" x2="0" y1="0" y2="1">
-                          <stop offset="0%" stopColor="rgba(16,185,129,0.45)" />
+                          <stop offset="0%" stopColor="rgba(100,116,139,0.45)" />
                           <stop offset="100%" stopColor="rgba(15,23,42,0)" />
                         </linearGradient>
                       </defs>
@@ -1220,7 +1220,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         <path
                           d={chartPath}
                           fill="none"
-                          stroke={currentTheme === "dark" ? "#34d399" : "#1d4ed8"}
+                          stroke={currentTheme === "dark" ? "#94a3b8" : "#1d4ed8"}
                           strokeWidth={2.6}
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -1236,7 +1236,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                             cx={x}
                             cy={y}
                             r={isLast ? 2 : 1.45}
-                            fill={isLast ? "#1d4ed8" : currentTheme === "dark" ? "#34d399" : "#38bdf8"}
+                            fill={isLast ? "#1d4ed8" : currentTheme === "dark" ? "#94a3b8" : "#38bdf8"}
                             opacity={isLast ? 1 : 0.75}
                           />
                         );
@@ -1253,7 +1253,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           className="flex flex-col gap-3 rounded-2xl bg-white/80 p-4 shadow-sm transition hover:shadow-lg dark:bg-white/5"
                         >
                           <div className="flex items-center justify-between">
-                            <div className="rounded-2xl bg-slate-900/5 p-2 text-slate-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                            <div className="rounded-2xl bg-slate-900/5 p-2 text-slate-600 dark:bg-slate-700/20 dark:text-slate-400">
                               <Icon className="h-5 w-5" />
                             </div>
                             <span className={cn("flex items-center gap-1 text-xs font-semibold", getTrendClass(stat.trend))}>
@@ -1272,7 +1272,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                   </div>
                 </GlassCard>
 
-                <GlassCard className="flex h-full flex-col gap-4 rounded-3xl bg-gradient-to-br from-emerald-200/60 via-white to-white p-6 dark:from-emerald-500/20 dark:via-slate-900 dark:to-slate-900">
+                <GlassCard className="flex h-full flex-col gap-4 rounded-3xl bg-gradient-to-br from-slate-200/60 via-white to-white p-6 dark:from-slate-700/20 dark:via-slate-900 dark:to-slate-900">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">Profil exécutif</p>
@@ -1280,7 +1280,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         <p className="text-sm text-slate-500 dark:text-slate-400">Ministre de la Santé • République Gabonaise</p>
                       </div>
                       <div className="h-12 w-12 rounded-full bg-white/70 shadow-inner dark:bg-white/10">
-                        <Shield className="m-3 h-6 w-6 text-emerald-500" />
+                        <Shield className="m-3 h-6 w-6 text-slate-700 dark:text-slate-400" />
                       </div>
                     </div>
                     <div className="grid gap-3">
@@ -1289,12 +1289,12 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           <span>{item.label}</span>
                           <span className="inline-flex items-center gap-2 text-slate-900 dark:text-white">
                             {item.value}
-                            <span className="text-emerald-500">{item.trend}</span>
+                            <span className="text-slate-700 dark:text-slate-400">{item.trend}</span>
                           </span>
                         </div>
                       ))}
                     </div>
-                    <Button className="mt-auto rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                    <Button className="mt-auto rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600">
                       Agenda du jour
                     </Button>
                 </GlassCard>
@@ -1327,13 +1327,13 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                     </div>
                     <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
                       <span>Variation mensuelle</span>
-                      <span className="inline-flex items-center gap-1 text-emerald-500">
+                      <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-400">
                         <ArrowUpRight className="h-4 w-4" />
                         +3,8%
                       </span>
                     </div>
                   </div>
-                  <Button className="mt-6 w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                  <Button className="mt-6 w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600">
                     Analyse budgétaire détaillée
                   </Button>
                 </GlassCard>
@@ -1380,9 +1380,9 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         key={sector.id}
                         className="flex flex-col gap-3 rounded-3xl bg-white/85 p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:bg-white/5"
                       >
-                        <div className="h-24 rounded-2xl bg-gradient-to-tr from-slate-900/5 via-white to-white p-3 dark:from-emerald-500/20 dark:via-white/5 dark:to-white/0">
+                        <div className="h-24 rounded-2xl bg-gradient-to-tr from-slate-900/5 via-white to-white p-3 dark:from-slate-700/20 dark:via-white/5 dark:to-white/0">
                           <div
-                            className="h-full w-full rounded-xl bg-slate-900/5 dark:bg-emerald-500/20"
+                            className="h-full w-full rounded-xl bg-slate-900/5 dark:bg-slate-700/20"
                             style={{ height: `${sector.value}%` }}
                           />
                         </div>
@@ -1393,7 +1393,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         <span
                           className={cn(
                             "text-xs font-medium",
-                            sector.delta >= 0 ? "text-emerald-500" : "text-red-500"
+                            sector.delta >= 0 ? "text-slate-700 dark:text-slate-400" : "text-red-500"
                           )}
                         >
                           {sector.delta >= 0 ? "+" : ""}
@@ -1441,7 +1441,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                               <button
                                 type="button"
                                 onClick={() => toast.info(alert.action)}
-                                className="inline-flex items-center gap-1 text-emerald-500 hover:text-emerald-400"
+                                className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                               >
                                 Détails
                                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -1477,7 +1477,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                   </select>
                   <Button 
                     onClick={() => setIsDecreeCreatorOpen(true)}
-                    className="rounded-full bg-emerald-500 px-5 hover:bg-emerald-600"
+                    className="rounded-full bg-slate-700 dark:bg-slate-600 px-5 hover:bg-slate-800 dark:hover:bg-slate-500"
                   >
                     <FileSignature className="mr-2 h-4 w-4" />
                     Nouveau décret
@@ -1488,7 +1488,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
               {decretsLoading ? (
                 <GlassCard className="p-6">
                   <div className="flex items-center justify-center py-12">
-                    <RefreshCw className="h-8 w-8 animate-spin text-emerald-500" />
+                    <RefreshCw className="h-8 w-8 animate-spin text-slate-500" />
                   </div>
                 </GlassCard>
               ) : (
@@ -1509,7 +1509,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         className={cn(
                           "rounded-2xl border bg-white/60 p-4 text-left transition hover:shadow-lg dark:bg-white/5",
                           (selectedDecret?.id === decret.id)
-                            ? "border-emerald-400/60 shadow-[0_15px_30px_rgba(16,185,129,0.18)]"
+                            ? "border-slate-400/60 shadow-[0_15px_30px_rgba(100,116,139,0.18)]"
                             : "border-white/30 dark:border-white/10"
                         )}
                       >
@@ -1631,13 +1631,13 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Badge className="rounded-full bg-blue-500/10 text-blue-500">
+                    <Badge className="rounded-full bg-slate-500/10 text-slate-600">
                       Politiques {objectifsDataMapped.filter((o) => o.category === "politique").length}
                     </Badge>
-                    <Badge className="rounded-full bg-emerald-500/10 text-emerald-500">
+                    <Badge className="rounded-full bg-zinc-500/10 text-zinc-600">
                       Économiques {objectifsDataMapped.filter((o) => o.category === "economique").length}
                     </Badge>
-                    <Badge className="rounded-full bg-rose-500/10 text-rose-500">
+                    <Badge className="rounded-full bg-gray-500/10 text-gray-600">
                       Sanitaires {objectifsDataMapped.filter((o) => o.category === "sanitaire").length}
                     </Badge>
                   </div>
@@ -1666,7 +1666,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         </div>
                         <div>
                           <p className="text-xs uppercase tracking-wide text-slate-400">Cible</p>
-                          <p className="text-base font-semibold text-emerald-500">{objectif.target_value}</p>
+                          <p className="text-base font-semibold text-slate-700 dark:text-slate-400">{objectif.target_value}</p>
                         </div>
                       </div>
                       <div className="mt-4">
@@ -1680,7 +1680,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           value={objectif.progress}
                           className={cn(
                             "mt-2 h-2 rounded-full",
-                            objectif.status === "en_retard" ? "[&>div]:bg-red-500" : "[&>div]:bg-emerald-500"
+                            objectif.status === "en_retard" ? "[&>div]:bg-red-500" : "[&>div]:bg-slate-600"
                           )}
                         />
                       </div>
@@ -1690,7 +1690,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         </span>
                         <button
                           type="button"
-                          className="inline-flex items-center gap-1 text-emerald-500 hover:text-emerald-400"
+                          className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                         >
                           Plan d'action
                           <ArrowUpRight className="h-3 w-3" />
@@ -1707,7 +1707,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                 <GlassCard className="p-6">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold">Couverture CNAMGS</h3>
-                    <Badge className="bg-emerald-500/15 text-emerald-400">Objectif 95%</Badge>
+                    <Badge className="bg-slate-500/15 text-slate-600 dark:text-slate-400">Objectif 95%</Badge>
                   </div>
                   <p className="mt-6 text-4xl font-semibold">78%</p>
                   <Progress value={78} className="mt-4 h-2 rounded-full" />
@@ -1754,14 +1754,14 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         "rounded-2xl border bg-white/70 p-4 shadow-sm dark:bg-white/5",
                         rec.tone === "danger"
                           ? "border-red-400/40"
-                          : "border-emerald-400/30"
+                          : "border-slate-400/30"
                       )}
                     >
                       <div className="flex items-center gap-2 text-sm font-semibold">
                         {rec.tone === "danger" ? (
                           <AlertCircle className="h-4 w-4 text-red-500" />
                         ) : (
-                          <Zap className="h-4 w-4 text-emerald-500" />
+                          <Zap className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                         )}
                         {rec.title}
                       </div>
@@ -1879,7 +1879,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       size="sm"
                       className={cn(
                         "rounded-full px-4 py-2 text-xs font-semibold",
-                        activeCartography === "infrastructure" && "bg-emerald-500 text-white hover:bg-emerald-600"
+                        activeCartography === "infrastructure" && "bg-slate-700 dark:bg-slate-600 text-white hover:bg-slate-800 dark:hover:bg-slate-500"
                       )}
                       onClick={() => setActiveCartography("infrastructure")}
                     >
@@ -1898,8 +1898,8 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           Suivi du taux de couverture CNAMGS/CNSS par province. Objectif national : 95% d'ici 2028.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-emerald-700 dark:text-emerald-300">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-200 dark:bg-slate-700 px-3 py-1 text-slate-800 dark:text-slate-300">
+                            <span className="h-2 w-2 rounded-full bg-slate-700 dark:bg-slate-400" />
                             &gt;80% Bonne couverture
                           </span>
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-amber-700 dark:text-amber-300">
@@ -1932,8 +1932,8 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           Répartition du personnel de santé par province. Objectif : 1,5 médecin pour 1000 habitants.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-emerald-700 dark:text-emerald-300">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-200 dark:bg-slate-700 px-3 py-1 text-slate-800 dark:text-slate-300">
+                            <span className="h-2 w-2 rounded-full bg-slate-700 dark:bg-slate-400" />
                             &gt;1.2/1000 Bon ratio
                           </span>
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-amber-700 dark:text-amber-300">
@@ -1958,16 +1958,16 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
 
                   {activeCartography === "infrastructure" && (
                     <div className="space-y-4">
-                      <div className="rounded-2xl bg-emerald-500/10 border border-emerald-400/30 p-4 dark:bg-emerald-500/10 dark:border-emerald-400/20">
-                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
+                      <div className="rounded-2xl bg-slate-200/50 dark:bg-slate-700/30 border border-slate-400/30 p-4 dark:border-slate-600/20">
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-300 mb-2">
                           Objectif Infrastructures : Plateaux Techniques Modernes
                         </p>
-                        <p className="text-xs text-emerald-600/80 dark:text-emerald-300/80">
+                        <p className="text-xs text-slate-700/80 dark:text-slate-400/80">
                           Disponibilité des équipements et infrastructures par province. Focus : CHU, CHR, imagerie, laboratoires.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-emerald-700 dark:text-emerald-300">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-200 dark:bg-slate-700 px-3 py-1 text-slate-800 dark:text-slate-300">
+                            <span className="h-2 w-2 rounded-full bg-slate-700 dark:bg-slate-400" />
                             CHU/CHR Complet
                           </span>
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-amber-700 dark:text-amber-300">
@@ -1980,7 +1980,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           </span>
                         </div>
                       </div>
-                      <div className="h-[500px] overflow-hidden rounded-3xl border border-emerald-400/30 bg-emerald-500/5 dark:border-emerald-400/20">
+                      <div className="h-[500px] overflow-hidden rounded-3xl border border-slate-400/30 bg-slate-100/50 dark:border-slate-600/20 dark:bg-slate-800/20">
                         <HealthProvidersMap />
                       </div>
                     </div>
@@ -2006,7 +2006,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                         size="sm"
                         className={cn(
                           "rounded-full px-3 py-1.5 text-xs",
-                          sortProvinceBy === "priority" && "bg-emerald-500 text-white hover:bg-emerald-600"
+                          sortProvinceBy === "priority" && "bg-slate-700 dark:bg-slate-600 text-white hover:bg-slate-800 dark:hover:bg-slate-500"
                         )}
                         onClick={() => setSortProvinceBy("priority")}
                       >
@@ -2020,7 +2020,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           sortProvinceBy === "coverage" && 
                             (activeCartography === "coverage" ? "bg-blue-500 hover:bg-blue-600" :
                              activeCartography === "resources" ? "bg-purple-500 hover:bg-purple-600" :
-                             "bg-emerald-500 hover:bg-emerald-600") + " text-white"
+                             "bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500") + " text-white"
                         )}
                         onClick={() => setSortProvinceBy("coverage")}
                       >
@@ -2076,7 +2076,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                       const priorityColors = {
                         haute: "border-red-400/50 bg-red-500/5",
                         moyenne: "border-amber-400/50 bg-amber-500/5",
-                        basse: "border-emerald-400/50 bg-emerald-500/5",
+                        basse: "border-slate-400/50 bg-slate-100/30 dark:bg-slate-700/10",
                       };
 
                       return (
@@ -2085,7 +2085,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                           className={cn(
                             "rounded-2xl border p-2.5 transition hover:shadow-md",
                             isActive
-                              ? "border-emerald-400/60 bg-emerald-500/10 shadow-[0_8px_16px_rgba(16,185,129,0.12)] dark:border-emerald-400/40"
+                              ? "border-slate-500/60 bg-slate-100/30 dark:bg-slate-700/20 shadow-[0_8px_16px_rgba(100,116,139,0.12)] dark:border-slate-500/40"
                               : "border-white/40 bg-white/70 dark:border-white/10 dark:bg-white/5",
                             priorityColors[province.priority]
                           )}
@@ -2098,7 +2098,7 @@ Je peux générer un rapport détaillé, un décret ministériel ou vous fournir
                                   "rounded-full text-[9px] px-1.5 py-0.5",
                                   province.priority === "haute" && "bg-red-500/15 text-red-500",
                                   province.priority === "moyenne" && "bg-amber-500/15 text-amber-500",
-                                  province.priority === "basse" && "bg-emerald-500/15 text-emerald-500"
+                                  province.priority === "basse" && "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
                                 )}
                               >
                                 {province.priority.charAt(0).toUpperCase()}
