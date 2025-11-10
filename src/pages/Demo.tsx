@@ -207,7 +207,7 @@ const Demo = () => {
   const individualAccounts: DemoAccount[] = [
     {
       id: 'patient',
-      title: 'Asted PELLEN-LAKOUMBA',
+      title: 'demo.account.patient',
       email: 'iasted@me.com',
       password: 'Patient2025!',
       icon: User,
