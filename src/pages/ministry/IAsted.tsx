@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Bot, MessageSquare, History, Settings } from 'lucide-react';
 import { IAstedVoiceButton } from '@/components/ministry/iasted/IAstedVoiceButton';
 import { IAstedChat } from '@/components/ministry/iasted/IAstedChat';
+import { IAstedTranscript } from '@/components/ministry/iasted/IAstedTranscript';
 import { VoiceSettings } from '@/components/ministry/iasted/VoiceSettings';
 import { FocusSessionsPanel } from '@/components/ministry/iasted/FocusSessionsPanel';
 
@@ -42,7 +43,7 @@ const IAsted = () => {
           </TabsList>
 
           <TabsContent value="conversation" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Voice Interaction */}
               <Card className="p-8">
                 <div className="space-y-6">
@@ -58,6 +59,11 @@ const IAsted = () => {
                     <IAstedVoiceButton />
                   </div>
                 </div>
+              </Card>
+
+              {/* Live Transcript */}
+              <Card className="h-[600px]">
+                <IAstedTranscript />
               </Card>
 
               {/* Text Chat */}
