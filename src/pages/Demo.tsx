@@ -27,6 +27,8 @@ interface Establishment {
   category: string;
   icon: any;
   accounts: EstablishmentAccount[];
+  available: boolean;
+  color: string;
 }
 
 interface DemoAccount {
@@ -39,6 +41,7 @@ interface DemoAccount {
   color: string;
   status: DemoStatus;
   statusLabel: string;
+  available: boolean;
 }
 
 const Demo = () => {
@@ -53,6 +56,8 @@ const Demo = () => {
       location: 'Libreville, Gabon',
       category: 'Centre Médical',
       icon: Building2,
+      available: true,
+      color: 'from-blue-500/10 via-blue-400/5',
       accounts: [
         {
           title: "adminAccount",
@@ -90,6 +95,8 @@ const Demo = () => {
       location: 'Libreville, Gabon',
       category: 'Pharmacie',
       icon: Pill,
+      available: true,
+      color: 'from-green-500/10 via-green-400/5',
       accounts: [
         {
           title: "adminAccount",
@@ -113,6 +120,8 @@ const Demo = () => {
       location: 'Libreville, Gabon',
       category: 'Laboratoire d\'analyses',
       icon: TestTube,
+      available: false,
+      color: 'from-muted/20 via-muted/10',
       accounts: [
         {
           title: "adminAccount",
@@ -136,6 +145,8 @@ const Demo = () => {
       location: 'Libreville, Gabon',
       category: 'Centre Hospitalier',
       icon: Building2,
+      available: false,
+      color: 'from-muted/20 via-muted/10',
       accounts: [
         {
           title: "adminAccount",
@@ -159,6 +170,8 @@ const Demo = () => {
       location: 'Libreville, Gabon',
       category: 'Administration Publique',
       icon: Shield,
+      available: true,
+      color: 'from-purple-500/10 via-purple-400/5',
       accounts: [
         {
           title: "adminAccount",
@@ -188,7 +201,8 @@ const Demo = () => {
       target: '/dashboard/patient',
       color: 'primary',
       status: 'active',
-      statusLabel: t('demo.status.active')
+      statusLabel: t('demo.status.active'),
+      available: true
     },
     {
       id: 'doctor',
@@ -199,7 +213,8 @@ const Demo = () => {
       target: '/professional/doctor-dashboard',
       color: 'secondary',
       status: 'active',
-      statusLabel: t('demo.status.active')
+      statusLabel: t('demo.status.active'),
+      available: true
     },
     {
       id: 'nurse',
@@ -210,7 +225,8 @@ const Demo = () => {
       target: '/dashboard/professional',
       color: 'accent',
       status: 'testing',
-      statusLabel: t('demo.status.testing')
+      statusLabel: t('demo.status.testing'),
+      available: false
     }
   ];
 
@@ -274,15 +290,42 @@ const Demo = () => {
             {establishments.map((establishment) => {
               const EstIcon = establishment.icon;
               return (
-                <Card key={establishment.id} className="overflow-hidden border-2 hover:shadow-2xl transition-all duration-300">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background p-6">
+                <Card 
+                  key={establishment.id} 
+                  className={`overflow-hidden border-2 transition-all duration-300 ${
+                    establishment.available 
+                      ? 'hover:shadow-2xl' 
+                      : 'opacity-60 cursor-not-allowed'
+                  }`}
+                >
+                  <div className={`bg-gradient-to-r ${establishment.color} to-background p-6 relative`}>
+                    {!establishment.available && (
+                      <Badge className="absolute top-4 right-4 bg-muted text-muted-foreground">
+                        {t('demo.comingSoon')}
+                      </Badge>
+                    )}
+                    
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="p-3 rounded-xl bg-primary/10 shadow-lg">
-                          <EstIcon className="h-8 w-8 text-primary" />
+                        <div className={`p-3 rounded-xl shadow-lg ${
+                          establishment.available 
+                            ? 'bg-primary/10' 
+                            : 'bg-muted/30'
+                        }`}>
+                          <EstIcon className={`h-8 w-8 ${
+                            establishment.available 
+                              ? 'text-primary' 
+                              : 'text-muted-foreground'
+                          }`} />
                         </div>
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground mb-1">{establishment.name}</h2>
+                          <h2 className={`text-2xl font-bold mb-1 ${
+                            establishment.available 
+                              ? 'text-foreground' 
+                              : 'text-muted-foreground'
+                          }`}>
+                            {establishment.name}
+                          </h2>
                           <div className="flex items-center gap-2 text-muted-foreground text-sm">
                             <MapPin className="h-3 w-3" />
                             <span>{establishment.location}</span>
@@ -304,6 +347,7 @@ const Demo = () => {
                         variant="outline"
                         className="flex-1 gap-2 h-11"
                         onClick={() => navigate(`/establishment/${establishment.id}/public`)}
+                        disabled={!establishment.available}
                       >
                         <Home className="h-4 w-4" />
                         {t('demo.homePage')}
@@ -311,7 +355,10 @@ const Demo = () => {
                       
                       <Dialog open={openModalId === establishment.id} onOpenChange={(open) => setOpenModalId(open ? establishment.id : null)}>
                         <DialogTrigger asChild>
-                          <Button className="flex-1 gap-2 h-11">
+                          <Button 
+                            className="flex-1 gap-2 h-11"
+                            disabled={!establishment.available}
+                          >
                             <LogIn className="h-4 w-4" />
                             {t('demo.accessAccounts')}
                           </Button>
@@ -435,46 +482,84 @@ const Demo = () => {
             {individualAccounts.map((account) => {
               const Icon = account.icon;
               return (
-                <Card key={account.id} className="p-6 hover:shadow-xl transition-all duration-300 border-2">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-primary/10">
-                        <Icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-base">{t(account.title)}</h3>
-                        <Badge variant="secondary" className="text-xs mt-1">
-                          {account.statusLabel}
-                        </Badge>
+                <Card 
+                  key={account.id} 
+                  className={`p-6 transition-all duration-300 border-2 ${
+                    account.available 
+                      ? 'hover:shadow-xl' 
+                      : 'opacity-60 cursor-not-allowed'
+                  }`}
+                >
+                  <div className="relative">
+                    {!account.available && (
+                      <Badge className="absolute -top-2 -right-2 bg-muted text-muted-foreground text-xs">
+                        {t('demo.comingSoon')}
+                      </Badge>
+                    )}
+                    
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-3 rounded-lg ${
+                          account.available 
+                            ? 'bg-primary/10' 
+                            : 'bg-muted/30'
+                        }`}>
+                          <Icon className={`h-6 w-6 ${
+                            account.available 
+                              ? 'text-primary' 
+                              : 'text-muted-foreground'
+                          }`} />
+                        </div>
+                        <div>
+                          <h3 className={`font-semibold text-base ${
+                            account.available 
+                              ? 'text-foreground' 
+                              : 'text-muted-foreground'
+                          }`}>
+                            {t(account.title)}
+                          </h3>
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            {account.statusLabel}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-3 mb-4">
-                    <div className="text-xs text-muted-foreground font-mono">{account.email}</div>
-                    <div className="p-3 bg-muted/50 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">{t('demo.password')}</p>
-                      <code className="text-xs font-mono">{account.password}</code>
+                    
+                    <div className="space-y-3 mb-4">
+                      <div className={`text-xs font-mono ${
+                        account.available 
+                          ? 'text-muted-foreground' 
+                          : 'text-muted-foreground/60'
+                      }`}>
+                        {account.email}
+                      </div>
+                      <div className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">{t('demo.password')}</p>
+                        <code className="text-xs font-mono">{account.password}</code>
+                      </div>
                     </div>
+                    
+                    <Button 
+                      className="w-full"
+                      disabled={!account.available}
+                      onClick={() => {
+                        if (account.available) {
+                          sessionStorage.setItem('demoAccount', JSON.stringify({
+                            email: account.email,
+                            password: account.password
+                          }));
+                          if (account.id === 'patient') {
+                            navigate('/login/patient');
+                          } else {
+                            navigate('/login/professional');
+                          }
+                        }
+                      }}
+                    >
+                      <Clock className="h-4 w-4 mr-2" />
+                      {t('demo.quickLogin')}
+                    </Button>
                   </div>
-                  
-                  <Button 
-                    className="w-full"
-                    onClick={() => {
-                      sessionStorage.setItem('demoAccount', JSON.stringify({
-                        email: account.email,
-                        password: account.password
-                      }));
-                      if (account.id === 'patient') {
-                        navigate('/login/patient');
-                      } else {
-                        navigate('/login/professional');
-                      }
-                    }}
-                  >
-                    <Clock className="h-4 w-4 mr-2" />
-                    {t('demo.quickLogin')}
-                  </Button>
                 </Card>
               );
             })}

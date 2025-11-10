@@ -226,6 +226,7 @@ const translations: Record<Language, Record<string, string>> = {
     'demo.cta.patient': 'Créer un compte Patient',
     'demo.cta.professional': 'Inscription Professionnel',
     'demo.returnHome': 'Retour à l\'accueil',
+    'demo.comingSoon': 'Bientôt disponible',
     'common.accounts': 'comptes',
     
     // Admin
@@ -456,6 +457,7 @@ const translations: Record<Language, Record<string, string>> = {
     'demo.cta.patient': 'Create Patient Account',
     'demo.cta.professional': 'Professional Registration',
     'demo.returnHome': 'Back to Home',
+    'demo.comingSoon': 'Coming Soon',
     'common.accounts': 'accounts',
   },
   es: {
@@ -647,6 +649,7 @@ const translations: Record<Language, Record<string, string>> = {
     'demo.cta.patient': 'Crear Cuenta de Paciente',
     'demo.cta.professional': 'Registro Profesional',
     'demo.returnHome': 'Volver al Inicio',
+    'demo.comingSoon': 'Próximamente',
     'common.accounts': 'cuentas',
   },
   ar: {
@@ -838,6 +841,7 @@ const translations: Record<Language, Record<string, string>> = {
     'demo.cta.patient': 'إنشاء حساب مريض',
     'demo.cta.professional': 'تسجيل محترف',
     'demo.returnHome': 'العودة إلى الرئيسية',
+    'demo.comingSoon': 'قريبًا',
     'common.accounts': 'حسابات',
   },
   pt: {
@@ -1029,6 +1033,7 @@ const translations: Record<Language, Record<string, string>> = {
     'demo.cta.patient': 'Criar Conta de Paciente',
     'demo.cta.professional': 'Registro Profissional',
     'demo.returnHome': 'Voltar ao Início',
+    'demo.comingSoon': 'Em Breve',
     'common.accounts': 'contas',
   }
 };
