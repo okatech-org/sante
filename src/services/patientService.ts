@@ -208,37 +208,69 @@ class PatientService {
   // ========== RENDEZ-VOUS ==========
   async getAppointments(patientId: string): Promise<Appointment[]> {
     try {
-      // Données mockées pour Pierrette NOMSI
-      const mockAppointments: Appointment[] = [
-        {
-          id: 'apt-001',
-          patient_id: patientId,
-          doctor_name: 'Dr. Marie OKEMBA',
-          speciality: 'Médecine Générale',
-          date: '2025-01-18',
-          time: '10:00',
-          establishment: 'CMST SOGARA',
-          type: 'controle',
-          status: 'confirmed',
-          reason: 'Suivi hypertension',
-          reminder_sent: false
-        },
-        {
-          id: 'apt-002',
-          patient_id: patientId,
-          doctor_name: 'Dr. Léa Mbina',
-          speciality: 'Cardiologie',
-          date: '2025-02-15',
-          time: '14:30',
-          establishment: 'CMST SOGARA',
-          type: 'consultation',
-          status: 'pending',
-          reason: 'Bilan cardiaque',
-          reminder_sent: false
-        }
-      ];
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
+          id,
+          patient_id,
+          patient_name,
+          appointment_date,
+          appointment_time,
+          status,
+          appointment_type,
+          reason,
+          notes,
+          professional_id
+        `)
+        .eq('patient_id', patientId)
+        .order('appointment_date', { ascending: true });
+
+      if (error) throw error;
+
+      // Charger les infos du professionnel pour chaque rendez-vous
+      const appointmentsWithDetails = await Promise.all(
+        (data || []).map(async (apt) => {
+          let doctorName = 'Dr. Inconnu';
+          let speciality = 'Médecine Générale';
+          let establishment = 'Cabinet médical';
+
+          // Cas spécial pour Dr Démo
+          if (apt.professional_id === 'dr-demo-cabinet-001') {
+            doctorName = 'Dr. Jean-Pierre Démo';
+            speciality = 'Médecine Générale';
+            establishment = 'Cabinet Dr Démo';
+          } else {
+            // Récupérer les infos du professionnel depuis la base
+            const { data: professional } = await supabase
+              .from('professionals')
+              .select('full_name, specialization, profession_type')
+              .eq('id', apt.professional_id)
+              .maybeSingle();
+
+            if (professional) {
+              doctorName = professional.full_name;
+              speciality = professional.specialization || professional.profession_type || 'Médecine Générale';
+            }
+          }
+
+          return {
+            id: apt.id,
+            patient_id: apt.patient_id,
+            doctor_name: doctorName,
+            speciality: speciality,
+            date: apt.appointment_date,
+            time: apt.appointment_time,
+            establishment: establishment,
+            type: apt.appointment_type as 'consultation' | 'controle' | 'urgence' | 'teleconsultation',
+            status: apt.status as 'confirmed' | 'pending' | 'cancelled' | 'completed',
+            reason: apt.reason || undefined,
+            notes: apt.notes || undefined,
+            reminder_sent: false
+          };
+        })
+      );
       
-      return mockAppointments;
+      return appointmentsWithDetails;
     } catch (error) {
       console.error('Error fetching appointments:', error);
       return [];
@@ -247,10 +279,26 @@ class PatientService {
 
   async createAppointment(appointment: Omit<Appointment, 'id'>): Promise<string | null> {
     try {
-      // TODO: Implémenter avec Supabase
-      const newId = `apt-${Date.now()}`;
-      console.log('Creating appointment:', appointment);
-      return newId;
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert({
+          patient_id: appointment.patient_id,
+          professional_id: 'dr-demo-cabinet-001', // TODO: Utiliser le vrai ID
+          appointment_date: appointment.date,
+          appointment_time: appointment.time,
+          appointment_type: appointment.type,
+          status: appointment.status,
+          reason: appointment.reason,
+          notes: appointment.notes,
+          patient_name: appointment.doctor_name,
+          patient_phone: '',
+          duration_minutes: 30
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+      return data.id;
     } catch (error) {
       console.error('Error creating appointment:', error);
       return null;
@@ -259,8 +307,15 @@ class PatientService {
 
   async cancelAppointment(appointmentId: string): Promise<boolean> {
     try {
-      // TODO: Implémenter avec Supabase
-      console.log('Cancelling appointment:', appointmentId);
+      const { error } = await supabase
+        .from('appointments')
+        .update({ 
+          status: 'cancelled',
+          cancelled_at: new Date().toISOString()
+        })
+        .eq('id', appointmentId);
+
+      if (error) throw error;
       return true;
     } catch (error) {
       console.error('Error cancelling appointment:', error);
