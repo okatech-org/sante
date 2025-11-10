@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { 
   Calendar, Clock, User, Search, Plus, Filter,
   ChevronLeft, ChevronRight, CheckCircle, XCircle,
@@ -23,6 +33,8 @@ export default function ProfessionalAppointments() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [professionalId, setProfessionalId] = useState<string | null>(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
 
   // Charger l'ID du professionnel et les rendez-vous
   useEffect(() => {
@@ -83,6 +95,71 @@ export default function ProfessionalAppointments() {
 
     loadData();
   }, [user?.id]);
+
+  // Fonction pour confirmer un rendez-vous
+  const handleConfirmAppointment = async (appointmentId: string) => {
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status: 'confirmed' })
+        .eq('id', appointmentId);
+
+      if (error) throw error;
+
+      // Mettre à jour l'état local
+      setAppointments(prev => 
+        prev.map(apt => 
+          apt.id === appointmentId 
+            ? { ...apt, status: 'confirmed' }
+            : apt
+        )
+      );
+
+      toast.success("Rendez-vous confirmé avec succès");
+    } catch (error: any) {
+      console.error('Erreur confirmation:', error);
+      toast.error("Erreur lors de la confirmation du rendez-vous");
+    }
+  };
+
+  // Fonction pour annuler un rendez-vous
+  const handleCancelAppointment = async () => {
+    if (!selectedAppointmentId) return;
+
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ 
+          status: 'cancelled',
+          cancelled_at: new Date().toISOString(),
+          cancelled_by: user?.id
+        })
+        .eq('id', selectedAppointmentId);
+
+      if (error) throw error;
+
+      // Mettre à jour l'état local
+      setAppointments(prev => 
+        prev.map(apt => 
+          apt.id === selectedAppointmentId 
+            ? { ...apt, status: 'cancelled' }
+            : apt
+        )
+      );
+
+      toast.success("Rendez-vous annulé avec succès");
+      setCancelDialogOpen(false);
+      setSelectedAppointmentId(null);
+    } catch (error: any) {
+      console.error('Erreur annulation:', error);
+      toast.error("Erreur lors de l'annulation du rendez-vous");
+    }
+  };
+
+  const openCancelDialog = (appointmentId: string) => {
+    setSelectedAppointmentId(appointmentId);
+    setCancelDialogOpen(true);
+  };
 
   // Les anciennes données fictives sont supprimées
   const mockAppointments = [
@@ -500,18 +577,38 @@ export default function ProfessionalAppointments() {
                     <div className="flex gap-2">
                       {apt.status === 'pending' && (
                         <>
-                          <Button size="sm" variant="outline">Confirmer</Button>
-                          <Button size="sm" variant="destructive">Annuler</Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleConfirmAppointment(apt.id)}
+                          >
+                            Confirmer
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => openCancelDialog(apt.id)}
+                          >
+                            Annuler
+                          </Button>
                         </>
                       )}
                       {apt.status === 'confirmed' && (
                         <>
-                          <Button size="sm" variant="outline">Reprogrammer</Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => openCancelDialog(apt.id)}
+                          >
+                            Annuler
+                          </Button>
                           <Button size="sm">Détails</Button>
                         </>
                       )}
                       {apt.status === 'cancelled' && (
-                        <Button size="sm" variant="outline">Reprogrammer</Button>
+                        <Button size="sm" variant="outline" disabled>
+                          Annulé
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -576,6 +673,28 @@ export default function ProfessionalAppointments() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Dialog de confirmation d'annulation */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer l'annulation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir annuler ce rendez-vous ? Cette action ne peut pas être annulée.
+              Le patient sera notifié de l'annulation.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Retour</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleCancelAppointment}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Confirmer l'annulation
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
