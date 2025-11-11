@@ -12,6 +12,15 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -23,10 +32,48 @@ serve(async (req) => {
       }
     )
 
+    // Verify user is super_admin
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token)
+
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Check for super_admin role
+    const { data: roles } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+
+    if (!roles?.some(r => r.role === 'super_admin')) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: super_admin role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Get passwords from environment or generate secure ones
+    const ministerPassword = Deno.env.get('MINISTER_INITIAL_PASSWORD')
+    const adminPassword = Deno.env.get('ADMIN_INITIAL_PASSWORD')
+
+    if (!ministerPassword || !adminPassword) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuration error: Initial passwords not configured in environment variables',
+          required_vars: ['MINISTER_INITIAL_PASSWORD', 'ADMIN_INITIAL_PASSWORD']
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const usersToCreate = [
       {
         email: 'ministre@sante.gouv.ga',
-        password: 'MinistryGab2025!',
+        password: ministerPassword,
         email_confirm: true,
         user_metadata: {
           full_name: 'Pr. Adrien MOUGOUGOU',
@@ -35,7 +82,7 @@ serve(async (req) => {
       },
       {
         email: 'admin@test.com',
-        password: 'admin2025',
+        password: adminPassword,
         email_confirm: true,
         user_metadata: {
           full_name: 'Admin Test',

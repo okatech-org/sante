@@ -12,6 +12,15 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -23,7 +32,42 @@ serve(async (req) => {
       }
     );
 
+    // Verify user is super_admin
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token)
+
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Check for super_admin role
+    const { data: roles } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+
+    if (!roles?.some(r => r.role === 'super_admin')) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: super_admin role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     console.log('Creating demo doctor account...');
+
+    // Get demo password from environment
+    const demoPassword = Deno.env.get('DEMO_DOCTOR_PASSWORD')
+    if (!demoPassword) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuration error: DEMO_DOCTOR_PASSWORD not configured in environment variables'
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     // Vérifier si l'utilisateur existe déjà de manière robuste
     const demoEmail = 'demo.medecin@sante.ga';
@@ -64,7 +108,7 @@ serve(async (req) => {
       const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
         userId,
         {
-          password: 'Doctor2025!',
+          password: demoPassword,
           email_confirm: true,
           user_metadata: { full_name: 'Dr. Demo Cardiologue' }
         }
@@ -77,7 +121,7 @@ serve(async (req) => {
       // Créer l'utilisateur
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: demoEmail,
-        password: 'Doctor2025!',
+        password: demoPassword,
         email_confirm: true,
         user_metadata: {
           full_name: 'Dr. Demo Cardiologue'
@@ -118,7 +162,7 @@ serve(async (req) => {
             throw new Error(`Email exists but no user id found for ${demoEmail}`);
           }
           const { error: updateExistingError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-            password: 'Doctor2025!',
+            password: demoPassword,
             email_confirm: true,
             user_metadata: { full_name: 'Dr. Demo Cardiologue' }
           });

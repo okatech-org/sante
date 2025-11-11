@@ -7,10 +7,10 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.create-initial-users]
-verify_jwt = false
+verify_jwt = true
 
 [functions.fix-minister-role]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-demo-accounts]
 verify_jwt = true
@@ -25,7 +25,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.create-demo-doctor]
-verify_jwt = false
+verify_jwt = true
 
 [functions.chat-with-iasted]
 verify_jwt = true

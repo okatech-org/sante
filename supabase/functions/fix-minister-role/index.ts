@@ -12,6 +12,15 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -22,6 +31,30 @@ serve(async (req) => {
         }
       }
     )
+
+    // Verify user is super_admin
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token)
+
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Check for super_admin role
+    const { data: roles } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+
+    if (!roles?.some(r => r.role === 'super_admin')) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: super_admin role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
     const ministerEmail = 'ministre@sante.gouv.ga'
 
@@ -210,8 +243,8 @@ serve(async (req) => {
           title: 'Ministre de la Santé',
           credentials: {
             email: ministerEmail,
-            password: 'MinistryGab2025!',
-            login_url: '/login/professional'
+            login_url: '/login/professional',
+            note: 'Password has been reset. Contact system administrator for new credentials via secure channel.'
           },
           actions_performed: [
             '✅ Rôle moderator ajouté',
