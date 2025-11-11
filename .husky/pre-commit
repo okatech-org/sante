@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔒 Running security checks before commit..."
+echo ""
+
+# Run the local security check script
+if [ -f "scripts/local-security-check.sh" ]; then
+  bash scripts/local-security-check.sh
+else
+  echo "❌ Security check script not found at scripts/local-security-check.sh"
+  exit 1
+fi
