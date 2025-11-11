@@ -1,0 +1,216 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  schedule:
+    # Run security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  secret-scanning:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+      - name: Check for hardcoded passwords
+        run: |
+          echo "Scanning for hardcoded passwords..."
+          
+          # Check for common password patterns in code
+          if grep -r "password.*=.*['\"].*['\"]" --include="*.ts" --include="*.js" --include="*.sql" --exclude-dir=node_modules --exclude-dir=.git .; then
+            echo "⚠️ WARNING: Found potential hardcoded passwords in code"
+            echo "Please use environment variables instead"
+            exit 1
+          fi
+          
+          # Check for hardcoded credentials in edge functions
+          if grep -r "MinistryGab\|Doctor2025\|admin2025\|Asted1982" supabase/functions/ 2>/dev/null; then
+            echo "❌ ERROR: Found hardcoded demo passwords in edge functions"
+            exit 1
+          fi
+          
+          echo "✅ No hardcoded passwords detected"
+
+  supabase-security:
+    name: Supabase Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check JWT verification settings
+        run: |
+          echo "Checking edge function JWT verification..."
+          
+          # Critical functions that MUST have JWT enabled
+          CRITICAL_FUNCTIONS=("create-initial-users" "fix-minister-role" "create-demo-doctor" "generate-decree-with-ai")
+          
+          for func in "${CRITICAL_FUNCTIONS[@]}"; do
+            if grep -A 1 "\[functions.$func\]" supabase/config.toml | grep "verify_jwt = false"; then
+              echo "❌ ERROR: Critical function '$func' has JWT verification disabled!"
+              echo "This is a security vulnerability. Enable JWT verification."
+              exit 1
+            fi
+          done
+          
+          echo "✅ All critical functions have JWT verification enabled"
+
+      - name: Check for SQL injection risks
+        run: |
+          echo "Scanning for potential SQL injection vulnerabilities..."
+          
+          # Look for string concatenation in SQL queries
+          if grep -r "SELECT.*+\|INSERT.*+\|UPDATE.*+\|DELETE.*+" --include="*.ts" --include="*.js" supabase/functions/ 2>/dev/null; then
+            echo "⚠️ WARNING: Found potential SQL injection risk (string concatenation in queries)"
+            echo "Use parameterized queries instead"
+            exit 1
+          fi
+          
+          echo "✅ No obvious SQL injection patterns detected"
+
+      - name: Verify RLS policies exist
+        run: |
+          echo "Checking for RLS policy migrations..."
+          
+          if ! grep -r "ENABLE ROW LEVEL SECURITY" supabase/migrations/ 2>/dev/null; then
+            echo "⚠️ WARNING: No RLS policies found in migrations"
+            echo "Ensure your tables have proper row-level security"
+          else
+            echo "✅ RLS policies found in migrations"
+          fi
+
+  dependency-security:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          echo "Checking for vulnerable dependencies..."
+          npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Check for outdated security packages
+        run: |
+          echo "Checking for outdated security-critical packages..."
+          npm outdated @supabase/supabase-js || true
+
+  code-security:
+    name: Code Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for console.log with sensitive data
+        run: |
+          echo "Scanning for console.log statements with sensitive data..."
+          
+          if grep -r "console\.log.*password\|console\.log.*token\|console\.log.*secret" --include="*.ts" --include="*.tsx" --include="*.js" src/ 2>/dev/null; then
+            echo "⚠️ WARNING: Found console.log with potentially sensitive data"
+            echo "Remove or sanitize these logs before production"
+            exit 1
+          fi
+          
+          echo "✅ No sensitive data in console.log detected"
+
+      - name: Check for environment variable exposure
+        run: |
+          echo "Checking for exposed environment variables..."
+          
+          # Check for .env files in git
+          if git ls-files | grep "\.env$"; then
+            echo "❌ ERROR: .env file is tracked in git"
+            echo "Remove it and add to .gitignore"
+            exit 1
+          fi
+          
+          echo "✅ No .env files tracked in git"
+
+  input-validation:
+    name: Input Validation Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for input validation in edge functions
+        run: |
+          echo "Checking for input validation in edge functions..."
+          
+          # Check if edge functions validate input
+          for func_dir in supabase/functions/*/; do
+            func_name=$(basename "$func_dir")
+            
+            if [ -f "$func_dir/index.ts" ]; then
+              # Check for validation patterns
+              if ! grep -q "trim()\|sanitize\|validate\|schema" "$func_dir/index.ts"; then
+                echo "⚠️ WARNING: Function '$func_name' may lack input validation"
+              fi
+            fi
+          done
+          
+          echo "✅ Input validation check complete"
+
+  security-summary:
+    name: Security Scan Summary
+    needs: [secret-scanning, supabase-security, dependency-security, code-security, input-validation]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check scan results
+        run: |
+          echo "=========================================="
+          echo "Security Scan Summary"
+          echo "=========================================="
+          echo ""
+          echo "✅ Secret scanning: ${{ needs.secret-scanning.result }}"
+          echo "✅ Supabase security: ${{ needs.supabase-security.result }}"
+          echo "✅ Dependency scan: ${{ needs.dependency-security.result }}"
+          echo "✅ Code security: ${{ needs.code-security.result }}"
+          echo "✅ Input validation: ${{ needs.input-validation.result }}"
+          echo ""
+          
+          if [[ "${{ needs.secret-scanning.result }}" == "failure" ]] || \
+             [[ "${{ needs.supabase-security.result }}" == "failure" ]] || \
+             [[ "${{ needs.code-security.result }}" == "failure" ]]; then
+            echo "❌ Security scan failed. Please review the errors above."
+            exit 1
+          fi
+          
+          echo "=========================================="
+          echo "✅ All security checks passed!"
+          echo "=========================================="

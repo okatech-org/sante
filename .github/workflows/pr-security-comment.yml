@@ -1,0 +1,79 @@
+name: PR Security Comment
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  security-checklist:
+    name: Post Security Checklist
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Analyze changes
+        id: analyze
+        run: |
+          echo "Analyzing security-sensitive changes..."
+          
+          # Check if PR modifies security-sensitive files
+          SENSITIVE_CHANGED=false
+          
+          if git diff --name-only origin/${{ github.base_ref }}..HEAD | grep -E "supabase/functions/|supabase/config.toml|supabase/migrations/|src/lib/auth"; then
+            SENSITIVE_CHANGED=true
+          fi
+          
+          echo "sensitive_changed=$SENSITIVE_CHANGED" >> $GITHUB_OUTPUT
+
+      - name: Post security checklist
+        if: steps.analyze.outputs.sensitive_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## 🔒 Security Review Checklist
+            
+            This PR modifies security-sensitive code. Please review:
+            
+            ### Authentication & Authorization
+            - [ ] All new edge functions have \`verify_jwt = true\` in \`supabase/config.toml\`
+            - [ ] Role-based access control is implemented where needed
+            - [ ] No hardcoded passwords or API keys in code
+            - [ ] Credentials are stored in environment variables
+            
+            ### Database Security
+            - [ ] New tables have RLS enabled
+            - [ ] RLS policies are restrictive and correct
+            - [ ] No SQL injection vulnerabilities (use parameterized queries)
+            - [ ] Sensitive data is properly encrypted
+            
+            ### Input Validation
+            - [ ] All user inputs are validated and sanitized
+            - [ ] Length limits are enforced
+            - [ ] Special characters are properly escaped
+            - [ ] No XSS vulnerabilities
+            
+            ### API Security
+            - [ ] Rate limiting is implemented where needed
+            - [ ] Sensitive operations are logged for audit
+            - [ ] Error messages don't leak sensitive information
+            - [ ] CORS headers are properly configured
+            
+            ### Data Protection
+            - [ ] No PII in logs or error messages
+            - [ ] Passwords are never logged or returned in responses
+            - [ ] Tokens have appropriate expiration times
+            
+            ---
+            
+            ⚠️ **Important**: Do not merge until all items are checked and security scan passes.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
