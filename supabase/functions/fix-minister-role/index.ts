@@ -223,7 +223,7 @@ serve(async (req) => {
     }
 
     // 9. Vérifier les rôles
-    const { data: roles } = await supabaseAdmin
+    const { data: userRoles } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
@@ -235,7 +235,7 @@ serve(async (req) => {
         data: {
           user_id: userId,
           email: ministerEmail,
-          roles: roles?.map(r => r.role) || [],
+          roles: userRoles?.map(r => r.role) || [],
           full_name: 'Pr. Adrien MOUGOUGOU',
           professional_id: professionalId,
           ministry_id: ministryId,
