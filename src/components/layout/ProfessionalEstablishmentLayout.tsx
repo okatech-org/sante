@@ -46,7 +46,8 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     const saved = localStorage.getItem('professional_theme');
     return saved === 'dark';
   });
-  const [isRoleMenuExpanded, setIsRoleMenuExpanded] = useState(true);
+  const [isAdminMenuExpanded, setIsAdminMenuExpanded] = useState(true);
+  const [isDoctorMenuExpanded, setIsDoctorMenuExpanded] = useState(false);
   const [isAccueilHDJExpanded, setIsAccueilHDJExpanded] = useState(false);
   const [isAccueilUrgencesExpanded, setIsAccueilUrgencesExpanded] = useState(false);
   const [isAccueilHospitalisationExpanded, setIsAccueilHospitalisationExpanded] = useState(false);
@@ -166,30 +167,11 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
     }
   };
 
-  const handleRoleChange = async (newRole: string) => {
-    try {
-      // Si le rôle est déjà actif, toggle l'expansion du menu
-      if (newRole === activeRole) {
-        setIsRoleMenuExpanded(!isRoleMenuExpanded);
-        return;
-      }
-      
-      // Si on change de rôle, l'activer et ouvrir le menu
-      setIsRoleMenuExpanded(true);
-      
-      // Utiliser directement switchRole du contexte
-      if (switchRole) {
-        await switchRole(newRole);
-        
-        toast.success(`Rôle changé`, {
-          description: `Vous êtes maintenant en mode ${ROLE_LABELS[newRole] || newRole}`
-        });
-        
-        // Pas de rechargement pour garder l'expérience fluide
-        // Le menu se met à jour automatiquement grâce au state
-      }
-    } catch (error) {
-      toast.error('Erreur lors du changement de rôle');
+  const handleRoleToggle = (role: string) => {
+    if (role === 'admin') {
+      setIsAdminMenuExpanded(!isAdminMenuExpanded);
+    } else if (role === 'doctor') {
+      setIsDoctorMenuExpanded(!isDoctorMenuExpanded);
     }
   };
 
@@ -308,7 +290,7 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                       {est.roles.map((roleItem: any) => {
                         const Icon = getRoleIcon(roleItem.role);
                         const roleLabel = ROLE_LABELS[roleItem.role] || roleItem.role.toUpperCase();
-                        const isActiveRole = isCurrentEstablishment && activeRole === roleItem.role;
+                        const isRoleExpanded = roleItem.role === 'admin' ? isAdminMenuExpanded : isDoctorMenuExpanded;
                         
                         // Ne pas afficher réceptionniste comme rôle cliquable
                         if (roleItem.role === 'receptionist') {
@@ -318,22 +300,10 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                         return (
                           <button
                             key={`${est.id}-${roleItem.role}`}
-                            onClick={async () => {
-                              // Si c'est un autre établissement, le sélectionner d'abord
-                              if (!isCurrentEstablishment) {
-                                await selectEstablishment(roleItem.staffId, roleItem.role);
-                                navigate('/professional/dashboard');
-                                setMobileOpen(false);
-                              } else {
-                                // Même établissement, juste changer de rôle
-                                await handleRoleChange(roleItem.role);
-                              }
-                            }}
+                            onClick={() => handleRoleToggle(roleItem.role)}
                             className={cn(
                               "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all",
-                              isActiveRole
-                                ? "bg-primary text-primary-foreground font-medium"
-                                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                              "text-foreground hover:bg-muted/50 font-medium"
                             )}
                           >
                             <Icon className="h-4 w-4" />
@@ -341,12 +311,10 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
                             {roleItem.isAdmin && (
                               <Badge variant="outline" className="text-xs">Admin</Badge>
                             )}
-                            {isActiveRole && (
-                              isRoleMenuExpanded ? (
-                                <ChevronDown className="h-4 w-4" />
-                              ) : (
-                                <ChevronRight className="h-4 w-4" />
-                              )
+                            {isRoleExpanded ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4" />
                             )}
                           </button>
                         );
@@ -695,69 +663,139 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
 
       {/* Zone principale avec menu accordéon */}
       <div className="flex-1 flex">
-        {/* Menu accordéon contextuel - Masqué pour les réceptionnistes */}
-        {activeRole && isRoleMenuExpanded && activeRole !== 'receptionist' && (
-          <aside className="hidden lg:block w-64 bg-card border-r border-border">
-            <div className="p-4 border-b border-border/50">
-              <div className="flex items-center gap-2">
-                <Badge variant="default">{ROLE_LABELS[activeRole] || activeRole}</Badge>
-                <span className="text-sm text-muted-foreground">Menu</span>
-              </div>
-            </div>
-            
-            <nav className="p-4">
-              <Accordion 
-                type="multiple" 
-                defaultValue={menuSections.map(s => s.id)} 
-                className="space-y-2"
-              >
-                {menuSections.map((section) => (
-                  <AccordionItem key={section.id} value={section.id} className="border-none">
-                    <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg">
-                      <span className="text-xs font-semibold text-muted-foreground uppercase">
-                        {section.label}
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-1 mt-1">
-                        {section.items.map((item) => {
-                          const Icon = item.icon;
-                          const isActive = location.pathname === item.href;
-                          
-                          if (item.permission && hasPermission && !hasPermission(item.permission)) {
-                            return null;
-                          }
-                          
-                          return (
-                            <Link
-                              key={item.href}
-                              to={item.href}
-                              className={cn(
-                                "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                                isActive
-                                  ? "bg-primary text-primary-foreground shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                              )}
-                            >
-                              <div className="flex items-center gap-3">
-                                <Icon className="h-4 w-4" />
-                                <span>{item.label}</span>
-                              </div>
-                              {item.badge && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {item.badge}
-                                </Badge>
-                              )}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </nav>
-          </aside>
+        {/* Menus Admin et Docteur côte à côte */}
+        {currentEstablishment && availableRoles.includes('admin') && availableRoles.includes('doctor') && (
+          <div className="hidden lg:flex gap-4 flex-1">
+            {/* Menu Admin */}
+            {isAdminMenuExpanded && (
+              <aside className="w-64 bg-card border-r border-border">
+                <div className="p-4 border-b border-border/50">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-primary" />
+                    <Badge variant="default">Administrateur</Badge>
+                  </div>
+                </div>
+                
+                <nav className="p-4">
+                  <Accordion 
+                    type="multiple" 
+                    defaultValue={getMenuForRole('admin').map(s => s.id)} 
+                    className="space-y-2"
+                  >
+                    {getMenuForRole('admin').map((section) => (
+                      <AccordionItem key={section.id} value={section.id} className="border-none">
+                        <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg">
+                          <span className="text-xs font-semibold text-muted-foreground uppercase">
+                            {section.label}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-1 mt-1">
+                            {section.items.map((item) => {
+                              const Icon = item.icon;
+                              const isActive = location.pathname === item.href;
+                              
+                              if (item.permission && hasPermission && !hasPermission(item.permission)) {
+                                return null;
+                              }
+                              
+                              return (
+                                <Link
+                                  key={item.href}
+                                  to={item.href}
+                                  className={cn(
+                                    "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                                    isActive
+                                      ? "bg-primary text-primary-foreground shadow-sm"
+                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <Icon className="h-4 w-4" />
+                                    <span>{item.label}</span>
+                                  </div>
+                                  {item.badge && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {item.badge}
+                                    </Badge>
+                                  )}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </nav>
+              </aside>
+            )}
+
+            {/* Menu Docteur */}
+            {isDoctorMenuExpanded && (
+              <aside className="w-64 bg-card border-r border-border">
+                <div className="p-4 border-b border-border/50">
+                  <div className="flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-primary" />
+                    <Badge variant="default">Médecin</Badge>
+                  </div>
+                </div>
+                
+                <nav className="p-4">
+                  <Accordion 
+                    type="multiple" 
+                    defaultValue={getMenuForRole('doctor').map(s => s.id)} 
+                    className="space-y-2"
+                  >
+                    {getMenuForRole('doctor').map((section) => (
+                      <AccordionItem key={section.id} value={section.id} className="border-none">
+                        <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-muted/50 rounded-lg">
+                          <span className="text-xs font-semibold text-muted-foreground uppercase">
+                            {section.label}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-1 mt-1">
+                            {section.items.map((item) => {
+                              const Icon = item.icon;
+                              const isActive = location.pathname === item.href;
+                              
+                              if (item.permission && hasPermission && !hasPermission(item.permission)) {
+                                return null;
+                              }
+                              
+                              return (
+                                <Link
+                                  key={item.href}
+                                  to={item.href}
+                                  className={cn(
+                                    "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                                    isActive
+                                      ? "bg-primary text-primary-foreground shadow-sm"
+                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <Icon className="h-4 w-4" />
+                                    <span>{item.label}</span>
+                                  </div>
+                                  {item.badge && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {item.badge}
+                                    </Badge>
+                                  )}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </nav>
+              </aside>
+            )}
+          </div>
         )}
 
         {/* Contenu principal */}
