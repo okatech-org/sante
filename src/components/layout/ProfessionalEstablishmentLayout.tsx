@@ -51,6 +51,36 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const [isAccueilUrgencesExpanded, setIsAccueilUrgencesExpanded] = useState(false);
   const [isAccueilHospitalisationExpanded, setIsAccueilHospitalisationExpanded] = useState(false);
 
+  // Fonction pour mapper les rôles de la base de données vers les rôles du frontend
+  const mapRoleToFrontend = (dbRole: string): string => {
+    const roleLower = (dbRole || '').toLowerCase();
+    // Mapping des rôles de la base de données vers les rôles frontend
+    // Priorité: Admin en premier (car "Administrateur" contient aussi "directeur")
+    if (roleLower.includes('administrateur') || roleLower.includes('admin') || roleLower.includes('direction')) {
+      return 'admin';
+    }
+    if (roleLower.includes('directeur') || roleLower.includes('director') || roleLower.includes('médecin en chef') || roleLower.includes('chef')) {
+      return 'director';
+    }
+    if (roleLower.includes('médecin') || roleLower.includes('doctor') || roleLower.includes('medecin')) {
+      return 'doctor';
+    }
+    if (roleLower.includes('pharmacien') || roleLower.includes('pharmacist')) {
+      return 'pharmacist';
+    }
+    if (roleLower.includes('laborantin') || roleLower.includes('lab')) {
+      return 'laborantin';
+    }
+    if (roleLower.includes('infirmier') || roleLower.includes('nurse')) {
+      return 'nurse';
+    }
+    if (roleLower.includes('réception') || roleLower.includes('reception')) {
+      return 'receptionist';
+    }
+    // Par défaut, retourner le rôle tel quel
+    return roleLower;
+  };
+
   // Grouper établissements par ID pour afficher rôles multiples (déplacé ici)
   const establishmentGroups = establishments.reduce((acc, est) => {
     const key = est.establishment_id;
@@ -62,10 +92,12 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
         roles: []
       };
     }
+    const mappedRole = mapRoleToFrontend(est.role_in_establishment);
     acc[key].roles.push({
-      role: est.role_in_establishment,
+      role: mappedRole,
+      originalRole: est.role_in_establishment, // Garder le rôle original pour affichage
       staffId: est.staff_id || est.id,
-      isAdmin: est.is_admin
+      isAdmin: est.is_admin || mappedRole === 'admin' || mappedRole === 'director'
     });
     return acc;
   }, {} as Record<string, any>);
@@ -73,15 +105,20 @@ export function ProfessionalEstablishmentLayout({ children }: ProfessionalEstabl
   const establishmentsList = Object.values(establishmentGroups);
 
   // Déterminer le rôle actif avec une priorité métier (évite de tomber par défaut sur réceptionniste)
-  const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+  const rolePriority = ['admin', 'director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
   const firstGroupRoles: string[] =
     (establishmentsList.length > 0 && establishmentsList[0].roles
       ? establishmentsList[0].roles.map((r: any) => (r?.role || '').toLowerCase())
       : []);
   const preferredRole = firstGroupRoles.length
-    ? firstGroupRoles.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b))[0]
+    ? firstGroupRoles.slice().sort((a, b) => {
+        const indexA = rolePriority.indexOf(a) !== -1 ? rolePriority.indexOf(a) : 999;
+        const indexB = rolePriority.indexOf(b) !== -1 ? rolePriority.indexOf(b) : 999;
+        return indexA - indexB;
+      })[0]
     : undefined;
-  const activeRole = (currentRole || preferredRole || 'receptionist') as string;
+  // Ne jamais tomber par défaut sur réceptionniste si l'utilisateur a d'autres rôles
+  const activeRole = (currentRole || preferredRole || (firstGroupRoles.length > 0 ? firstGroupRoles[0] : 'doctor')) as string;
   
   // Récupérer le menu selon le rôle actuel
   const menuSections: MenuSection[] = getMenuForRole(activeRole);

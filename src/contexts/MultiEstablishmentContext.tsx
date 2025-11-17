@@ -97,15 +97,49 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
       
       setEstablishments(establishmentsWithLegacy);
 
+      // Fonction pour mapper les rôles de la base de données vers les rôles du frontend
+      const mapRoleToFrontend = (dbRole: string): string => {
+        const roleLower = (dbRole || '').toLowerCase();
+        // Priorité: Admin en premier (car "Administrateur" contient aussi "directeur")
+        if (roleLower.includes('administrateur') || roleLower.includes('admin') || roleLower.includes('direction')) {
+          return 'admin';
+        }
+        if (roleLower.includes('directeur') || roleLower.includes('director') || roleLower.includes('médecin en chef') || roleLower.includes('chef')) {
+          return 'director';
+        }
+        if (roleLower.includes('médecin') || roleLower.includes('doctor') || roleLower.includes('medecin')) {
+          return 'doctor';
+        }
+        if (roleLower.includes('pharmacien') || roleLower.includes('pharmacist')) {
+          return 'pharmacist';
+        }
+        if (roleLower.includes('laborantin') || roleLower.includes('lab')) {
+          return 'laborantin';
+        }
+        if (roleLower.includes('infirmier') || roleLower.includes('nurse')) {
+          return 'nurse';
+        }
+        if (roleLower.includes('réception') || roleLower.includes('reception')) {
+          return 'receptionist';
+        }
+        return roleLower;
+      };
+
       // Auto-sélection si un seul établissement
       if (data.length === 1) {
         await loadEstablishmentContext(data[0].establishment_id);
         // Charger les rôles disponibles (avec priorité métier)
-        const roles = data.map(e => (e.role_in_establishment as string).toLowerCase());
-        const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
-        const sortedRoles = roles.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b));
+        const roles = data.map(e => mapRoleToFrontend(e.role_in_establishment as string));
+        const rolePriority = ['admin', 'director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+        const sortedRoles = roles.slice().sort((a, b) => {
+          const indexA = rolePriority.indexOf(a) !== -1 ? rolePriority.indexOf(a) : 999;
+          const indexB = rolePriority.indexOf(b) !== -1 ? rolePriority.indexOf(b) : 999;
+          return indexA - indexB;
+        });
         setAvailableRoles(sortedRoles);
-        setCurrentRole(sortedRoles[0] || 'doctor');
+        // Prioriser admin ou doctor plutôt que réceptionniste
+        const preferredRole = sortedRoles.find(r => ['admin', 'director', 'doctor'].includes(r)) || sortedRoles[0] || 'doctor';
+        setCurrentRole(preferredRole);
       } else if (data.length > 1) {
         // Vérifier si un établissement a été mémorisé
         const lastSelectedStaffId = localStorage.getItem('last_selected_establishment');
@@ -120,11 +154,17 @@ export const MultiEstablishmentProvider = ({ children }: { children: ReactNode }
         // Charger les rôles pour cet établissement
         const rolesForEstablishment = data
           .filter(e => e.establishment_id === targetEstablishment.establishment_id)
-          .map(e => (e.role_in_establishment as string).toLowerCase());
-        const rolePriority = ['director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
-        const sortedRoles = rolesForEstablishment.slice().sort((a, b) => rolePriority.indexOf(a) - rolePriority.indexOf(b));
+          .map(e => mapRoleToFrontend(e.role_in_establishment as string));
+        const rolePriority = ['admin', 'director', 'doctor', 'pharmacist', 'laborantin', 'nurse', 'receptionist'];
+        const sortedRoles = rolesForEstablishment.slice().sort((a, b) => {
+          const indexA = rolePriority.indexOf(a) !== -1 ? rolePriority.indexOf(a) : 999;
+          const indexB = rolePriority.indexOf(b) !== -1 ? rolePriority.indexOf(b) : 999;
+          return indexA - indexB;
+        });
         setAvailableRoles(sortedRoles);
-        setCurrentRole(sortedRoles[0] || targetEstablishment.role_in_establishment);
+        // Prioriser admin ou doctor plutôt que réceptionniste
+        const preferredRole = sortedRoles.find(r => ['admin', 'director', 'doctor'].includes(r)) || sortedRoles[0] || mapRoleToFrontend(targetEstablishment.role_in_establishment);
+        setCurrentRole(preferredRole);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des établissements:', error);

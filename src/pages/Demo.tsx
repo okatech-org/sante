@@ -89,12 +89,11 @@ const Demo = () => {
       color: 'from-blue-500/10 via-blue-400/5',
       accounts: [
         {
-          title: "adminAccount",
-          email: "sogara.demo@sante.ga",
-          password: "Sogara2025!",
+          title: "directorAccount",
+          email: "directeur.sogara@sante.ga",
+          password: "DirecteurSOGARA2024!",
           status: "active",
-          badges: ["fullAccess", "active"],
-          available: false
+          badges: ["fullAccess", "active"]
         },
         {
           title: "doctorAccount",
